@@ -64,6 +64,7 @@ import {
 } from './_services/index';
 import {IndicationsGraphComponent} from "./compound-data/indications-graph/indications-graph.component";
 import {ShowMoreButtonComponent, ShowMorePane} from "./compound-data";
+import { WorkflowComponent } from './workflow/workflow.component';
 
 // import { SearchResultHeaderComponent } from './compound-search/search-result-header/search-result-header.component';
 // import { ReframeFilterComponent } from './compound-search/search-result-header/reframe-filter/reframe-filter.component';
@@ -109,6 +110,7 @@ import {ShowMoreButtonComponent, ShowMorePane} from "./compound-data";
     ShowMorePane,
     ShowMoreButtonComponent,
     IndicationsGraphComponent,
+    WorkflowComponent,
 
     // SearchResultHeaderComponent, ReframeFilterComponent, AssaysFilterComponent
   ],
@@ -125,7 +127,7 @@ import {ShowMoreButtonComponent, ShowMorePane} from "./compound-data";
     TermsModule,
     FormsModule,
     ReactiveFormsModule,
-    RecaptchaModule.forRoot(),
+    RecaptchaModule.forRoot()
   ],
   providers: [
     { provide: SearchResultService, useClass: SearchResultService },

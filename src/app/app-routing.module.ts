@@ -6,6 +6,7 @@ import { CompoundSearchComponent } from './compound-search/compound-search.compo
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { TermsComponent } from "./_dialogs/terms/terms.component";
+import { WorkflowComponent } from "./workflow/workflow.component";
 
 import { environment } from '../environments/environment';
 
@@ -14,6 +15,7 @@ const appRoutes: Routes = [
   { path: 'terms', component: TermsComponent, pathMatch: 'full' },
   { path: 'search', component: CompoundSearchComponent, pathMatch: 'full' },
   { path: 'about', pathMatch: 'full', loadChildren: () => import('./about/about.module').then(mod => mod.AboutModule) },
+  { path: 'workflow', component: WorkflowComponent, pathMatch: 'full' },
   {
     path: 'assays', pathMatch: 'full',
     loadChildren: () => import('./assays/assays.module').then(mod => mod.AssaysModule)
