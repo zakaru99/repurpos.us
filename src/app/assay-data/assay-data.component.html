@@ -51,6 +51,12 @@
           <button><a (click)="onAnchorClick('protocol')" aria-label="view protocol">view detailed protocol</a></button>
         </div>
 
+        
+        <form method="get" action='../../assets/forms/"{{assayDetails.assay_id}}"_primary_screening_data.xlsx'>
+          <button type="submit"> download primary screening data </button>
+        </form>
+
+
         <div>
         </div>
 
