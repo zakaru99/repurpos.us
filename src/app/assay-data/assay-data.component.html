@@ -50,30 +50,12 @@
           <button><a (click)="onAnchorClick('protocol')" aria-label="view protocol">view detailed protocol</a></button>
         </div>
 
+        <br>
 
+        <div id="screeningdata" class="screening-data">
+          <button><a (click)="validatePSD(assayDetails.assay_id);">download primary screening data for {{assayDetails.assay_id}}</a></button>
+        </div>
         
-
-        <form method="get" action="javascript:validatePSD('../../assets/primary_screening_data/{{assayDetails.assay_ID}}_primary_screening_data.xlsx')">
-          <button type="submit"> download primary screening data </button>
-        </form>
-        
-        <script>
-          var psdArray = ['A00440'];
-          function validatePSD(filepath)
-          {
-            var psdassayID = filepath.substring(36, 42);
-
-            if(psdArray.includes(psdassayID))
-            {
-              window.location.href = filepath;
-            }
-            else
-            {
-              alert("this assay does not currently have any primary screening data available");
-            }
-          }
-        </script>
-
 
         <div>
         </div>

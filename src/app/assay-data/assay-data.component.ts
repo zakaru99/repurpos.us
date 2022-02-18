@@ -68,4 +68,18 @@ export class AssayDataComponent implements OnInit {
   }
 
 
+ validatePSD(psdassayID)
+  { 
+    var filepath = '../../assets/primary_screening_data/' + psdassayID + '_primary_screening_data.xlsx';
+    var psdArray = ['A00440'];
+    //var psdassayID = filepath.substring(36, 42);
+    if(psdArray.includes(psdassayID))
+    {
+      window.location.href = filepath;
+    }
+    else
+    {
+      alert("there is currently no primary screening data available for assay " + psdassayID);
+    }
+  }
 }

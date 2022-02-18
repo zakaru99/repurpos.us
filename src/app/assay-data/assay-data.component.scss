@@ -4,6 +4,7 @@ body {
 }
 
 .view-more,
+.screening-data,
 a,
 a.dwnld-link:hover {
   color: #3D6DE0;
@@ -43,6 +44,31 @@ a.dwnld-link:hover {
 #viewmore button:hover {
   background-color: #e1e4e7;
 }
+
+
+#screeningdata button {
+  background-color: #f4f4f4;
+  border-radius: 3px;
+  margin-left: 20px;
+  border: 1px #c5cbd0 solid;
+  -webkit-text-fill-color: #9ba4ae; // text
+  color: #b7bec5; // arrow
+  font-size: 0.75em;
+  font-weight: 300;
+  font-family: 'Lato', sans-serif;
+}
+
+#screeningdata {
+  padding-top: 10px;
+}
+
+#screeningdata button:hover {
+  background-color: #e1e4e7;
+}
+
+
+
+
 
 .overview {}
 
