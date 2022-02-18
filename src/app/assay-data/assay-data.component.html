@@ -6,7 +6,6 @@
   </p>
 </ng-template>
 
-
 <div class="container" *ngIf="assayDetails; else no_assay">
   <div class="row d-flex">
     <div class="col">
@@ -50,11 +49,30 @@
         <div id="viewmore" class="view-more">
           <button><a (click)="onAnchorClick('protocol')" aria-label="view protocol">view detailed protocol</a></button>
         </div>
-
-        
+      <!---
         <form method="get" action='../../assets/primary_screening_data/"{{assayDetails.assay_id}}"_primary_screening_data.xlsx'>
           <button type="submit"> download primary screening data </button>
         </form>
+      -->
+      <button type="submit" onclick="downloadPSD('../../assets/primary_screening_data/{{assayDetails.assay_id}}_primary_screening_data.xlsx')"> download primary screening data </button>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script>
+        function downloadPSD(filepath)
+        {
+          $.ajax({
+              url: filepath,
+              type:'HEAD',
+              error: function()
+              {
+                alert('there is no primary screening data available for this assay');
+              },
+              success: function()
+              {
+                window.location.href = filepath;
+              }
+          });
+        }
+      </script>
 
 
         <div>
