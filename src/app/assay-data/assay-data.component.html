@@ -54,7 +54,7 @@
           <button type="submit"> download primary screening data </button>
         </form>
       -->
-      <button type="submit" onclick="downloadPSD('../../assets/primary_screening_data/{{assayDetails.assay_id}}_primary_screening_data.xlsx')"> download primary screening data </button>
+      <button type="submit" (click)="downloadPSD('../../assets/primary_screening_data/{{assayDetails.assay_id}}_primary_screening_data.xlsx')"> download primary screening data </button>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
       <script>
         function downloadPSD(filepath)
