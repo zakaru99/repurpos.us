@@ -80,7 +80,7 @@ export class CompoundService {
 
   // --- Vendor data ---
   // vendor data holders
-  public vendorSubject: BehaviorSubject<VendorData> = new BehaviorSubject<VendorData>(<VendorData>[[{}], [{}], [{}]]);
+  public vendorSubject: BehaviorSubject<VendorData> = new BehaviorSubject<VendorData>(<VendorData>[[{}], [{}]]);
   vendorState = this.vendorSubject.asObservable();
 
   // available data holders: if not logged in, gather what data is available.
