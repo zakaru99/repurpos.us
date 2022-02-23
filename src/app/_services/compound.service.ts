@@ -251,7 +251,7 @@ export class CompoundService {
       this.availSubject.next([]);
       this.wikiTableSubject.next([]);
       this.wikiIDsSubject.next({ 'chem': [], 'ids': [] });
-      this.vendorSubject.next(<VendorData>[[{}], [{}], [{}]]);
+      this.vendorSubject.next(<VendorData>[[{}], [{}]]);
 
       // console.log('0 resetting ended')
       resolve("Clear vars");
