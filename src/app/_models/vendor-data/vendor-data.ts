@@ -1,8 +1,7 @@
-import { GVKData, IntegrityData, InformaData } from './index';
+import { GVKData, IntegrityData} from './index';
 
 
-export interface VendorData extends Array<GVKData[] | IntegrityData[] | InformaData[]> {
+export interface VendorData extends Array<GVKData[] | IntegrityData[]> {
   0: GVKData[];
   1: IntegrityData[];
-  2: InformaData[];
  }
