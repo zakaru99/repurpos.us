@@ -25,6 +25,10 @@
             <span class="title">{{vendors[k].name}} ID: </span>
             <span>{{ x['id'] }}</span>
           </div>
+          <!-- Vendor ID: Informa -->
+          <div *ngIf="x && x.hasOwnProperty('informa_id')" class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+            <!-- <span class="title">{{vendors[k].name}} ID: </span>
+            <span>{{ x['informa_id'] }}</span> -->
           </div>
 
           <!-- Highest phase -->

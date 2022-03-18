@@ -96,7 +96,7 @@ export class AssayDwnldComponent {
 
 function save_data(dwnld_data, file_type, assay_title, today) {
   var hiddenElement = document.createElement('a');
-  hiddenElement.href = 'data:text/tsv;charset=utf-8,' + encodeURI(dwnld_data);
+  hiddenElement.href = 'data:text/tsv;charset=utf-8,' + encodeURIComponent(dwnld_data);
   hiddenElement.target = '_blank';
 
   if (assay_title) {
