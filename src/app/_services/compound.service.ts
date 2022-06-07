@@ -521,8 +521,8 @@ export class CompoundService {
             this.primaryDataSubject.next(<PrimaryScreenData[]>b.primary_screening_data);
 
             // Pull out title for the compound
-            // this.main_label = b.main_label;
-            // this.nameSubject.next(this.main_label);
+             this.main_label = b.main_label;
+             this.nameSubject.next(this.main_label);
 
             // Pull out SMILES string
             this.smiles = b.smiles;
