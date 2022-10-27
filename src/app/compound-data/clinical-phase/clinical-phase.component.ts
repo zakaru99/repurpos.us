@@ -154,103 +154,126 @@ export class ClinicalPhaseComponent implements OnInit {
         },
         {
           'name': 'Discontinued (Clinical)',
-          'order': -1
+          'order': -1,
+          'failed': true
         },
         {
           'name': 'Phase I',
-          'order': 0
+          'order': 0,
+          'label': 'I'
         },
         {
           'name': 'No development reported (I)',
-          'order': 1
+          'order': 0,
+          'label': 'I',
+          'synonym': true
+
         },
         {
           'name': 'Discontinued (I)',
-          'order': 2
+          'order': -1,
+          'failed': true
         },
         {
           'name': 'Phase I/II',
-          'order': 3
+          'order': 0.5
         },
         {
           'name': 'No development reported (I/II)',
-          'order': 4
+          'order': 0.5,
+          'synonym': true
         },
         {
           'name': 'Discontinued (I/II)',
-          'order': 5
+          'order': -1,
+          'failed': true
         },
         {
           'name': 'Phase II',
-          'order': 6
+          'order': 2,
+          'label': 'II'
         },
         {
           'name': 'No development reported (II)',
-          'order': 7
+          'order': 2,
+          'synonym': true
         },
         {
           'name': 'Suspended (II)',
-          'order': 8
+          'order': -1,
+          'failed': true
         },
         {
           'name': 'Discontinued (II)',
-          'order': 9
+          'order': -1,
+          'failed': true
         },
         {
           'name': 'Phase II/III',
-          'order': 10
+          'order': 1.5
         },
         {
           'name': 'Discontinued (II/III)',
-          'order': 11
+          'order': -1,
+          'failed': true
         },
         {
           'name': 'Phase III',
-          'order': 12
+          'order': 2,
+          'label': 'III'
         },
         {
           'name': 'No development reported (III)',
-          'order': 13
+          'order': 2,
+          'synonym': true
         },
         {
           'name': 'Suspended (III)',
-          'order': 14
+          'order': -1,
+          'failed': true
         },
         {
           'name': 'Discontinued (III)',
-          'order': 15
+          'order': -1,
+          'failed': true
         },
         {
           'name': 'Preregistration',
-          'order': 16
+          'order': 3
         },
         {
           'name': 'No development reported (Preregistration)',
-          'order': 17
+          'order': 3,
+          'synonym': true
         },
         {
           'name': 'Discontinued (Preregistration)',
-          'order': 18
+          'order': -1,
+          'failed': true
         },
         {
           'name': 'Preregistration Submission Withdrawal',
-          'order': 19
+          'order': -1,
+          'failed': true
         },
         {
           'name': 'Registered',
-          'order': 20
+          'order': 4
         },
         {
           'name': 'Discontinued (Registered)',
-          'order': 21
+          'order': -1,
+          'failed': true
         },
         {
           'name': 'Marketed',
-          'order': 22
+          'order': 5,
+          'approved': true
         },
         {
           'name': 'Market Withdrawal',
-          'order': 23
+          'order': -1,
+          'failed': true
         },       
       ],
   }
