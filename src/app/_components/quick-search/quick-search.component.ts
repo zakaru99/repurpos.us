@@ -22,7 +22,8 @@ export class QuickSearchComponent implements OnInit {
       queryParams:
         {
           query: curr_query,
-          type: 'string'
+          type: 'string',
+          "fuzziness":"AUTO"
         }
     });
   }
