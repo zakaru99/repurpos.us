@@ -13,6 +13,7 @@ export class CompoundVendorDataComponent implements OnInit {
   private vendors: Array<Object> = [
     { 'name': 'GVK Excelra GoStar', 'link': 'https://gostardb.com/gostar/loginEntry.do', 'id': 'gvk', 'updated': ''},
     { 'name': 'Clarivate Integrity', 'link': 'https://integrity.thomson-pharma.com/integrity/xmlxsl/pk_home.util_home', 'id': 'integrity', 'updated': ''},
+    { 'name': 'Adis Pharmacovigilance', 'link': 'https://www.springer.com/gp/adis', 'id': 'adis', 'updated': ''},
     // { 'name': 'GVK Excelra GoStar', 'link': 'https://gostardb.com/gostar/loginEntry.do', 'id': 'gvk', 'updated': '2016-10-26'},
     // { 'name': 'Clarivate Integrity', 'link': 'https://integrity.thomson-pharma.com/integrity/xmlxsl/pk_home.util_home', 'id': 'integrity', 'updated': '2017-02-09'},
   ];

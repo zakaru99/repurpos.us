@@ -10,7 +10,7 @@ import { environment } from "../../environments/environment";
 import { HttpClient, HttpErrorResponse, HttpEventType, HttpHeaders, HttpParams, HttpRequest, HttpResponse } from "@angular/common/http";
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 
-import { AssayData, GVKData, IntegrityData, VendorData, WikiData, AvailableData, WDQSData, Compound, SearchResult, LoginState } from '../_models/index';
+import { AssayData, GVKData, IntegrityData, AdisData, VendorData, WikiData, AvailableData, WDQSData, Compound, SearchResult, LoginState } from '../_models/index';
 import { LoginStateService } from '../_services/login-state.service';
 import { BackendSearchService } from '../_services/backendsearch.service';
 import {PrimaryScreenData} from "../_models/vendor-data/primary-screen-data";
@@ -502,7 +502,7 @@ export class CompoundService {
             console.log(b);
 
             // make sure certain keys exist as Arrays
-            let doc_keys = Array('reframe_id', 'gvk', 'integrity');
+            let doc_keys = Array('reframe_id', 'gvk', 'integrity', 'adis');
 
             for (let x of doc_keys) {
               if (!b.hasOwnProperty(x)) {
@@ -538,12 +538,14 @@ export class CompoundService {
             // Pull out vendor data --> compound-vendor-data
             // b.gvk = [b.gvk]
             // b.integrity = [b.integrity]
-            this.vendorSubject.next(<VendorData>[b.gvk, b.integrity]);
+            //b.adis = [b.adis]
+            this.vendorSubject.next(<VendorData>[b.gvk, b.integrity, b.adis]);
 
 
             // pull out aliases & names
             this.getVendorHeaderInfo(b.gvk);
             this.getVendorHeaderInfo(b.integrity);
+            this.getVendorHeaderInfo(b.adis);
 
             // console.log('3 retrieving data ended')
             resolve("Success with vendor data!");

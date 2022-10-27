@@ -146,6 +146,113 @@ export class ClinicalPhaseComponent implements OnInit {
           'failed': true
         }
       ],
+      'adis':
+      [
+        {
+          'name': 'No development reported (Clinical)',
+          'order': -1
+        },
+        {
+          'name': 'Discontinued (Clinical)',
+          'order': -1
+        },
+        {
+          'name': 'Phase I',
+          'order': 0
+        },
+        {
+          'name': 'No development reported (I)',
+          'order': 1
+        },
+        {
+          'name': 'Discontinued (I)',
+          'order': 2
+        },
+        {
+          'name': 'Phase I/II',
+          'order': 3
+        },
+        {
+          'name': 'No development reported (I/II)',
+          'order': 4
+        },
+        {
+          'name': 'Discontinued (I/II)',
+          'order': 5
+        },
+        {
+          'name': 'Phase II',
+          'order': 6
+        },
+        {
+          'name': 'No development reported (II)',
+          'order': 7
+        },
+        {
+          'name': 'Suspended (II)',
+          'order': 8
+        },
+        {
+          'name': 'Discontinued (II)',
+          'order': 9
+        },
+        {
+          'name': 'Phase II/III',
+          'order': 10
+        },
+        {
+          'name': 'Discontinued (II/III)',
+          'order': 11
+        },
+        {
+          'name': 'Phase III',
+          'order': 12
+        },
+        {
+          'name': 'No development reported (III)',
+          'order': 13
+        },
+        {
+          'name': 'Suspended (III)',
+          'order': 14
+        },
+        {
+          'name': 'Discontinued (III)',
+          'order': 15
+        },
+        {
+          'name': 'Preregistration',
+          'order': 16
+        },
+        {
+          'name': 'No development reported (Preregistration)',
+          'order': 17
+        },
+        {
+          'name': 'Discontinued (Preregistration)',
+          'order': 18
+        },
+        {
+          'name': 'Preregistration Submission Withdrawal',
+          'order': 19
+        },
+        {
+          'name': 'Registered',
+          'order': 20
+        },
+        {
+          'name': 'Discontinued (Registered)',
+          'order': 21
+        },
+        {
+          'name': 'Marketed',
+          'order': 22
+        },
+        {
+          'name': 'Market Withdrawal',
+          'order': 23
+        },       
+      ],
   }
 
   // phase_order: number[];

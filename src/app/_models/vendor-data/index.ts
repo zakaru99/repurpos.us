@@ -1,5 +1,6 @@
 export * from './GVKData';
 export * from './integrity-data';
+export * from './adis-data';
 export * from './assay-data';
 export * from './vendor-data';
 export * from './wiki-data';
