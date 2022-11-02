@@ -190,12 +190,12 @@ export class ClinicalPhaseComponent implements OnInit {
         },
         {
           'name': 'Phase II',
-          'order': 2,
+          'order': 1,
           'label': 'II'
         },
         {
           'name': 'No development reported (II)',
-          'order': 2,
+          'order': 1,
           'synonym': true
         },
         {
