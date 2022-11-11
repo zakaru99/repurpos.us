@@ -71,7 +71,7 @@ export class AssayDataComponent implements OnInit {
  validatePSD(psdassayID)
   { 
     var filepath = '../../assets/primary_screening_data/' + psdassayID + '_primary_screening_data.xlsx';
-    var psdArray = [];
+    var psdArray = ['A00398'];
     //var psdassayID = filepath.substring(36, 42);
     if(psdArray.includes(psdassayID))
     {
