@@ -1,5 +1,5 @@
 <div class="cmpd-header" (window:resize)="onResize($event)">
-
+    
   <!-- Back button -->
   <div class="row float-right">
     <div class="col-12">
@@ -96,6 +96,18 @@
             <span *ngIf="similarityResults.length > results_per_page"><a (click)="onAnchorClick('more')">more</a></span>
           </div>
         </div>
+
+        <script src="clickedQC.js"></script>
+
+          <!-- download qc -->
+          <div class="row download" *ngIf="chemVendors.length > 0">
+            <div class="col-12">
+              <div id="downloadQC" class="qc-data">
+                <!--<button *ngFor="let vendor of chemVendors; let i = index;"><a (click)="clickedQC(vendor['chem_vendor_ikey']);">download qc data</a></button> -->
+                <button><a (click)="clickedQC(chemVendors[0]['chem_vendor_ikey']);">download qc data</a></button>
+              </div>
+            </div>
+          </div>
 
       </div>
 

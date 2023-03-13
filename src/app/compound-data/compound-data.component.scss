@@ -66,3 +66,23 @@ a {
 .element {
   @include clearfix;
 }
+
+#downloadQC button {
+  background-color: #f4f4f4;
+  border-radius: 3px;
+  margin-left: 20px;
+  border: 1px #c5cbd0 solid;
+  -webkit-text-fill-color: #9ba4ae; // text
+  color: #b7bec5; // arrow
+  font-size: 0.75em;
+  font-weight: 300;
+  font-family: 'Lato', sans-serif;
+}
+
+#downloadQC {
+  padding-top: 10px;
+}
+
+#downloadQC button:hover {
+  background-color: #e1e4e7;
+}
