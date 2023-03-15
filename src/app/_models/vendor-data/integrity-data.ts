@@ -8,6 +8,7 @@ export interface IntegrityData {
   category: MappedTerm[]; // changed as of 2020-02-03
   mechanism: MappedTerm[]; // changed as of 2020-02-03
   ikey: string;
+  pk: string;
   wikidata: string;
   pubchem_cid?: string;
 }

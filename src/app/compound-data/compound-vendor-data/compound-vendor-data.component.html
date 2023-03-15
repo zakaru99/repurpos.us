@@ -57,6 +57,14 @@
           <!-- END OF VENDOR HEADER -->
         </div>
 
+        <!-- Pharmacokinectic Data -->
+        <!-- <div class="row"> -->
+          <div class="col-12 vendor-smiles smiles" *ngIf="x && x.hasOwnProperty('pk') && x['pk'].length > 0">
+            <span class="title">Pharmacokinectic Data: </span>
+            <span class="smiles">{{ x['pk'] }}</span>
+          </div>
+          <!-- </div> -->
+
         <!-- Vendor SMILES -->
         <!-- <div class="row"> -->
         <div class="col-12 vendor-smiles smiles" *ngIf="x && x.hasOwnProperty('smiles') && x['smiles'].length > 0">
@@ -64,6 +72,7 @@
           <span class="smiles">{{ x['smiles'] }}</span>
         </div>
         <!-- </div> -->
+
 
 
         <table class="table cmpd-table" [ngClass]="i === vendor.length - 1 ? 'last-entry' : ''">
