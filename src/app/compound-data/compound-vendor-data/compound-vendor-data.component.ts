@@ -12,9 +12,10 @@ import { CompoundService } from '../../_services/index';
 export class CompoundVendorDataComponent implements OnInit {
   private vendors: Array<Object> = [
     { 'name': 'GVK Excelra GoStar', 'link': 'https://gostardb.com/gostar/loginEntry.do', 'id': 'gvk', 'updated': ''},
-    { 'name': 'Clarivate Integrity', 'link': 'https://www.cortellis.com/drugdiscovery/home', 'id': 'integrity', 'updated': ''},
+    { 'name': 'Clarivate Integrity', 'link': 'https://www.cortellis.com/drugdiscovery/home', 'id': 'integrity', 'updated': ''},    
+    { 'name': 'Citeline Pharmaprojects', 'link': 'https://pharmaintelligence.informa.com/contact/contact-us', 'id': 'informa', 'updated': ''}, //needs to be above adis to work
     { 'name': 'Adis Pharmacovigilance', 'link': 'https://www.springer.com/gp/adis', 'id': 'adis', 'updated': ''},
-    { 'name': 'Citeline Pharmaprojects', 'link': 'https://pharmaintelligence.informa.com/contact/contact-us', 'id': 'informa', 'updated': ''},
+
     // { 'name': 'GVK Excelra GoStar', 'link': 'https://gostardb.com/gostar/loginEntry.do', 'id': 'gvk', 'updated': '2016-10-26'},
     // { 'name': 'Clarivate Integrity', 'link': 'https://integrity.thomson-pharma.com/integrity/xmlxsl/pk_home.util_home', 'id': 'integrity', 'updated': '2017-02-09'},
     // { 'name': 'Citeline Pharmaprojects', 'link': 'https://pharmaintelligence.informa.com/contact/contact-us', 'id': 'informa', 'updated': '2017-01-23'},
