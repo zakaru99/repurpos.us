@@ -226,136 +226,136 @@ export class ClinicalPhaseComponent implements OnInit {
           approved: true
         }
       ],
-      'adis':
-      [
-        {
-          'name': 'No development reported (Clinical)',
-          'order': -1
-        },
-        {
-          'name': 'Discontinued (Clinical)',
-          'order': -1,
-          'failed': true
-        },
-        {
-          'name': 'Phase I',
-          'order': 0,
-          'label': 'I'
-        },
-        {
-          'name': 'No development reported (I)',
-          'order': 0,
-          'label': 'I',
-          'synonym': true
+      // uncomment to enable adis 'adis':
+      // [
+      //   {
+      //     'name': 'No development reported (Clinical)',
+      //     'order': -1
+      //   },
+      //   {
+      //     'name': 'Discontinued (Clinical)',
+      //     'order': -1,
+      //     'failed': true
+      //   },
+      //   {
+      //     'name': 'Phase I',
+      //     'order': 0,
+      //     'label': 'I'
+      //   },
+      //   {
+      //     'name': 'No development reported (I)',
+      //     'order': 0,
+      //     'label': 'I',
+      //     'synonym': true
 
-        },
-        {
-          'name': 'Discontinued (I)',
-          'order': -1,
-          'failed': true
-        },
-        {
-          'name': 'Phase I/II',
-          'order': 0.5
-        },
-        {
-          'name': 'No development reported (I/II)',
-          'order': 0.5,
-          'synonym': true
-        },
-        {
-          'name': 'Discontinued (I/II)',
-          'order': -1,
-          'failed': true
-        },
-        {
-          'name': 'Phase II',
-          'order': 1,
-          'label': 'II'
-        },
-        {
-          'name': 'No development reported (II)',
-          'order': 1,
-          'synonym': true
-        },
-        {
-          'name': 'Suspended (II)',
-          'order': -1,
-          'failed': true
-        },
-        {
-          'name': 'Discontinued (II)',
-          'order': -1,
-          'failed': true
-        },
-        {
-          'name': 'Phase II/III',
-          'order': 1.5
-        },
-        {
-          'name': 'Discontinued (II/III)',
-          'order': -1,
-          'failed': true
-        },
-        {
-          'name': 'Phase III',
-          'order': 2,
-          'label': 'III'
-        },
-        {
-          'name': 'No development reported (III)',
-          'order': 2,
-          'synonym': true
-        },
-        {
-          'name': 'Suspended (III)',
-          'order': -1,
-          'failed': true
-        },
-        {
-          'name': 'Discontinued (III)',
-          'order': -1,
-          'failed': true
-        },
-        {
-          'name': 'Preregistration',
-          'order': 3
-        },
-        {
-          'name': 'No development reported (Preregistration)',
-          'order': 3,
-          'synonym': true
-        },
-        {
-          'name': 'Discontinued (Preregistration)',
-          'order': -1,
-          'failed': true
-        },
-        {
-          'name': 'Preregistration Submission Withdrawal',
-          'order': -1,
-          'failed': true
-        },
-        {
-          'name': 'Registered',
-          'order': 4
-        },
-        {
-          'name': 'Discontinued (Registered)',
-          'order': -1,
-          'failed': true
-        },
-        {
-          'name': 'Marketed',
-          'order': 5,
-          'approved': true
-        },
-        {
-          'name': 'Market Withdrawal',
-          'order': -1,
-          'failed': true
-        },       
-      ],
+      //   },
+      //   {
+      //     'name': 'Discontinued (I)',
+      //     'order': -1,
+      //     'failed': true
+      //   },
+      //   {
+      //     'name': 'Phase I/II',
+      //     'order': 0.5
+      //   },
+      //   {
+      //     'name': 'No development reported (I/II)',
+      //     'order': 0.5,
+      //     'synonym': true
+      //   },
+      //   {
+      //     'name': 'Discontinued (I/II)',
+      //     'order': -1,
+      //     'failed': true
+      //   },
+      //   {
+      //     'name': 'Phase II',
+      //     'order': 1,
+      //     'label': 'II'
+      //   },
+      //   {
+      //     'name': 'No development reported (II)',
+      //     'order': 1,
+      //     'synonym': true
+      //   },
+      //   {
+      //     'name': 'Suspended (II)',
+      //     'order': -1,
+      //     'failed': true
+      //   },
+      //   {
+      //     'name': 'Discontinued (II)',
+      //     'order': -1,
+      //     'failed': true
+      //   },
+      //   {
+      //     'name': 'Phase II/III',
+      //     'order': 1.5
+      //   },
+      //   {
+      //     'name': 'Discontinued (II/III)',
+      //     'order': -1,
+      //     'failed': true
+      //   },
+      //   {
+      //     'name': 'Phase III',
+      //     'order': 2,
+      //     'label': 'III'
+      //   },
+      //   {
+      //     'name': 'No development reported (III)',
+      //     'order': 2,
+      //     'synonym': true
+      //   },
+      //   {
+      //     'name': 'Suspended (III)',
+      //     'order': -1,
+      //     'failed': true
+      //   },
+      //   {
+      //     'name': 'Discontinued (III)',
+      //     'order': -1,
+      //     'failed': true
+      //   },
+      //   {
+      //     'name': 'Preregistration',
+      //     'order': 3
+      //   },
+      //   {
+      //     'name': 'No development reported (Preregistration)',
+      //     'order': 3,
+      //     'synonym': true
+      //   },
+      //   {
+      //     'name': 'Discontinued (Preregistration)',
+      //     'order': -1,
+      //     'failed': true
+      //   },
+      //   {
+      //     'name': 'Preregistration Submission Withdrawal',
+      //     'order': -1,
+      //     'failed': true
+      //   },
+      //   {
+      //     'name': 'Registered',
+      //     'order': 4
+      //   },
+      //   {
+      //     'name': 'Discontinued (Registered)',
+      //     'order': -1,
+      //     'failed': true
+      //   },
+      //   {
+      //     'name': 'Marketed',
+      //     'order': 5,
+      //     'approved': true
+      //   },
+      //   {
+      //     'name': 'Market Withdrawal',
+      //     'order': -1,
+      //     'failed': true
+      //   },       
+      // ],
   }
 
   // phase_order: number[];
