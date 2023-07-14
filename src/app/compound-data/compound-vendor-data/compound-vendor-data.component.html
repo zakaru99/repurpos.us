@@ -135,7 +135,7 @@
           <tr *ngIf="x && x.hasOwnProperty('target_name') && x['target_name'].length > 0">
             <td class="title">Target Name</td>
             <td class="content"><span *ngFor="let y of x['target_name']; let i = index">
-                <a class="launch-search" [routerLink]="['/search/']" [queryParams]='{ query: "\"" + y + "\"", type: "string" }' [matTooltip]="'launch search for ' + y.label">{{y.label}}</a>
+                <a class="launch-search" [routerLink]="['/search/']" [queryParams]='{ query: "\"" + y.label + "\"", type: "string" }' [matTooltip]="'launch search for ' + y.label">{{y.label}}</a>
                 <span *ngIf="i + 1 < x['target_name'].length" class='data-separator'></span></span>
             </td>
           </tr>
@@ -184,7 +184,7 @@
           <!-- Vendor Origin -->
           <tr *ngIf="x && x.hasOwnProperty('origin') && x['origin'].length > 0">
             <td class="title">Compound Origin</td>
-            <td class="content">{{ x['origin'] }}
+            <td class="content"><span *ngFor="let y of x['origin']; let i = index">{{y.label}}<span *ngIf="i + 1 < x['origin'].length" class='data-separator'></span></span>
             </td>
           </tr>
 
