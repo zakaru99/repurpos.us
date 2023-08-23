@@ -71,7 +71,7 @@ export class AssayDataComponent implements OnInit {
  validatePSD(psdassayID)
   { 
     var filepath = '../../assets/primary_screening_data/' + psdassayID + '_primary_screening_data.xlsx';
-    var psdArray = ['A00272', 'A00385', 'A00386', 'A00411', 'A00493', 'A00190', 'A00398', 'A00462', 'A00277', 'A00279', 'A00281', 'A00294', 'A00331', 'A00343', 'A00350', 'A00354', 'A00357', 'A00366', 'A00375', 'A00378', 'A00383', 'A00507', 'A00238', 'A00172', 'A00229', 'A00230', 'A00203', 'A00191', 'A00250', 'A00196', 'A00091', 'A00197', 'A00198', 'A00093' ];
+    var psdArray = ['A00272', 'A00385', 'A00386', 'A00411', 'A00493', 'A00190', 'A00398', 'A00462', 'A00277', 'A00279', 'A00281', 'A00294', 'A00331', 'A00343', 'A00350', 'A00354', 'A00357', 'A00366', 'A00375', 'A00378', 'A00383', 'A00507', 'A00238', 'A00172', 'A00229', 'A00230', 'A00203', 'A00191', 'A00250', 'A00196', 'A00091', 'A00197', 'A00198', 'A00093', 'A00636', 'A00657', 'A00635' ];
     //var psdassayID = filepath.substring(36, 42);
     if(psdArray.includes(psdassayID))
     {
