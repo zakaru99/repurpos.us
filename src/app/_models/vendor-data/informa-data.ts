@@ -7,6 +7,7 @@ export interface InformaData {
   mechanism: MappedTerm[]; // changed as of 2020-02-03
   smiles: string;
   ikey: string;
+  model: Array<string>;
   wikidata: string;
   target_name?: Array<string>;
   target_family?: Array<string>;

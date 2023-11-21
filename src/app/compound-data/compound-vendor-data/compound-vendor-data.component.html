@@ -189,6 +189,31 @@
           </tr>
 
 
+           <!-- Vendor name
+           <tr *ngIf="x && x.hasOwnProperty('drug_name') && x['drug_name'].length > 0">
+            <td class="title">name</td>
+            <td class="content"><span *ngFor="let y of x['drug_name']; let i = index">{{y}}<span *ngIf="i + 1 < x['drug_name'].length" class='data-separator'></span></span>
+            </td>
+          </tr> -->
+
+          <tr *ngIf="x && ((x.hasOwnProperty('model') && x['model'].length > 0) || (x.hasOwnProperty('unit') && x['unit'].length > 0) || (x.hasOwnProperty('cmax') && x['cmax'].length > 0))">
+            <td class="title">PK Data</td>
+            <table class="pk_table">
+              <tr class="header-title align-middle assay-name col">
+                <th class="header-title align-middle assay-name col">Parameter</th>
+                <th class="header-title align-middle assay-name col">Value</th>
+                <th class="header-title align-middle assay-name col">Unit</th>
+                <th class="header-title align-middle assay-name col">Model</th>
+              </tr>
+              <tr *ngFor="let a of x['model']; let i = index">
+                <td class="content">{{x['parameter'][i]}}</td>
+                <td class="content">{{x['score'][i]}}</td>
+                <td class="content">{{x['unit'][i]}}</td>
+                <td class="content">{{x['model'][i]}}</td>
+              </tr>
+            </table>
+          </tr>
+
 
         </table>
         <!-- END OF NGFOR OVER VENDOR LOOP -->
