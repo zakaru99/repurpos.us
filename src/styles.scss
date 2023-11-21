@@ -147,14 +147,14 @@ app-clinical-phase {
   display: block;
 }
 // vendor/wikidata table commonalities
-.cmpd-table,
+.pk_table, .cmpd-table,
 table#cmpd-names,
 table.cmpd-table {
   width: 100%;
   table-layout: fixed;
 }
 
-.cmpd-table > tbody {
+.pk_table, .cmpd-table > tbody {
   border-top: #717e8c 1px dashed;
   border-bottom: #717e8c 1px dashed;
 }
