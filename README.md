@@ -1,6 +1,7 @@
 # DrugPortal
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.1.1.
+
 To build and run locally the following verions are needed:
 Node.js: 14.21.3
 Angular CLI: 6.0.8
