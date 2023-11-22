@@ -1,6 +1,12 @@
 # DrugPortal
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.1.1.
+To build and run locally the following verions are needed:
+Node.js: 14.21.3
+Angular CLI: 6.0.8
+
+After installing Node.js run the following 2 commands to set up angular
+`npm install -g @angular/cli@6.0.8` and `npm install`
 
 ## Development server
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
