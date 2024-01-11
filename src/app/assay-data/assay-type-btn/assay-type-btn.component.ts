@@ -31,26 +31,40 @@ export class AssayTypeBtnComponent implements OnChanges {
   updateTabs() {
     const tabs = d3.select('#tabs');
 
-    if (this.assay_types.includes('IC')) {
-      tabs.select('#IC').classed('hidden', false);
+    if (this.assay_types.includes('IC50')) {
+      tabs.select('#IC50').classed('hidden', false);
     } else {
-      tabs.select('#IC').classed('hidden', true);
+      tabs.select('#IC50').classed('hidden', true);
     }
 
-    if (this.assay_types.includes('EC')) {
-      tabs.select("#EC").classed('hidden', false);
+    if (this.assay_types.includes('EC50')) {
+      tabs.select("#EC50").classed('hidden', false);
     } else {
-      tabs.select("#EC").classed('hidden', true);
+      tabs.select("#EC50").classed('hidden', true);
     }
 
-
+    if (this.assay_types.includes('Inactive')) {
+      tabs.select("#Inactive").classed('hidden', false);
+    } else {
+      tabs.select("#Inactive").classed('hidden', true);
+    }
+    
+    console.log(this.current_assay);
     // set current tab to be active
-    if (this.current_assay == 'EC') {
-      tabs.select('#EC').classed('active', true);
-      tabs.select('#IC').classed('active', false);
-    } else {
-      tabs.select('#IC').classed('active', true);
-      tabs.select('#EC').classed('active', false);
+    if (this.current_assay == 'EC50') {
+      tabs.select('#EC50').classed('active', true);
+      tabs.select('#IC50').classed('active', false);
+      tabs.select('#Inactive').classed('active', false);
+    } 
+    else if(this.current_assay == 'IC50') {
+      tabs.select('#IC50').classed('active', true);
+      tabs.select('#EC50').classed('active', false);
+      tabs.select('#Inactive').classed('active', false);
+    }
+    else {
+      tabs.select('#Inactive').classed('active', true);
+      tabs.select('#IC50').classed('active', false);
+      tabs.select('#EC50').classed('active', false);
     }
   }
 

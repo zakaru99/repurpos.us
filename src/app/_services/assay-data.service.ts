@@ -26,7 +26,7 @@ export class AssayDataService {
   assayTypesSource = new BehaviorSubject<string[]>([]);
 
   // current values
-  currentAssayTypeSource = new BehaviorSubject<string>("IC");
+  currentAssayTypeSource = new BehaviorSubject<string>("");
   currentAssayTypeSubject$ = this.currentAssayTypeSource.asObservable();
 
   currentPageSource = new BehaviorSubject<number>(0)
