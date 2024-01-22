@@ -75,7 +75,7 @@ export class AssayDataComponent implements OnInit {
         data: {assay_id: assay_id},
         url: "https://reframedb.org/php/pd_check.php",
         success: function(response){
-          if(response == 1){
+          if(response == '1'){
             var filepath = '../../assets/primary_files/' + assay_id + '_primary_screening_data.xlsx';
             window.location.href = filepath;
           }
