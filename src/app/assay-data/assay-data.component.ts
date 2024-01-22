@@ -8,6 +8,7 @@ import { AssayPlotsComponent } from './assay-plots/assay-plots.component'
 import { AssayDetails } from '../_models/assay-details';
 
 import { AssayMetadataService } from '../_services/';
+declare var $ : any
 
 @Component({
   selector: 'app-assay-data',
@@ -67,19 +68,22 @@ export class AssayDataComponent implements OnInit {
     this.assayDetailsSubscription.unsubscribe();
   }
 
-
- validatePSD(psdassayID)
-  { 
-    var filepath = '../../assets/primary_screening_data/' + psdassayID + '_primary_screening_data.xlsx';
-    var psdArray = ['A00272', 'A00385', 'A00386', 'A00411', 'A00493', 'A00190', 'A00398', 'A00462', 'A00277', 'A00279', 'A00281', 'A00294', 'A00331', 'A00343', 'A00350', 'A00354', 'A00357', 'A00366', 'A00375', 'A00378', 'A00383', 'A00507', 'A00238', 'A00172', 'A00229', 'A00230', 'A00203', 'A00191', 'A00250', 'A00196', 'A00091', 'A00197', 'A00198', 'A00093', 'A00636', 'A00657', 'A00635', 'A00421', 'A00536', 'A00542', 'A00544', 'A00546', 'A00550', 'A00559', 'A00579', 'A00599', 'A00622', 'A00631', 'A00666', 'A00668', 'A00670', 'A00671', 'A00672', 'A00685'];
-    //var psdassayID = filepath.substring(36, 42);
-    if(psdArray.includes(psdassayID))
-    {
-      window.location.href = filepath;
-    }
-    else
-    {
-      alert("there is currently no primary screening data available for assay " + psdassayID);
-    }
+  clickedPSD(assay_id){
+    $.ajax({
+        type: "POST",
+        async: false,
+        data: {assay_id: assay_id},
+        url: "https://reframedb.org/php/pd_check.php",
+        success: function(response){
+          if(response == 1){
+            var filepath = '../../assets/primary_files/' + assay_id + '_primary_screening_data.xlsx';
+            window.location.href = filepath;
+          }
+          else
+          {
+            alert("there is currently no primary screening data available for assay " + assay_id);
+          }
+        }
+      });
   }
 }
