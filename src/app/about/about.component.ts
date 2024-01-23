@@ -19,6 +19,7 @@ export class AboutComponent implements OnInit {
 
   sections: Object[] = [
     { label: "overview", link: "overview" },
+    { label: "tutorial", link: "tutorial" },
     { label: "library access", link: "partnerships" },
     { label: "citing", link: "citation" },
     { label: "sources", link: "sources" },
