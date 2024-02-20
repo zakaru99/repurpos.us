@@ -65,6 +65,7 @@ import {
 import {IndicationsGraphComponent} from "./compound-data/indications-graph/indications-graph.component";
 import {ShowMoreButtonComponent, ShowMorePane} from "./compound-data";
 import { WorkflowComponent } from './workflow/workflow.component';
+import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
 
 // import { SearchResultHeaderComponent } from './compound-search/search-result-header/search-result-header.component';
 // import { ReframeFilterComponent } from './compound-search/search-result-header/reframe-filter/reframe-filter.component';
@@ -111,6 +112,7 @@ import { WorkflowComponent } from './workflow/workflow.component';
     ShowMoreButtonComponent,
     IndicationsGraphComponent,
     WorkflowComponent,
+    OntologyTreeComponent
 
     // SearchResultHeaderComponent, ReframeFilterComponent, AssaysFilterComponent
   ],

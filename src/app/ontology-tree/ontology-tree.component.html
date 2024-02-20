@@ -1,0 +1,34 @@
+  <br>
+  <div class="col-xs-auto col-sm-auto col-md-auto col-lg-auto col-xl-auto float-right">
+        <!-- Assay tab panes -->
+        <!-- Nav tabs -->
+      <ul class="nav nav-pills align-self-end float-right" id="tabs" role="tablist">
+
+        <li class="nav-item hidden">
+          <a class="nav-link init active"  id="pharma_role" name="0" data-toggle="tab" role="tab" (click)="switch_ontology_source($event)">
+              <span class="btn">Pharmacological Role</span></a>
+        </li>
+        <li class="nav-item hidden">
+          <a class="nav-link init" id="bio_role" name="1" data-toggle="tab" role="tab" (click)="switch_ontology_source($event)">
+              <span class="btn">Biological Role</span></a>
+        </li>
+        <li class="nav-item hidden">
+          <a class="nav-link init" id="chem_role" name="2" data-toggle="tab" role="tab" (click)="switch_ontology_source($event)">
+              <span class="btn">Chemical Role</span></a>
+        </li>
+        <li class="nav-item hidden">
+          <a class="nav-link init" id="target_interaction" name="3" data-toggle="tab" role="tab" (click)="switch_ontology_source($event)">
+              <span class="btn">Target Interaction Type</span></a>
+        </li>
+        <li class="nav-item hidden">
+          <a class="nav-link init" id="target" name="4" data-toggle="tab" role="tab" (click)="switch_ontology_source($event)">
+              <span class="btn">Target</span></a>
+        </li>
+      </ul>
+      </div>
+<div class="content" role="main">
+
+  <h1>Ontology Tree</h1>
+  
+  <div class="d3-chart tree" #chart></div>
+</div>

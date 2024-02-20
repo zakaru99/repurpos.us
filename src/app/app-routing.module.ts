@@ -7,6 +7,7 @@ import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { TermsComponent } from "./_dialogs/terms/terms.component";
 import { WorkflowComponent } from "./workflow/workflow.component";
+import { OntologyTreeComponent } from "./ontology-tree/ontology-tree.component";
 
 import { environment } from '../environments/environment';
 
@@ -20,7 +21,7 @@ const appRoutes: Routes = [
     path: 'assays', pathMatch: 'full',
     loadChildren: () => import('./assays/assays.module').then(mod => mod.AssaysModule)
   },
-
+  { path: 'ontology-tree', component: OntologyTreeComponent, pathMatch: 'full' },
   {
     path: 'assays/:aid', pathMatch: 'full',
     loadChildren: () => import('./assay-data/assay-data.module').then(mod => mod.AssayDataModule)

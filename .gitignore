@@ -47,3 +47,4 @@ src/assets/A00211_dotplot.svg
 src/assets/logo_card.ai
 yarn.lock
 src/assets/qc_files
+src/app/ontology-tree/rancho_ontology.json
