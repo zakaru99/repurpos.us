@@ -9,6 +9,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import 'hammerjs';
 import { AppRoutingModule, routedComponents } from './app-routing.module';
+import {MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatButtonModule, MatProgressSpinnerModule} from '@angular/material';
+
+// import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 // -- Custom modules --
 import { RecaptchaModule } from 'ng-recaptcha';
@@ -117,6 +120,13 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
     // SearchResultHeaderComponent, ReframeFilterComponent, AssaysFilterComponent
   ],
   imports: [
+    MatInputModule,
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+
+    
     BrowserModule,
     HttpModule,
     HttpClientModule,

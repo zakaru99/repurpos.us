@@ -1,4 +1,9 @@
 import { Component, ViewChild, ElementRef, OnInit, AfterViewInit } from '@angular/core';
+import {FormControl} from '@angular/forms';
+import { NgControl } from "@angular/forms";
+import { Subject, Observable } from "rxjs";
+import {map, startWith} from 'rxjs/operators';
+import { takeUntil, filter } from "rxjs/operators";
 import * as d3 from "d3";
 
 import *  as  ontology_data from './rancho_ontology.json';
@@ -20,8 +25,8 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
   title = 'd3tree';
   @ViewChild('chart') private chartContainer: ElementRef;
 
-  
-  
+  myControl = new FormControl();
+
   root: any;
   tree: any;
   treeLayout: any;
@@ -58,7 +63,7 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {}
 
-
+beep: any
 
   ngAfterViewInit(): void {
     interface HierarchyDatum {
@@ -66,15 +71,16 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
     }
     var testdata: HierarchyDatum = (ontology_data as any).entities;
     console.log(ontology_data)
-    this.renderTreeChart((ontology_data as any).entities[0]);
+    this.beep = (ontology_data as any).entities[0];
+    this.renderTreeChart(this.beep);
   }
 
   updateTabs(data_index) {  //updates the active class of tabs
     const tabs = d3.select('#tabs');
-    if (data_index == '0') {
+    if (data_index ==0) {
       tabs.select('#pharma_role').classed('active', true);
+      tabs.select('#bio_role').classed('active', false);
       tabs.select('#chem_role').classed('active', false);
-      tabs.select('#pharma_role').classed('active', false);
       tabs.select('#target_interaction').classed('active', false);
       tabs.select('#target').classed('active', false);
     } 
@@ -107,12 +113,105 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
       tabs.select('#target').classed('active', true);
     }
   }
-
-  switch_ontology_source(event) { //function switches data source from button clicks
+  @ViewChild('searchInput') searchInput: ElementRef;
+  switch_ontology_source(event) { //function switches data source from button clicks\
+    
+    this.searchInput.nativeElement.value = '';
     d3.select("#content").remove()      //clear the chart
+    this.nameData_arr = [];             //reset the search options
     this.updateTabs(event.target.name)  //set the desired tab to active
     this.renderTreeChart((ontology_data as any).entities[event.target.name]); //reload the chart with the selected data source
   }
+
+  search_terms: string;
+  search_id: number;
+  nameData: Array<string> = [];
+  nameData_arr: Array<{preferred_name: string, parent_name: string, id: string}> = [];  //array to hold the objects to pipe to the search dropdown
+  filteredOptions: Observable<any[]>; //holds the filtered options
+  private _filter(value: string) {
+    return this.nameData_arr.filter(option => option.preferred_name.toLowerCase().includes(value));
+  }
+
+  getTitle(name_id: string) { //function takes in the id of a search and returns the nodes preferred name to display in the search box
+    let result = this.nameData_arr.find((nameObj) => nameObj.id === name_id);
+    return result.preferred_name + result.parent_name;
+  }
+
+  CollectName(d) {
+    if (d.children) //check if the object has visible children
+        d.children.forEach(element => this.CollectName(element)); //for each visible child, call collectName recursivley and check the visible child
+    else if (d._children) //check if the node has hidden children
+        d._children.forEach(element => this.CollectName(element));  //for each hidden child, call collectName recursivley and check the hidden child
+    this.nameData.push(d.data.preferred_name);  //push the preferred_name field of the object to the nameData array
+
+    //below populates the drop down search options
+    if(d.parent){ //if the object has a parent (i.e. not the root node) push the created object containing name, parent name, and id to the nameData_arr to send to the search dropdown
+      this.nameData_arr.push({preferred_name: d.data.preferred_name, parent_name: "--("+d.parent.data.preferred_name+")", id: d.data.id})
+    }
+    //this filters options every time the search input is changed
+    this.filteredOptions = this.myControl.valueChanges
+    .pipe(
+      startWith(''),  //this can filter out items from showing
+      map(preferred_name => preferred_name ? this._filter(preferred_name) : this.nameData_arr.slice()) //filter out any preferred name that doesnt match whats being typed
+    );
+  }
+//===============================================
+  remove_found(d) { //resets the found class of nodes
+    delete d.class;
+    if (d._children) {
+        d._children.forEach(element => this.remove_found(element));
+    } else if (d.children){
+       d.children.forEach(element => this.remove_found(element));
+    }
+  }
+//===============================================
+  expandAll(d) {  //expands the entire tree
+    if (d._children) {
+        d.children = d._children;
+        d.children.forEach(element => this.expandAll(element));
+        d._children = null;
+    } else if (d.children)
+        d.children.forEach(element => this.expandAll(element));
+}
+//===============================================
+  collapseAllNotFound(d) {  //hides all paths/nodes that are not of class "found"
+    if (d.children) {
+      if (d.class !== "found") {
+        d._children = d.children;
+        d._children.forEach(element => this.collapseAllNotFound(element));
+        d.children = null;
+      } else 
+        d.children.forEach(element => this.collapseAllNotFound(element));
+    }
+  }
+//===============================================
+  searchTree(){ //function handles calling all needed functions to execute a search
+    console.log(this.root)
+    this.nameData_arr = [];       //1) reset the nameData_arr array
+    this.remove_found(this.root)  //2) remove the found class from all objects
+    this.CollectName(this.root)   //3) get names to repopulate the search dropdown
+    this.expandAll(this.root)     //4) expand the whole tree
+    this.checkFound(this.root);   //5) walk through all objects and mark found if it matches the search
+    this.root.children.forEach(element => this.collapseAllNotFound(element)); //6)caollapse the nodes that are not along the path of the search result
+    this.updateChart(this.root);  //7) refresh the chart
+  }
+  //===============================================
+  checkFound(d) {
+    if (d.children) //check if the object has visible children
+        d.children.forEach(element => this.checkFound(element))
+    else if (d._children) //check if the object has hidden children
+        d._children.forEach(element => this.checkFound(element));
+
+    if (d.data.id == this.search_id) {  //if the id of the object matches the id of the search, walk the parent chain and mark each object/node as found
+      var ancestors = [];
+      var parent = d;
+      while (parent){
+          ancestors.push(parent);
+          parent.class = "found";
+          parent = parent.parent;
+      }
+    }
+}
 
   renderTreeChart(data) {
     let element: any = this.chartContainer.nativeElement;
@@ -148,7 +247,8 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
     this.root = d3.hierarchy(data, (d) => { return d.children; });
     this.root.x0 = this.height / 2;
     this.root.y0 = 10;
- 
+    this.CollectName(this.root)
+    console.log(this.nameData)
   
     // Collapse after the second level
     this.root.children.forEach(collapse);
@@ -189,7 +289,6 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
         }
       });
     }
-
     this.updateChart(d);
   }
 
@@ -199,6 +298,7 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
     this.nodes = this.treeData.descendants();
     this.links = this.treeData.descendants().slice(1);
     this.nodes.forEach((d) => { d.y = d.depth * 400 }); //the number in this line specifies pixel distance between nodes
+    console.log(this.nodes)
 
     // let longest_name = 0
     // this.nodes.forEach((d) => { if(longest_name < d.data['preferred_name'].length){
@@ -295,6 +395,14 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
       .style('fill', (d) => {
         return d._children ? 'lightsteelblue' : '#fff';
       })
+      .style("fill", function(d) {
+        if (d.class === "found") {
+            return "#ff4136"; //red
+        }
+        else{
+          return "lightsteelblue";
+        }
+    })
       .attr('cursor', 'pointer');
 
     let nodeExit = node.exit().transition()
@@ -313,7 +421,7 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
     let link = this.svg.selectAll('path.link')
       .data(this.links, (d) => { return d.data.id; });
     
-      console.log(link)
+    //console.log(link)
 
     let linkEnter = link.enter().insert('path', 'g')
       .attr('class', 'link')
@@ -321,7 +429,7 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
          return "link" + d.parent.data.id + "-" + d.data.id //use ids to know what path leads where
       })
       .style('fill', 'none')
-      .style('stroke', '#ccc')
+
       .style('stroke-width', '2px')
       .attr('d', function (d) {
         let o = { x: source.x0, y: source.y0 };
@@ -332,6 +440,14 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
 
     linkUpdate.transition()
       .duration(this.duration)
+      .style("stroke", function(d) {
+        if (d.class === "found") {
+          console.log(d)
+            return "#ff4136";
+        }
+        else{
+          return  "#ccc";
+        }})
       .attr('d', (d) => { return diagonal(d, d.parent); });
 
     let linkExit = link.exit().transition()

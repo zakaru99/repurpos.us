@@ -1,5 +1,17 @@
   <br>
   <div class="col-xs-auto col-sm-auto col-md-auto col-lg-auto col-xl-auto float-right">
+
+    <form class="search" method="post" action="">
+      <label for="search-box-add2"><mat-icon>search</mat-icon></label>
+      <input #searchInput id="search-box-add2" type="text" autofocus placeholder="search for moa, drug names, and inchikeys" name="quick-search form-control" matInput [formControl]="myControl" [matAutocomplete]="auto" forceSelection="preferred_name" [(ngModel)]="search_id" (keyup.enter)="searchTree()">
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="getTitle.bind(this)" [panelWidth]="600">
+        <mat-option *ngFor="let option of filteredOptions | async" [value]="option.id">
+          {{option.preferred_name}}{{option.parent_name}}
+        </mat-option>
+      </mat-autocomplete>
+      <!-- <pre>myControl.value - {{ myControl.value }}</pre> -->
+      <!-- <input id="search-box-add2" type="text"  name="quick-search form-control" aria-label="quick search" placeholder="search for moa and drugs by name"  [(ngModel)]="search_terms" (keyup.enter)="searchTree()"> -->
+    
         <!-- Assay tab panes -->
         <!-- Nav tabs -->
       <ul class="nav nav-pills align-self-end float-right" id="tabs" role="tablist">
@@ -24,7 +36,7 @@
           <a class="nav-link init" id="target" name="4" data-toggle="tab" role="tab" (click)="switch_ontology_source($event)">
               <span class="btn">Target</span></a>
         </li>
-      </ul>
+      </ul></form>
       </div>
 <div class="content" role="main">
 
