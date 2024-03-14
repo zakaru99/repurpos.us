@@ -41,6 +41,54 @@
 <div class="content" role="main">
 
   <h1>Ontology Tree</h1>
-  
-  <div class="d3-chart tree" #chart></div>
+
+  <div class="d3-chart tree" #chart> 
+    
+</div> 
 </div>
+
+<br>
+
+<button (click)="toggleCollapse()" type="button" class="btn">
+  {{instructions?"Show Instructions":"Hide Instructions"}}
+</button>
+<ng-container *ngIf="visible">
+<div class="intro" >
+
+  <div class="capabilities">
+    <h6 class="highlight-label">How to use the ontology tree</h6>
+
+    <ul class="highlight-content">
+      
+      <li>Fit the tree to your window
+        <ul>
+          <li>
+            Click and drag the tree to move it within your window
+          </li>
+          <li>
+            Zoom in and out using the scroll wheel on your mouse
+          </li>
+        </ul>
+      </li>
+      <li>Use the buttons in the upper left to toggle between data sources</li>
+      <li>Searches can be performed using the search box above the Tree
+        <ul>
+          <li>Begin typing and a list of options will appear</li>
+          <li>Select your search term and hit "enter" to initiate a search</li>
+        </ul>
+      </li>
+      <li>
+        Left click on compound nodes to open the drug profile page
+      </li>
+      
+      <li>
+        Green nodes indicate a specific MoA
+      
+      <ul>
+        <li>
+          Right click green nodes to download all associated drugs
+        </li>
+      </ul></li>
+    </ul>
+  </div>
+</div></ng-container>

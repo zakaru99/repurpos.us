@@ -6,7 +6,7 @@ import {map, startWith} from 'rxjs/operators';
 import { takeUntil, filter } from "rxjs/operators";
 import * as d3 from "d3";
 
-import *  as  ontology_data from './rancho_ontology.json';
+import *  as  ontology_data from './phase2a_moa.json';
 // console.log(ontology_data.entities)
 // interface HierarchyDatum {
 //   preferred_name: string;
@@ -22,6 +22,9 @@ import *  as  ontology_data from './rancho_ontology.json';
   styleUrls: ['./ontology-tree.component.scss']
 })
 export class OntologyTreeComponent implements OnInit, AfterViewInit {
+  instructions:boolean = true;
+  visible:boolean = false;
+
   title = 'd3tree';
   @ViewChild('chart') private chartContainer: ElementRef;
 
@@ -31,6 +34,7 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
   tree: any;
   treeLayout: any;
   svg: any;
+  rightPanelStyle: any = {};
 
 
   treeData: any;
@@ -70,9 +74,13 @@ beep: any
       entities?: Array<HierarchyDatum>;
     }
     var testdata: HierarchyDatum = (ontology_data as any).entities;
-    console.log(ontology_data)
     this.beep = (ontology_data as any).entities[0];
     this.renderTreeChart(this.beep);
+  }
+
+  toggleCollapse(){
+    this.instructions = !this.instructions;
+    this.visible = !this.visible;
   }
 
   updateTabs(data_index) {  //updates the active class of tabs
@@ -315,7 +323,51 @@ beep: any
       .attr('transform', (d) => {
         return 'translate(' + source.y0 + ',' + source.x0 + ')';
       })
-      .on('click', this.click);
+      .on('click', this.click)
+      .on('contextmenu', function(d){
+
+        function d_to_csv(d: any){
+          let parent_xref = `"${d.parent.data.xref.join(';').replace(/"/g, '\"')}"`;
+          const csvString = [
+            [
+              "preferred name",
+              'moa',
+              'xref',
+              "smiles",
+              "inchikey",
+              "reframe link"
+            ],
+            ... d.data.children.map(item => [
+              `"${item.preferred_name.replace(/"/g, '\"')}"`,
+              `"${item.moa.join(';').replace(/"/g, '\"')}"`,
+              parent_xref,
+              `"${item.smiles.replace(/"/g, '\"')}"`,
+              `"${item.inchikey.replace(/"/g, '\"')}"`,
+              '=HYPERLINK("https://reframedb.org//compound_data/'+item.inchikey.substring(0,14)+'")'
+            ])
+          ].map(e => e.join(",")) 
+          .join("\n");
+
+          const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+
+          const link = document.createElement('a');
+            if (link.download !== undefined) {
+            // Browsers that support HTML5 download attribute
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', d.data.preferred_name);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            }
+        }
+
+        if(d.data.children[0].inchikey){
+          d3.event.preventDefault();
+          d_to_csv(d);
+        }
+      }) 
 
       
     nodeEnter.append('circle')
@@ -365,10 +417,46 @@ beep: any
       }
 
       //code below handles highlighting paths to hovered nodes
-      d3.selectAll("circle").style("fill", "lightsteelblue");
+      //("circle").style("fill", "pink");
+
+      d3.selectAll('circle.node')
+      .attr('r', 10)
+      .style('stroke-width', '3px')
+      .style('stroke', 'steelblue')
+      .style('fill', (d: any) => {
+        return d._children ? 'lightsteelblue' : '#fff';
+      })
+      .style("fill", function(d: any) {
+        if (d.class === "found") {
+            return "#ff4136"; //red
+        }
+        else{
+          let h = d.data
+          if("children" in h ){
+            if("inchikey" in h.children[0]){
+            return "green";
+            }
+            else{
+              return "lightsteelblue";
+            }
+          }
+          else{
+            return "lightsteelblue";
+          }
+          
+        }
+    })
+      .attr('cursor', 'pointer');
+
       d3.selectAll("path").style("stroke", "#c3c3c3");
       while (d.parent) {
-        d3.selectAll("#node"+d.data.id).style("fill", "red")
+        if("children" in d.data){
+          if(!("inchikey" in d.data.children[0])){
+            d3.selectAll("#node"+d.data.id).style("fill", "red")
+          }
+        }else{
+          d3.selectAll("#node"+d.data.id).style("fill", "red")
+        }
         if (d.parent != "null")
           d3.select("#link"+d.parent.data.id + "-" + d.data.id).style("stroke", "red")
         d = d.parent;
@@ -400,7 +488,19 @@ beep: any
             return "#ff4136"; //red
         }
         else{
-          return "lightsteelblue";
+          let h = d.data
+          if("children" in h ){
+            if("inchikey" in h.children[0]){
+            return "green";
+            }
+            else{
+              return "lightsteelblue";
+            }
+          }
+          else{
+            return "lightsteelblue";
+          }
+          
         }
     })
       .attr('cursor', 'pointer');
@@ -421,7 +521,6 @@ beep: any
     let link = this.svg.selectAll('path.link')
       .data(this.links, (d) => { return d.data.id; });
     
-    //console.log(link)
 
     let linkEnter = link.enter().insert('path', 'g')
       .attr('class', 'link')
@@ -442,7 +541,6 @@ beep: any
       .duration(this.duration)
       .style("stroke", function(d) {
         if (d.class === "found") {
-          console.log(d)
             return "#ff4136";
         }
         else{
