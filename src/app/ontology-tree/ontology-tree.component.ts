@@ -1,3 +1,4 @@
+import { Router, ActivatedRoute } from '@angular/router';
 import { Component, ViewChild, ElementRef, OnInit, AfterViewInit } from '@angular/core';
 import {FormControl} from '@angular/forms';
 import { NgControl } from "@angular/forms";
@@ -63,11 +64,10 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
 
   element: any;
 
-  constructor() { }
-
+  constructor(private _route: ActivatedRoute, private _router: Router) { }
   ngOnInit() {}
 
-beep: any
+  beep: any
 
   ngAfterViewInit(): void {
     interface HierarchyDatum {
@@ -193,8 +193,18 @@ beep: any
     }
   }
 //===============================================
+  handle_url_params(){
+    this._router.navigate([], {
+      relativeTo: this._route,
+      queryParams: {
+        search_id: this.search_id
+      },
+      queryParamsHandling: 'merge',
+      skipLocationChange: false
+    });
+  }
   searchTree(){ //function handles calling all needed functions to execute a search
-    console.log(this.root)
+    this.handle_url_params();
     this.nameData_arr = [];       //1) reset the nameData_arr array
     this.remove_found(this.root)  //2) remove the found class from all objects
     this.CollectName(this.root)   //3) get names to repopulate the search dropdown
@@ -222,6 +232,7 @@ beep: any
 }
 
   renderTreeChart(data) {
+
     let element: any = this.chartContainer.nativeElement;
     this.width = element.offsetWidth - this.margin.left - this.margin.right;
     this.height = element.offsetHeight - this.margin.top - this.margin.bottom;
@@ -271,6 +282,10 @@ beep: any
       }
     }
 
+    this.search_id = parseInt(this._route.snapshot.queryParams['search_id']);
+    if(this.search_id){
+      this.searchTree()
+    }
   }
 
   click = (d) => {
