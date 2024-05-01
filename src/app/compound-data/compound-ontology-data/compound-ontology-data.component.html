@@ -1,0 +1,36 @@
+<div id="ontology-data" *ngIf="vendor_data && vendor_data.length > 0">
+  <ng-container *ngFor="let vendor of vendor_data; let k = index;">
+    <div [id]="vendors[k].name" *ngIf="vendors[k].name == 'Ontology'">
+      <h5>
+        <a href="/ontology-tree?src=0" target="_blank" rel="noreferrer">
+          Mechanism Of Action Ontology 
+        </a>
+      </h5>
+
+      <!-- <div class="cmpd-table"> -->
+      <div class="cmpd-table" *ngFor="let x of vendor; let i=index">
+        <table [ngClass]="i === vendor.length - 1 ? 'last-entry' : ''">
+          <tr *ngIf="x && (x.hasOwnProperty('node_id'))">
+            <!-- <td class="title">Ontology Data</td> -->
+            <table>
+              <tr class="header-title align-middle assay-name col">
+                <th class="header-title align-middle assay-name col">MoA Category</th>
+                <th class="header-title align-middle assay-name col">MoA</th>
+                <th class="header-title align-middle assay-name col">Parent MoA</th>
+                <th class="header-title align-middle assay-name col">Data Source</th>
+              </tr>
+              <tr *ngFor="let a of x['entity_name']; let i = index">
+                <td class="content">{{x['entity_name'][i]}}</td>
+                <td class="content"><a href="/ontology-tree?src={{x['entity_id'][i]}}&search_id={{x['node_id'][i]}}">{{x['parent_moa'][i]}}</a></td>
+                <td class="content">{{x['parent_moa_path'][i]}}</td>
+                <td class="content">{{x['xref'][i]}}</td>
+              </tr>
+            </table>
+          </tr>
+        </table>
+        <!-- END OF NGFOR OVER VENDOR LOOP -->
+      </div>
+    </div>
+  </ng-container>
+
+</div>

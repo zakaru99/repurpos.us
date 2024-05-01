@@ -10,7 +10,7 @@ import { environment } from "../../environments/environment";
 import { HttpClient, HttpErrorResponse, HttpEventType, HttpHeaders, HttpParams, HttpRequest, HttpResponse } from "@angular/common/http";
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 
-import { AssayData, GVKData, IntegrityData, InformaData, VendorData, WikiData, AvailableData, WDQSData, Compound, SearchResult, LoginState } from '../_models/index';
+import { AssayData, GVKData, IntegrityData, InformaData, OntologyData, VendorData, WikiData, AvailableData, WDQSData, Compound, SearchResult, LoginState } from '../_models/index';
 import { LoginStateService } from '../_services/login-state.service';
 import { BackendSearchService } from '../_services/backendsearch.service';
 import {PrimaryScreenData} from "../_models/vendor-data/primary-screen-data";
@@ -80,7 +80,7 @@ export class CompoundService {
 
   // --- Vendor data ---
   // vendor data holders
-  public vendorSubject: BehaviorSubject<VendorData> = new BehaviorSubject<VendorData>(<VendorData>[[{}], [{}], [{}]]);
+  public vendorSubject: BehaviorSubject<VendorData> = new BehaviorSubject<VendorData>(<VendorData>[[{}], [{}], [{}], [{}]]);
   vendorState = this.vendorSubject.asObservable();
 
   // available data holders: if not logged in, gather what data is available.
@@ -251,7 +251,7 @@ export class CompoundService {
       this.availSubject.next([]);
       this.wikiTableSubject.next([]);
       this.wikiIDsSubject.next({ 'chem': [], 'ids': [] });
-      this.vendorSubject.next(<VendorData>[[{}], [{}], [{}]]);
+      this.vendorSubject.next(<VendorData>[[{}], [{}], [{}], [{}]]);
 
       // console.log('0 resetting ended')
       resolve("Clear vars");
@@ -540,13 +540,14 @@ export class CompoundService {
             // b.integrity = [b.integrity]
             // b.informa = [b.informa]
             //b.adis = [b.adis]
-            this.vendorSubject.next(<VendorData>[b.gvk, b.integrity, b.informa]);
+            this.vendorSubject.next(<VendorData>[b.gvk, b.integrity, b.informa, b.ontology]);
 
 
             // pull out aliases & names
             this.getVendorHeaderInfo(b.gvk);
             this.getVendorHeaderInfo(b.integrity);
             this.getVendorHeaderInfo(b.informa);
+            this.getVendorHeaderInfo(b.ontology);
 
             // console.log('3 retrieving data ended')
             resolve("Success with vendor data!");
@@ -710,7 +711,7 @@ export class CompoundService {
     //   } else if (this.table_data.map((d: any) => d.property).indexOf('canonical SMILES') > -1) {
     //     this.smiles = this.table_data.find((d: any) => d.property === "canonical SMILES")['values'][0];
     //   } else {
-    //     this.smiles = this.informaData['smiles'] || this.integrityData['smiles'] || this.gvkData['smiles'];
+    //     this.smiles = this.informaData['smiles'] || this.integrityData['smiles'] || this.gvkData['smiles'] || this.ontologyData['smiles'];
     //   }
     // }
 

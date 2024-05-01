@@ -17,6 +17,7 @@ import { CompoundAssayDataComponent } from '../compound-data/compound-assay-data
 import { CompoundVendorDataComponent } from '../compound-data/compound-vendor-data/compound-vendor-data.component';
 import { CompoundWikidataComponent } from '../compound-data/compound-wikidata/compound-wikidata.component';
 import { CompoundWikidataIdsComponent } from '../compound-data/compound-wikidata-ids/compound-wikidata-ids.component';
+import { CompoundOntologyDataComponent } from '../compound-data/compound-ontology-data/compound-ontology-data.component';
 import { AvailableDataComponent } from '../compound-data/available-data/available-data.component';
 import { ClinicalPhaseComponent } from '../compound-data/clinical-phase/clinical-phase.component';
 import { SaltFormComponent } from '../compound-data/salt-form/salt-form.component';
@@ -46,6 +47,7 @@ import { CompoundPrimaryScreeningDataComponent } from './compound-primary-screen
     CompoundVendorDataComponent,
     CompoundWikidataComponent,
     CompoundWikidataIdsComponent,
+    CompoundOntologyDataComponent,
     ClinicalPhaseComponent,
     SaltFormComponent,
     AssaySparklineComponent,

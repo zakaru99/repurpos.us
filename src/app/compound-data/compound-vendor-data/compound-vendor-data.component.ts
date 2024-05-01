@@ -14,6 +14,7 @@ export class CompoundVendorDataComponent implements OnInit {
     { 'name': 'GVK Excelra GoStar', 'link': 'https://gostardb.com/gostar/loginEntry.do', 'id': 'gvk', 'updated': ''},
     { 'name': 'Clarivate Integrity', 'link': 'https://www.cortellis.com/drugdiscovery/home', 'id': 'integrity', 'updated': ''},    
     { 'name': 'Citeline Pharmaprojects', 'link': 'https://pharmaintelligence.informa.com/contact/contact-us', 'id': 'informa', 'updated': ''}, //needs to be above adis to work
+    { 'name': 'Ontology', 'link': '/ontology-tree','id': 'ontology', 'updated': ''}, //needs to be above adis to work
     // UNCOMMENT TO  ENABLE ADIS{ 'name': 'Adis Pharmacovigilance', 'link': 'https://www.springer.com/gp/adis', 'id': 'adis', 'updated': ''},
 
     // { 'name': 'GVK Excelra GoStar', 'link': 'https://gostardb.com/gostar/loginEntry.do', 'id': 'gvk', 'updated': '2016-10-26'},

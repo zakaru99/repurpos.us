@@ -7,7 +7,7 @@ import {map, startWith} from 'rxjs/operators';
 import { takeUntil, filter } from "rxjs/operators";
 import * as d3 from "d3";
 
-import *  as  ontology_data from './phase2a_moa.json';
+import *  as  ontology_data from './phase2b_moa.json';
 // console.log(ontology_data.entities)
 // interface HierarchyDatum {
 //   preferred_name: string;
@@ -74,7 +74,8 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
       entities?: Array<HierarchyDatum>;
     }
     var testdata: HierarchyDatum = (ontology_data as any).entities;
-    this.beep = (ontology_data as any).entities[0];
+    this.beep = (ontology_data as any).entities[this._route.snapshot.queryParams['src']];
+    this.updateTabs(parseInt(this._route.snapshot.queryParams['src']))
     this.renderTreeChart(this.beep);
   }
 
@@ -84,6 +85,8 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
   }
 
   updateTabs(data_index) {  //updates the active class of tabs
+    console.log(data_index)
+    
     const tabs = d3.select('#tabs');
     if (data_index ==0) {
       tabs.select('#pharma_role').classed('active', true);
@@ -123,16 +126,19 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
   }
   @ViewChild('searchInput') searchInput: ElementRef;
   switch_ontology_source(event) { //function switches data source from button clicks\
-    
-    this.searchInput.nativeElement.value = '';
+    //this.searchInput.nativeElement.value = '';
+    this.src = event.target.name
     d3.select("#content").remove()      //clear the chart
     this.nameData_arr = [];             //reset the search options
     this.updateTabs(event.target.name)  //set the desired tab to active
+    this.handle_url_params();
     this.renderTreeChart((ontology_data as any).entities[event.target.name]); //reload the chart with the selected data source
+    
   }
 
   search_terms: string;
   search_id: number;
+  src: number;
   nameData: Array<string> = [];
   nameData_arr: Array<{preferred_name: string, parent_name: string, id: string}> = [];  //array to hold the objects to pipe to the search dropdown
   filteredOptions: Observable<any[]>; //holds the filtered options
@@ -197,6 +203,7 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
     this._router.navigate([], {
       relativeTo: this._route,
       queryParams: {
+        src: this.src,
         search_id: this.search_id
       },
       queryParamsHandling: 'merge',
@@ -283,6 +290,13 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
     }
 
     this.search_id = parseInt(this._route.snapshot.queryParams['search_id']);
+    // this.src = parseInt(this._route.snapshot.queryParams['src']);
+
+    // // console.log(this._route.snapshot.queryParams)
+    // if(this.src){
+    //   console.log('beep')
+
+    // }
     if(this.search_id){
       this.searchTree()
     }
