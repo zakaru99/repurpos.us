@@ -1,13 +1,13 @@
 <div id='assays'>
   <div *ngIf="primaryData.length > 0">
     <div class="d-flex justify-content-between assay-header">
-      <h3 class="header-title-plus-btn">Primary screening data</h3>
+      <h3 class="header-title-plus-btn" [ngClass]="hide_psd ? 'hidden' : 'shown'">Primary screening data <button type="submit" (click)="toggle_psd()"  class="mat-flat-button mat-accent" >{{psd_text}}</button></h3>
     </div>
 
 
     <!-- ASSAY TABLE -->
     <div class="table-responsive">
-      <table class="assay-table table">
+      <table class="assay-table table" [ngClass]="hide_psd ? 'hidden' : 'shown'">
         <tr class="">
           <th class="header-title align-middle assay-name col">Assay type</th>
           <th class="header-title align-middle assay-indic">indication</th>

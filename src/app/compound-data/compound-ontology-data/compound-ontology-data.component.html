@@ -4,7 +4,7 @@
       <h5>
         <a href="/ontology-tree?src=0" target="_blank" rel="noreferrer">
           Mechanism Of Action Ontology 
-        </a>
+        </a><button type="submit" (click)="toggle_ontology()"  class="mat-flat-button mat-accent" >{{ontology_text}}</button>
       </h5>
 
       <!-- <div class="cmpd-table"> -->
@@ -12,7 +12,7 @@
         <table [ngClass]="i === vendor.length - 1 ? 'last-entry' : ''">
           <tr *ngIf="x && (x.hasOwnProperty('node_id'))">
             <!-- <td class="title">Ontology Data</td> -->
-            <table>
+            <table [ngClass]="hide_ontology ? 'hidden' : 'shown'">
               <tr class="header-title align-middle assay-name col">
                 <th class="header-title align-middle assay-name col">MoA Category</th>
                 <th class="header-title align-middle assay-name col">MoA</th>

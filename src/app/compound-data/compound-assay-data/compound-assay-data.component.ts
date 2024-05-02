@@ -32,4 +32,14 @@ export class CompoundAssayDataComponent implements OnInit {
     // this.assay_type = this.indic[rand];
   }
 
+  activity_text = 'Show Data'
+  hide_activity: boolean = true;
+  toggle_activity_data(){
+    this.hide_activity = !this.hide_activity; 
+    if(this.hide_activity == true){
+      this.activity_text = 'Show Data'
+    }else{
+      this.activity_text = 'Hide Data'
+    }
+  }
 }

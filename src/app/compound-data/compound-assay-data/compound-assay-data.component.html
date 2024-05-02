@@ -1,14 +1,14 @@
 <div id='assays'>
   <div *ngIf="assayData.length > 0">
     <div class="d-flex justify-content-between assay-header">
-      <h3 class="header-title-plus-btn">Activity data</h3>
+      <h3 class="header-title-plus-btn" [ngClass]="hide_activity ? 'hidden' : 'shown'">Activity data <button type="submit" (click)="toggle_activity_data()"  class="mat-flat-button mat-accent" >{{activity_text}}</button></h3>
       <!-- <button class="float-right vendor-btn" (click)="showVendor = !showVendor" aria-label="show vendor source data">show vendor source</button> -->
     </div>
 
 
     <!-- ASSAY TABLE -->
     <div class="table-responsive">
-      <table class="assay-table table">
+      <table class="assay-table table" [ngClass]="hide_activity ? 'hidden' : 'shown'">
         <tr class="">
           <th class="header-title align-middle assay-name col">Assay type</th>
           <th class="header-title align-middle assay-indic">indication</th>

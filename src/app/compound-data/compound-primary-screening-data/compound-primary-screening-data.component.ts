@@ -20,4 +20,15 @@ export class CompoundPrimaryScreeningDataComponent implements OnInit {
     })
   }
 
+  psd_text = 'Show Data'
+  hide_psd: boolean = true;
+  toggle_psd(){
+    this.hide_psd = !this.hide_psd; 
+    if(this.hide_psd == true){
+      this.psd_text = 'Show Data'
+    }else{
+      this.psd_text = 'Hide Data'
+    }
+  }
+
 }

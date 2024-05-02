@@ -28,4 +28,15 @@ export class CompoundOntologyDataComponent implements OnInit {
   ngOnInit() {
   }
 
+  ontology_text = 'Show Data'
+  hide_ontology: boolean = true;
+  toggle_ontology(){
+    this.hide_ontology = !this.hide_ontology; 
+    if(this.hide_ontology == true){
+      this.ontology_text = 'Show Data'
+    }else{
+      this.ontology_text = 'Hide Data'
+    }
+  }
+
 }
