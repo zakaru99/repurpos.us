@@ -30,7 +30,7 @@
               <td class='rfm-circle circle available'>
               </td>
               <td class="rfm-circle">
-                <span class="bold">reframe</span><span class="thin">db</span> screening collection compound
+                <h6><span class="bold">reframe</span><span class="thin">db</span> screening collection compound</h6>
               </td>
             </table>
             <table class="reframe_cmpd" *ngIf="reframeCmpd === 'stereofree' || reframeCmpd === 'sub_smiles'">
@@ -46,10 +46,10 @@
 
         <div class="row cmpd-source" *ngIf="chemVendors.length > 0">
           <div class="col-12">
-            available via <span *ngFor="let vendor of chemVendors; let i = index;">
+            <h6>available via <span *ngFor="let vendor of chemVendors; let i = index;">
           {{ vendor['chem_vendor'] }}
           <span *ngIf="vendor['chem_vendor_id']">({{ vendor['chem_vendor_id'] }})</span>
-            <span class='data-separator' *ngIf="i + 1 < chemVendors.length"></span></span>
+            <span class='data-separator' *ngIf="i + 1 < chemVendors.length"></span></span></h6>
           </div>
         </div>
 
