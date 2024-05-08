@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import * as d3 from 'd3';
 import { PrimaryScreenData } from '../../_models/index';
 import { CompoundService, ColorPaletteService } from '../../_services';
 
@@ -31,4 +31,27 @@ export class CompoundPrimaryScreeningDataComponent implements OnInit {
     }
   }
 
+  update_tabs(){
+    const tabs = d3.select('#tabs');
+    if (this.hide_hits == false) {
+      tabs.select('#all_screened').classed('active', true);
+      tabs.select('#hits_only').classed('active', false);
+    }else{
+        tabs.select('#all_screened').classed('active', false);
+        tabs.select('#hits_only').classed('active', true);
+      } 
+  }
+  
+
+   
+  hide_hits: boolean = false;
+  view_hits(){
+    this.hide_hits = true;
+    this.update_tabs()
+  }
+
+  view_all(){
+    this.hide_hits = false; 
+    this.update_tabs()
+  }
 }
