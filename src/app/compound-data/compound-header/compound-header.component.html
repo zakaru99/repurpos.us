@@ -40,7 +40,13 @@
                 <span class="bold">reframe</span><span class="thin">db</span> screening collection compound (stereofree)
               </td>
             </table>
-
+            <table class="reframe_cmpd" *ngIf="reframeCmpd === 'historical'">
+            <td class='rfm-circle circle historical'>
+            </td>
+            <td class="rfm-circle">
+              <span class="bold">reframe</span><span class="thin">db</span> screening collection compound (historical)
+            </td>
+          </table>
           </div>
         </div>
 
@@ -104,7 +110,7 @@
             <div class="col-12">
               <div id="downloadQC" class="qc-data">
                 <!--<button *ngFor="let vendor of chemVendors; let i = index;"><a (click)="clickedQC(vendor['chem_vendor_ikey']);">download qc data</a></button> -->
-                <button><a (click)="clickedQC(chemVendors[0]['chem_vendor_ikey']);">download qc data</a></button>
+                <!-- <button><a (click)="clickedQC(chemVendors[0]['chem_vendor_ikey']);">download qc data</a></button> -->
               </div>
             </div>
           </div>
