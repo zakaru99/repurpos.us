@@ -7,7 +7,7 @@ import {map, startWith} from 'rxjs/operators';
 import { takeUntil, filter } from "rxjs/operators";
 import * as d3 from "d3";
 
-import *  as  ontology_data from './phase2b_moa.json';
+import *  as  ontology_data from './phase2b_moaTEST.json';
 // console.log(ontology_data.entities)
 // interface HierarchyDatum {
 //   preferred_name: string;
@@ -463,6 +463,7 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
           let h = d.data
           if("children" in h ){
             if("inchikey" in h.children[0]){
+              console.log('beep')
             return "green";
             }
             else{
@@ -472,9 +473,33 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
           else{
             return "lightsteelblue";
           }
-          
         }
-    })
+    }).style("stroke", function(d: any) {
+      if (d.class === "found") {  //if the node is on a selected path
+          return "#ff4136"; //red
+      }
+      else{ 
+        let h = d.data
+        if("children" in h ){ //if the node has children
+          if("inchikey" in h.children[0]){  //if the child has an ikey, let the stroke be green
+            console.log('beep') 
+            return "green";
+          }
+          else{
+            return "steelblue";
+          }
+        }
+        // else if(h['reframe_compound']=="true"){
+        //   return "pink";
+        // }
+        else if(h['reframe_compound']=="false"){
+          return "pink";
+        }
+        else{
+          return "steelblue";
+        }
+      }
+  })
       .attr('cursor', 'pointer');
 
       d3.selectAll("path").style("stroke", "#c3c3c3");
