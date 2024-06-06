@@ -137,6 +137,11 @@ $circle_diam: 15px;
 .cmpd-avail .circle {
   background-color: #FF5B67;
 }
+
+.historical,
+.cmpd-historical .circle {
+  background-color: #3D6DE0;
+}
 // Commonalities across compound report page
 .smiles,
 .wrap {
