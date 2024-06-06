@@ -1,16 +1,16 @@
 <div id="ontology-data" *ngIf="vendor_data && vendor_data.length > 0">
   <ng-container *ngFor="let vendor of vendor_data; let k = index;">
     <div [id]="vendors[k].name" *ngIf="vendors[k].name == 'Ontology'">
-      <h5>
-        <a href="/ontology-tree?src=0" target="_blank" rel="noreferrer">
-          Mechanism Of Action Ontology 
-        </a><button type="submit" (click)="toggle_ontology()"  class="mat-flat-button mat-accent" >{{ontology_text}}</button>
-      </h5>
-
       <!-- <div class="cmpd-table"> -->
       <div class="cmpd-table" *ngFor="let x of vendor; let i=index">
+
         <table [ngClass]="i === vendor.length - 1 ? 'last-entry' : ''">
           <tr *ngIf="x && (x.hasOwnProperty('node_id'))">
+            <h5>
+              <a href="/ontology-tree?src=0" target="_blank" rel="noreferrer">
+                Mechanism Of Action Ontology 
+              </a><button type="submit" (click)="toggle_ontology()"  class="mat-flat-button mat-accent" >{{ontology_text}}</button>
+            </h5>
             <!-- <td class="title">Ontology Data</td> -->
             <table [ngClass]="hide_ontology ? 'hidden' : 'shown'">
               <tr class="header-title align-middle assay-name col">
