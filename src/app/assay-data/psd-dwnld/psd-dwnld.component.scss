@@ -1,0 +1,26 @@
+.psd-dwnld,
+a,
+a.dwnld-link:hover {
+  color: #3D6DE0;
+  cursor: pointer;
+}
+
+#psd-dwnld button {
+  background-color: #f4f4f4;
+  border-radius: 3px;
+  margin-left: 20px;
+  border: 1px #c5cbd0 solid;
+  -webkit-text-fill-color: #9ba4ae; // text
+  color: #b7bec5; // arrow
+  font-size: 0.75em;
+  font-weight: 300;
+  font-family: 'Lato', sans-serif;
+}
+
+#psd-dwnld {
+  padding-top: 10px;
+}
+
+#psd-dwnld button:hover {
+  background-color: #e1e4e7;
+}

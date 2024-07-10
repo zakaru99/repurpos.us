@@ -14,6 +14,7 @@ import {
   AssayDataComponent, AssayPaginationComponent, AssayPlotsComponent, DotPlotComponent,
   CmpdTooltipComponent, AssayDwnldComponent, AssayTypeBtnComponent
 } from '../assay-data/index';
+import { PsdDwnldComponent } from './psd-dwnld/psd-dwnld.component';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ import {
     DotPlotComponent,
     AssayPaginationComponent,
     CmpdTooltipComponent,
-    EmbedDatasetMetadataDirective
+    EmbedDatasetMetadataDirective,
+    PsdDwnldComponent
   ]
 })
 

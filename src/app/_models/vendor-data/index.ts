@@ -7,3 +7,4 @@ export * from './assay-data';
 export * from './vendor-data';
 export * from './wiki-data';
 export * from './primary-screen-data';
+export * from './psd-details';

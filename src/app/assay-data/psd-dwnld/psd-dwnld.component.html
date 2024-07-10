@@ -1,0 +1,11 @@
+
+<div id="psd-dwnld" class="vpsd-dwnld" *ngIf="loggedIn && has_data; else log_in">
+
+    <button><a (click)="dwnldCSV();">download primary data</a></button>
+</div>
+<!-- Log-in default -->
+<div *ngIf="!loggedIn">
+    <div class="accent-color login-req">
+      Please sign in to download primary screening data
+    </div>
+  </div>
