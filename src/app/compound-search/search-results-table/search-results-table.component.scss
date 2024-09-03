@@ -418,3 +418,47 @@ a#more {
   margin-top: 6px;
   margin-bottom: 6px;
 }
+
+
+/* Ensure specificity for link inside button */
+#header-container button a.dwnld-link {
+  color: #b7bec5; /* default color */
+  text-decoration: none; /* remove underline if needed */
+}
+
+#header-container button a.dwnld-link:hover {
+  -webkit-text-fill-color: #3D6DE0; /* hover color */
+  cursor: pointer; /* cursor style */
+}
+
+#header-container button {
+  background-color: #f4f4f4;
+  border-radius: 3px;
+  margin-left: 20px;
+  border: 1px #c5cbd0 solid;
+  -webkit-text-fill-color: #9ba4ae; // text
+  color: #b7bec5; // arrow
+  font-size: 0.75em;
+  font-weight: 300;
+  font-family: 'Lato', sans-serif;
+
+  padding: 5px 10px; 
+}
+
+#header-container {
+  padding-top: 10px;
+}
+
+#header-container button:hover {
+  background-color: #e1e4e7;
+  -webkit-text-fill-color: #3D6DE0; /* hover color */
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+}
+
+.header-container h4 {
+  margin-right: 10px; /* Adjust spacing as needed */
+}

@@ -1,6 +1,8 @@
 <div class="container-fluid" *ngIf="displayResults" (window:resize)="checkMobile()">
-  <h4>{{ dataSource.data.length }} {{dataSource.data.length === 1 ? "result" : "results"}} found</h4>
-
+  <div id="header-container" class="header-container">
+    <h4>{{ dataSource.data.length }} {{dataSource.data.length === 1 ? "result" : "results"}} found</h4>
+    <button><a class="dwnld-link" (click)="dwnldSearch()">Download Results</a></button>
+  </div>
   <ng-container [ngSwitch]="responseCode">
     <ng-container *ngSwitchCase="200">
 

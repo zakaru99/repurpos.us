@@ -319,4 +319,54 @@ export class SearchResultsTableComponent implements OnInit {
 
     this.dataSource.data = sortedData;
   }
+
+  dwnldSearch(){
+    if (this.dataSource.data.length >=1){
+      this.processDownload();
+    }else{
+      alert('There are no search results to download');
+      return false;
+    }
+  }
+
+  processDownload(){
+    const lineDelimiter = '\n';
+    const columnDelimiter = ','; //using comma to format data for csv
+
+    const colNames = ['name', 'ikey', 'smile', 'link']
+    var dwnld_data = '';
+    //build the header row
+    dwnld_data += colNames.join(columnDelimiter);
+    dwnld_data += lineDelimiter;
+  
+    this.dataSource.data.forEach( function(item){
+      let tmp = {
+        'name': item['main_label'],
+        'ikey': item['id'],
+        'smile': item['smiles'],
+        'link': `=HYPERLINK("https://reframedb.org/compound_data/${item.id}?qid=${item.qid}")`
+      };
+
+      let counter = 0;
+      colNames.forEach( function(key){
+        if (counter > 0) dwnld_data += columnDelimiter;
+        // enquote all data, to deal with commas in data
+        dwnld_data += '"';
+        dwnld_data += tmp[key].replace(/"/g, '""');
+        dwnld_data += '"';
+        counter++;
+      })
+      dwnld_data += lineDelimiter
+    })
+    save_data(dwnld_data, '.csv', this.queryString)
+  }
+}
+
+function save_data(dwnld_data, file_type, terms){
+  var hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:text/tsv;charset=utf-8,' + encodeURIComponent(dwnld_data);
+    hiddenElement.target = '_blank';
+    hiddenElement.download = `reframe search ${terms}.${file_type}`;
+    document.body.appendChild(hiddenElement);
+    hiddenElement.click();
 }
