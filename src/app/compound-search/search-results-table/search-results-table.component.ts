@@ -333,17 +333,47 @@ export class SearchResultsTableComponent implements OnInit {
     const lineDelimiter = '\n';
     const columnDelimiter = ','; //using comma to format data for csv
 
-    const colNames = ['name', 'ikey', 'smile', 'link']
+    const colNames = ['name', 'ikey', 'smile', 'collection status', 'link']
     var dwnld_data = '';
     //build the header row
     dwnld_data += colNames.join(columnDelimiter);
     dwnld_data += lineDelimiter;
-  
-    this.dataSource.data.forEach( function(item){
+
+
+    const statusMap = {
+      'plated': 'screening collection compound',
+      'one off': 'not plated, but available for one-off testing',
+      'historical_one_off': 'Historical screening collection compound, available for one-off testing',
+      'historical': 'screening collection compound (historical)',
+      'not_in_collection': 'not in screening collection',
+    }
+
+
+    // Create a mapping of status descriptions to indices manually
+    const statusOrder = {};
+    Object.keys(statusMap).forEach((key, index) => {
+      statusOrder[statusMap[key]] = index;
+    });
+
+    // Create a new sorted array based on the statuses
+    const sortedData = this.dataSource.data.slice().sort((a, b) => {
+      const statusA = statusMap[a['reframeid']] || '';
+      const statusB = statusMap[b['reframeid']] || '';
+      
+      const rankA = statusOrder[statusA] !== undefined ? statusOrder[statusA] : Infinity;
+      const rankB = statusOrder[statusB] !== undefined ? statusOrder[statusB] : Infinity;
+    
+      return rankA - rankB;
+    });
+
+    sortedData.slice(0, 100).forEach( function(item){
+      console.log(item)
+      
       let tmp = {
         'name': item['main_label'],
         'ikey': item['id'],
         'smile': item['smiles'],
+        'collection status': statusMap[item['reframeid']] || 'not in screening collection',
         'link': `=HYPERLINK("https://reframedb.org/compound_data/${item.id}?qid=${item.qid}")`
       };
 
