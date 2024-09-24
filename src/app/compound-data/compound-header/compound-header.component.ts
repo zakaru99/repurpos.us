@@ -127,9 +127,14 @@ export class CompoundHeaderComponent implements OnInit {
             for (var i=0; i<fileData.length; i++)
             {
               //console.log('downloading file id:' + fileData[i].upload_id + ' name: ' + fileData[i].file_name);
+              console.log(fileData[i]);
               var filepath = '../../assets/QC_files/' + fileData[i].upload_id + fileData[i].extension;
               //var file_name = fileData[i].file_name.substring(0, fileData[i].file_name.length-4) +  fileData[i].extension;
-              var file_name = fileData[i].file_name.split('.')[0];
+              if(fileData[i].extension == '.pdf'){
+                var file_name = fileData[i].file_name.split('.')[0];
+              }else{
+                var file_name = fileData[i].file_name;
+              }
               saveAs(filepath, file_name);
             }
           }
