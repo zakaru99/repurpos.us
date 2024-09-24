@@ -2,6 +2,6 @@
     <label for="search-box-add"><mat-icon>search</mat-icon></label>
 
     <input id="search-box-add" type="text" class="quick-search form-control" name="quick_search" aria-label="quick search"
-    placeholder="search for drugs, classes ..." autofocus [(ngModel)]="query" (keyup.enter)="onEnter()">
+    placeholder="search for drugs, classes ..." autofocus [(ngModel)]="query" (keydown.enter)="onEnter()">
 
 </form>
