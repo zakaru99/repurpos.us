@@ -26,25 +26,46 @@
 
         <div class="row">
           <div class="col-12">
-            <table class="reframe_cmpd" *ngIf="reframeCmpd === 'full'">
+            <table class="reframe_cmpd" *ngIf="reframeCmpd === 'plated'">
               <td class='rfm-circle circle available'>
               </td>
               <td class="rfm-circle">
-                <h6><span class="bold">reframe</span><span class="thin">db</span> screening collection compound</h6>
+                <h6 matTooltip="This compound is included in the reframe screening collection" ><span class="bold">reframe</span><span class="thin">db</span> screening collection compound</h6>
               </td>
             </table>
-            <table class="reframe_cmpd" *ngIf="reframeCmpd === 'stereofree' || reframeCmpd === 'sub_smiles'">
+            <!-- <table class="reframe_cmpd" *ngIf="reframeCmpd === 'stereofree' || reframeCmpd === 'sub_smiles'">
               <td class='rfm-circle circle available'>
               </td>
               <td class="rfm-circle">
                 <span class="bold">reframe</span><span class="thin">db</span> screening collection compound (stereofree)
               </td>
+            </table> -->
+            <table class="reframe_cmpd" *ngIf="reframeCmpd === 'one_off'">
+              <td class='rfm-circle circle one_off'>
+              </td>
+              <td class="rfm-circle">
+                <h6 matTooltip="This compound is not included in the reframe screening collection, but is available for one-off testing" ><span class="bold">not plated, but available for one-off testing</span></h6>
+              </td>
             </table>
             <table class="reframe_cmpd" *ngIf="reframeCmpd === 'historical'">
-            <td class='rfm-circle circle historical'>
+              <td class='rfm-circle circle historical'>
+              </td>
+              <td class="rfm-circle">
+                <h6 matTooltip="This compound is no longer included in the reframe screening collection" ><span class="bold">reframe</span><span class="thin">db</span> screening collection compound (historical)</h6>
+              </td>
+            </table>
+            <table class="reframe_cmpd" *ngIf="reframeCmpd === 'historical_one_off'">
+            <td class='rfm-circle circle historical_one_off'>
             </td>
             <td class="rfm-circle">
-              <span class="bold">reframe</span><span class="thin">db</span> screening collection compound (historical)
+              <h6 matTooltip="This compound is no longer included in the reframe screening collection, but is available for one-off testing" ><span class="bold">reframe</span><span class="thin">db</span> screening collection compound (historical), available for one-off testing</h6>
+            </td>
+          </table>
+          <table class="reframe_cmpd" *ngIf="!['plated', 'one_off', 'historical', 'historical_one_off'].includes(reframeCmpd)">
+            <td class='rfm-circle circle not'>
+            </td>
+            <td class="rfm-circle">
+              <h6 matTooltip="This compound is not included in the reframe screening collection" ><span class="bold">not in screening collection</span></h6>
             </td>
           </table>
           </div>
@@ -52,10 +73,10 @@
 
         <div class="row cmpd-source" *ngIf="chemVendors.length > 0">
           <div class="col-12">
-            <h6>available via <span *ngFor="let vendor of chemVendors; let i = index;">
+            <h6><span *ngIf="chemVendors[0]['chem_vendor'] != ''">available via <span *ngFor="let vendor of chemVendors; let i = index;">
           {{ vendor['chem_vendor'] }}
           <span *ngIf="vendor['chem_vendor_id']">({{ vendor['chem_vendor_id'] }})</span>
-            <span class='data-separator' *ngIf="i + 1 < chemVendors.length"></span></span></h6>
+            <span class='data-separator' *ngIf="i + 1 < chemVendors.length"></span></span></span></h6>
           </div>
         </div>
 
@@ -109,8 +130,8 @@
           <div class="row download" *ngIf="chemVendors.length > 0">
             <div class="col-12">
               <div id="downloadQC" class="qc-data">
-                <!--<button *ngFor="let vendor of chemVendors; let i = index;"><a (click)="clickedQC(vendor['chem_vendor_ikey']);">download qc data</a></button> -->
-                <!-- <button><a (click)="clickedQC(chemVendors[0]['chem_vendor_ikey']);">download qc data</a></button> -->
+                <!-- <button *ngFor="let vendor of chemVendors; let i = index;"><a (click)="clickedQC(vendor['chem_vendor_ikey']);">download qc data</a></button> -->
+                <button><a (click)="clickedQC(chemVendors[0]['chem_vendor_ikey']);">download qc data</a></button>
               </div>
             </div>
           </div>
