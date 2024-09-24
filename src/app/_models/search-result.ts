@@ -29,6 +29,8 @@ export interface Compound {
   similar_compounds?: SimilarCompound[];
   tanimoto: number;
   reframeid?: any;
+  cbr_id?: any;
+  highest_phase?: any;
   qid?: string;
 }
 

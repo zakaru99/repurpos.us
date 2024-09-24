@@ -40,7 +40,12 @@
               <!-- Aliases + InChI key/ID -->
               <table class="table cmpd-info">
                 <tbody>
-
+                  <tr *ngIf="element.highest_phase.length > 0" id="highest_phase">
+                    <th class="label" scope="row">Highest Phase:</th>
+                    <td class="highest-phase">
+                      {{element['highest_phase']}}
+                    </td>
+                  </tr>
                   <!-- Aliases -->
                   <tr *ngIf="element.aliases.length > 0" id="aliases">
                     <th class="label" scope="row" *ngIf="!isMobile">Aliases:</th>
@@ -67,6 +72,21 @@
                       {{element['id']}}
                     </td>
                   </tr>
+
+                  <!-- <tr id="available" *ngIf="!isMobile">
+                    <th class="label" scope="row">Availability:</th>
+                    <ng-container *ngIf="element.reframeid == 'plated' || element.reframeid == 'one off' || element.reframeid == 'historical_one_off'; else notAvailable">
+                      <td>
+                        Sample at Calibr
+                      </td>
+                    </ng-container>
+                    
+                    <ng-template #notAvailable>
+                      <td>
+                        No sample at Calibr
+                      </td>
+                    </ng-template>
+                  </tr> -->
 
                 </tbody>
               </table>
@@ -136,16 +156,37 @@
 
           <!-- Structure -->
           <ng-container matColumnDef="struct">
-            <mat-header-cell *matHeaderCellDef>
+            <mat-header-cell *matHeaderCellDef class="mat-header" mat-sort-header disableClear="true">
               <span class="mat-header">Structure</span>
+              <mat-icon class='sort-icon' matTooltip="sort by Availability">sort</mat-icon>
             </mat-header-cell>
             <mat-cell *matCellDef="let element" [ngClass]="element['expanded'] ? 'expanded' : ''">
-              <a [routerLink]="['/compound_data', element.id.split('/').pop(), {qid: element.qid.split('/').pop()}]">
-                <app-struct2d [structure]="element['svg']" [smiles]="element['smiles']" struct_type="svg" *ngIf="element['svg']; else no_glow"></app-struct2d>
-                <ng-template #no_glow>
-                  <app-struct2d [structure]="element['smiles']" [smiles]="element['smiles']" struct_type="smiles" *ngIf="element['smiles']"></app-struct2d>
-                </ng-template>
-              </a>
+              <!-- Table for Structure and Availability -->
+              <table class="structure-table">
+                <tr *ngIf="!isMobile">
+                  <td>
+                    <div id="available">
+                      <span class="label">Availability: </span>
+                      <ng-container *ngIf="element.reframeid === 'plated' || element.reframeid === 'one_off' || element.reframeid === 'historical_one_off'; else notAvailable">
+                        <span>Sample at Calibr</span>
+                      </ng-container>
+                      <ng-template #notAvailable>
+                        <span>No sample at Calibr</span>
+                      </ng-template>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <a [routerLink]="['/compound_data', element.id.split('/').pop(), {qid: element.qid.split('/').pop()}]">
+                      <app-struct2d [structure]="element['svg']" [smiles]="element['smiles']" struct_type="svg" *ngIf="element['svg']; else no_glow"></app-struct2d>
+                      <ng-template #no_glow>
+                        <app-struct2d [structure]="element['smiles']" [smiles]="element['smiles']" struct_type="smiles" *ngIf="element['smiles']"></app-struct2d>
+                      </ng-template>
+                    </a>
+                  </td>
+                </tr>
+              </table>
             </mat-cell>
           </ng-container>
 
