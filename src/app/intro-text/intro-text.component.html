@@ -12,43 +12,84 @@
       <app-citation [pmid]="reframe_pmid"></app-citation>
     </div>
 
-    <h5>Drug entries updated on July 31, 2024</h5>
+    
   </div>
 
-  <div class="capabilities">
-    <h6 class="highlight-label">How to use the database</h6>
+  <div class="container">
+    <div class="left-side">
+      <h5>Drug entries updated on July 31, 2024</h5>
+      <div class="capabilities">
+        <h6 class="highlight-label">How to use the database</h6>
 
-    <ul class="highlight-content">
-      <li>
-        <a [routerLink]="['about']" fragment="tutorial">Watch the tutorial video</a>
-      </li>
-      <li>
-        Explore pharmaceutical and biological properties of individual compounds like <a [routerLink]="['/search/']" [queryParams]="{ query: 'imatinib', type: 'string' }">imatinib</a>
-      </li>
+        <ul class="highlight-content">
+          <li>
+            <a [routerLink]="['about']" fragment="tutorial">Watch the tutorial video</a>
+          </li>
+          <li>
+            Explore pharmaceutical and biological properties of individual compounds like <a [routerLink]="['/search/']" [queryParams]="{ query: 'imatinib', type: 'string' }">imatinib</a>
+          </li>
 
-      <li>
-        View screening data for all compounds which responded in a <a routerLink="/assays">specific assay</a> like <a routerLink="/assays/A00093">Crypto-C. parvum proliferation assay</a> (requires sign-in)
-      </li>
+          <li>
+            View screening data for all compounds which responded in a <a routerLink="/assays">specific assay</a> like <a routerLink="/assays/A00093">Crypto-C. parvum proliferation assay</a> (requires sign-in)
+          </li>
 
-      <li>
-        Search for <a [routerLink]="['/search/']" [queryParams]="{ query: 'C(C1C2=C(N(C)N=1)C1=C(C=NC(=N1)NC1=CC=C(N3CCN(C)CC3)C=C1)CC2)(=O)N', type: 'structure', mode: 'similarity', tanimoto: '0.35' }">similar structures</a> to view pharmaceutical
-        and
-        biological annotation data and assay responses
-      </li>
+          <li>
+            Search for <a [routerLink]="['/search/']" [queryParams]="{ query: 'C(C1C2=C(N(C)N=1)C1=C(C=NC(=N1)NC1=CC=C(N3CCN(C)CC3)C=C1)CC2)(=O)N', type: 'structure', mode: 'similarity', tanimoto: '0.35' }">similar structures</a> to view pharmaceutical
+            and
+            biological annotation data and assay responses
+          </li>
 
-    </ul>
+        </ul>
+      </div>
+
+      <div class="capabilities" id="partnerships">
+        <h6 class="highlight-label">Accessing the library</h6>
+
+        <div class="highlight-content"><a [routerLink]="['about']" fragment="partnerships">Find out more information about partnerships</a></div>
+      </div>
+      <br>
+      <div class="capabilities">
+        <h6 class="highlight-label">Available Compounds</h6>
+        <div class="highlight-content"><a href="../../assets/csv/reframe_smiles_list.csv" download>Download a list of reframe compounds in stock</a></div>
+      </div>
+      <br>
+      <br>
+   
+    </div>
+    <div class="right-side">
+      
+
+      <div style="
+      position: relative; 
+      width: 100%; 
+      height: 0; 
+      padding-top: 50%;  
+      overflow: show; 
+      background: white; 
+      box-sizing: content-box; 
+      margin: 0; 
+      border: none; 
+      transform: scale(0.85); /* Translate to adjust */
+      transform-origin: top left;">
+      <iframe loading="lazy" 
+        style="
+            position: absolute; 
+      width: 101%; /* Slightly larger to cover black bar */
+      height: 101%; /* Slightly larger to cover black bar */
+      top: 0%; /* Adjust to position iframe correctly */
+      right: 0%; /* Adjust to position iframe correctly */
+      transform: translateX(5px);
+      border: none; 
+      padding: 0; 
+      margin: 0; 
+      box-sizing: border-box; 
+      background-color: white;" src="https://www.canva.com/design/DAGOhiqMvxU/N_pe187aGgARGBflOjXfJg/view?embed">
+      </iframe>
+    </div>
+  </div>
   </div>
 
-  <div class="capabilities" id="partnerships">
-    <h6 class="highlight-label">Accessing the library</h6>
 
-    <div class="highlight-content"><a [routerLink]="['about']" fragment="partnerships">Find out more information about partnerships</a></div>
-  </div>
-  <br>
-  <div class="capabilities">
-    <h6 class="highlight-label">Available Compounds</h6>
-    <div class="highlight-content"><a href="../../assets/csv/reframe_smiles_list.csv" download>Download a list of reframe compounds in stock</a></div>
-  </div>
 </div>
 
 <app-compound-search></app-compound-search>
