@@ -407,7 +407,7 @@ export class SearchResultsTableComponent implements OnInit {
         if (counter > 0) dwnld_data += columnDelimiter;
         // enquote all data, to deal with commas in data
         dwnld_data += '"';
-        dwnld_data += tmp[key].replace(/"/g, '""');
+        dwnld_data += (tmp[key]|| "").replace(/"/g, '""');
         dwnld_data += '"';
         counter++;
       })
