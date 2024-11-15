@@ -393,7 +393,6 @@ export class SearchResultsTableComponent implements OnInit {
       console.log(item)
       
       let tmp = {
-        'calibr ID': item['cbr_id'],
         'name': item['main_label'],
         'ikey': item['id'],
         'smile': item['smiles'],
