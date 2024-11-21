@@ -358,7 +358,7 @@ export class SearchResultsTableComponent implements OnInit {
     const lineDelimiter = '\n';
     const columnDelimiter = ','; //using comma to format data for csv
 
-    const colNames = ['calibr ID', 'name', 'ikey', 'smile', 'highest phase', 'collection status', 'link']
+    const colNames = ['name', 'ikey', 'smile', 'highest phase', 'collection status', 'link']
     var dwnld_data = '';
     //build the header row
     dwnld_data += colNames.join(columnDelimiter);
