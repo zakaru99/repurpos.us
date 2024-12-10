@@ -17,4 +17,5 @@ export interface AssayDetails {
 	protocol_detection?: string,
 	// detection_dye?: string
 	title_short: string,
+	primary_screened?: string
 };

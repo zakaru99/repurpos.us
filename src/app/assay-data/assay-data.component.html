@@ -68,7 +68,24 @@
           <li><span id="label">assay type: </span> {{ assayDetails.assay_type }}</li>
           <li><span id="label">components: </span>
             <span [outerHTML]="assayDetails.components | sciItalicize"></span></li>
-          <li><span id="label">detection method: </span> {{ assayDetails.detection_method }}</li>
+
+
+            <!-- Display primary screened compounds if primary_screened is a valid number -->
+            <li *ngIf="parsePrimaryScreened(assayDetails.primary_screened) > 0; else secondaryAssay">
+              <span id="label">Compounds screened in primary: </span> {{ assayDetails.primary_screened }}
+            </li>
+
+            <!-- Secondary Assay logic -->
+            <ng-template #secondaryAssay>
+              <li *ngIf="assayDetails.primary_screened === 'secondary'; else notReady">
+                <span id="label">Secondary Assay</span> No primary data will be available.
+              </li>
+            </ng-template>
+
+            <!-- Not ready message -->
+            <ng-template #notReady>
+              <li><span id="label">Primary screening data curation in progress</span></li>
+            </ng-template>
         </ul>
       </div>
     </div>
