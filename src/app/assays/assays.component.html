@@ -9,7 +9,11 @@
           <div class="summary" id="main_summary">
             Experimental data and methodology for each high throughput screen
           </div>
-          <div class="click-helper-container">
+
+          <app-dropdown [types]="getDistinctTypes()" (typeSelected)="onTypeSelected($event)">
+          </app-dropdown>
+          
+          <!-- <div class="click-helper-container">
             <div class="right-align click-helper">
               click <span class="accent">indication</span> or <span class="accent">type</span> to filter
             </div>
@@ -21,16 +25,16 @@
               </defs>
               <path _ngcontent-c12="" class="swoopy-arrow annotation--upper-right" d="M12 0 C 12 5, 20 10, 35 0" marker-end="url(#arrow)"></path>
             </svg>
-          </div>
+          </div> -->
         </div>
 
-        <div class="summary-plot-container">
+        <!-- <div class="summary-plot-container">
           <app-treemap class="right-pad" [data]="indications" [colorScale]="indicColorScale" *ngIf="indications"></app-treemap>
           <app-barplot [data]="types" [yDomain]="typeDomain" [colorScale]="typeColorScale" *ngIf="types && typeDomain"></app-barplot>
-        </div>
+        </div> -->
       </div>
 
-      <div class="filter float-right" *ngIf="isFiltered">
+      <!-- <div class="filter float-right" *ngIf="isFiltered">
         <span class="filter-descrip">
           {{ selAssays.length }} of {{ assayList.length }} assays selected for:
           <ng-container *ngFor="let filterText of filter; let i=index">
@@ -42,7 +46,7 @@
         </span>
 
         <mat-button-toggle value="bold" (click)="removeFilter()">remove filter</mat-button-toggle>
-      </div>
+      </div> -->
     </div>
 
   </div>
@@ -87,7 +91,7 @@
 
           <div class="flexC">
             <mat-chip-list class="text-right">
-              <mat-chip class="type text-right" *ngFor="let type of assay.type_arr" (click)="filterType([type])" [ngStyle]="{'background-color': getTypeColor(type)[0], 'border': '1px solid ' + getTypeColor(type)[1], 'color': getTypeColor(type)[1]}">
+              <mat-chip class="type text-right" *ngFor="let type of assay.type_arr" (click)="onTypeSelected(type)" [ngStyle]="{'background-color': getTypeColor(type)[0], 'border': '1px solid ' + getTypeColor(type)[1], 'color': getTypeColor(type)[1]}">
                 <!-- (click)="filterType(type)" [ngStyle]="{'background-color': 'white', 'border': '1px solid ' + getTypeColor(type)[1], 'color': getTypeColor(type)[1]}"> -->
                 {{ type | standardizeAssayType }}
               </mat-chip>

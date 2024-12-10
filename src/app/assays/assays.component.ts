@@ -23,7 +23,8 @@ export class AssaysComponent implements OnInit {
   selAssays: AssayDetails[] = [];
   // store unique indications
   indications: string[];
-  types: string[]
+  types: string[];
+  fullTypes: string[] = []; 
   typeDomain: string[]
   // map to indication colors
   typeColorScale: any;
@@ -80,6 +81,13 @@ export class AssaysComponent implements OnInit {
         this.assayList.forEach((d: any) => {
           d['type_arr'] = d.assay_type.split(',').map(d => this.stdize.transform(d));
         })
+
+        // Populate fullTypes
+        this.fullTypes = this.assayList.map((d: any) => d.type_arr)
+          .reduce((acc, val) => acc.concat(val), []);
+
+          // Keep types for current filtering purposes
+        this.types = [...this.fullTypes]; // Initialize types to all options
 
         this.typeDomain = d3.nest()
           .key((d: any) => d)
@@ -146,13 +154,50 @@ export class AssaysComponent implements OnInit {
     this.getAssayKinds();
   }
 
-  filterType(types: string[]) {
-    this.filter = types;
-    this.selAssays = this.assayList.filter((d: any) => (d.type_arr.filter(type => this.filter.includes(type))).length > 0);
+  // filterType(types: string[]) {
+  //   this.filter = types;
+  //   console.log(this.filter);
+  //   this.selAssays = this.assayList.filter((d: any) => (d.type_arr.filter(type => this.filter.includes(type))).length > 0);
 
+  //   console.log(this.selAssays)
+
+  //   this.filter_color = types.map(d => this.getTypeColor(d)[1]);
+  //   this.isFiltered = true;
+  //   this.getAssayKinds();
+  // }
+
+  onTypeSelected(selectedType: string) {
+
+    const selectElement = document.getElementById('typeSelect') as HTMLSelectElement; // Get the select element
+    if (selectElement) {
+      selectElement.value = selectedType; // Set the selected value
+    }
+
+    
+    // Call filterType with the selected type wrapped in an array
+    if(selectedType != 'see all'){
+      this.filterType([selectedType]);
+    }else{
+      this.removeFilter();
+    }
+    
+  }
+  
+  filterType(types: string[]) {
+    this.filter = types;  // Update the filter with selected types
+    console.log(this.filter);
+    
+    // Filter selAssays based on the selected types
+    this.selAssays = this.assayList.filter((d: any) => 
+      (d.type_arr.filter(type => this.filter.includes(type))).length > 0
+    );
+  
+    console.log(this.selAssays);
+  
+    // Update filter colors based on selected types
     this.filter_color = types.map(d => this.getTypeColor(d)[1]);
-    this.isFiltered = true;
-    this.getAssayKinds();
+    this.isFiltered = true;  // Set filter state
+    this.getAssayKinds();  // Call additional logic if needed
   }
 
   removeFilter() {
@@ -165,6 +210,10 @@ export class AssaysComponent implements OnInit {
   getAssayKinds() {
     this.indications = this.selAssays.map(assay => assay.indication);
     this.types = this.selAssays.map((d: any) => d.type_arr).reduce((acc, val) => acc.concat(val), []);
+  }
+
+  getDistinctTypes(): string[] {
+    return Array.from(new Set(this.fullTypes)); // Use the fullTypes array
   }
 
 }

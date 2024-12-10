@@ -1,0 +1,7 @@
+<div class="flex-container">
+  <label for="typeSelect">Show assays with type:</label>
+  <select style="width: 50%;" id="typeSelect" class="custom-select" (change)="onTypeChange($event)">
+    <option value="see all">See All</option>
+    <option *ngFor="let type of types" [value]="type">{{ type }}</option>
+  </select>
+</div>

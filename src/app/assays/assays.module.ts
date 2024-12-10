@@ -14,6 +14,7 @@ import { StandardizeAssayTypePipe } from '../_pipes/standardize-assay-type.pipe'
 import { AssaysComponent } from '../assays/assays.component';
 import { BarplotComponent } from './barplot/barplot.component';
 import { TreemapComponent } from './treemap/treemap.component';
+import { DropdownComponent } from './dropdown/dropdown.component';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import { TreemapComponent } from './treemap/treemap.component';
     AssaysComponent,
     StandardizeAssayTypePipe,
     BarplotComponent,
-    TreemapComponent
+    TreemapComponent,
+    DropdownComponent
   ],
   providers: [
     StandardizeAssayTypePipe

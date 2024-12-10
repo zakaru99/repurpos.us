@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 
 import { AssayPlotsComponent } from './assay-plots/assay-plots.component'
 import { AssayDetails } from '../_models/assay-details';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AssayMetadataService } from '../_services/';
 declare var $ : any
 
@@ -56,6 +56,16 @@ export class AssayDataComponent implements OnInit {
       this.titleService.setTitle(this.assayDetails.title_short + " | reframeDB");
     });
   }
+
+  // Updated parsePrimaryScreened() to accept a parameter
+  parsePrimaryScreened(value: string): number {
+    console.log(value)
+    if (value === 'secondary') {
+      return NaN;  // Return NaN if value is 'secondary'
+    }
+    return parseInt(value, 10);  // Parse the value as an integer
+  }
+
 
   onAnchorClick(anchor_tag: string) {
     let anchor_div = document.querySelector("#" + anchor_tag);
