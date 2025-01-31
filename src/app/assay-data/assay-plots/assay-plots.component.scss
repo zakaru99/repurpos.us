@@ -122,3 +122,37 @@ h3#data-title {
 #vis {
   margin-bottom: 70px;
 }
+
+#oneoff button {
+  background-color: #f4f4f4;
+  border-radius: 3px;
+  border: 1px #c5cbd0 solid;
+  -webkit-text-fill-color: #9ba4ae; // text
+  color: #b7bec5; // arrow
+  font-size: 0.75em;
+  font-weight: 300;
+  font-family: 'Lato', sans-serif;
+}
+
+
+#oneoff button {
+  background-color: #f4f4f4; /* Light background for the button */
+  border-radius: 3px; /* Slightly rounded corners */
+  border: 1px solid #c5cbd0; /* Light border color */
+  color: #b7bec5; /* Text color similar to Bootstrap's primary button */
+  font-size: 0.875em; /* Slightly larger text size for better readability */
+  font-weight: 400; /* Regular font weight */
+  font-family: 'Lato', sans-serif; /* Custom font family */
+  padding: 8px 16px; /* Padding similar to Bootstrap's default padding */
+  cursor: pointer; /* Pointer cursor on hover */
+  text-align: center; /* Center text alignment */
+  vertical-align: middle; /* Align vertically */
+  display: inline-block; /* Ensure the button behaves like a block element */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+
+/* Adding hover effect */
+#oneoff button:hover {
+  background-color: #e1e4e7; /* Light background change on hover */
+  color: black; /* Darker text color on hover, similar to the default link color */
+}

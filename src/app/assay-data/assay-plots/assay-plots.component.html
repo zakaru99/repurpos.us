@@ -2,29 +2,48 @@
 <!-- VIS -->
 <ng-container>
   <div id="vis" *ngIf="loggedIn; else log_in">
-    <div class="row data-header d-flex">
-    <!-- <div class="row data-header d-flex" *ngIf="assayData.length > 0"> -->
-      <div class="col">
-        <h3 id="data-title" class="d-inline-block">Assay data</h3>
-        <app-assay-dwnld [assay_title]="assay_title"></app-assay-dwnld>
-      </div>
+    <div *ngIf="aid != 'A00635'; else wrong_format">
+      <div class="row data-header d-flex">
+      <!-- <div class="row data-header d-flex" *ngIf="assayData.length > 0"> -->
+        <div class="col">
+          <h3 id="data-title" class="d-inline-block">Assay data</h3>
+          <app-assay-dwnld [assay_title]="assay_title"></app-assay-dwnld>
+        </div>
 
 
-      <div class="col-xs-auto col-sm-auto col-md-auto col-lg-auto col-xl-auto float-right">
-        <!-- Assay tab panes -->
-        <app-assay-type-btn></app-assay-type-btn>
+        <div class="col-xs-auto col-sm-auto col-md-auto col-lg-auto col-xl-auto float-right">
+          <!-- Assay tab panes -->
+          <app-assay-type-btn></app-assay-type-btn>
+        </div>
       </div>
+
+      <!-- Call D3 component -->
+      <app-dot-plot></app-dot-plot>
+      <!-- <app-dot-plot *ngIf="filteredData.length > 0" [data]="filteredData" [tooltipData]="tooltipData" (tooltipEmitter)="showTooltip($event)"></app-dot-plot> -->
+
+      <!-- pagination -->
+      <app-assay-pagination></app-assay-pagination>
     </div>
-
-    <!-- Call D3 component -->
-    <app-dot-plot></app-dot-plot>
-    <!-- <app-dot-plot *ngIf="filteredData.length > 0" [data]="filteredData" [tooltipData]="tooltipData" (tooltipEmitter)="showTooltip($event)"></app-dot-plot> -->
-
-    <!-- pagination -->
-    <app-assay-pagination></app-assay-pagination>
-
   </div>
 </ng-container>
+
+<ng-template #wrong_format>
+  <div class="row data-header">
+    <div class="col-10">
+      <h3 id="data-title">Assay data</h3>
+      <div>
+        <a class="accent-color subtitle login-req" href="">EC50/IC50 not quantifiable</a>
+        <div id="oneoff" class="one-off">
+          <a href="../../../assets/assay_one_offs/A00635_TP Reframe Dose response.xlsx" >
+            <button>Download confirmation data</button>
+          </a>
+    
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
 
 <ng-template #log_in>
   <div class="row data-header">
