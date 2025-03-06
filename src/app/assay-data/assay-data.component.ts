@@ -60,7 +60,7 @@ export class AssayDataComponent implements OnInit {
   // Updated parsePrimaryScreened() to accept a parameter
   parsePrimaryScreened(value: string): number {
     console.log(value)
-    if (value === 'secondary') {
+    if (['secondary', 'not available'].includes(value)) {
       return NaN;  // Return NaN if value is 'secondary'
     }
     return parseInt(value, 10);  // Parse the value as an integer

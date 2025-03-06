@@ -77,8 +77,15 @@
 
             <!-- Secondary Assay logic -->
             <ng-template #secondaryAssay>
-              <li *ngIf="assayDetails.primary_screened === 'secondary'; else notReady">
+              <li *ngIf="assayDetails.primary_screened === 'secondary'; else notAvailable">
                 <span id="label">Secondary Assay</span> No primary data will be available.
+              </li>
+            </ng-template>
+
+            <!-- NA Assay logic -->
+            <ng-template #notAvailable>
+              <li *ngIf="assayDetails.primary_screened === 'not available'; else notReady">
+                No primary data will be available for this assay.
               </li>
             </ng-template>
 
