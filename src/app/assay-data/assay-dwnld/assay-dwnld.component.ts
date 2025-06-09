@@ -13,7 +13,7 @@ import { AssayDataService } from '../../_services';
   styleUrls: ['./assay-dwnld.component.scss']
 })
 
-export class AssayDwnldComponent {
+export class AssayDwnldComponent{
   private data: Array<any>;
   @Input() private assay_title: string;
 
@@ -24,7 +24,6 @@ export class AssayDwnldComponent {
     this.dataSubscription = this.assaySvc.flatAssayDataSubject$.subscribe(data => {
       this.data = data;
     })
-
     this.today = this.datePipe.transform(new Date(), "yyyy-MM-dd");
   }
 
@@ -32,14 +31,11 @@ export class AssayDwnldComponent {
     this.dataSubscription.unsubscribe();
   }
 
-  // Manual dictionary to translate
   colnames_dict = {
     "ac_precision": "ac_precision", "ac50": "ac50_value", "assay_title": "assay_title", "assay_type": "assay_type(IC_or_EC)", "calibr_id": "InChIkey",
     "efficacy": "efficacy", "name": "compound_name", "pubchem_id": "pubchem_id", "r_sq": "r_sq", "url": "reframedb_url"
   }
 
-  // download function from https://code-maven.com/create-and-download-csv-with-javascript
-  // and https://halistechnology.com/2015/05/28/use-javascript-to-export-your-data-as-csv/
   dwnldTSV() {
     this.dwnldDelim("\t","tsv");
   }
@@ -91,7 +87,6 @@ export class AssayDwnldComponent {
       item['url'] = (environment.host_url + item['url']).replace("/#/", "/");
     })
   }
-
 }
 
 function save_data(dwnld_data, file_type, assay_title, today) {
