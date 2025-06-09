@@ -38,8 +38,11 @@
 
       <div class="col-md-9">
         <div class="summary">
-          <span [outerHTML]="assayDetails.summary | sciItalicize"></span>
+          <span [outerHTML]="assayDetails.purpose | sciItalicize"></span>
         </div>
+        <!-- <div class="summary">
+          <span [outerHTML]="assayDetails.summary | sciItalicize"></span>
+        </div> -->
 
 
         <div class="citation-group">
@@ -107,9 +110,9 @@
   <div class='row' id="protocol">
     <h3><span [outerHTML]="assayDetails.title_short | sciItalicize"></span> protocol</h3>
 
-    <div class="description">
+    <!-- <div class="description">
       <span [outerHTML]="assayDetails.purpose | sciItalicize"></span>
-    </div>
+    </div> -->
 
     <div class="row">
       <div class="col-md-6" id="drug-condits">
