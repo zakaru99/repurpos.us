@@ -60,14 +60,21 @@
             <td class="rfm-circle">
               <h6 matTooltip="This compound is no longer included in the reframe screening collection, but is available for one-off testing" ><span class="bold">reframe</span><span class="thin">db</span> screening collection compound (historical), available for one-off testing</h6>
             </td>
-          </table>
-          <table class="reframe_cmpd" *ngIf="!['plated', 'one_off', 'historical', 'historical_one_off'].includes(reframeCmpd)">
-            <td class='rfm-circle circle not'>
-            </td>
-            <td class="rfm-circle">
-              <h6 matTooltip="This compound is not included in the reframe screening collection" ><span class="bold">not in screening collection</span></h6>
-            </td>
-          </table>
+            </table>
+            <table class="reframe_cmpd" *ngIf="reframeCmpd === 'on_order'">
+              <td class='rfm-circle circle on_order'>
+              </td>
+              <td class="rfm-circle">
+                <h6 matTooltip="This compound is on order and will be included in the reframe screening collection soon" >on order</h6>
+              </td>
+            </table>
+            <table class="reframe_cmpd" *ngIf="!['plated', 'one_off', 'historical', 'historical_one_off', 'on_order'].includes(reframeCmpd)">
+              <td class='rfm-circle circle not'>
+              </td>
+              <td class="rfm-circle">
+                <h6 matTooltip="This compound is not included in the reframe screening collection" ><span class="bold">not in screening collection</span></h6>
+              </td>
+            </table>
           </div>
         </div>
 

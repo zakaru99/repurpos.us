@@ -68,9 +68,10 @@ export class SearchResultsTableComponent implements OnInit {
   // expanded: boolean = false; // trigger to turn table to shortened form.
 
   statusOrder = {
-    'plated': '4',
-    'one_off': '3',
-    'historical_one_off': '2',
+    'plated': '5',
+    'one_off': '4',
+    'historical_one_off': '3',
+    'on_order': '2',
     'historical': '1',
     'not_in_collection': '0',
   }
@@ -213,13 +214,14 @@ export class SearchResultsTableComponent implements OnInit {
     // Solution: sort by TM score, then ES score (rank from search result)
     // https://medium.com/@fsufitch/is-javascript-array-sort-stable-46b90822543f
     let sorted = results;
-
+    
     const statusOrder = {
-      'plated': '0',
-      'one_off': '1',
-      'historical_one_off': '2',
-      'historical': '3',
-      'not_in_collection': '4',
+      'plated': '5',
+      'one_off': '4',
+      'historical_one_off': '3',
+      'on_order': '2',
+      'historical': '1',
+      'not_in_collection': '0',
     }
 
     
@@ -369,6 +371,7 @@ export class SearchResultsTableComponent implements OnInit {
       'one_off': 'not plated, but available for one-off testing',
       'historical_one_off': 'Historical screening collection compound, available for one-off testing',
       'historical': 'screening collection compound (historical)',
+      'on_order': 'compound is on order to include in the screening collection',
       'not_in_collection': 'not in screening collection',
     }
 

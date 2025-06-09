@@ -153,6 +153,11 @@ $circle_diam: 15px;
   background-color: #FF5B67;
 }
 
+.on_order,
+.cmpd-on_order .circle {
+  background-color: #FFA500;
+}
+
 .not,
 .cmpd-not .circle {
   background-color: #e0ee20;
