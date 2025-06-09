@@ -7,7 +7,7 @@ import {map, startWith} from 'rxjs/operators';
 import { takeUntil, filter } from "rxjs/operators";
 import * as d3 from "d3";
 
-import *  as  ontology_data from './phase2b_moaTEST.json';
+import *  as  ontology_data from './phase2b_moa_updated.json'
 // console.log(ontology_data.entities)
 // interface HierarchyDatum {
 //   preferred_name: string;
