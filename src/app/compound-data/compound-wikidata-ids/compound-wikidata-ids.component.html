@@ -91,7 +91,7 @@
 
 <!-- If no wikidata data are available, use the information from the vendors -->
 <ng-template #no_wd>
-  <div class="chem-props-container" *ngIf="smiles || ikey.length === 27">
+  <div class="chem-props-container" *ngIf="smiles || ikey.length === 14">
     <div>
       <h5>Chemical properties</h5>
     </div>
@@ -102,7 +102,7 @@
         <div scope="row" class="wrap">{{ smiles }}</div>
       </ng-container>
 
-      <ng-container *ngIf="ikey.length === 27">
+      <ng-container *ngIf="ikey.length === 14">
         <div scope="row" class="title">InChIKey</div>
         <div scope="row" class="wrap">{{ ikey }}</div>
       </ng-container>
