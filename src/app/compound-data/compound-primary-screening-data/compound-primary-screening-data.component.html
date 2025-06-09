@@ -25,7 +25,8 @@
     </ul>
       <table class="assay-table table">
         <tr class="">
-          <th class="header-title align-middle assay-name col">Assay type</th>
+          <th class="header-title align-middle">Assay ID</th>
+          <th class="header-title align-middle assay-name col">Assay title</th>
           <th class="header-title align-middle assay-indic">indication</th>
 <!--          <th class="header-title align-middle">Activity<br/>type</th>-->
           <th class="header-title align-middle">Screening hit</th>
@@ -38,6 +39,12 @@
 
 
         <tr class="" *ngFor="let x of primaryData" [ngClass]="[x['hit'] ? 'hit' : 'not_hit', hide_hits ? 'hidden' : 'shown']">
+          <td class="content align-middle">
+            <a [routerLink]="['/assays', x['assay_id']]">
+              <span [outerHTML]="x['assay_id'] | sciItalicize"></span>
+            </a>
+
+
           <!-- Assay Name -->
           <td class="content align-middle assay-title">
             <a [routerLink]="['/assays', x['assay_id']]">
