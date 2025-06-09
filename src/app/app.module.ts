@@ -33,8 +33,9 @@ import {
   CompoundSearchComponent, CompoundSearchOptionsComponent, SearchBoxComponent,
   SearchResultComponent, SearchResultsTableComponent, StructureSearchOptionsComponent,
   StructureSearchComponent, TextSearchComponent, KetcherComponent, SearchResultSimilarComponent,
-  AssayIndicationComponent
+  AssayIndicationComponent,
 } from './compound-search/index';
+import { AssaySearchComponent } from './assay-search/assay-search.component';
 import {
   ForgotPassButtonComponent,
   LoaderComponent,
@@ -82,6 +83,7 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
     HeaderComponent,
     MenuBarComponent,
     MenubarItemComponent,
+    AssaySearchComponent,
     CompoundSearchComponent,
     SearchResultComponent,
     SearchBoxComponent,
