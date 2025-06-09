@@ -10,7 +10,8 @@
     <div class="table-responsive">
       <table class="assay-table table" [ngClass]="hide_activity ? 'hidden' : 'shown'">
         <tr class="">
-          <th class="header-title align-middle assay-name col">Assay type</th>
+          <th class="header-title align-middle">Assay ID</th>
+          <th class="header-title align-middle assay-name col">Assay title</th>
           <th class="header-title align-middle assay-indic">indication</th>
           <th class="header-title align-middle">Activity<br/>type</th>
           <th class="header-title align-middle">Measurement</th>
@@ -23,6 +24,12 @@
 
 
         <tr class="" *ngFor="let x of assayData">
+          <!-- Assay ID -->
+          <td class="content align-middle">
+            <a [routerLink]="['/assays', x['assay_id']]">
+              <span [outerHTML]="x['assay_id'] | sciItalicize"></span>
+            </a>
+
           <!-- Assay Name -->
           <td class="content align-middle assay-title">
             <a [routerLink]="['/assays', x['assay_id']]">
