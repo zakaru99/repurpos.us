@@ -16,7 +16,7 @@ const appRoutes: Routes = [
   { path: '', component: IntroTextComponent, pathMatch: 'full' },
   { path: 'terms', component: TermsComponent, pathMatch: 'full' },
   { path: 'search', component: CompoundSearchComponent, pathMatch: 'full' },
-  { path: 'assay-search', component: AssaySearchComponent, pathMatch: 'full' },
+  { path: 'assay_search', component: AssaySearchComponent, pathMatch: 'full' },
   { path: 'about', pathMatch: 'full', loadChildren: () => import('./about/about.module').then(mod => mod.AboutModule) },
   { path: 'workflow', component: WorkflowComponent, pathMatch: 'full' },
   {
