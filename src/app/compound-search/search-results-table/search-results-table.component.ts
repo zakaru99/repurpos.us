@@ -50,7 +50,7 @@ export class SearchResultsTableComponent implements OnInit {
   assays: string[];
   max_num_assays: number = 10;
   // minColumns: string[] = ['main_label', 'alias', 'id', 'reframeid']; // minimal set of columns to include
-  minColumns: string[] = ['struct', 'main_label', 'assays', 'similar']; // minimal set of columns to include
+  minColumns: string[] = ['struct', 'main_label', 'highestPhase', 'assays', 'similar']; // minimal set of columns to include
   displayedColumns: string[]; // minimal set of columns to include
   dataSource = new MatTableDataSource<Compound>();
 
@@ -114,6 +114,7 @@ export class SearchResultsTableComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.queryString = params.query;
       this.queryType = params.mode ? `${params.mode} ${params.type}` : params.type;
+      console.log(params)
     });
 
     // get search results
@@ -259,27 +260,11 @@ export class SearchResultsTableComponent implements OnInit {
     this.displayedColumns = this.minColumns.slice(0); // create shallow copy
     // if tanimoto exists, add it to the displayed properties.
     if (df.some(el => el['tanimoto'] > 0)) {
-      this.displayedColumns.push('tanimoto')
+      this.displayedColumns.push('tanimoto');
     }
-
-    // TEMPORARY: SHIM TO VIEW SUBSTRUCTURE DATA
-    // if (df.some(el => el.hasOwnProperty('compound_id'))) {
-    //   this.displayedColumns = ['compound_id', 'smiles', 'svg']
-    // }
-    // console.log(this.displayedColumns)
-
-    // this.displayedColumns = this.displayedColumns.concat('assays');
-    // if (!this.isMobile) {
-    //   // console.log(this.displayedColumns);
-    //   // this.displayedColumns.splice(2, 0, 'struct') // insert structure into the cols
-    //   // this.displayedColumns = this.displayedColumns.concat('assays', 'assay_titles');
-    //   this.displayedColumns = this.displayedColumns.concat('assays');
-    // } else {
-    //   this.displayedColumns = this.displayedColumns.concat('assays');
-    //   this.displayedColumns.splice(this.displayedColumns.indexOf('id'), 1);
-    // }
-
+    console.log(this.displayedColumns)
   }
+  
 
   // Alias functions
   removeDupeAlias(arr: string[]) {

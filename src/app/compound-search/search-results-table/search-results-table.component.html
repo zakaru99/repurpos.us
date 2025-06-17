@@ -40,12 +40,6 @@
               <!-- Aliases + InChI key/ID -->
               <table class="table cmpd-info">
                 <tbody>
-                  <tr *ngIf="element.highest_phase.length > 0" id="highest_phase">
-                    <th class="label" scope="row">Highest Phase:</th>
-                    <td class="highest-phase">
-                      {{element['highest_phase']}}
-                    </td>
-                  </tr>
                   <!-- Aliases -->
                   <tr *ngIf="element.aliases.length > 0" id="aliases">
                     <th class="label" scope="row" *ngIf="!isMobile">Aliases:</th>
@@ -96,8 +90,26 @@
             </mat-cell>
           </ng-container>
 
-
-
+          <ng-container matColumnDef="highestPhase">
+            <mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" start="desc" class="mat-header">
+              <span class="mat-header" [matTooltip]="highestTooltip">
+                Highest Phase
+              </span>
+              <mat-icon class="sort-icon" matTooltip="sort by highest-phase">sort</mat-icon>
+            </mat-header-cell>
+          
+            <mat-cell *matCellDef="let element" class="highest-phase-cell">
+              <table class="table cmpd-info-table">
+                <tbody>
+                  <tr *ngIf="element.highest_phase">
+                    <th class="label" scope="row">Highest Phase:</th>
+                    <td class="highest-phase">{{ element.highest_phase }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </mat-cell>
+          </ng-container>
+          
 
           <!-- In physical library -->
           <ng-container matColumnDef="similar">
