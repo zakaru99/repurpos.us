@@ -3,7 +3,6 @@ import { RouterModule, Routes, Router, NavigationEnd } from '@angular/router';
 
 import { IntroTextComponent } from './intro-text/intro-text.component';
 import { CompoundSearchComponent } from './compound-search/compound-search.component';
-import { AssaySearchComponent } from './assay-search/assay-search.component'
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { TermsComponent } from "./_dialogs/terms/terms.component";
@@ -16,7 +15,6 @@ const appRoutes: Routes = [
   { path: '', component: IntroTextComponent, pathMatch: 'full' },
   { path: 'terms', component: TermsComponent, pathMatch: 'full' },
   { path: 'search', component: CompoundSearchComponent, pathMatch: 'full' },
-  { path: 'assay_search', component: AssaySearchComponent, pathMatch: 'full' },
   { path: 'about', pathMatch: 'full', loadChildren: () => import('./about/about.module').then(mod => mod.AboutModule) },
   { path: 'workflow', component: WorkflowComponent, pathMatch: 'full' },
   {

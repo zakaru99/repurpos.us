@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { AssaysRoutingModule } from './assays-routing.module';
 
@@ -21,7 +22,8 @@ import { DropdownComponent } from './dropdown/dropdown.component';
     CommonModule,
     AssaysRoutingModule,
     MaterialModule,
-    PipesModule
+    PipesModule,
+    FormsModule
   ],
   declarations: [
     AssaysComponent,

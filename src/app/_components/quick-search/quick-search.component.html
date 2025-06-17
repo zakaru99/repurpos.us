@@ -1,7 +1,46 @@
-<form class="search" method="post" action="">
-    <label for="search-box-add"><mat-icon>search</mat-icon></label>
+<form 
+  class="search" 
+  method="post" 
+  [ngClass]="{ 'expanded': inputFocused }" 
+  (focusin)="onFocusIn()" 
+  (focusout)="onFocusOut($event)" 
+  action=""
+>
+  <label for="search-box-add" (click)="focusInput(inputEl)">
+    <mat-icon>search</mat-icon>
+  </label>
 
-    <input id="search-box-add" type="text" class="quick-search form-control" name="quick_search" aria-label="quick search"
-    placeholder="search for drugs, classes ..." autofocus [(ngModel)]="query" (keydown.enter)="onEnter()">
+  <!-- 💡 Container for input + toggle -->
+  <div class="input-toggle-wrapper">
+    <input
+      #inputEl
+      id="search-box-add"
+      type="text"
+      class="quick-search form-control"
+      name="quick_search"
+      aria-label="quick search"
+      [placeholder]="getPlaceholder()"
+      [(ngModel)]="query"
+      (keydown.enter)="onEnter()"
+    />
 
+    <!-- Show only when focused -->
+    <div *ngIf="inputFocused" class="search-toggle">
+      <div 
+        class="toggle-option" 
+        [class.active]="selected === 'compound'" 
+        tabindex="0"
+        (click)="select('compound')">
+        Compound Searching
+      </div>
+      <div 
+        class="toggle-option" 
+        [class.active]="selected === 'assay'" 
+        tabindex="0"
+        (click)="select('assay')">
+        Assay Searching
+      </div>
+      <div class="slider" [style.left.%]="selected === 'compound' ? 0 : 50"></div>
+    </div>
+  </div>
 </form>

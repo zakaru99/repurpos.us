@@ -1,4 +1,5 @@
-form {
+form.search {
+  display: flex;
   margin-top: 5px;
   margin-right: 10px;
 }
@@ -7,7 +8,6 @@ form {
 .search mat-icon {
   position: absolute;
   margin: 1px 0px;
-  // color: #9ba4ae;
 }
 
 .search input[type="text"] {
@@ -19,20 +19,83 @@ form {
   height: 30px;
   background: none;
   border: none;
-  -webkit-transition: width 0.5s ease-in-out;
-  -moz-transition: width 0.5s ease-in-out;
+
   cursor: pointer;
+  flex-shrink: 1;
 }
 
-.search input[type="text"]:focus {
+.search.expanded input[type="text"] {
   width: 300px;
   background: white;
   outline: none;
   cursor: text;
 }
 
+/* button fade in/out */
+#assay-search-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  height: 30px;
+  cursor: pointer;
+  margin-left: 10px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition: background-color 0.3s ease, opacity 0.5s ease;
+}
+
+.search.expanded #assay-search-btn {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+#assay-search-btn mat-icon {
+  font-size: 18px;
+}
+
 @media only screen and (max-width: 760px) {
-  .search input[type="text"]:focus {
+  .search.expanded input[type="text"] {
     width: 75vw;
   }
+}
+
+.search-toggle {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+  border-bottom: 2px solid #ccc;
+  width: 100%;
+}
+
+.toggle-option {
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  color: #666;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.toggle-option.active {
+  color: #1976d2; // Primary color
+}
+
+.slider {
+  position: absolute;
+  bottom: -2px;
+  width: 50%;
+  height: 2px;
+  background-color: #1976d2;
+  transition: left 0.3s ease;
 }

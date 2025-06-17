@@ -12,6 +12,18 @@
 
           <app-dropdown [types]="getDistinctTypes()" (typeSelected)="onTypeSelected($event)">
           </app-dropdown>
+
+      <br>
+
+          <div class="flex-container search-bar">
+            <label for="typeSelect">Search:</label>
+            <input style="width: 50%;" class="form-control" [(ngModel)]="queryString" type="text" (keydown.enter)="onEnter()" placeholder="search by assay ID, title, summary, purpose, or indication">
+            <button mat-raised-button color="primary" *ngIf="showClearButton" (click)="clearSearch()" @fadeInOut>Clear Search</button>
+          </div>
+
+          <p id="assaysFound" *ngIf="assaysFound > 0">Total assays found: ({{ assaysFound }})</p>
+          
+          <p id="noResMessage" *ngIf="assaysFound === 0">No assays found for your search</p>
           
           <!-- <div class="click-helper-container">
             <div class="right-align click-helper">

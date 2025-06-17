@@ -10,15 +10,38 @@ import { AssayDetails } from '../_models/index';
 import { ColorPaletteService } from '../_services/index';
 
 import { StandardizeAssayTypePipe } from '../_pipes/standardize-assay-type.pipe';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition
+} from '@angular/animations';
 
 @Component({
   selector: 'app-assays',
   // pipes: [SciItalicizePipe],
   templateUrl: './assays.component.html',
-  styleUrls: ['./assays.component.scss']
+  styleUrls: ['./assays.component.scss'],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('200ms ease-in', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('200ms ease-out', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 
 export class AssaysComponent implements OnInit {
+  queryString: string = '';
+
+  assaysFound: number = 0;
+
   assayList: AssayDetails[] = [];
   selAssays: AssayDetails[] = [];
   // store unique indications
@@ -41,11 +64,12 @@ export class AssaysComponent implements OnInit {
   ];
 
   constructor(
-    // private route: ActivatedRoute,
     private colorSvc: ColorPaletteService,
     private titleService: Title,
     private stdize: StandardizeAssayTypePipe,
-    private meta: Meta) {
+    private meta: Meta,
+    private route: ActivatedRoute,
+    private router: Router) {
 
     for (let i = 0; i < this.meta_tags.length; i++) {
       this.meta.updateTag(this.meta_tags[i]);
@@ -66,43 +90,76 @@ export class AssaysComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.queryString = params.query || '';
+      this.retrieveAssayList();
+    })
+
     this.retrieveAssayList();
     this.titleService.setTitle("assays | reframeDB");
   }
 
+  private getFilteredAssays(query: string, types: string[] = []): AssayDetails[] {
+    const search = query.toLowerCase().trim();
+  
+    let baseList = this.assayList;
+  
+    // Apply search filter first
+    if (search.length > 0) {
+      baseList = baseList.filter((assay: AssayDetails) =>
+        (assay.assay_id && assay.assay_id.toLowerCase().includes(search)) ||
+        (assay.assay_title && assay.assay_title.toLowerCase().includes(search)) ||
+        (assay.title_short && assay.title_short.toLowerCase().includes(search)) ||
+        (assay.purpose && assay.purpose.toLowerCase().includes(search)) ||
+        (assay.summary && assay.summary.toLowerCase().includes(search))
+      );
+    }
+  
+    // Then apply type filter if any
+    if (types.length > 0) {
+      baseList = baseList.filter((d: any) =>
+        d.type_arr.some(type => types.includes(type))
+      );
+    }
+  
+    return baseList;
+  }
+  
+
 
   retrieveAssayList() {
     this.colorSvc.assaysState.subscribe((aList: Object) => {
-      if (aList) {
-        this.assayList = aList['assayList'];
-        this.selAssays = this.assayList;
-
-        // Standardize values
-        this.assayList.forEach((d: any) => {
-          d['type_arr'] = d.assay_type.split(',').map(d => this.stdize.transform(d));
-        })
-
-        // Populate fullTypes
-        this.fullTypes = this.assayList.map((d: any) => d.type_arr)
-          .reduce((acc, val) => acc.concat(val), []);
-
-          // Keep types for current filtering purposes
-        this.types = [...this.fullTypes]; // Initialize types to all options
-
-        this.typeDomain = d3.nest()
-          .key((d: any) => d)
-          .rollup((leaves: any) => leaves.length)
-          .entries(this.assayList.map((d: any) => d.type_arr).reduce((acc, val) => acc.concat(val), []))
-          .sort((a: any, b: any) => b.value - a.value || a.key - b.key)
-          .map(d => d.key);
-
-        this.setTypeColors(this.assayList);
-        this.indications = this.assayList.map(assay => assay.indication);
-
-        this.indicColorScale = aList['colorScale'];
-      }
-    })
+      if (!aList) return;
+  
+      this.assayList = aList['assayList'];
+  
+      //Standardize
+      this.assayList.forEach((d: any) => {
+        d['type_arr'] = d.assay_type.split(',').map(d => this.stdize.transform(d));
+      });
+  
+      this.fullTypes = this.assayList
+        .map((d: any) => d.type_arr)
+        .reduce((acc, val) => acc.concat(val), []);
+  
+      //First apply search only (no type filter yet)
+      const searchFiltered = this.getFilteredAssays(this.queryString);
+  
+      //Populate type dropdown from search results
+      this.getAssayKinds(searchFiltered);
+  
+      //Then apply type filter if active
+      this.selAssays = this.getFilteredAssays(this.queryString, this.filter ? this.filter : []);
+  
+      this.assaysFound = this.selAssays.length;
+      this.isFiltered = this.queryString.trim().length > 0 || (this.filter && this.filter.length > 0);
+  
+      this.setTypeColors(this.assayList);
+      this.indicColorScale = aList['colorScale'];
+    });
   }
+  
+  
 
   setTypeColors(assayList) {
     this.types = assayList.map((d: any) => d.type_arr).reduce((acc, val) => acc.concat(val), []);
@@ -167,53 +224,70 @@ export class AssaysComponent implements OnInit {
   // }
 
   onTypeSelected(selectedType: string) {
-
-    const selectElement = document.getElementById('typeSelect') as HTMLSelectElement; // Get the select element
-    if (selectElement) {
-      selectElement.value = selectedType; // Set the selected value
-    }
-
-    
-    // Call filterType with the selected type wrapped in an array
-    if(selectedType != 'see all'){
+    if (selectedType !== 'see all') {
       this.filterType([selectedType]);
-    }else{
-      this.removeFilter();
+    } else {
+      this.filter = []; // Clear type filter only
+      this.selAssays = this.getFilteredAssays(this.queryString, []);
+      this.assaysFound = this.selAssays.length;
+      this.isFiltered = this.queryString.trim().length > 0;
+      this.getAssayKinds();
     }
-    
   }
+  
   
   filterType(types: string[]) {
-    this.filter = types;  // Update the filter with selected types
-    console.log(this.filter);
-    
-    // Filter selAssays based on the selected types
-    this.selAssays = this.assayList.filter((d: any) => 
-      (d.type_arr.filter(type => this.filter.includes(type))).length > 0
-    );
-  
-    console.log(this.selAssays);
-  
-    // Update filter colors based on selected types
-    this.filter_color = types.map(d => this.getTypeColor(d)[1]);
-    this.isFiltered = true;  // Set filter state
-    this.getAssayKinds();  // Call additional logic if needed
-  }
-
-  removeFilter() {
-    this.selAssays = this.assayList;
-    this.isFiltered = false;
-    this.colorSvc.selectedTypeSubject.next(null);
+    this.filter = types;
+    this.selAssays = this.getFilteredAssays(this.queryString, types);
+    this.assaysFound = this.selAssays.length;
+    this.isFiltered = true;
     this.getAssayKinds();
   }
+  
+  
 
-  getAssayKinds() {
-    this.indications = this.selAssays.map(assay => assay.indication);
-    this.types = this.selAssays.map((d: any) => d.type_arr).reduce((acc, val) => acc.concat(val), []);
+  // removeFilter() {
+  //   this.selAssays = this.assayList;
+  //   this.isFiltered = false;
+  //   this.colorSvc.selectedTypeSubject.next(null);
+  //   this.getAssayKinds();
+  // }
+
+  getAssayKinds(baseList: AssayDetails[] = this.selAssays) {
+    this.types = baseList.map((d: any) => d.type_arr).reduce((acc, val) => acc.concat(val), []);
   }
-
+  
   getDistinctTypes(): string[] {
-    return Array.from(new Set(this.fullTypes)); // Use the fullTypes array
+    const baseFiltered = this.getFilteredAssays(this.queryString, []); // Only use search term
+    const filteredTypes: string[] = baseFiltered
+      .map((d: any) => d.type_arr)
+      .reduce((acc, val) => acc.concat(val), []);
+  
+    return Array.from(new Set(filteredTypes)).sort(); // deduplicated + sorted
+  }
+  
+  clearSearch(){
+    this.router.navigate([], {
+      queryParams: {}, // Clears all query parameters
+      queryParamsHandling: '' // Optional: Keeps existing parameters if not specified
+    });
+
+    this.retrieveAssayList()
   }
 
+  onEnter() {
+    let curr_query = this.queryString;
+    this.queryString = '';
+    console.log(curr_query)
+    this.router.navigate(['assays/'], {
+      queryParams:
+        {
+          query: curr_query,
+        }
+    });
+  }
+
+  get showClearButton(): boolean {
+    return this.queryString.trim().length > 0;
+  }
 }
