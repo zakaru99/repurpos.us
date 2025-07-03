@@ -8,3 +8,4 @@ export * from './vendor-data';
 export * from './wiki-data';
 export * from './primary-screen-data';
 export * from './psd-details';
+export * from './calibr-pk-data';

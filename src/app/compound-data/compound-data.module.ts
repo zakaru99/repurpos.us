@@ -25,6 +25,7 @@ import { AssaySparklineComponent } from '../compound-data/assay-sparkline/assay-
 import { SaltWarningDialogComponent } from '../_components/index';
 import { SaltWarningComponent } from '../_dialogs/index';
 import { CompoundPrimaryScreeningDataComponent } from './compound-primary-screening-data/compound-primary-screening-data.component';
+import { CompoundCalibrPkDataComponent } from './compound-calibr-pk-data/compound-calibr-pk-data.component';
 
 // import { IndicationsGraphComponent } from '../compound-data/indications-graph/indications-graph.component';
 // import { ShowMoreButtonComponent, ShowMorePane } from './compound-data/show-more-button/show-more-button.component';
@@ -54,6 +55,7 @@ import { CompoundPrimaryScreeningDataComponent } from './compound-primary-screen
     SaltWarningComponent,
     SaltWarningDialogComponent,
     CompoundPrimaryScreeningDataComponent,
+    CompoundCalibrPkDataComponent,
     // IndicationsGraphComponent
   ],
   entryComponents: [

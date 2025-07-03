@@ -1,0 +1,22 @@
+<div *ngIf="pkData.length > 0" class="chem-props-container">
+  <h5>CALIBR t<sub>1/2</sub> Data</h5>
+
+  <table class="pk-table">
+    <thead>
+      <tr>
+        <th>Species</th>
+        <th>Route</th>
+        <th>Agg HL (hr)</th>
+        <th>Log HL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let x of pkData">
+        <td>{{ x['Species'] }}</td>
+        <td>{{ x['Route'] }}</td>
+        <td>{{ x['Agg_HL'] }}</td>
+        <td>{{ x['Log_HL'] }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

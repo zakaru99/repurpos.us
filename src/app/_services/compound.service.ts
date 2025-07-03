@@ -14,6 +14,8 @@ import { AssayData, GVKData, IntegrityData, InformaData, OntologyData, VendorDat
 import { LoginStateService } from '../_services/login-state.service';
 import { BackendSearchService } from '../_services/backendsearch.service';
 import {PrimaryScreenData} from "../_models/vendor-data/primary-screen-data";
+import {CalibrPKData} from "../_models/vendor-data/calibr-pk-data"
+
 // import { WDQService, BackendSearchService, LoginStateService } from '../_services/';
 
 @Injectable({
@@ -40,6 +42,10 @@ export class CompoundService {
   // Primary Screening data
   public primaryDataSubject: BehaviorSubject<PrimaryScreenData[]> = new BehaviorSubject<PrimaryScreenData[]>([]);
   primaryDataState = this.primaryDataSubject.asObservable();
+
+  //calibr PK data
+  public calibrPKDataSubject: BehaviorSubject<CalibrPKData[]> = new BehaviorSubject<CalibrPKData[]>([]);
+  calibrPKDataState = this.calibrPKDataSubject.asObservable();
 
   // --- Header data ---
   private main_label: string;
@@ -241,6 +247,7 @@ export class CompoundService {
       // announce changes
       this.assaysSubject.next([]);
       this.primaryDataSubject.next([]);
+      this.calibrPKDataSubject.next([]);
       this.nameSubject.next('');
       this.whoSubject.next('');
       this.smilesSubject.next('');
@@ -519,6 +526,9 @@ export class CompoundService {
 
             // Primary screening data, for primary screening data component
             this.primaryDataSubject.next(<PrimaryScreenData[]>b.primary_screening_data);
+
+            //calibr pk data, for the calibr pk component
+            this.calibrPKDataSubject.next(<CalibrPKData[]>b.calibr);
 
             // Pull out title for the compound
              this.main_label = b.main_label;

@@ -1,0 +1,27 @@
+.pk-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+  font-size: 0.85em;
+}
+
+.pk-table th {
+  text-align: left;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 0.75em;
+  color: #666;
+  padding: 6px 12px;
+  border-bottom: 1px solid #ccc;
+}
+
+.pk-table td {
+  padding: 6px 12px;
+  vertical-align: middle;
+  color: #333;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.pk-table tr:hover td {
+  background-color: #f9f9f9;
+}
