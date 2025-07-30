@@ -341,3 +341,29 @@ a.dwnld-link:hover {
   font-style: italic;
   display: inline-block;
 }
+
+.stat-list {
+  display: grid;
+  gap: 12px 24px;
+  list-style: none;
+  padding-right: 20px;
+  margin: 0;
+}
+
+.stat-item {
+  font-size: 0.95rem;
+  color: #333;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 4px;
+}
+
+.stat-label {
+  color: #666;
+  padding-right: 20px;
+}
+
+.stat-value {
+  font-weight: bold;
+}

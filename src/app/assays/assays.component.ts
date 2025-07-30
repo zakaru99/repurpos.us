@@ -56,6 +56,14 @@ export class AssaysComponent implements OnInit {
   filter: string[];
   filter_color: string[];
 
+  secondaryNum: number = 0;
+  publishshedDrNum: number = 0;
+  publishedPdataNum: number = 0;
+  unavailablePrimaryNum: number = 0;
+  pendingAssayNum: number = 0;
+
+  isMobile: boolean = false;
+
   meta_tags = [
     { property: 'og:title', content: 'reframeDB assay descriptions' },
     { name: 'description', content: 'List of assays performed on the reframeDB compound library' },
@@ -86,7 +94,7 @@ export class AssaysComponent implements OnInit {
         this.filterType(types);
       }
     })
-
+    this.checkMobile()
   }
 
   ngOnInit() {
@@ -97,6 +105,14 @@ export class AssaysComponent implements OnInit {
 
     this.retrieveAssayList();
     this.titleService.setTitle("assays | reframeDB");
+  }
+  
+  getCounts(){
+    this.secondaryNum = this.selAssays.filter(a => a.primary_screened === 'secondary').length
+    this.publishshedDrNum = this.selAssays.length
+    this.publishedPdataNum = this.selAssays.filter(a => !isNaN(Number(a.primary_screened))).length;
+    this.unavailablePrimaryNum = this.selAssays.filter(a => a.primary_screened === 'not available').length
+    this.pendingAssayNum = this.assayList.filter( a=> a.published === false).length
   }
 
   private getFilteredAssays(query: string, types: string[] = []): AssayDetails[] {
@@ -132,7 +148,7 @@ export class AssaysComponent implements OnInit {
       if (!aList) return;
   
       this.assayList = aList['assayList'];
-  
+      this.getCounts()
       //Standardize
       this.assayList.forEach((d: any) => {
         d['type_arr'] = d.assay_type.split(',').map(d => this.stdize.transform(d));
@@ -149,7 +165,7 @@ export class AssaysComponent implements OnInit {
       this.getAssayKinds(searchFiltered);
   
       //Then apply type filter if active
-      this.selAssays = this.getFilteredAssays(this.queryString, this.filter ? this.filter : []);
+      this.selAssays = this.getFilteredAssays(this.queryString, this.filter ? this.filter : []).filter(a => a.published === true);
   
       this.assaysFound = this.selAssays.length;
       this.isFiltered = this.queryString.trim().length > 0 || (this.filter && this.filter.length > 0);
@@ -289,5 +305,13 @@ export class AssaysComponent implements OnInit {
 
   get showClearButton(): boolean {
     return this.queryString.trim().length > 0;
+  }
+
+  checkMobile() {
+    if (window.matchMedia('(max-width: 900px)').matches) {
+      this.isMobile = true;
+    } else {
+      this.isMobile = false;
+    }
   }
 }

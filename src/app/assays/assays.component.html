@@ -17,7 +17,7 @@
 
           <div class="flex-container search-bar">
             <label for="typeSelect">Search:</label>
-            <input style="width: 50%;" class="form-control" [(ngModel)]="queryString" type="text" (keydown.enter)="onEnter()" placeholder="search by assay ID, title, summary, purpose, or indication">
+            <input style="width: 65%;" class="form-control" [(ngModel)]="queryString" type="text" (keydown.enter)="onEnter()" placeholder="search by assay ID, title, summary, purpose, or indication">
             <button mat-raised-button color="primary" *ngIf="showClearButton" (click)="clearSearch()" @fadeInOut>Clear Search</button>
           </div>
 
@@ -61,13 +61,38 @@
       </div> -->
     </div>
 
+
+<ul class="stat-list" *ngIf="!isMobile">
+  <li class="stat-item">
+    <span class="stat-label">Published Dose Response Data</span>
+    <span class="stat-value">{{publishshedDrNum}}</span>
+  </li>
+  <li class="stat-item">
+    <span class="stat-label">Assays Pending Publication</span>
+    <span class="stat-value">{{pendingAssayNum}}</span>
+  </li>
+  <li class="stat-item">
+    <span class="stat-label">Published Primary Data</span>
+    <span class="stat-value">{{publishedPdataNum}}</span>
+  </li>
+  <li class="stat-item">
+    <span class="stat-label">Unavailable Primary Data<br><i>data not shared with ReFRAME team<br>(author's unable or willing to provide)</i></span>
+    <span class="stat-value">{{unavailablePrimaryNum}}</span>
+  </li>
+  <li class="stat-item">
+    <span class="stat-label">Secondary Screens</span>
+    <span class="stat-value">{{secondaryNum}}</span>
+  </li>
+</ul>
+    
+
   </div>
 
   <div class="row flex-row">
 
     <div *ngFor="let assay of selAssays" class="col-xl-3 col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch assay-type">
 
-      <div class='card '>
+      <div class='card ' *ngIf="assay.published == true">
 
 
         <div class="row">
