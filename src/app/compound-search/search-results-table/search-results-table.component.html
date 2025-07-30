@@ -91,7 +91,7 @@
           </ng-container>
 
           <ng-container matColumnDef="highestPhase">
-            <mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" start="desc" class="mat-header">
+            <mat-header-cell *matHeaderCellDef mat-sort-header="highestPhase" disableClear="true" start="desc" class="mat-header">
               <span class="mat-header" [matTooltip]="highestTooltip">
                 Highest Phase
               </span>
@@ -295,7 +295,7 @@
         <!-- If using a SMILES string, check the SMILES structure for improper aromatization, use keuklized SMILES strings, and/or remove generic atoms.</p> -->
 
         <p>
-          Please try again and if it persists, email <a href="mailto:help@reframedb.org?subject=ReFrameDB bad query: {{ APIquery }}">help@reframedb.org</a>
+          Please try again and if it persists, email <a href="mailto:reframescreens@scripps.edu?subject=ReFrameDB bad query: {{ APIquery }}">reframescreens@scripps.edu</a>
         </p>
     </ng-container>
   </ng-container>
