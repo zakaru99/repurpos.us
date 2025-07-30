@@ -21,6 +21,22 @@ export class SearchResultsTableComponent implements OnInit {
 
   private sort: MatSort;
 
+  PHASE_ORDER: { [key: string]: number } = {
+    "IND Filed": 1,
+    "Phase 0": 2,
+    "Clinical": 3,
+    "Discontinued": 4,
+    "Phase I": 5,
+    "Phase I/II": 6,
+    "Phase II": 7,
+    "Phase II/III": 8,
+    "Phase III": 9,
+    "Pre-Registered": 10,
+    "Registered": 11,
+    "Withdrawn": 12,
+    "Launched": 13
+  };
+
   @ViewChild(MatSort) set matSort(ms: MatSort) {
     // Required for async loading of data, as per https://stackoverflow.com/questions/48943501/angular-mat-table-datasource-paginator-and-datasource-sort-and-datasource-filter
     this.sort = ms;
@@ -84,6 +100,7 @@ export class SearchResultsTableComponent implements OnInit {
       switch (property) {
         case 'main_label': return item.main_label.toLowerCase();
         case 'reframeid': return (item.assays + Number(item.reframeid === 'full' || item.reframeid === 'stereofree' || item.reframeid === 'sub_smiles') + Number(item.similar_compounds.length > 0) / 2);
+        case 'highestPhase': return this.PHASE_ORDER[item.highest_phase] !== undefined ? this.PHASE_ORDER[item.highest_phase]: -1;
         case 'assays': return (item.assays + Number(item.reframeid === true));
         case 'struct': return (this.statusOrder[item.reframeid]);
         default: return item[property];
@@ -208,6 +225,23 @@ export class SearchResultsTableComponent implements OnInit {
       this.isMobile = false;
     }
   }
+
+  // sortByHighestPhase() {
+  //   if (!this.sort) return;
+  
+  //   if (this.sort.active === 'highestPhase') {
+  //     this.sort.direction = this.sort.direction === 'asc' ? 'desc' : 'asc';
+  //   } else {
+  //     this.sort.active = 'highestPhase';
+  //     this.sort.direction = 'asc';
+  //   }
+  
+  //   this.sort.sortChange.emit({ active: this.sort.active, direction: this.sort.direction });
+  
+  //   //Perform the custom sort and update data
+  //   const sortedResults = this.sortResults(this.results, 'Phase');
+  //   this.dataSource.data = this.sort.direction === 'asc' ? sortedResults : sortedResults.reverse();
+  // }
 
   sortResults(results, sort_on) {
     // apply the sorting function
@@ -345,7 +379,7 @@ export class SearchResultsTableComponent implements OnInit {
     const lineDelimiter = '\n';
     const columnDelimiter = ','; //using comma to format data for csv
 
-    const colNames = ['name', 'ikey', 'smile', 'highest phase', 'collection status', 'link']
+    const colNames = ['name', 'ikey', 'smile', 'collection status', 'link']
     var dwnld_data = '';
     //build the header row
     dwnld_data += colNames.join(columnDelimiter);
@@ -384,7 +418,6 @@ export class SearchResultsTableComponent implements OnInit {
         'name': item['main_label'],
         'ikey': item['id'],
         'smile': item['smiles'],
-        'highest phase': item['highest_phase'],
         'collection status': statusMap[item['reframeid']] || 'not in screening collection',
         'link': `=HYPERLINK("https://reframedb.org/compound_data/${item.id}?qid=${item.qid}")`
       };
