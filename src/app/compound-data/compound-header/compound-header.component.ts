@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { CompoundService } from '../../_services/index';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 
-import { Compound } from '../../_models';
+import { AssayData, Compound } from '../../_models';
 declare var $ : any
 
 @Component({
@@ -22,6 +22,9 @@ export class CompoundHeaderComponent implements OnInit {
   public whoName: string;
   public chemVendors: Array<Object> = [];
   public similarityResults: Array<Compound> = [];
+
+  public isToxicA00295 = false;
+  public assayData: AssayData[] = [];
 
   num_aliases: number;
   all_shown: boolean = false;
@@ -55,7 +58,29 @@ export class CompoundHeaderComponent implements OnInit {
     this.cmpdSvc.similarState.subscribe((sdata: Compound[]) => {
       this.similarityResults = sdata;
     })
+
+    this.cmpdSvc.assaysState.subscribe((assays: AssayData[]) =>{
+      this.assayData = assays;
+      this.checkToxicity();
+    })
   }
+
+checkToxicity(): void {
+  if (!this.assayData || this.assayData.length === 0) {
+    this.isToxicA00295 = false;
+    return;
+  }
+
+  const assay = this.assayData.find(x =>
+    x.assay_id === 'A00295' &&
+    x.activity_type &&
+    x.activity_type.toUpperCase() === 'IC50' &&
+    !isNaN(Number(x.ac50)) &&
+    Number(x.ac50) < 10e-5
+  );
+
+  this.isToxicA00295 = !!assay;
+}
 
 
   onAnchorClick(anchor_tag: string) {
@@ -69,7 +94,10 @@ export class CompoundHeaderComponent implements OnInit {
     this._location.back();
   }
 
+  
+
   ngOnInit() {
+    this.checkToxicity();
   }
 
   showMore() {

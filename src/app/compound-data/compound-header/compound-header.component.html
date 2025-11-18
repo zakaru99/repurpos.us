@@ -137,8 +137,9 @@
           <div class="row download" *ngIf="chemVendors.length > 0">
             <div class="col-12">
               <div id="downloadQC" class="qc-data">
-                <!-- <button *ngFor="let vendor of chemVendors; let i = index;"><a (click)="clickedQC(vendor['chem_vendor_ikey']);">download qc data</a></button> -->
-                <button><a (click)="clickedQC(chemVendors[0]['chem_vendor_ikey']);">download qc data</a></button>
+                <button class="dwnld-btn" (click)="clickedQC(chemVendors[0]['chem_vendor_ikey'])">
+                  Download QC Data
+                </button>
               </div>
             </div>
           </div>
@@ -149,3 +150,9 @@
 
     </div>
   </div>
+
+  <div *ngIf="isToxicA00295" class="toxicity-alert">
+    This compound has been found to inhibit growth of HEK293 cells with IC50 < 10μM
+  </div>
+
+</div>
