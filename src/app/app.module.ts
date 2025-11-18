@@ -29,6 +29,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { IntroTextComponent } from './intro-text/intro-text.component';
+import { IntroTextModernComponent } from './intro-text-modern/intro-text-modern.component';
+
 import {
   CompoundSearchComponent, CompoundSearchOptionsComponent, SearchBoxComponent,
   SearchResultComponent, SearchResultsTableComponent, StructureSearchOptionsComponent,
@@ -106,6 +108,7 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
     TextSearchComponent,
     KetcherComponent,
     IntroTextComponent,
+    IntroTextModernComponent,
     AssayIndicationComponent,
     FooterComponent,
     EditItemComponent,
