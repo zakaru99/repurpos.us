@@ -11,19 +11,31 @@ export class LoaderInterceptorService implements HttpInterceptor {
   dialogRef: any;
 	loaderCounter: number = 0;
 
+    private excludedUrls: string[] = [
+    '/suggest'
+  ];
+
   constructor(private loaderService: LoaderStateService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // if (req.url.search('molfile') < 0) {
-      this.showLoader();
+      const shouldSkip = this.excludedUrls.some(url => req.url.includes(url));
 
-      return next.handle(req).do((event: HttpEvent<any>) => {
-        if (event instanceof HttpResponse) {
-          this.hideLoader();
-        }
-      }, (err: any) => {
-        this.hideLoader();
-        console.log('loading complete with err');
+      if (!shouldSkip) {
+        this.showLoader();
+      }
+
+      return next.handle(req).do(
+        (event: HttpEvent<any>) => {
+          if (event instanceof HttpResponse && !shouldSkip) {
+            this.hideLoader();
+          }
+        },
+        (err: any) => {
+          if (!shouldSkip) {
+            this.hideLoader();
+          }
+          console.log('loading complete with err');
       });
     // }
   }
