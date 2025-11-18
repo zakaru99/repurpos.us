@@ -1,7 +1,9 @@
 form.search {
   display: flex;
+  flex-direction: column; /* stack input + dropdown vertically */
   margin-top: 5px;
   margin-right: 10px;
+  position: relative; /* crucial for dropdown positioning */
 }
 
 .search label,
@@ -14,7 +16,7 @@ form.search {
   font-family: "Lato", sans-serif;
   font-weight: 300;
   text-indent: 10px;
-  padding: 0 0 0 22px;
+  padding-left: 22px;
   width: 0;
   height: 30px;
   background: none;
@@ -22,6 +24,7 @@ form.search {
 
   cursor: pointer;
   flex-shrink: 1;
+   transition: width 0.3s ease, background 0.3s ease;
 }
 
 .search.expanded input[type="text"] {
@@ -29,6 +32,12 @@ form.search {
   background: white;
   outline: none;
   cursor: text;
+}
+
+@media only screen and (max-width: 760px) {
+  .search.expanded input[type="text"] {
+    width: 75vw;
+  }
 }
 
 /* button fade in/out */
@@ -98,4 +107,33 @@ form.search {
   height: 2px;
   background-color: #1976d2;
   transition: left 0.3s ease;
+}
+
+.suggestions-dropdown {
+  position: absolute; /* dropdown floats under input */
+  top: 100%;          /* directly below input */
+  left: 0;
+  width: 100%;        /* match input width */
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 0;
+  z-index: 1000;
+  max-height: 240px;  /* optional scroll if too many suggestions */
+  overflow-y: auto;
+}
+
+.suggestions-dropdown li {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background 0.2s;
+}
+
+.suggestions-dropdown li:hover {
+  background-color: #f2f2f2;
 }

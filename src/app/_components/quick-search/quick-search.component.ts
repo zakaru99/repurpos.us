@@ -1,5 +1,8 @@
 import { Component, Output, EventEmitter, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 
 @Component({
   selector: 'app-quick-search',
@@ -12,17 +15,33 @@ export class QuickSearchComponent implements OnInit, AfterViewInit {
   buttonFocusedOrClicked: boolean = false;
   selected: 'compound' | 'assay' = 'compound';
 
+  suggestions: string[] = [];
+  private queryChanged = new Subject<string>();
+
   
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private http2: HttpClient) { }
   @Output() toggleChange = new EventEmitter<'compound' | 'assay'>();
 
   @ViewChild('inputEl') searchInput!: ElementRef;
 
-  ngAfterViewInit(){
+  ngAfterViewInit(): void{
     this.searchInput.nativeElement.focus()
   }
-  ngOnInit() {
+
+  ngOnInit(): void {
+    console.log("QuickSearchComponent initialized");
+
+
+    this.queryChanged
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((q: string) => {
+        if (q.length > 1) {
+          this.fetchSuggestions(q);
+        } else {
+          this.suggestions = [];
+        }
+      });
   }
 
   select(option: 'compound' | 'assay') {
@@ -86,4 +105,39 @@ export class QuickSearchComponent implements OnInit, AfterViewInit {
     }
     
   }
+
+    fetchSuggestions(q: string) {
+    console.log(this.selected)
+    if (!q || q.length < 2) {
+      this.suggestions = [];
+      return;
+    }
+
+    let curr_query = q;
+    const type =  this.selected;
+    const url = `/api/suggest?q=${encodeURIComponent(curr_query)}&type=${type}`;
+
+    this.http2.get<string[]>(url).subscribe({
+      next: (results: string[]) => {
+        this.suggestions = results;
+        console.log(`${type} suggestions for`, curr_query, ':', this.suggestions);
+      },
+      error: (err) => {
+        console.error(`Error fetching ${type} suggestions:`, err);
+        this.suggestions = [];
+      }
+    });
+    console.log(this.suggestions)
+  }
+
+  onKeyUp(event: KeyboardEvent){
+    console.log(this.query)
+    this.queryChanged.next(this.query);
+  }
+
+  onSuggestionClick(suggestion: string) {
+  this.query = suggestion;
+  this.suggestions = [];
+  this.onEnter(); // optional: auto-submit search on click
+}
 }

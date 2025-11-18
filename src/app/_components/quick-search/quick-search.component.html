@@ -22,7 +22,17 @@
       [placeholder]="getPlaceholder()"
       [(ngModel)]="query"
       (keydown.enter)="onEnter()"
+      (keyup)="onKeyUp($event)"
     />
+
+    <ul class="suggestions-dropdown" *ngIf="suggestions.length > 0 && inputFocused">
+      <li
+        *ngFor="let suggestion of suggestions"
+        (mousedown)="onSuggestionClick(suggestion)"
+      >
+        {{ suggestion }}
+      </li>
+    </ul>
 
     <!-- Show only when focused -->
     <div *ngIf="inputFocused" class="search-toggle">
