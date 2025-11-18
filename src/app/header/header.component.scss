@@ -1,10 +1,12 @@
-/* -- header -- */
+/* ---------------------------
+   -- header --
+---------------------------- */
 .blue-fill {
   background-color: #f5f8fd;
   padding-top: 6px;
   padding-bottom: 12px;
   margin-bottom: 6px;
-  border-bottom:3px solid #7f9feb;
+  border-bottom: 3px solid #7f9feb;
   align-items: center;
   justify-content: space-between;
 }
@@ -12,83 +14,12 @@
 .logo {
   display: -webkit-inline-box;
   border-right: 3px white solid;
-}
 
-.logo img {
-  margin-top: 0;
-  width: 40px;
-  vertical-align: top;
-}
-
-.name {
-  display: -webkit-inline-box;
-  margin-top: 7px;
-  margin-left: 12px;
-  margin-right: 12px;
-}
-
-.navbar-brand a:hover {
-  text-decoration: none;
-}
-
-.narrow {
-  letter-spacing: -0.2px;
-}
-
-.wide {
-  letter-spacing: 1px;
-}
-
-header ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-footer li,
-header li {
-  display: inline-block;
-  opacity: 0.8;
-  padding-left: 12px;
-  padding-right: 12px;
-}
-
-header a {
-  color: #212529;
-}
-/* footer */
-footer {
-  border-top: 4px solid #7f9feb;
-  margin-top: 6px;
-  /* padding-top: 3px; */
-  font-size: 1em;
-  margin-top: 50px;
-  margin-bottom: 6px;
-  vertical-align: middle;
-}
-
-footer li {
-  padding-top: 6px;
-  padding-right: 18px;
-}
-
-.calibr-logo {
-  margin-top: 4px;
-  height: 30px;
-  vertical-align: middle;
-}
-
-.gh {
-  height: 20px;
-  margin-top: -5px;
-  margin-right: 6px;
-}
-
-.left-spacer {
-  padding-left: 6px;
-}
-
-.nav {
-  flex-wrap: nowrap;
+  img {
+    margin-top: 0;
+    width: 40px;
+    vertical-align: top;
+  }
 }
 
 .navbar-brand {
@@ -108,6 +39,18 @@ footer li {
     opacity: 0.65;
     line-height: 1em;
     margin-left: 12px;
+
+    .wide {
+      letter-spacing: 1px;
+    }
+
+    .narrow {
+      letter-spacing: -0.2px;
+    }
+  }
+
+  a:hover {
+    text-decoration: none;
   }
 }
 
@@ -120,51 +63,25 @@ footer li {
   }
 }
 
-.link-menu {
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.links {
+/* Search box */
+.search {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
 }
 
-.links.logout-wrap {
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.links ul {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
+/* Reveal / dropdown panel */
 .reveal {
   height: 0;
   width: 0;
   overflow: hidden;
   background: #f5f8fd;
   border-bottom-left-radius: 15px;
-  -webkit-transition: height, 0.3s linear;
-  -moz-transition: height, 0.3s linear;
-  -ms-transition: height, 0.3s linear;
-  -o-transition: height, 0.3s linear;
-  transition: height, 0.3s linear;
+  transition: height 0.3s linear;
 
   &.open {
     height: 200px;
     width: 100%;
     z-index: 10;
     padding-right: 15px;
-    -webkit-transition: height, 0.3s linear;
-    -moz-transition: height, 0.3s linear;
-    -ms-transition: height, 0.3s linear;
-    -o-transition: height, 0.3s linear;
-    transition: height, 0.3s linear;
   }
 
   &.sign-in {
@@ -177,14 +94,58 @@ footer li {
   }
 }
 
-.search {
-  display: flex;
-}
-
+/* Sign-in link */
 .sign-in {
   cursor: pointer;
 }
 
+/* ---------------------------
+   Modern top nav hover
+---------------------------- */
+.navbar-nav li.menu-item a {
+        text-decoration: none;
+
+  position: relative;
+  color: #212529;
+  font-weight: 500;
+  padding: 4px 6px;
+  transition: color 0.25s ease, transform 0.25s ease;
+
+  &:hover {
+    color: #3d6de0; /* accent blue */
+    transform: translateY(-2px);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 2px;
+    background: #3d6de0;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  &:hover::after {
+    width: 100%;
+  }
+}
+
+li.sign-in a {
+  font-weight: 600;
+  color: #3d6de0;
+
+  &:hover {
+    color: #335cc0;
+    transform: translateY(-1px);
+  }
+}
+
+/* ---------------------------
+   Media queries
+---------------------------- */
 @media only screen and (min-width: 992px) {
   .navbar-collapse {
     height: auto;
@@ -224,25 +185,21 @@ footer li {
     flex-direction: column;
     max-height: 0;
     width: 100%;
-    //height: auto;
     overflow: hidden;
-    //min-height: 1px;
     transition: max-height 1s ease-in-out;
+
     *:not(.user-login) {
-      //max-height: 0;
-      //margin-bottom: -5em;
-      //height: auto;
-      //overflow: hidden;
       max-height: 0;
       min-height: unset;
       overflow: hidden;
       transition: max-height 0.3s ease-in-out;
     }
+
     &.show {
       max-height: 500px;
+
       *:not(.user-login) {
         max-height: 500px;
-        //margin-bottom: 0;
       }
     }
   }
@@ -258,9 +215,5 @@ footer li {
   .search {
     align-self: flex-start;
     padding-left: 1em;
-  }
-
-  .link-menu {
-    width: 100%;
   }
 }
