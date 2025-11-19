@@ -15,7 +15,7 @@
           <th class="header-title align-middle assay-indic">indication</th>
           <th class="header-title align-middle">Activity<br/>type</th>
           <th class="header-title align-middle">Measurement</th>
-          <th class="header-title align-middle"><span class="invisible">Measure</span></th>
+          <!-- <th class="header-title align-middle"><span class="invisible">Measure</span></th> -->
           <th class="header-title align-middle">Assay Source</th>
           <th class="header-title align-middle" *ngIf="showVendor">Compound Vendor</th>
           <th class="header-title align-middle" *ngIf="showVendor">Compound Vendor ID</th>
@@ -55,16 +55,15 @@
 
 
           <!-- Assay Measurement bargraph -->
-          <td class="align-middle">
-            <!-- <td class="col-xl-auto col-lg-auto col-md-auto d-sm-none d-md-block"> -->
+          <!-- <td class="align-middle">
             <app-assay-sparkline [currentVal]="[x['ac50']]" [assayMin]="assayMin" *ngIf="x['ac50']"></app-assay-sparkline>
-          </td>
+          </td> -->
 
           <!-- Assay Measurement -->
-          <td class="align-middle">
-            <span *ngIf="x.ac_precision != ''">{{x.ac_precision}} </span>
-            {{x['ac50'] ? x['ac50'].toExponential(2) : "NA" }}</td>
-
+            <td class="align-middle" [ngClass]="{'toxic': x.assay_id === 'A00295' && x.activity_type === 'IC50' && x.ac50 < 10e-5}">
+              <span *ngIf="x.ac_precision != ''">{{ x.ac_precision }} </span>
+              {{ x['ac50'] ? x['ac50'].toExponential(2) : 'NA' }}
+            </td>
 
           <!-- Assay Source -->
           <td class="align-middle">

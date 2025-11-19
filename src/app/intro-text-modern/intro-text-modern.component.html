@@ -1,3 +1,88 @@
-<p>
-  intro-text-modern works!
-</p>
+<div class="intro">
+  <div class="whats-new-trigger" #trigger [class.hidden]="isWhatsNewOpen" (click)="toggleWhatsNew($event)">
+    <i #bellIcon class="bell-icon"></i>
+    <div class="label-container">
+      <span class="label">What's New</span>
+      <span class="update-date">November 19, 2025</span>
+    </div>
+  </div>
+
+  <div #panel class="whats-new-panel" [class.open]="isWhatsNewOpen" role="dialog" [attr.aria-hidden]="!isWhatsNewOpen" (click)="$event.stopPropagation()">
+    <button class="close-btn" aria-label="Close" (click)="closeWhatsNew($event)">✕</button>
+    <h2>What's New</h2>
+    <ul>
+      <li>Modernized homepage UI</li>
+      <li>New predictive searching</li>
+      <li>Assay toxicity tag</li>
+    </ul>
+  </div>
+
+  <div class="homepage">
+    <section class="hero">
+      <h1>Welcome to <span class="highlight">REFRAMEdb</span></h1>
+      <p class="update-info">Last updated July 31, 2025 — 163 new compound profiles added</p>
+      <app-hero-search></app-hero-search>
+    </section>
+
+    <section class="how-to">
+      <button class="menu-toggle" onclick="this.classList.toggle('active')">☰ How to Use</button>
+      <div class="menu-content">
+        <ul>
+          <li><a [routerLink]="['about']" fragment="tutorial">Watch the tutorial video</a></li>
+          <li>Explore pharmaceutical properties of compounds like <a [routerLink]="['/search/']" [queryParams]="{ query: 'imatinib', type: 'string' }">imatinib</a></li>
+          <li>View screening data for all compounds which responded in a <a routerLink="/assays">specific assay</a> like <a routerLink="/assays/A00093">Crypto-C. parvum proliferation assay</a> (requires sign-in)</li>
+          <li>Search for <a [routerLink]="['/search/']" [queryParams]="{ query: 'C(C1C2=C(N(C)N=1)C1=C(C=NC(=N1)NC1=CC=C(N3CCN(C)CC3)C=C1)CC2)(=O)N', type: 'structure', mode: 'similarity', tanimoto: '0.35' }">similar structures</a> to view annotations and responses</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="downloads">
+      <h2>Data Download Guide</h2>
+      <div class="download-row">
+        <div class="card">
+          <h3>All reframe Compounds</h3>
+          <p>Structure info, status, and compound page links</p>
+          <button class="button" type="button" (click)="downloadFiles()">Download</button>
+        </div>
+        <div class="card">
+          <h3>Compound QC Data</h3>
+          <p>LCMS/NMR QC data if available</p>
+          <button routerLink="/compound_data/KTUFNOKKBVMGRW;qid=Q82870894">Compound Page</button>
+        </div>
+        <div class="card">
+          <h3>Dose Response Data</h3>
+          <p>ac50, efficacy, r² from assay screens</p>
+          <button routerLink="/assays/A00496">Assay Page</button>
+        </div>
+        <div class="card">
+          <h3>Search Results</h3>
+          <p>Search output including SMILES, availability, profile link</p>
+          <button
+          [routerLink]="'/search'"
+          [queryParams]="{
+            query: 'CNC(=O)Oc1cccc2ccccc12',
+            type: 'structure',
+            mode: 'similarity',
+            category: 'all',
+            tanimoto: 0.9
+          }">Search Results</button>
+        </div>
+        <div class="card">
+          <h3>Primary Screening Data</h3>
+          <p>Indicates whether compounds are primary hits or not</p>
+          <button routerLink="/compound_data/KTUFNOKKBVMGRW;qid=Q82870894">Compound Page</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="crest">
+      <p>
+        Also explore 
+        <a href="https://crestdb.org" target="_blank" rel="noopener noreferrer" class="crest-link">
+          CRESTdb.org
+        </a>
+        for additional screening data and compound collection
+      </p>
+    </section>
+  </div>
+</div>

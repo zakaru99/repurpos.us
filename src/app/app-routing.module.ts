@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, Router, NavigationEnd } from '@angular/router';
 
 import { IntroTextComponent } from './intro-text/intro-text.component';
+import { IntroTextModernComponent } from './intro-text-modern/intro-text-modern.component';
 import { CompoundSearchComponent } from './compound-search/compound-search.component';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
@@ -12,7 +13,7 @@ import { OntologyTreeComponent } from "./ontology-tree/ontology-tree.component";
 import { environment } from '../environments/environment';
 
 const appRoutes: Routes = [
-  { path: '', component: IntroTextComponent, pathMatch: 'full' },
+  { path: '', component: IntroTextModernComponent, pathMatch: 'full' },
   { path: 'terms', component: TermsComponent, pathMatch: 'full' },
   { path: 'search', component: CompoundSearchComponent, pathMatch: 'full' },
   { path: 'about', pathMatch: 'full', loadChildren: () => import('./about/about.module').then(mod => mod.AboutModule) },

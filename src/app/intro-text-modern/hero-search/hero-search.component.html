@@ -1,3 +1,33 @@
-<p>
-  hero-search works!
-</p>
+
+<div class="search-bar-wrapper">
+  <div class="input-container">
+    <input type="text" [(ngModel)]="query"
+           (keydown)="onKeyDown($event)"
+           (ngModelChange)="onQueryChange($event)"
+           placeholder="Search compounds..." />
+    <ul class="predictive-dropdown" *ngIf="dropdownVisible">
+      <li *ngFor="let item of suggestions; let i = index"
+          [class.highlighted]="i === highlightedIndex"
+          (mouseenter)="setHighlight(i)"
+          (click)="selectSuggestion(item)">
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+  <button (click)="search()"><i class="icon-search"></i> Search</button>
+</div>
+  <div class="hero-search-row">
+  <div class="toggle-wrapper">
+    <label for="search-toggle" class="toggle-label">Search For:</label>
+    <div id="search-toggle" class="search-toggle">
+      <div class="toggle-option" [class.active]="searchCategory === 'compound'" (click)="setSearchCategory('compound')">
+        Compound
+      </div>
+      <div class="toggle-option" [class.active]="searchCategory === 'assay'" (click)="setSearchCategory('assay')">
+        Assay
+      </div>
+      <div class="slider" [style.left]="searchCategory === 'compound' ? '0%' : '50%'"></div>
+    </div>
+  </div>
+  <a class="structure-link" [routerLink]="'/search'" [queryParams]="{ type: 'structure' }">Structure Search</a>
+</div>

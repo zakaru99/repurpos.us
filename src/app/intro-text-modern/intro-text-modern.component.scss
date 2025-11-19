@@ -1,0 +1,339 @@
+/* General Layout */
+.homepage {
+  font-family: "Inter", sans-serif;
+  color: #333;
+  max-width: none;
+  margin: auto;
+  padding: 2rem;
+  line-height: 1.6;
+}
+
+/* Hero section headline */
+.hero {
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero .highlight {
+  color: #3D6DE0;
+}
+
+.hero .subtitle {
+  color: #666;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+/* Quick Links */
+.quick-links {
+  margin-top: 1rem;
+}
+
+.quick-links a {
+  margin: 0 1rem;
+  color: #3D6DE0;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.quick-links a:hover {
+  text-decoration: underline;
+}
+
+/* How to Use (Hamburger Menu) */
+.how-to {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.menu-toggle {
+  background: #3D6DE0;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s ease;
+}
+
+.menu-toggle:hover {
+  background: #335CC0;
+}
+
+.menu-content {
+  display: none;
+  margin-top: 1rem;
+  text-align: left;
+  background: #fafafa;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.menu-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-content li {
+  margin: 0.5rem 0;
+}
+
+.menu-content a {
+  color: #3D6DE0;
+  text-decoration: none;
+}
+
+.menu-content a:hover {
+  text-decoration: underline;
+}
+
+.menu-toggle.active + .menu-content {
+  display: block;
+}
+
+/* Downloads Section */
+.downloads {
+  width: 100%;
+  margin: 3rem auto;
+}
+
+.downloads h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+}
+
+.download-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.card {
+  flex: 0 1 250px;
+  max-width: 250px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px #3D6DE0;
+}
+
+.card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #222;
+}
+
+.card p {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.card button {
+  background: #3D6DE0;
+  border: none;
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s ease;
+}
+
+.card button:hover {
+  background: #335CC0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .download-row .card {
+    flex: 0 1 calc(50% - 1.5rem);
+    max-width: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .quick-links a {
+    display: inline-block;
+    margin: 0.5rem;
+  }
+
+  .download-row {
+    gap: 1rem;
+  }
+}
+
+/* Search Tabs (deprecated) */
+.search-tabs {
+  display: none;
+}
+
+.crest {
+  text-align: center;
+  margin-top: 2rem;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.crest-link {
+  color: #3D6DE0;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.crest-link:hover {
+  color: #335CC0;
+  text-decoration: underline;
+}
+
+.update-info {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  color: #666;
+  text-align: center;
+}
+
+/* Whats New Trigger Button */
+.whats-new-trigger {
+  position: fixed; 
+  right: 16px;
+  background: #7b4dd6;
+  color: white;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  gap: 6px;
+  z-index: 2001;
+  transition: right 320ms ease-in-out, transform 320ms ease-in-out, opacity 220ms ease-in-out, background 200ms ease;
+  will-change: right, transform, opacity;
+}
+
+.whats-new-trigger:hover {
+  background: #633cb0;
+}
+
+/* hidden state when panel is open */
+.whats-new-trigger.hidden {
+  right: 336px;
+  opacity: 0;
+  transform: translateX(12px);
+  pointer-events: none;
+}
+
+/* Bell icon */
+.bell-icon {
+  width: 18px;
+  height: 18px;
+  background-image: url('/assets/icons8-bell-48.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform-origin: top center;
+}
+
+/* Bell ring animation */
+@keyframes ring {
+  0% { transform: rotate(0deg); }
+  15% { transform: rotate(15deg); }
+  30% { transform: rotate(-12deg); }
+  45% { transform: rotate(10deg); }
+  60% { transform: rotate(-6deg); }
+  75% { transform: rotate(4deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.bell-ring {
+  animation: ring 1s ease-in-out 2;
+}
+
+/* trigger text container */
+.whats-new-trigger .label-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.whats-new-trigger .update-date {
+  font-size: 0.75rem;
+  color: #f0e6ff;
+  margin-top: 2px;
+}
+
+/* Slideout Panel */
+.whats-new-panel {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: 320px;
+  height: 100vh;
+  background: #ffffff;
+  border-left: 4px solid #3D6DE0;
+  box-shadow: -3px 0 15px rgba(0,0,0,0.08);
+  padding: 28px 20px;
+  transition: right 0.25s ease;
+  z-index: 2000;
+}
+
+.whats-new-panel.open {
+  right: 0;
+}
+
+.whats-new-panel .close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: #444;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.whats-new-panel .close-btn:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.whats-new-panel h2 {
+  color: #3D6DE0;
+  margin-bottom: 16px;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.whats-new-panel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.whats-new-panel li {
+  margin-bottom: 12px;
+  font-size: 1rem;
+  line-height: 1.4;
+}
