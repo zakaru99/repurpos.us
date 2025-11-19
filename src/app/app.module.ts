@@ -27,6 +27,7 @@ import { ForgotPasswordComponent, LoginFailComponent, UserRegistrationComponent 
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { HeaderComponent } from './header/header.component';
+import { HeroSearchComponent } from './intro-text-modern/hero-search/hero-search.component';
 import { FooterComponent } from './footer/footer.component';
 import { IntroTextComponent } from './intro-text/intro-text.component';
 import { IntroTextModernComponent } from './intro-text-modern/intro-text-modern.component';
@@ -109,6 +110,7 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
     KetcherComponent,
     IntroTextComponent,
     IntroTextModernComponent,
+    HeroSearchComponent,
     AssayIndicationComponent,
     FooterComponent,
     EditItemComponent,
