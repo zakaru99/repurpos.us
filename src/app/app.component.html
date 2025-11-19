@@ -1,21 +1,18 @@
-<http-loader></http-loader>
+<div class="app-wrapper">
+  <http-loader></http-loader>
 
-<!-- Header -->
-<app-header></app-header>
-<div class="ui menu">
-  <!--<div class="header item borderless">-->
-  <!--<app-mail-signup></app-mail-signup>-->
-  <!--</div>-->
-</div>
+  <!-- Header -->
+  <app-header></app-header>
 
-<!-- Content -->
-<div class="container-fluid main-container">
-  <div class="row-fluid">
-    <div class="span12">
-      <router-outlet></router-outlet>
-    </div>
+  <div class="ui menu">
+    <!--<app-mail-signup></app-mail-signup>-->
   </div>
-</div>
 
-<!-- Footer -->
-<app-footer></app-footer>
+  <!-- Content -->
+  <div class="main-container">
+    <router-outlet></router-outlet>
+  </div>
+
+  <!-- Footer -->
+  <app-footer></app-footer>
+</div>
