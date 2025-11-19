@@ -1,22 +1,38 @@
-/* footer */
-
+/* ---------------------------
+   -- footer --
+---------------------------- */
 footer {
   border-top: 4px solid #7f9feb;
-  margin-top: 6px;
-  /* padding-top: 3px; */
-  font-size: 1em;
   margin-top: 50px;
   margin-bottom: 6px;
-  padding: 1em;
+  padding: 1em 2em;
+  font-size: 1em;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  background-color: #f5f8fd;
+  transition: background-color 0.3s ease;
+}
+
+footer:hover {
+  background-color: #e9effc; /* subtle highlight on hover */
 }
 
 .logos {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
   a {
     padding: 0 1em;
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
   }
 }
 
@@ -24,37 +40,35 @@ footer {
   margin-top: 4px;
   height: 50px;
   vertical-align: middle;
-  transition: fill 0.5s;
+  transition: all 0.3s ease;
 
   rect {
     fill: #000;
-    transition: fill 0.5s;
+    transition: fill 0.5s ease;
   }
 
   &.scripps-logo {
     .st0 {
-      transition: fill 0.5s;
+      transition: fill 0.5s ease;
       fill: #FDB927;
     }
 
     &:hover {
-      fill: #FDB927;
-
       .st0 {
-        //fill: darken(#FDB927, 20);
+        // optionally: fill: darken(#FDB927, 10%);
       }
     }
   }
- 
+
   &.calibr-logo {
-    content:url("/assets/Calibr-Skaggs-Primary-Logo.png");
+    content: url("/assets/Calibr-Skaggs-Primary-Logo.png");
     background-size: 256px 50px;
 
-    &:hover {  
-      content:url("/assets/Calibr-Skaggs-Primary-Logo-Hover.png");
+    &:hover {
+      content: url("/assets/Calibr-Skaggs-Primary-Logo-Hover.png");
       background-size: 256px 50px;
+      transform: translateY(-2px);
     }
-    
   }
 }
 
@@ -62,21 +76,35 @@ footer {
   height: 20px;
   margin-top: -5px;
   margin-right: 6px;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
 }
 
 .left-spacer {
   padding-left: 6px;
 }
 
+/* ---------------------------
+   Footer media queries
+---------------------------- */
 @media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
   footer {
     flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1em;
   }
 
   .logos {
-    display: flex;
     flex-direction: column;
-    align-items: center;
     padding: 1em 0;
+    align-items: center;
+
+    a {
+      padding: 0.5em 0;
+    }
   }
 }
