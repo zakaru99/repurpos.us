@@ -3,7 +3,7 @@
     <i #bellIcon class="bell-icon"></i>
     <div class="label-container">
       <span class="label">What's New</span>
-      <span class="update-date">November 19, 2025</span>
+      <span class="update-date">Last updated {{ whatsNewItems.length ? (whatsNewItems[0].date | date:'longDate') : (lastUpdated | date:'longDate') }}</span>
     </div>
   </div>
 
@@ -11,16 +11,22 @@
     <button class="close-btn" aria-label="Close" (click)="closeWhatsNew($event)">✕</button>
     <h2>What's New</h2>
     <ul>
-      <li>Modernized homepage UI</li>
-      <li>New predictive searching</li>
-      <li>Assay toxicity tag</li>
+      <li *ngFor="let item of whatsNewItems">
+        <span class="item-text">{{ item.text }}</span>
+        <span class="item-date">{{ item.date | date:'longDate' }}</span>
+      </li>
     </ul>
   </div>
 
   <div class="homepage">
     <section class="hero">
-      <h1>Welcome to <span class="highlight">REFRAMEdb</span></h1>
-      <p class="update-info">Last updated July 31, 2025 — 163 new compound profiles added</p>
+      <h1>Welcome to <span class="highlight">REFRAMEdb</span><span class="subheading">the world's largest drug repurposing library</span></h1>
+          
+
+      <p class="update-info">
+      {{ newCompounds | number }} new compound profiles added for a total of 
+      {{ totalCompounds | number }} clinical-stage drugs in collection as of {{ lastUpdated | date:'longDate' }}
+    </p>
       <app-hero-search></app-hero-search>
     </section>
 

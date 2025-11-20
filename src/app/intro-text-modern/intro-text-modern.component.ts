@@ -7,8 +7,16 @@ import { Component, AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@ang
 })
 export class IntroTextModernComponent implements AfterViewInit, OnDestroy {
   isWhatsNewOpen = false;
-  latestUpdateDate = 'July 31, 2025';
-  @ViewChild('bellIcon', { static: true }) bellIcon!: ElementRef;
+  newCompounds = 163;
+  totalCompounds = 13288;
+  lastUpdated = new Date('2025/07/31');
+  // What's New items with dates
+  whatsNewItems: Array<{ date: Date; text: string }> = [
+    { date: new Date('2025/11/19'), text: 'Modernized homepage UI' },
+    { date: new Date('2025/11/05'), text: 'New predictive searching' },
+    { date: new Date('2025/10/04'), text: 'Assay toxicity tag' }
+  ];
+  @ViewChild('bellIcon') bellIcon!: ElementRef;
   @ViewChild('panel') panelRef!: ElementRef;
 
   private triggerBell(): void {
