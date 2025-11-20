@@ -9,7 +9,7 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
   templateUrl: './quick-search.component.html',
   styleUrls: ['./quick-search.component.scss']
 })
-export class QuickSearchComponent implements OnInit, AfterViewInit {
+export class QuickSearchComponent implements OnInit {
   query: string;
   inputFocused: boolean = false;
   buttonFocusedOrClicked: boolean = false;
@@ -24,10 +24,6 @@ export class QuickSearchComponent implements OnInit, AfterViewInit {
   @Output() toggleChange = new EventEmitter<'compound' | 'assay'>();
 
   @ViewChild('inputEl') searchInput!: ElementRef;
-
-  ngAfterViewInit(): void{
-    this.searchInput.nativeElement.focus()
-  }
 
   ngOnInit(): void {
     console.log("QuickSearchComponent initialized");
