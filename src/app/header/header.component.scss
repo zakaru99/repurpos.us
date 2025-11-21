@@ -133,6 +133,16 @@
   }
 }
 
+.navbar-nav li.menu-item + li.menu-item::before {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 18px;
+  background: rgba(0,0,0,0.06);
+  margin: 0 12px;
+  vertical-align: middle;
+}
+
 li.sign-in a {
   font-weight: 600;
   color: #3d6de0;
