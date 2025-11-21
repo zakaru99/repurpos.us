@@ -44,6 +44,9 @@
           <li class="menu-item">
             <a routerLink="/about" (click)="collapseNav()">about</a>
           </li>
+          <li class="menu-item">
+            <a routerLink="/contact-us" (click)="collapseNav()">contact us</a>
+          </li>
           <li class="menu-item sign-in" [hidden]="loggedIn">
             <a *ngIf="!loggedIn" (click)="showLogin()" (click)="clickedInside($event)">sign in</a>
           </li>
