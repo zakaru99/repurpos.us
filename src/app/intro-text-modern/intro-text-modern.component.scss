@@ -245,9 +245,9 @@
   background: #633cb0;
 }
 
-/* hidden state when panel is open */
+/* hidden state when panel is open (adjusted for 420px panel) */
 .whats-new-trigger.hidden {
-  right: 336px;
+  right: 436px; /* 420px panel + 16px page offset */
   opacity: 0;
   transform: translateX(12px);
   pointer-events: none;
@@ -292,23 +292,24 @@
   margin-top: 2px;
 }
 
-/* Slideout Panel */
+/* Slideout Panel (widened to 420px) */
 .whats-new-panel {
   position: fixed;
   top: 0;
-  right: -320px;
-  width: 320px;
+  right: -420px; /* hide off-screen by panel width */
+  width: 420px;
   height: 100vh;
   background: #ffffff;
   border-left: 4px solid #3D6DE0;
-  box-shadow: -3px 0 15px rgba(0,0,0,0.08);
-  padding: 28px 20px;
-  transition: right 0.25s ease;
+  box-shadow: -6px 0 30px rgba(0,0,0,0.12);
+  padding: 28px 24px;
+  transition: right 320ms cubic-bezier(.22,.9,.27,1), box-shadow 320ms ease;
   z-index: 2000;
 }
 
 .whats-new-panel.open {
   right: 0;
+  box-shadow: -10px 0 40px rgba(0,0,0,0.12);
 }
 
 .whats-new-panel .close-btn {
@@ -336,6 +337,7 @@
   font-weight: 700;
 }
 
+/* List layout and item styles (match inspector snippet) */
 .whats-new-panel ul {
   margin: 0;
   padding: 0;
@@ -343,7 +345,26 @@
 }
 
 .whats-new-panel li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 12px;
-  font-size: 1rem;
   line-height: 1.4;
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  padding-bottom: 12px;
+}
+
+.item-text {
+  flex: 1 1 auto;
+  color: #222;
+  // font-weight: 400; /* normal weight to match inspector */
+}
+
+.item-date {
+  flex: 0 0 auto;
+  color: #666; /* muted gray */
+  font-size: 0.85rem;
+  white-space: nowrap;
+  margin-left: 12px;
 }
