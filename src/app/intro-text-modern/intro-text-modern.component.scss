@@ -237,7 +237,8 @@
   font-weight: 600;
   gap: 6px;
   z-index: 2001;
-  transition: right 320ms ease-in-out, transform 320ms ease-in-out, opacity 220ms ease-in-out, background 200ms ease;
+  /* smoother, slightly slower coordinated motion */
+  transition: right 420ms cubic-bezier(.22,.9,.27,1), transform 420ms cubic-bezier(.22,.9,.27,1), opacity 300ms ease, background 180ms ease;
   will-change: right, transform, opacity;
 }
 
@@ -247,9 +248,10 @@
 
 /* hidden state when panel is open (adjusted for 420px panel) */
 .whats-new-trigger.hidden {
-  right: 436px; /* 420px panel + 16px page offset */
+  /* push further and fade for a smooth vanish */
+  right: 456px; /* a little extra so it fully clears the panel edge */
   opacity: 0;
-  transform: translateX(12px);
+  transform: translateX(18px);
   pointer-events: none;
 }
 
@@ -303,7 +305,8 @@
   border-left: 4px solid #3D6DE0;
   box-shadow: -6px 0 30px rgba(0,0,0,0.12);
   padding: 28px 24px;
-  transition: right 320ms cubic-bezier(.22,.9,.27,1), box-shadow 320ms ease;
+  /* slower, smoother motion */
+  transition: right 520ms cubic-bezier(.22,.9,.27,1), box-shadow 520ms ease;
   z-index: 2000;
 }
 
