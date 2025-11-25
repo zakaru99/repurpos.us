@@ -1,3 +1,111 @@
-<p>
-  contact-us works!
-</p>
+<section  class="contact-form">
+  <h2>Contact Us</h2>
+  <p class="subtitle">
+    Have questions, feedback, or need assistance? Send us a message below.
+  </p>
+
+  <form #contactForm="ngForm" (ngSubmit)="onSubmit(contactForm)" novalidate>
+    
+    <!-- Section Header -->
+    <div class="form-section-header">Your Information</div>
+
+    <!-- Name -->
+    <div
+      class="form-row"
+      [ngClass]="{ 'has-error': name.invalid && (name.touched || contactForm.submitted) }"
+    >
+      <label for="name">Full Name</label>
+      <input
+        id="name"
+        type="text"
+        name="name"
+        [(ngModel)]="formData.name"
+        required
+        #name="ngModel"
+      />
+      <div class="error-message" *ngIf="name.invalid && (name.touched || contactForm.submitted)">
+        Name is required.
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div
+      class="form-row"
+      [ngClass]="{ 'has-error': email.invalid && (email.touched || contactForm.submitted) }"
+    >
+      <label for="email">Email Address</label>
+      <input
+        id="email"
+        type="email"
+        name="email"
+        [(ngModel)]="formData.email"
+        required
+        email
+        #email="ngModel"
+      />
+      <div
+        class="error-message"
+        *ngIf="email.errors?.required && (email.touched || contactForm.submitted)"
+      >
+        Email is required.
+      </div>
+      <div
+        class="error-message"
+        *ngIf="email.errors?.email && (email.touched || contactForm.submitted)"
+      >
+        Please enter a valid email address.
+      </div>
+    </div>
+
+    <!-- Subject -->
+    <div
+      class="form-row"
+      [ngClass]="{ 'has-error': subject.invalid && (subject.touched || contactForm.submitted) }"
+    >
+      <label for="subject">Subject</label>
+      <input
+        id="subject"
+        type="text"
+        name="subject"
+        [(ngModel)]="formData.subject"
+        required
+        #subject="ngModel"
+      />
+      <div class="error-message" *ngIf="subject.invalid && (subject.touched || contactForm.submitted)">
+        Subject is required.
+      </div>
+    </div>
+
+    <!-- Message -->
+    <div
+      class="form-row"
+      [ngClass]="{ 'has-error': message.invalid && (message.touched || contactForm.submitted) }"
+    >
+      <label for="message">Message</label>
+      <textarea
+        id="message"
+        name="message"
+        rows="5"
+        placeholder="How can we help you?"
+        [(ngModel)]="formData.message"
+        required
+        #message="ngModel"
+      ></textarea>
+      <div class="error-message" *ngIf="message.invalid && (message.touched || contactForm.submitted)">
+        A message is required.
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="form-actions">
+      <button type="submit" [disabled]="!contactForm.valid || isSubmitting">
+        {{ isSubmitting ? 'Sending...' : 'Send Message' }}
+      </button>
+    </div>
+
+  </form>
+
+  <div class="toast" *ngIf="toastMessage" [ngClass]="toastType">
+    {{ toastMessage }}
+  </div>
+</section>
