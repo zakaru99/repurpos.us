@@ -31,6 +31,7 @@ import { HeroSearchComponent } from './intro-text-modern/hero-search/hero-search
 import { FooterComponent } from './footer/footer.component';
 import { IntroTextComponent } from './intro-text/intro-text.component';
 import { IntroTextModernComponent } from './intro-text-modern/intro-text-modern.component';
+import { ContactUsComponent } from './contact-us/contact-us.component';
 
 import {
   CompoundSearchComponent, CompoundSearchOptionsComponent, SearchBoxComponent,
@@ -120,7 +121,8 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
     ShowMoreButtonComponent,
     IndicationsGraphComponent,
     WorkflowComponent,
-    OntologyTreeComponent
+    OntologyTreeComponent,
+    ContactUsComponent
 
     // SearchResultHeaderComponent, ReframeFilterComponent, AssaysFilterComponent
   ],

@@ -9,7 +9,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { TermsComponent } from "./_dialogs/terms/terms.component";
 import { WorkflowComponent } from "./workflow/workflow.component";
 import { OntologyTreeComponent } from "./ontology-tree/ontology-tree.component";
-
+import { ContactUsComponent } from './contact-us/contact-us.component';
 import { environment } from '../environments/environment';
 
 const appRoutes: Routes = [
@@ -33,7 +33,9 @@ const appRoutes: Routes = [
     loadChildren: () => import('./compound-data/compound-data.module').then(mod => mod.CompoundDataModule)
   },
   { path: 'confirm/:cid', component: ConfirmEmailComponent, pathMatch: 'full' },
-  { path: 'reset_pass/:rid', component: ResetPasswordComponent, pathMatch: 'full' }
+  { path: 'reset_pass/:rid', component: ResetPasswordComponent, pathMatch: 'full' },
+  { path: 'contact-us', component: ContactUsComponent, pathMatch: 'full'},
+
 ];
 
 @NgModule({
