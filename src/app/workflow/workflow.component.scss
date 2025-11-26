@@ -1,8 +1,62 @@
-  h2 {
-    margin-bottom: 0;
-  }
+.workflow-section {
+  font-family: "Inter", sans-serif;
+  color: #333;
+  line-height: 1.6;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
 
-  ol {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
+.workflow-section h2 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: #222;
+}
+
+.workflow-section h4 {
+  margin: 2rem 0 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #222;
+}
+
+/* Modern Card */
+.workflow-card {
+  background: #f9fbff;
+  border-left: 5px solid #3d6de0;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.workflow-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.workflow-card p {
+  margin-bottom: 1rem;
+}
+
+.workflow-card ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.workflow-card li {
+  margin-bottom: 0.75rem;
+}
+
+.workflow-card a {
+  color: #3d6de0;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.workflow-card a:hover {
+  text-decoration: underline;
+}
