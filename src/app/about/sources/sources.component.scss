@@ -1,3 +1,108 @@
-.source:last-of-type {
-  margin-bottom: 0;
+/* MAIN CARD: About ReFRAMEdb */
+.about-main-card {
+  background: linear-gradient(145deg, #e1e9f9, #cfdff5);
+  border-left: 6px solid #3d6de0;
+  border-radius: 16px;
+  padding: 2rem 2rem;
+  box-shadow: 0 14px 36px rgba(0,0,0,0.15);
+  margin-bottom: 2rem;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: linear-gradient(145deg, #dbe5f7, #c6d7f2);
+  }
+
+  h2 {
+    text-align: center;
+    font-size: 2.25rem;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+
+  .about-section p {
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .about-section a {
+    color: #3d6de0;
+    font-weight: 500;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
+
+/* OTHER CARDS: How to use / Sources / Terms */
+.about-card {
+  background: #f9fbff; /* matches workflow card */
+  border-left: 5px solid #3d6de0;
+  border-radius: 12px;
+  padding: 1.5rem 1.5rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  margin-bottom: 2rem;
+
+  h2 {
+    text-align: center;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 1.5rem;
+  }
+
+  .about-section h3, .about-section h4 {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #222;
+  }
+
+  .about-section p {
+    margin-bottom: 1rem;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  .about-section a {
+    color: #3d6de0;
+    font-weight: 500;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .divider {
+    height: 1px;
+    background: #e7ecf6;
+    margin: 1.5rem 0;
+  }
+}
+
+/* Bold / Thin */
+.bold {
+  font-weight: 700;
+}
+
+.thin {
+  font-weight: 300;
+}
+
+
+  .workflow-card.about-card {
+    background: #f9fbff;
+    border-left: 5px solid #3d6de0;
+    border-radius: 12px;
+    padding: 1.5rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    backdrop-filter: blur(4px);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }}

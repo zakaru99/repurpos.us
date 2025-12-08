@@ -1,94 +1,72 @@
-  <br>
-  <div class="col-xs-auto col-sm-auto col-md-auto col-lg-auto col-xl-auto float-right">
+<div class="ontology-panel">
 
-    <form class="search" method="post" action="">
-      <label for="search-box-add2"><mat-icon>search</mat-icon></label>
+  <!-- Header row -->
+  <div class="ontology-header">
+    <!-- Search -->
+    <form class="search-form">
+      <mat-icon>search</mat-icon>
+<label for="search-box-add2"><mat-icon>search</mat-icon></label>
       <input #searchInput id="search-box-add2" type="text" autofocus placeholder="search for moa, drug names, and inchikeys" name="quick-search form-control" matInput [formControl]="myControl" [matAutocomplete]="auto" forceSelection="preferred_name" [(ngModel)]="search_id" (keyup.enter)="searchTree()">
       <mat-autocomplete #auto="matAutocomplete" [displayWith]="getTitle.bind(this)" [panelWidth]="600">
         <mat-option *ngFor="let option of filteredOptions | async" [value]="option.id">
           {{option.preferred_name}}{{option.parent_name}}
         </mat-option>
       </mat-autocomplete>
-      <!-- <pre>myControl.value - {{ myControl.value }}</pre> -->
-      <!-- <input id="search-box-add2" type="text"  name="quick-search form-control" aria-label="quick search" placeholder="search for moa and drugs by name"  [(ngModel)]="search_terms" (keyup.enter)="searchTree()"> -->
-    
-        <!-- Assay tab panes -->
-        <!-- Nav tabs -->
-      <ul class="nav nav-pills align-self-end float-right" id="tabs" role="tablist">
+    </form>
 
-        <li class="nav-item hidden">
-          <a class="nav-link init active"  id="pharma_role" name="0" data-toggle="tab" role="tab" (click)="switch_ontology_source($event)">
-              <span class="btn">Pharmacological Role</span></a>
-        </li>
-        <li class="nav-item hidden">
-          <a class="nav-link init" id="bio_role" name="1" data-toggle="tab" role="tab" (click)="switch_ontology_source($event)">
-              <span class="btn">Biological Role</span></a>
-        </li>
-        <li class="nav-item hidden">
-          <a class="nav-link init" id="chem_role" name="2" data-toggle="tab" role="tab" (click)="switch_ontology_source($event)">
-              <span class="btn">Chemical Role</span></a>
-        </li>
-        <li class="nav-item hidden">
-          <a class="nav-link init" id="target_interaction" name="3" data-toggle="tab" role="tab" (click)="switch_ontology_source($event)">
-              <span class="btn">Target Interaction Type</span></a>
-        </li>
-        <li class="nav-item hidden">
-          <a class="nav-link init" id="target" name="4" data-toggle="tab" role="tab" (click)="switch_ontology_source($event)">
-              <span class="btn">Target</span></a>
-        </li>
-      </ul></form>
-      </div>
-<div class="content" role="main">
 
-  <h1>Ontology Tree</h1>
+    <!-- Ontology buttons -->
+    <div class="ontology-buttons">
+<button class="btn" [class.active]="src==0" name="0" (click)="switch_ontology_source($event)">Pharmacological Role</button>
+<button class="btn" [class.active]="src==1" name="1" (click)="switch_ontology_source($event)">Biological Role</button>
+<button class="btn" [class.active]="src==2" name="2" (click)="switch_ontology_source($event)">Chemical Role</button>
+<button class="btn" [class.active]="src==3" name="3" (click)="switch_ontology_source($event)">Target Interaction Type</button>
+<button class="btn" [class.active]="src==4" name="4" (click)="switch_ontology_source($event)">Target</button>
 
-  <div class="d3-chart tree" #chart> 
-    
-</div> 
-</div>
-
-<br>
-
-<button (click)="toggleCollapse()" type="button" class="btn">
-  {{instructions?"Show Instructions":"Hide Instructions"}}
-</button>
-<ng-container *ngIf="visible">
-<div class="intro" >
-
-  <div class="capabilities">
-    <h6 class="highlight-label">How to use the ontology tree</h6>
-
-    <ul class="highlight-content">
-      
-      <li>Fit the tree to your window
-        <ul>
-          <li>
-            Click and drag the tree to move it within your window
-          </li>
-          <li>
-            Zoom in and out using the scroll wheel on your mouse
-          </li>
-        </ul>
-      </li>
-      <li>Use the buttons in the upper left to toggle between data sources</li>
-      <li>Searches can be performed using the search box above the Tree
-        <ul>
-          <li>Begin typing and a list of options will appear</li>
-          <li>Select your search term and hit "enter" to initiate a search</li>
-        </ul>
-      </li>
-      <li>
-        Left click on compound nodes to open the drug profile page
-      </li>
-      
-      <li>
-        Green nodes indicate a specific MoA
-      
-      <ul>
-        <li>
-          Right click green nodes to download all associated drugs
-        </li>
-      </ul></li>
-    </ul>
+    </div>
   </div>
-</div></ng-container>
+
+  <!-- Ontology Tree -->
+  <div class="tree-container">
+    <h1>Ontology Tree</h1>
+    <div class="d3-chart tree" #chart></div>
+  </div>
+
+  <!-- Instructions toggle -->
+  <div class="instructions-toggle">
+    <button (click)="toggleCollapse()" type="button" class="btn">
+      {{instructions ? "Show Instructions" : "Hide Instructions"}}
+    </button>
+  </div>
+
+  <!-- Instructions panel -->
+  <ng-container *ngIf="visible">
+    <div class="instructions-panel">
+      <div class="capabilities">
+        <h6>How to use the ontology tree</h6>
+        <ul>
+          <li>Fit the tree to your window
+            <ul>
+              <li>Click and drag to move</li>
+              <li>Zoom with scroll wheel</li>
+            </ul>
+          </li>
+          <li>Toggle data sources with buttons above</li>
+          <li>Search using the search box
+            <ul>
+              <li>Select and hit Enter</li>
+            </ul>
+          </li>
+          <li>Click compound nodes for drug profile</li>
+          <li>
+            Green nodes = specific MoA
+            <ul>
+              <li>Right-click to download associated drugs</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </ng-container>
+
+</div>

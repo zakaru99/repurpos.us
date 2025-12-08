@@ -12,6 +12,8 @@ export class IntroTextModernComponent implements AfterViewInit, OnDestroy {
   lastUpdated = new Date('2025/07/31');
   // What's New items with dates
   whatsNewItems: Array<{ date: Date; text: string }> = [
+    { date: new Date('2025/12/02'), text: 'Modernized workflow & about UI' },
+    { date: new Date('2025/12/01'), text: 'Modernized ontology tree UI' },
     { date: new Date('2025/11/25'), text: 'Added "contact us" feature' },
     { date: new Date('2025/11/19'), text: 'Modernized homepage UI' },
     { date: new Date('2025/11/05'), text: 'New predictive searching' },

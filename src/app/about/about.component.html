@@ -1,66 +1,76 @@
 <div class="container">
+  <!-- About Section -->
+  <section class="" id="overview">
+    <h2 style="text-align: center;"><span class="bold">About reframe</span> <span class="thin">db</span></h2>
+    <nav class="about-nav">
+      <div class="section-group">
+        <ng-container *ngFor="let section of sections">
+          <div class="nav-button">
+            <a
+              [routerLink]="['/about']"
+              [fragment]="section.link"
+              (click)="scrollTo(section.link)"
+            >
+              {{ section.label }}
+            </a>
+          </div>
+        </ng-container>
+      </div>
+    </nav>
 
-  <nav class="about-nav">
-    <div class="section-group">
-      <ng-container *ngFor="let section of sections; let idx = index">
-        <div class="nav-button">
-          <a [routerLink]="['/about']" [fragment]="section.link" (click)="scrollTo(section.link)">{{ section.label }}</a>
-        </div>
-        <div class="nav-spacer" *ngIf="idx < sections.length - 1"></div>
-      </ng-container>
+    <div class="workflow-card about-main-card">
+      <div class="about-section">
+        <video style="display:block; margin:auto;" width="70%" controls>
+          <source src="../../assets/video/about_reframe.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+
+        <p class="about-p">
+          The chemical diversity and known safety profiles of drugs already tested in humans makes them a valuable set of compounds to explore potential therapeutic utility in indications outside those originally targeted. This practice of “drug
+          repurposing” has become commonplace in academic and other non-profit drug discovery efforts, with the appeal that significantly less time and resources are required to advance a candidate into the clinic. This is especially the case in phenotypic and other
+          cell-based screens in which this collection is being screened against a large number of known and novel targets in parallel.
+        </p>
+
+        <p>
+          Here we report a comprehensive open-access, drug repositioning screening set of 13,288 compounds (termed ReFRAME) that was assembled by combining three widely-used commercial drug competitive intelligence databases (Clarivate Integrity, GVK Excelra GoStar, and Citeline Pharmaprojects), together with extensive patent mining of small molecules that have been dosed in humans. To date ~13,288 compounds (~80% of compounds identified from data mining) have been purchased or synthesized, and subsequently plated for screening.
+        </p>
+      </div>
     </div>
-  </nav>
+  </section>
 
-  <section class='about'>
-    <h2 id="overview"><span class="bold">About reframe</span><span class="thin">db</span></h2>
-    <video style="display:block; margin-right:auto; margin-left:auto;" width="70%" controls>
-      <source src="../../assets/video/about_reframe.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    <div class='about-descrip'>
-      <div class="about-container">
-      <p class="about-p">
-        The chemical diversity and known safety profiles of drugs already tested in humans makes them a valuable set of compounds to explore potential therapeutic utility in indications outside those originally targeted. This practice of “drug
-        repurposing” has
-        become commonplace in academic and other non-profit drug discovery efforts, with the appeal that significantly less time and resources are required to advance a candidate into the clinic. This is especially the case in phenotypic and other
-        cell-based
-        screens in which this collection is being screened against a large number of known and novel targets in parallel.
-      </p>
+  <!-- How to use Section -->
+  <section class="workflow-section" id="tutorial">
+    <h4><span class="bold">How to use reframe</span> <span class="thin">db</span></h4>
 
-      <p>
-        Here we report a comprehensive open-access, drug repositioning screening set of 13,288 compounds (termed ReFRAME) that was assembled by combining three widely-used commercial drug competitive intelligence databases (Clarivate Integrity, GVK
-        Excelra GoStar, and Citeline Pharmaprojects), together with extensive patent mining of small molecules that have been dosed in humans. To date ~13,288 compounds (~80% of compounds identified from data mining) have been purchased or synthesized, and
-        subsequently
-        plated for screening.
-      </p>
-      <!--NO ADIS DESC-->
-
+    <div class="workflow-card about-card">
+      <div class="about-section">
+        <video style="display:block; margin:auto;" width="70%" controls>
+          <source src="../../assets/video/how_to_use_reframe.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
     </div>
+  </section>
 
-      
-      <section class="about">
-        <h4 id="tutorial">How to use  <span class="bold">reframe</span><span class="thin">db</span></h4>
-        <video style="display:block; margin-right:auto; margin-left:auto;" width="70%" controls>
-        <source src="../../assets/video/how_to_use_reframe.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      </section>
-    
+  <app-access-library></app-access-library>
 
-      <h4 id="partnerships">How to access the <span class="bold">reframe</span><span class="thin">db</span> library</h4>
-      <app-access-library></app-access-library>
+    <section class="workflow-section" id="diversity">
+    <h4><span class="bold">Chemical diversity comparison across libraries</span> </h4>
 
-      <h4 id="citation">How to cite</h4>
-      <app-citation [pmid]="reframe_pmid"></app-citation>
+    <div class="workflow-card about-card">
+      <div class="about-section">
+     
+        <img src="../../assets/Slide1.jpg"  style="display:block; margin:auto; width:70%;"/>
+      </div>
     </div>
   </section>
 
   <section class='about'>
-    <h2 id="sources">Data sources</h2>
     <app-sources></app-sources>
   </section>
 
   <section class='about'>
     <app-terms id="terms"></app-terms>
   </section>
+
 </div>

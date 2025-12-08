@@ -1,50 +1,204 @@
-$border-width: 4px;
-$nav-background: #3D6DE0;
-$nav-highlight: mix(#d4ffed, #7a9bff);
-
-/deep/ .about-descrip .citation {
-  margin-top: 0 !important;
+/* Container & General Layout */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: "Inter", sans-serif;
+  color: #333;
+  line-height: 1.6;
 }
 
-.about {
-  margin-bottom: 40px;
-}
-
+/* Toolbar Navigation */
 .about-nav {
-  background: $nav-background;
-  margin-bottom: 15px;
-}
-
-.nav-spacer {
-  flex: 1;
-  border-top: $border-width white solid;
-}
-
-.nav-button {
-  border-top: $border-width white solid;
-  padding: 2px 15px 5px;
-  cursor: pointer;
-
-  & a {
-    color: white;
-    text-decoration: none;
-  }
-
-  &:hover {
-    border-top: $border-width $nav-highlight solid;
-
-    & a {
-      color: $nav-highlight;
-    }
-  }
+  background: #f7f9fc;           /* very soft flat background */
+  border-bottom: 1px solid #e3e8f0;
+  padding: 0.25rem 0;            /* ultra thin */
+  margin-bottom: 2rem;
 }
 
 .section-group {
   display: flex;
-  justify-content: space-between;
-  margin-left: 250px;
+  justify-content: center;
+  gap: 2rem;                      /* clean spacing between items */
 }
 
-h2#overview {
-  margin-bottom: 0;
+.nav-button a {
+  display: inline-block;
+  padding: 0.45rem 0;             /* thin vertical padding */
+  color: #475569;                 /* soft slate */
+  font-weight: 500;
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: color 0.15s ease;
+  border-radius: 0;               /* NO rounded corners */
+}
+
+/* Navigation Toolbar (ultra minimal) */
+.about-nav {
+  background: transparent;     /* no box, no shading */
+  padding: 0.5rem 0 0.25rem 0; /* super slim */
+  margin-bottom: 2rem;
+}
+
+/* Center the links */
+.section-group {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;                    /* clean spacing */
+}
+
+/* Each link */
+.nav-button {
+  position: relative;
+}
+
+.nav-button a {
+  color: #475569;              /* soft slate */
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  padding: 0.25rem 0;          /* very slim */
+  transition: color 0.15s ease;
+}
+
+/* Thin underline animation */
+.nav-button a::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0px;
+  height: 2px;
+  width: 0;
+  background: #3d6de0;
+  border-radius: 2px;
+  transition: width 0.18s ease, left 0.18s ease;
+}
+
+/* Hover */
+.nav-button a:hover {
+  color: #1e293b;
+}
+
+.nav-button a:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+
+/* Workflow / About Cards */
+.workflow-section {
+  margin-bottom: 3rem;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: #222;
+
+  h4 {
+    margin: 2rem 0 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 2rem;
+  }
+    .bold {
+      font-weight: 700;
+    }
+
+    .thin {
+      font-weight: 300;
+    }
+  }
+
+  .workflow-card.about-card {
+    background: #f9fbff;
+    border-left: 5px solid #3d6de0;
+    border-radius: 12px;
+    padding: 1.5rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    backdrop-filter: blur(4px);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+
+    .about-section {
+      p {
+        margin: 0 0 1rem 0;
+        line-height: 1.6;
+      }
+
+      a {
+        color: #3d6de0;
+        font-weight: 500;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      h3, h4 {
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: #222;
+      }
+
+      ol, ul {
+        margin: 0 0 1rem 1.5rem;
+
+        li {
+          margin-bottom: 0.75rem;
+        }
+      }
+
+      ul ul {
+        margin-left: 1rem;
+      }
+    }
+
+    /* Optional embedded components spacing */
+    app-access-library {
+      display: block;
+      margin-top: 1.5rem;
+    }
+  }
+
+  /* Divider for internal sections if needed */
+  .divider {
+    height: 1px;
+    background: #e7ecf6;
+    margin: 1.5rem 0;
+  }
+
+  /* Responsive videos */
+  video {
+    display: block;
+    margin: 0 auto 1.5rem auto;
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Paragraphs */
+.about-p {
+  margin-bottom: 1rem;
+}
+
+/* General bold/thin spans */
+.bold {
+  font-weight: 700;
+}
+
+.thin {
+  font-weight: 300;
+}
+
+/* Links break correctly */
+a {
+  word-break: break-word;
 }

@@ -8,14 +8,6 @@ import { takeUntil, filter } from "rxjs/operators";
 import * as d3 from "d3";
 
 import *  as  ontology_data from './phase2b_moa_updated.json'
-// console.log(ontology_data.entities)
-// interface HierarchyDatum {
-//   preferred_name: string;
-//   value: number;
-//   children?: Array<HierarchyDatum>;
-// }
-
-// const testdata: HierarchyDatum = (ontology_data as any).default;
 
 @Component({
   selector: 'app-ontology-tree',
@@ -69,15 +61,26 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
 
   beep: any
 
-  ngAfterViewInit(): void {
-    interface HierarchyDatum {
-      entities?: Array<HierarchyDatum>;
-    }
-    var testdata: HierarchyDatum = (ontology_data as any).entities;
-    this.beep = (ontology_data as any).entities[this._route.snapshot.queryParams['src']];
-    this.updateTabs(parseInt(this._route.snapshot.queryParams['src']))
-    this.renderTreeChart(this.beep);
+ngAfterViewInit(): void {
+  const src = this._route.snapshot.queryParams['src'];
+
+  // ⬇️ If no source is provided, default to 0 (pharma_role)
+  if (src === undefined) {
+    this._router.navigate([], {
+      relativeTo: this._route,
+      queryParams: { src: 0 },
+      queryParamsHandling: 'merge'
+    });
+    return; // important so the rest runs AFTER redirect
   }
+
+  // existing code continues...
+  this.beep = (ontology_data as any).entities[src];
+  this.updateTabs(parseInt(src));
+  this.renderTreeChart(this.beep);
+  this.switch_ontology_source({ target: { name: src, id: 'pharma_role' } });
+}
+
 
   toggleCollapse(){
     this.instructions = !this.instructions;
@@ -85,8 +88,6 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
   }
 
   updateTabs(data_index) {  //updates the active class of tabs
-    console.log(data_index)
-    
     const tabs = d3.select('#tabs');
     if (data_index ==0) {
       tabs.select('#pharma_role').classed('active', true);
@@ -274,7 +275,6 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
     this.root.x0 = this.height / 2;
     this.root.y0 = 10;
     this.CollectName(this.root)
-    console.log(this.nameData)
   
     // Collapse after the second level
     this.root.children.forEach(collapse);
@@ -290,13 +290,7 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
     }
 
     this.search_id = parseInt(this._route.snapshot.queryParams['search_id']);
-    // this.src = parseInt(this._route.snapshot.queryParams['src']);
 
-    // // console.log(this._route.snapshot.queryParams)
-    // if(this.src){
-    //   console.log('beep')
-
-    // }
     if(this.search_id){
       this.searchTree()
     }
@@ -335,7 +329,6 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
     this.nodes = this.treeData.descendants();
     this.links = this.treeData.descendants().slice(1);
     this.nodes.forEach((d) => { d.y = d.depth * 400 }); //the number in this line specifies pixel distance between nodes
-    console.log(this.nodes)
 
     // let longest_name = 0
     // this.nodes.forEach((d) => { if(longest_name < d.data['preferred_name'].length){
@@ -463,7 +456,6 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
           let h = d.data
           if("children" in h ){
             if("inchikey" in h.children[0]){
-              console.log('beep')
             return "green";
             }
             else{
@@ -482,7 +474,6 @@ export class OntologyTreeComponent implements OnInit, AfterViewInit {
         let h = d.data
         if("children" in h ){ //if the node has children
           if("inchikey" in h.children[0]){  //if the child has an ikey, let the stroke be green
-            console.log('beep') 
             return "green";
           }
           else{

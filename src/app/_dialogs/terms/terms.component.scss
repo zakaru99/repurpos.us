@@ -1,8 +1,73 @@
-h3 {
-  font-weight: 300;
+/* Card wrapper matching Sources and Workflow */
+.about-card {
+  background: #f9fbff; /* matches workflow card */
+  border-left: 5px solid #3d6de0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06); /* lighter shadow like workflow */
+  margin-bottom: 1.5rem;
+}
+  .workflow-card.about-card {
+    background: #f9fbff;
+    border-left: 5px solid #3d6de0;
+    border-radius: 12px;
+    padding: 1.5rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    backdrop-filter: blur(4px);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+  }
+/* Main header for the card */
+.about-card h2 {
+  text-align: center;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 1.5rem;
 }
 
-a {
-	overflow-wrap: break-word;
-	word-wrap: break-word;
+/* Section headers inside the card */
+.about-section h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #222;
+}
+
+/* Paragraph text */
+.about-section p {
+  margin: 0;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Links */
+.about-section a {
+  color: #3d6de0;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.about-section a:hover {
+  text-decoration: underline;
+}
+
+/* Divider between sections */
+.divider {
+  height: 1px;
+  background: #e7ecf6;
+  margin: 1.5rem 0;
+}
+
+/* Bold / Thin text classes */
+.bold {
+  font-weight: 700;
+}
+
+.thin {
+  font-weight: 300;
 }
