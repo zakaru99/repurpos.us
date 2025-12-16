@@ -1,306 +1,183 @@
 <div class="container-fluid" *ngIf="displayResults" (window:resize)="checkMobile()">
-<div id="header-container" class="header-container">
-  <h4>{{ dataSource.data.length }} {{ dataSource.data.length === 1 ? "result" : "results" }} found</h4>
-  <button class="dwnld-btn" (click)="dwnldSearch()" aria-label="Download results">
-    Download Results
-  </button>
+
+  <!-- ---------------------------
+       Results Header (new style)
+  ---------------------------- -->
+<div id="header-container" class="header-container" style="display: flex; align-items: center; gap: 1rem;">
+  <h4 style="margin: 0;">
+    {{ dataSource.data.length }} {{ dataSource.data.length === 1 ? "result" : "results" }} found
+  </h4>
+
+  <div class="download-options" style="display: flex; align-items: center; gap: 0.5rem;">
+    <span>Download Results:</span>
+    <button class="dwnld-btn" (click)="dwnldSearch()" aria-label="Download CSV">CSV</button>
+    <button class="dwnld-btn" (click)="downloadSDF()" aria-label="Download SDF">SDF</button>
+  </div>
 </div>
 
-  <ng-container [ngSwitch]="responseCode">
-    <ng-container *ngSwitchCase="200">
+  <!-- ---------------------------
+       Table (old style)
+  ---------------------------- -->
+  <div class="search-result-container mat-elevation-z0" *ngIf="dataSource.data.length > 0">
+              <mat-table #table matSort [dataSource]="dataSource" (matSortChange)="onSortChange($event)">
 
-      <div class="search-result-container mat-elevation-z0" *ngIf="dataSource.data.length > 0">
-        <mat-table #table matSort (matSortChange)="onSortChange($event)" [dataSource]="dataSource">
+            <!-- Drug name -->
+            <ng-container matColumnDef="main_label">
+              <mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="mat-header">
+                <span class="mat-header">Name</span>
+                <mat-icon class='sort-icon' matTooltip="sort by name">sort</mat-icon>
+              </mat-header-cell>
 
+              <mat-cell *matCellDef="let element; let row=index" class="main-label d-flex" (click)="expandCell(row)">
+                <div class="smscreen-name">
+                  <a [routerLink]="['/compound_data', element.id.split('/').pop(), {qid: element.qid.split('/').pop()}]">
+                    <h5>{{element['main_label']}}</h5>
+                  </a>
+                </div>
 
-          <!-- Drug name -->
-          <ng-container matColumnDef="main_label">
-            <mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="mat-header">
-              <span class="mat-header">Name</span>
-              <mat-icon class='sort-icon' matTooltip="sort by name">sort</mat-icon>
-            </mat-header-cell>
+                <div *ngIf="element['reframeid'] === 'full'" [matTooltip]="rfmTooltip" class="cmpd-avail">
+                  Reframe library compound
+                </div>
+                <div *ngIf="element['reframeid'] === 'stereofree' || element['reframeid'] === 'sub_smiles'" [matTooltip]="rfmTooltip" class="cmpd-avail">
+                  Reframe library compound (stereofree)
+                </div>
 
-            <mat-cell *matCellDef="let element; let row=index" class="main-label d-flex" (click)="expandCell(row)">
-              <!-- Name -->
-              <div class="smscreen-name">
-                <a [routerLink]="['/compound_data', element.id.split('/').pop(), {qid: element.qid.split('/').pop()}]">
-                  <h5>{{element['main_label']}}</h5>
-                </a>
+                <table class="table cmpd-info">
+                  <tbody>
+                    <tr *ngIf="element.aliases.length > 0">
+                      <th class="label" scope="row" *ngIf="!isMobile">Aliases:</th>
+                      <td class="aliases">
+                        <ul class="alias-list">
+                          <li *ngFor="let alias of element.aliases | slice:0:element.alias_ct; let i=index">
+                            {{alias}}
+                            <span *ngIf="i + 1 < element.alias_ct && i + 1 < element.aliases.length" class='data-separator'></span>
+                          </li>
+                          <li>
+                            <a *ngIf="element.alias_ct < element.aliases.length || element.max_aliases" (click)="showMore(row)">
+                              {{ element.max_aliases ? 'show fewer' : isMobile ? 'show all aliases' : 'show all' }}
+                            </a>
+                          </li>
+                        </ul>
+                      </td>
+                    </tr>
 
-              </div>
+                    <tr *ngIf="!isMobile">
+                      <th class="label" scope="row">ID:</th>
+                      <td class="inchi-id">{{element['id']}}</td>
+                    </tr>
+                  </tbody>
+                </table>
 
-              <div *ngIf="element['reframeid'] === 'full'" [matTooltip]="rfmTooltip" [ngClass]="element['reframeid'] === 'full' ? 'cmpd-avail' : 'no-cmpd'">
-                Reframe library compound
-              </div>
-              <div *ngIf="element['reframeid'] === 'stereofree' || element['reframeid'] === 'sub_smiles'" [matTooltip]="rfmTooltip" [ngClass]="element['reframeid'] === 'stereofree' || element['reframeid'] === 'sub_smiles' ? 'cmpd-avail' : 'no-cmpd'">
-                Reframe library compound (stereofree)
-              </div>
+                <mat-icon *ngIf="isMobile" class="more-info" (click)="expandCell(row)">
+                  {{element['expanded'] ? 'expand_less': 'expand_more'}}
+                </mat-icon>
+              </mat-cell>
+            </ng-container>
 
-              <!-- <div *ngIf="element['reframeid'] !== true" [matTooltip]="skeletonTooltip" class="skeleton-match">
-                Reframe skeleton match
-              </div> -->
+            <!-- Highest Phase -->
+            <ng-container matColumnDef="highestPhase">
+              <mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="mat-header">
+                <span class="mat-header" [matTooltip]="highestTooltip">Highest Phase</span>
+                <mat-icon class="sort-icon" matTooltip="sort by highest-phase">sort</mat-icon>
+              </mat-header-cell>
+              <mat-cell *matCellDef="let element" class="highest-phase-cell">
+                <table class="table cmpd-info-table">
+                  <tbody>
+                    <tr *ngIf="element.highest_phase">
+                      <th class="label" scope="row">Highest Phase:</th>
+                      <td class="highest-phase">{{ element.highest_phase }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </mat-cell>
+            </ng-container>
 
-              <!-- Aliases + InChI key/ID -->
-              <table class="table cmpd-info">
-                <tbody>
-                  <!-- Aliases -->
-                  <tr *ngIf="element.aliases.length > 0" id="aliases">
-                    <th class="label" scope="row" *ngIf="!isMobile">Aliases:</th>
-                    <td class="aliases">
-                      <ul class="alias-list">
-                        <li *ngFor="let alias of element.aliases | slice:0:element.alias_ct; let i=index" class="alias">
-                          <!-- <ng-container *ngIf="i < num_aliases"> -->
-                          {{alias}}
-                          <span *ngIf="i + 1 < element.alias_ct && i + 1 < element.aliases.length" class='data-separator'></span>
-                        </li>
-                        <li>
-                          <a *ngIf="element.alias_ct < element.aliases.length || element.max_aliases" id="more" (click)="showMore(row)" class="center-block">
-                          {{ element.max_aliases ? 'show fewer' : isMobile ? 'show all aliases' : 'show all' }}
-                        </a>
-                        </li>
-                      </ul>
+            <!-- Similar compounds -->
+            <ng-container matColumnDef="similar">
+              <mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="mat-header">
+                <span class="mat-header" [matTooltip]="similarTooltip">Similar compounds</span>
+                <mat-icon class='sort-icon' matTooltip="sort by library compound">sort</mat-icon>
+              </mat-header-cell>
+              <mat-cell *matCellDef="let element" class="flex-column" [ngClass]="element['expanded'] ? 'expanded' : ''">
+                <div class="d-flex justify-content-end flex-grow-1 sim-cmpds">
+                  <app-search-result-similar [compound_result]="element" [mobile]="isMobile"></app-search-result-similar>
+                </div>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Tanimoto score -->
+            <ng-container matColumnDef="tanimoto">
+              <mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="mat-header">
+                <span class="mat-header">Tanimoto Similarity Score</span>
+                <mat-icon class='sort-icon' matTooltip="sort by Tanimoto score">sort</mat-icon>
+              </mat-header-cell>
+              <mat-cell *matCellDef="let element" [ngClass]="element['expanded'] ? 'expanded' : ''">
+                <div class="d-flex justify-content-center">
+                  <div class="tm-icon" [ngStyle]="{'background-color': tanimotoScale(element['tanimoto']), 'color': getFontColor(element['tanimoto'])}">
+                    {{element['tanimoto'] | number: '1.2-2'}}
+                  </div>
+                </div>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Structure -->
+            <ng-container matColumnDef="struct">
+              <mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="mat-header">
+                <span class="mat-header">Structure</span>
+                <mat-icon class='sort-icon' matTooltip="sort by Availability">sort</mat-icon>
+              </mat-header-cell>
+              <mat-cell *matCellDef="let element" [ngClass]="element['expanded'] ? 'expanded' : ''">
+                <table class="structure-table">
+                  <tr *ngIf="!isMobile">
+                    <td>
+                      <div id="available">
+                        <span class="label">Availability: </span>
+                        <ng-container *ngIf="element.reframeid === 'plated' || element.reframeid === 'one_off' || element.reframeid === 'historical_one_off'; else notAvailable">
+                          <span>Sample at Calibr</span>
+                        </ng-container>
+                        <ng-template #notAvailable>
+                          <span>No sample at Calibr</span>
+                        </ng-template>
+                      </div>
                     </td>
                   </tr>
-
-                  <!-- Inchi key / ID -->
-                  <tr id="id" *ngIf="!isMobile">
-                    <th class="label" scope="row">ID:</th>
-                    <td class="inchi-id">
-                      {{element['id']}}
+                  <tr>
+                    <td>
+                      <a [routerLink]="['/compound_data', element.id.split('/').pop(), {qid: element.qid.split('/').pop()}]">
+                        <app-struct2d [structure]="element['svg']" [smiles]="element['smiles']" struct_type="svg" *ngIf="element['svg']; else no_glow"></app-struct2d>
+                        <ng-template #no_glow>
+                          <app-struct2d [structure]="element['smiles']" [smiles]="element['smiles']" struct_type="smiles" *ngIf="element['smiles']"></app-struct2d>
+                        </ng-template>
+                      </a>
                     </td>
                   </tr>
+                </table>
+              </mat-cell>
+            </ng-container>
 
-                  <!-- <tr id="available" *ngIf="!isMobile">
-                    <th class="label" scope="row">Availability:</th>
-                    <ng-container *ngIf="element.reframeid == 'plated' || element.reframeid == 'one off' || element.reframeid == 'historical_one_off'; else notAvailable">
-                      <td>
-                        Sample at Calibr
-                      </td>
-                    </ng-container>
-                    
-                    <ng-template #notAvailable>
-                      <td>
-                        No sample at Calibr
-                      </td>
-                    </ng-template>
-                  </tr> -->
-
-                </tbody>
-              </table>
-              <!-- Expand on small screens -->
-              <mat-icon *ngIf="isMobile" class="more-info" [matTooltip]="element['expanded'] ? 'hide details' : 'show details'" (click)="expandCell(row)">{{element['expanded'] ? 'expand_less': 'expand_more'}}</mat-icon>
-
-            </mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="highestPhase">
-            <mat-header-cell *matHeaderCellDef mat-sort-header="highestPhase" disableClear="true" start="desc" class="mat-header">
-              <span class="mat-header" [matTooltip]="highestTooltip">
-                Highest Phase
-              </span>
-              <mat-icon class="sort-icon" matTooltip="sort by highest-phase">sort</mat-icon>
-            </mat-header-cell>
-          
-            <mat-cell *matCellDef="let element" class="highest-phase-cell">
-              <table class="table cmpd-info-table">
-                <tbody>
-                  <tr *ngIf="element.highest_phase">
-                    <th class="label" scope="row">Highest Phase:</th>
-                    <td class="highest-phase">{{ element.highest_phase }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </mat-cell>
-          </ng-container>
-          
-
-          <!-- In physical library -->
-          <ng-container matColumnDef="similar">
-            <mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" start="desc" class="mat-header">
-              <span class="mat-header" [matTooltip]="similarTooltip">
-              Similar compounds</span>
-              <mat-icon class='sort-icon' matTooltip="sort by library compound">sort</mat-icon>
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element" class="flex-column" [ngClass]="element['expanded'] ? 'expanded' : ''">
-
-              <div class="d-flex flex-row">
-                <!-- Label for small screens -->
-                <div class="label" id="reframe_label" *ngIf="isMobile" [matTooltip]="similarTooltip">
-                  Similar compounds
-                </div>
-                <!-- binary circle if compound in reframe library -->
-                <!-- <div id="reframe_cmpd" [ngClass]="element['reframeid'] === true ? 'cmpd-avail' : 'no-cmpd'">
-                  <div>
-                    <span class="circle"></span>
-                  </div>
-                </div> -->
-              </div>
-
-              <!-- Similar compounds -->
-              <div class="d-flex justify-content-end flex-grow-1 sim-cmpds">
-                <app-search-result-similar [compound_result]="element" [mobile]="isMobile"></app-search-result-similar>
-              </div>
-
-            </mat-cell>
-          </ng-container>
-
-          <!-- Tanimoto score -->
-          <ng-container matColumnDef="tanimoto">
-            <mat-header-cell *matHeaderCellDef class="mat-header" [matTooltip]="tanimotoTooltip" mat-sort-header disableClear="true">
-              <span class="mat-header">Tanimoto Similarity Score</span>
-              <mat-icon class='sort-icon' matTooltip="sort by Tanimoto score">sort</mat-icon>
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element" [ngClass]="element['expanded'] ? 'expanded' : ''">
-              <div class="d-flex flex-row">
-                <!-- Label for small screens -->
-                <div class="label" id="tanimoto_label" *ngIf="isMobile" [matTooltip]="tanimotoTooltip">
-                  Tanimoto Similarity Score
-                </div>
-                <!-- Tanimoto score -->
-                <div id="tanimoto_score" class="d-flex justify-content-center">
-                  <div class="tm-icon" [ngStyle]="{'background-color': tanimotoScale(element['tanimoto']), 'color': getFontColor(element['tanimoto'])}">{{element['tanimoto'] | number: '1.2-2'}}</div>
-                </div>
-              </div>
-
-
-
-              <!-- <div class="exact-match">exact match</div> -->
-
-            </mat-cell>
-          </ng-container>
-
-          <!-- Structure -->
-          <ng-container matColumnDef="struct">
-            <mat-header-cell *matHeaderCellDef class="mat-header" mat-sort-header disableClear="true">
-              <span class="mat-header">Structure</span>
-              <mat-icon class='sort-icon' matTooltip="sort by Availability">sort</mat-icon>
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element" [ngClass]="element['expanded'] ? 'expanded' : ''">
-              <!-- Table for Structure and Availability -->
-              <table class="structure-table">
-                <tr *ngIf="!isMobile">
-                  <td>
-                    <div id="available">
-                      <span class="label">Availability: </span>
-                      <ng-container *ngIf="element.reframeid === 'plated' || element.reframeid === 'one_off' || element.reframeid === 'historical_one_off'; else notAvailable">
-                        <span>Sample at Calibr</span>
-                      </ng-container>
-                      <ng-template #notAvailable>
-                        <span>No sample at Calibr</span>
-                      </ng-template>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <a [routerLink]="['/compound_data', element.id.split('/').pop(), {qid: element.qid.split('/').pop()}]">
-                      <app-struct2d [structure]="element['svg']" [smiles]="element['smiles']" struct_type="svg" *ngIf="element['svg']; else no_glow"></app-struct2d>
-                      <ng-template #no_glow>
-                        <app-struct2d [structure]="element['smiles']" [smiles]="element['smiles']" struct_type="smiles" *ngIf="element['smiles']"></app-struct2d>
-                      </ng-template>
-                    </a>
-                  </td>
-                </tr>
-              </table>
-            </mat-cell>
-          </ng-container>
-
-          <!-- Assay titles -->
-          <ng-container matColumnDef="assays">
-            <mat-header-cell *matHeaderCellDef class="assay-label" mat-sort-header disableClear="true" start="desc" class="mat-header" [matTooltip]="assayTooltip">
-              <span class="mat-header">Assay Hits</span>
-              <mat-icon class='sort-icon' matTooltip="sort by number of assay hits">sort</mat-icon>
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element" class="flex-column" [ngClass]="element['expanded'] ? 'expanded' : ''">
-
-              <div class="d-flex flex-row">
-                <!-- Label for small screens -->
-                <div class="label" id="assay_label" *ngIf="isMobile" [matTooltip]="assayTooltip">
-                  Assay Hits
-                </div>
-                <!-- binary circle if compound in reframe library -->
-                <!-- <div id="assay_hits">
-                  <div>
-                    <span class="circle" [ngStyle]="{'background-color': 'rgba(65, 74, 81,' + getColor(element.assay_types) + ')'}"></span>
-                  </div>
-                </div> -->
+            <!-- Assay hits -->
+            <ng-container matColumnDef="assays">
+              <mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="mat-header" [matTooltip]="assayTooltip">
+                <span class="mat-header">Assay Hits</span>
+                <mat-icon class='sort-icon' matTooltip="sort by number of assay hits">sort</mat-icon>
+              </mat-header-cell>
+              <mat-cell *matCellDef="let element" [ngClass]="element['expanded'] ? 'expanded' : ''">
                 <div class="d-flex justify-content-end flex-grow-1" *ngIf="element.assay_types.length > 0; else no_assays">
-                  <ul class="assay-list d-flex flex-column ">
+                  <ul class="assay-list d-flex flex-column">
                     <li class="assay-title" *ngFor="let assay of element.assay_types; let i=index">
                       <app-assay-indication [assay_name]="assay[0]" [assay_link]="assay[1]" [assay_type]="assay[2]"></app-assay-indication>
                     </li>
                   </ul>
                 </div>
+                <ng-template #no_assays></ng-template>
+              </mat-cell>
+            </ng-container>
 
-                <ng-template #no_assays>
-                  <!-- <div class="align-self-center">none</div> -->
-                </ng-template>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+          </mat-table>
 
-
-              </div>
-            </mat-cell>
-          </ng-container>
-
-          <!-- <ng-container matColumnDef="assay_titles">
-            <mat-header-cell *matHeaderCellDef class="assay-label"></mat-header-cell>
-            <mat-cell *matCellDef="let element">
-              <ul class="assay-list">
-                <li class="assay-title" *ngFor="let assay of element.assay_types; let i=index">
-                  <a [routerLink]="['/assays', assay[1]]">{{assay[0]}}</a>
-                </li>
-              </ul>
-            </mat-cell>
-          </ng-container>
-
-
-          <ng-container matColumnDef="avail">
-            <mat-header-cell *matHeaderCellDef class="assay-label"></mat-header-cell>
-            <mat-cell *matCellDef="let element">
-              <ul class="assay-list">
-                <li class="assay-title" *ngFor="let assay of element.assay_types; let i=index">
-                  <a [routerLink]="['/assays', assay[1]]">{{assay[0]}}</a>
-                </li>
-              </ul>
-            </mat-cell>
-          </ng-container> -->
-
-
-          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayedColumns; let element; let i = index" id="{{i}}"></mat-row>
-          <!-- Original routing, where row click directs to compound page -->
-          <!-- <mat-row *matRowDef="let row; columns: displayedColumns; let element;" (click)="rowClicked($event, element['qid'], element['id'])"></mat-row> -->
-        </mat-table>
-
-        <mat-paginator #paginator [pageSize]="pageSize" [pageIndex]="pageIdx" [pageSizeOptions]="[10, 25, 50, 100]" (page)="onPageChange($event)">
-        </mat-paginator>
-
-      </div>
-    </ng-container>
-
-
-    <!-- <ng-container *ngSwitchCase="500">
-      <p>
-        ReframeDB is currently down. Please email <a href="mailto:help@reframedb.org?subject=ReFrameDB 500 status: {{ APIquery }}">help@reframedb.org</a> to let us know.
-        <p>
-    </ng-container> -->
-
-    <ng-container *ngSwitchDefault>
-      <h5>Your query resulted in an error.</h5>
-
-      <p *ngIf="probSMILES">
-        Did you mean to search for a structure match by SMILES string? Try a
-        <a [routerLink]="['/search/']" [queryParams]='{ query:  queryString, type: "structure", mode: "exact" }'>structure search</a>.
-      </p>
-
-      <p>
-        Often, this happens if the inputted structure is too complicated (contains too many terms separated by spaces or special characters). Consider deleting some words, or enclose the search in double quotes (e.g. "tyrosine kinase inhibitor")</p>
-      <p>
-        <!-- If using a SMILES string, check the SMILES structure for improper aromatization, use keuklized SMILES strings, and/or remove generic atoms.</p> -->
-
-        <p>
-          Please try again and if it persists, email <a href="mailto:reframescreens@scripps.edu?subject=ReFrameDB bad query: {{ APIquery }}">reframescreens@scripps.edu</a>
-        </p>
-    </ng-container>
-  </ng-container>
-
+    <mat-paginator #paginator [pageSize]="pageSize" [pageIndex]="pageIdx" [pageSizeOptions]="[10, 25, 50, 100]" (page)="onPageChange($event)">
+    </mat-paginator>
+  </div>
 </div>

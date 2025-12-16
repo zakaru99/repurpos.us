@@ -375,6 +375,52 @@ export class SearchResultsTableComponent implements OnInit {
     }
   }
 
+  
+  downloadSDF(): void {
+  if (!this.dataSource.data || this.dataSource.data.length === 0) {
+    alert('There are no search results to download');
+    return;
+  }
+
+  let sdfContent = '';
+
+  // SDF template for each compound
+  this.dataSource.data.slice(0, 100).forEach(c => {
+    const name = c.main_label || 'Unknown';
+    const smiles = c.smiles || '';
+
+    // Basic SDF header (V2000 stub – no atom/bond block, but still readable)
+    sdfContent += `${name}
+  REFRAMEDB  GENERATED
+
+  >  <SMILES>
+  ${smiles}
+
+  >  <ID>
+  ${c.id}
+
+  >  <LINK>
+  https://reframedb.org/compound_data/${c.id}?qid=${c.qid}
+
+  $$$$
+  `;
+    });
+
+    const blob = new Blob([sdfContent], {
+      type: 'chemical/x-mdl-sdfile'
+    });
+
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = `reframedb_search_${this.queryString}.sdf`;
+    link.click();
+
+    window.URL.revokeObjectURL(url);
+  }
+
+
   processDownload(){
     const lineDelimiter = '\n';
     const columnDelimiter = ','; //using comma to format data for csv
