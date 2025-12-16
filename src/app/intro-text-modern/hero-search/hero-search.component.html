@@ -1,5 +1,4 @@
-
-<div class="search-bar-wrapper">
+<div class="search-bar-wrapper" [class.dropdown-open]="dropdownVisible">
   <div class="input-container">
     <input type="text" [(ngModel)]="query"
            (keydown)="onKeyDown($event)"

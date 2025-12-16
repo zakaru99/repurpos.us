@@ -106,15 +106,39 @@
   gap: 0.5rem;
 }
 
-.search-bar-wrapper input {
+.input-container {
+  position: relative;
   width: 600px;
   max-width: 100%;
+  display: block;
+  box-sizing: border-box; /* ensure padding/border included in width */
+}
+
+/* make input fill the input-container instead of using a fixed 600px on the input */
+.search-bar-wrapper input {
+  width: 100%;
+  max-width: 600px;
   padding: 0.75rem 1rem;
   border: 1px solid #c0cde8;
   border-radius: 999px;
   font-size: 1rem;
   transition: border-radius 0.2s ease, border-color 0.2s ease;
   z-index: 2;
+  box-sizing: border-box; /* include padding/border in width calculation */
+}
+
+/* keep the border color from changing on focus and remove box-shadow */
+.search-bar-wrapper input:focus,
+.search-bar-wrapper input:active {
+  outline: none;
+  box-shadow: none;
+  border-color: #c0cde8; /* same as unfocused */
+}
+
+/* still show a subtle focus ring for keyboard users */
+.search-bar-wrapper input:focus-visible {
+  outline: 1px solid #3d6de0;
+  // outline-offset: 2px;
 }
 
 .search-bar-wrapper button {
@@ -135,27 +159,19 @@
 
 .search-bar-wrapper.dropdown-open input {
   border-radius: 999px 999px 0 0;
-  border-bottom-color: transparent; 
-}
-
-.input-container {
-  position: relative;
-  width: 600px;
-  max-width: 100%;
-  display: block;
-}
-
-.input-container input {
-  width: 100%;
+  border-bottom-color: transparent;
 }
 
 .predictive-dropdown {
   position: absolute;
   top: 100%;
   left: 0;
-  width: 100%;
+  right: 0; /* stretch to the container's edges */
+  width: auto; /* use left/right to size exactly to container */
+  box-sizing: border-box;
   background: #fff;
-  border: 1px solid #c0cde8;
+  outline: 1px solid #3d6de0;
+  // border: 1px solid #c0cde8;
   border-top: none;
   border-radius: 0 0 12px 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -165,6 +181,9 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  text-align: left;
+  border-top: 1px solid rgba(192,205,232,0.6); /* subtle seam to match input */
+  margin-top: -1px; /* overlap to remove gap */
 }
 
 .predictive-dropdown li {
@@ -172,6 +191,10 @@
   cursor: pointer;
   font-size: 0.95rem;
   color: #333;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
 }
 
 .predictive-dropdown li:hover {
@@ -180,6 +203,12 @@
 
 .predictive-dropdown li.highlighted {
   background: #e1e9ff;
+}
+
+// ensure dropdown sits above other elements and aligns with input rounded corners
+.predictive-dropdown li:first-child {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 
 @media (max-width: 768px) {
