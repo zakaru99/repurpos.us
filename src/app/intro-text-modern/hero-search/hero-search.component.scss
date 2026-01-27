@@ -186,6 +186,35 @@
   margin-top: -1px; /* overlap to remove gap */
 }
 
+/* === Predictive dropdown: value + type pill === */
+
+.predictive-dropdown li {
+  display: flex;              /* override block */
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.predictive-dropdown .suggestion-value {
+  flex: 1;
+  min-width: 0;               /* required for ellipsis in flex */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.predictive-dropdown .suggestion-pill {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 999px;
+  background-color: #f5f8fd;  /* matches toggle bg */
+  color: #3d6de0;             /* Reframe blue */
+  border: 1px solid #c0cde8;
+  text-transform: uppercase;
+}
+
 .predictive-dropdown li {
   padding: 8px 12px;
   cursor: pointer;

@@ -8,10 +8,19 @@
       <li *ngFor="let item of suggestions; let i = index"
           [class.highlighted]="i === highlightedIndex"
           (mouseenter)="setHighlight(i)"
-          (click)="selectSuggestion(item)">
-        {{ item }}
+          (click)="selectSuggestion(item.value)"
+          class="suggestion-item">
+
+        <span class="suggestion-value">
+          {{ item.value }}
+        </span>
+
+        <span class="suggestion-pill">
+          {{ item.type }}
+        </span>
       </li>
     </ul>
+
   </div>
   <button (click)="search()"><i class="icon-search"></i> Search</button>
 </div>

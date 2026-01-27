@@ -51,7 +51,7 @@ onKeyDown(event: KeyboardEvent) {
   } else if (event.key === 'Enter') {
     event.preventDefault();
     if (this.dropdownVisible && this.highlightedIndex > -1) {
-      this.selectSuggestion(this.suggestions[this.highlightedIndex]);
+      this.selectSuggestion(this.suggestions[this.highlightedIndex]['value']);
     } else {
       this.search();
     }
@@ -112,12 +112,12 @@ onKeyDown(event: KeyboardEvent) {
     if (!this.dropdownVisible) return;
     const count = this.suggestions.length;
     this.highlightedIndex = (this.highlightedIndex + direction + count) % count;
-    this.query = this.suggestions[this.highlightedIndex];
+    this.query = this.suggestions[this.highlightedIndex]['value']; // keep input in sync
   }
 
   setHighlight(index: number) {
     this.highlightedIndex = index;
-    this.query = this.suggestions[index]; // keep input in sync
+    this.query = this.suggestions[index]['value']; // keep input in sync
   }
 
 
