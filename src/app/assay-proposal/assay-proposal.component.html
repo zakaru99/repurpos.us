@@ -1,0 +1,215 @@
+<section *ngIf="loggedIn; else log_in" class="assay-proposal-form">
+  <h2>Calibr ReFRAME Assay Proposal</h2>
+  <p class="subtitle">
+    Please fill out the form below to submit your assay proposal.
+  </p>
+
+  <form #proposalForm="ngForm" (ngSubmit)="onSubmit(proposalForm)" novalidate>
+    <!-- Section Header -->
+    <div class="form-section-header">General Information</div>
+
+    <!-- Assay Contact Name -->
+    <div
+      class="form-row"
+      [ngClass]="{ 'has-error': contactName.invalid && (contactName.touched || proposalForm.submitted) }"
+    >
+      <label for="contactName">Assay Contact Name</label>
+      <input
+        id="contactName"
+        type="text"
+        name="contactName"
+        [(ngModel)]="formData.contactName"
+        required
+        #contactName="ngModel"
+      />
+      <div
+        class="error-message"
+        *ngIf="contactName.invalid && (contactName.touched || proposalForm.submitted)"
+      >
+        Contact name is required.
+      </div>
+    </div>
+
+    <!-- Assay Contact Email -->
+    <div
+      class="form-row"
+      [ngClass]="{ 'has-error': contactEmail.invalid && (contactEmail.touched || proposalForm.submitted) }"
+    >
+      <label for="contactEmail">Assay Contact Email(s)</label>
+      <input
+        id="contactEmail"
+        type="email"
+        name="contactEmail"
+        [(ngModel)]="formData.contactEmail"
+        required
+        email
+        #contactEmail="ngModel"
+      />
+      <div
+        class="error-message"
+        *ngIf="contactEmail.errors?.required && (contactEmail.touched || proposalForm.submitted)"
+      >
+        Email is required.
+      </div>
+      <div
+        class="error-message"
+        *ngIf="contactEmail.errors?.email && (contactEmail.touched || proposalForm.submitted)"
+      >
+        Please enter a valid email address.
+      </div>
+    </div>
+
+    <!-- Institution -->
+    <div
+      class="form-row"
+      [ngClass]="{ 'has-error': institution.invalid && (institution.touched || proposalForm.submitted) }"
+    >
+      <label for="institution">Institution</label>
+      <input
+        id="institution"
+        type="text"
+        name="institution"
+        [(ngModel)]="formData.institution"
+        required
+        #institution="ngModel"
+      />
+      <div
+        class="error-message"
+        *ngIf="institution.invalid && (institution.touched || proposalForm.submitted)"
+      >
+        Institution is required.
+      </div>
+    </div>
+
+    <!-- Assay Indication -->
+    <div
+      class="form-row"
+      [ngClass]="{ 'has-error': indication.invalid && (indication.touched || proposalForm.submitted) }"
+    >
+      <label for="indication">Assay Indication</label>
+      <input
+        id="indication"
+        type="text"
+        name="indication"
+        placeholder="Target, Disease, etc."
+        [(ngModel)]="formData.indication"
+        required
+        #indication="ngModel"
+      />
+      <div
+        class="error-message"
+        *ngIf="indication.invalid && (indication.touched || proposalForm.submitted)"
+      >
+        Indication is required.
+      </div>
+    </div>
+    <!-- Volume -->
+    <div
+      class="form-row"
+      [ngClass]="{ 'has-error': volume.invalid && (volume.touched || proposalForm.submitted) }"
+    >
+      <label for="volume">Volume (µL)</label>
+      <input
+        id="volume"
+        type="number"
+        name="volume"
+        min="0"
+        step="1"
+        [(ngModel)]="formData.volume"
+        required
+        #volume="ngModel"
+      />
+      <div
+        class="error-message"
+        *ngIf="volume.invalid && (volume.touched || proposalForm.submitted)"
+      >
+        Volume is required.
+      </div>
+    </div>
+
+    <!-- Concentration -->
+    <div
+      class="form-row"
+      [ngClass]="{ 'has-error': concentration.invalid && (concentration.touched || proposalForm.submitted) }"
+    >
+      <label for="concentration">Concentration (µM)</label>
+      <input
+        id="concentration"
+        type="number"
+        name="concentration"
+        min="0"
+        step="1"
+        [(ngModel)]="formData.concentration"
+        required
+        #concentration="ngModel"
+      />
+      <div
+        class="error-message"
+        *ngIf="concentration.invalid && (concentration.touched || proposalForm.submitted)"
+      >
+        Concentration is required.
+      </div>
+    </div>
+    
+    <!-- Assay Description -->
+    <div
+      class="form-row"
+      [ngClass]="{ 'has-error': description.invalid && (description.touched || proposalForm.submitted) }"
+    >
+      <label for="description">Assay Description</label>
+      <textarea
+        id="description"
+        name="description"
+        rows="4"
+        placeholder="Brief description of work and assay type."
+        [(ngModel)]="formData.description"
+        required
+        #description="ngModel"
+      ></textarea>
+      <div
+        class="error-message"
+        *ngIf="description.invalid && (description.touched || proposalForm.submitted)"
+      >
+        Description is required.
+      </div>
+    </div>
+
+    <!-- Additional Notes -->
+    <div
+      class="form-row"
+      [ngClass]="{ 'has-error': notes.invalid && (notes.touched || proposalForm.submitted) }"
+    >
+      <label for="notes">Additional Notes/Questions</label>
+      <textarea
+        id="notes"
+        name="notes"
+        rows="3"
+        [(ngModel)]="formData.notes"
+        required
+        #notes="ngModel"
+      ></textarea>
+      <div
+        class="error-message"
+        *ngIf="notes.invalid && (notes.touched || proposalForm.submitted)"
+      >
+        Notes are required.
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="form-actions">
+      <button type="submit" [disabled]="!proposalForm.valid || isSubmitting">
+        {{ isSubmitting ? 'Submitting...' : 'Submit Proposal' }}
+      </button>
+    </div>
+  </form>
+  <div class="toast" *ngIf="toastMessage" [ngClass]="toastType">
+    {{ toastMessage }}
+  </div>
+</section>
+
+<ng-template #log_in >
+  <div class="not-logged-in">
+  You must be logged in to submit an assay proposal
+</div>
+</ng-template>

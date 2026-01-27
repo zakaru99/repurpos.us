@@ -32,6 +32,7 @@ import { FooterComponent } from './footer/footer.component';
 import { IntroTextComponent } from './intro-text/intro-text.component';
 import { IntroTextModernComponent } from './intro-text-modern/intro-text-modern.component';
 import { ContactUsComponent } from './contact-us/contact-us.component';
+import { AssayProposalComponent } from './assay-proposal/assay-proposal.component';
 
 import {
   CompoundSearchComponent, CompoundSearchOptionsComponent, SearchBoxComponent,
@@ -122,7 +123,8 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
     IndicationsGraphComponent,
     WorkflowComponent,
     OntologyTreeComponent,
-    ContactUsComponent
+    ContactUsComponent,
+    AssayProposalComponent
 
     // SearchResultHeaderComponent, ReframeFilterComponent, AssaysFilterComponent
   ],

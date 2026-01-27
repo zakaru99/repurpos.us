@@ -11,6 +11,7 @@ import { WorkflowComponent } from "./workflow/workflow.component";
 import { OntologyTreeComponent } from "./ontology-tree/ontology-tree.component";
 import { ContactUsComponent } from './contact-us/contact-us.component';
 import { environment } from '../environments/environment';
+import { AssayProposalComponent } from './assay-proposal/assay-proposal.component';
 
 const appRoutes: Routes = [
   { path: '', component: IntroTextModernComponent, pathMatch: 'full' },
@@ -35,7 +36,7 @@ const appRoutes: Routes = [
   { path: 'confirm/:cid', component: ConfirmEmailComponent, pathMatch: 'full' },
   { path: 'reset_pass/:rid', component: ResetPasswordComponent, pathMatch: 'full' },
   { path: 'contact-us', component: ContactUsComponent, pathMatch: 'full'},
-
+  { path: 'assay_proposal', component: AssayProposalComponent, pathMatch: 'full' }
 ];
 
 @NgModule({
