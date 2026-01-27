@@ -36,7 +36,12 @@ const appRoutes: Routes = [
   { path: 'confirm/:cid', component: ConfirmEmailComponent, pathMatch: 'full' },
   { path: 'reset_pass/:rid', component: ResetPasswordComponent, pathMatch: 'full' },
   { path: 'contact-us', component: ContactUsComponent, pathMatch: 'full'},
-  { path: 'assay_proposal', component: AssayProposalComponent, pathMatch: 'full' }
+  { path: 'assay_proposal', component: AssayProposalComponent, pathMatch: 'full' },
+  { 
+    path: 'user_portal', 
+    loadChildren: () => import('./user-portal/user-portal.module').then(m => m.UserPortalModule),
+    // canActivate: [UserGuard]   // we'll create this guard
+  },
 ];
 
 @NgModule({
