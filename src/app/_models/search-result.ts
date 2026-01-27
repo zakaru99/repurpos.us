@@ -32,6 +32,7 @@ export interface Compound {
   cbr_id?: any;
   highest_phase?: any;
   qid?: string;
+  integrity_pediatrics?: boolean;
 }
 
 export interface AvailableData {

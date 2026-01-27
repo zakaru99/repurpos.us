@@ -26,6 +26,8 @@ export class CompoundHeaderComponent implements OnInit {
   public isToxicA00295 = false;
   public assayData: AssayData[] = [];
 
+  public integrityPediatrics: boolean = false;
+
   num_aliases: number;
   all_shown: boolean = false;
   alias_ct: number;
@@ -63,8 +65,11 @@ export class CompoundHeaderComponent implements OnInit {
       this.assayData = assays;
       this.checkToxicity();
     })
+    this.cmpdSvc.integrityPediatricsState.subscribe((integrityPediatrics: boolean) => {
+      this.integrityPediatrics = integrityPediatrics;
+    })
   }
-
+  
 checkToxicity(): void {
   if (!this.assayData || this.assayData.length === 0) {
     this.isToxicA00295 = false;

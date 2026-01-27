@@ -59,6 +59,9 @@ export class CompoundService {
   public whoSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
   whoState = this.whoSubject.asObservable();
 
+  public integrityPediatricsSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  integrityPediatricsState = this.integrityPediatricsSubject.asObservable();
+
   private aliases: string[] = [];
   public aliasSubject: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   aliasState = this.aliasSubject.asObservable();
@@ -252,6 +255,7 @@ export class CompoundService {
       this.whoSubject.next('');
       this.smilesSubject.next('');
       this.rfmSubject.next('');
+      this.integrityPediatricsSubject.next(false);
       this.aliasSubject.next([]);
       this.chemSourceSubject.next([]);
       this.similarSubject.next([]);
@@ -521,6 +525,8 @@ export class CompoundService {
             console.log(b.reframe_id[0]);
             this.rfmSubject.next(b.reframe_id[0]);
 
+            this.integrityPediatricsSubject.next(b.integrity_pediatrics || false);
+
             // Pull out assay data --> compound-assay-data
             this.assaysSubject.next(<AssayData[]>b.assay);
 
@@ -622,6 +628,8 @@ export class CompoundService {
                 // Is it a Reframe compound? --> compound-header
                 // TODO: make sure this works when flip RFM id
                 this.rfmSubject.next(search_results.reframeid);
+
+                this.integrityPediatricsSubject.next(search_results.integrity_pediatrics || false);
 
                 // send off SMILES structure
                 this.smiles = search_results.smiles;
