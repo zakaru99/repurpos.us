@@ -48,7 +48,9 @@ export class SearchResultsTableComponent implements OnInit {
     this.setDataSourceAttributes();
   }
 
-  results: SearchResult[];
+  matchFilter: string = 'all';
+
+  results: Compound[];
   private resultsSubscription: Subscription;
 
   responseCode: number; // response coming back from the API query
@@ -149,6 +151,8 @@ export class SearchResultsTableComponent implements OnInit {
 
         if (result.data) {
           let results = result.data;
+          this.results = Array.isArray(result.data) ? result.data : [result.data];
+
 
           // example filtering
           // results = results.filter(d => d.reframeid === true);
@@ -178,7 +182,7 @@ export class SearchResultsTableComponent implements OnInit {
           this.meta.updateTag({ property: 'og:url', content: window.location.href });
           this.meta.updateTag({property: 'og:title', content: `search results for ${this.queryString} | reframeDB`});
           this.meta.updateTag({property: 'og:description', content: `search results for ${this.queryType} search of ${this.queryString} | reframeDB`});
-
+          this.applyMatchFilter();
         }
 
 
@@ -189,6 +193,43 @@ export class SearchResultsTableComponent implements OnInit {
     this.getFontColor = tanimotoSvc.getFontColor();
 
   }
+  onMatchFilterChange(event: any) {
+    console.log('toggle changed', event);
+    this.matchFilter = event.value;
+    this.applyMatchFilter();
+  }
+
+
+  applyMatchFilter() {
+  if (!this.results) return;
+
+  let filteredCompounds: Compound[] = this.results;
+
+  if (this.matchFilter !== 'all') {
+    const filterKeyMap = {
+      name: 'name_match',
+      target: 'target_match',
+      moa: 'moa_match',
+      roa: 'roa_match',
+      phase: 'phase_match'
+    };
+
+    const matchKey = filterKeyMap[this.matchFilter];
+
+    filteredCompounds = this.results.filter(c => {
+      const matched = c['matched_queries'] || [];
+      return matched.includes(matchKey);
+    });
+  }
+
+  // update table
+  this.dataSource.data = filteredCompounds.slice();
+  if (this.paginator) this.paginator.firstPage();
+
+  console.log('filtered compounds:', filteredCompounds.length);
+}
+
+
 
   resetSort() {
     if (this.sort) {
