@@ -1,3 +1,31 @@
-<p>
-  my-assays works!
-</p>
+<div class="my-assays-page">
+  <div class="card-block">
+    <h5 class="section-title">My Assay Proposals</h5>
+
+    <!-- Status Filter Pills -->
+    <div class="status-filter">
+      <button class="pill" [ngClass]="{ active: selectedStatus === '' }" (click)="filterByStatus('')">All</button>
+      <button class="pill" [ngClass]="{ active: selectedStatus === 'Pending' }" (click)="filterByStatus('Pending')">Pending</button>
+      <button class="pill" [ngClass]="{ active: selectedStatus === 'Approved' }" (click)="filterByStatus('Approved')">Approved</button>
+      <button class="pill" [ngClass]="{ active: selectedStatus === 'Rejected' }" (click)="filterByStatus('Rejected')">Rejected</button>
+    </div>
+
+    <!-- Assay cards -->
+    <div *ngIf="assays?.length > 0" class="assays-list">
+      <div *ngFor="let assay of assays" class="assay-card">
+        <div class="assay-header">
+          <h6>{{ assay.name }}</h6>
+          <span class="status-badge" [ngClass]="assay.status | lowercase">{{ assay.status }}</span>
+        </div>
+        <p><strong>Indication:</strong> {{ assay.indication }}</p>
+        <p><strong>Submitted On:</strong> {{ assay.submittedOn | date:'mediumDate' }}</p>
+        <div class="assay-actions">
+          <button (click)="viewAssay(assay)">View</button>
+          <button *ngIf="assay.status === 'Pending'" (click)="editAssay(assay)">Edit</button>
+        </div>
+      </div>
+    </div>
+
+    <p *ngIf="assays?.length === 0">You have not submitted any assay proposals yet.</p>
+  </div>
+</div>

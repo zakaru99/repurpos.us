@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpErrorResponse, HttpHeaders, HttpClient } from "@angular/common/http";
-import { FormControl, Validators   } from "@angular/forms";
+import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
+import { FormControl, Validators } from "@angular/forms";
 import { MatDialog } from '@angular/material';
-import {environment} from "../../../environments/environment";
-
-import { User } from '../../_models/index';
 import { LoginFailComponent } from '../../_dialogs/index';
 import { LoginStateService } from '../../_services/index';
+
+interface UserStatus {
+  user_id: number;
+  email: string;
+  admin: boolean;
+  registered_on: string;
+}
 
 @Component({
   selector: 'app-user-login',
@@ -15,7 +19,8 @@ import { LoginStateService } from '../../_services/index';
 })
 export class UserLoginComponent implements OnInit {
 
-  loggedIn: boolean = false;
+  loggedIn = false;
+  isAdmin = false;
 
   email = new FormControl('', [Validators.required, Validators.email]);
   password = new FormControl('', [Validators.required]);
@@ -23,108 +28,67 @@ export class UserLoginComponent implements OnInit {
   constructor(private http: HttpClient, private loginStateService: LoginStateService, public dialog: MatDialog) { }
 
   ngOnInit() {
-
-    if(localStorage.getItem('auth_token')){
-      this.http.get( '/api/auth/status', {
-          observe: 'response',
-          // withCredentials: true,
-          headers: new HttpHeaders()
-            .set('content-type', 'application/json')
-            .set('Authorization', localStorage.getItem('auth_token'))
-        }
-
-      ).subscribe((re) => {
-          let userInfo = re.body;
-
-          // maybe do some checks here for the user, but not really important if the token came back valid
-
-          this.loggedIn = true;
-          this.loginStateService.loggedIn();
-
-          // console.log(JSON.stringify(re));
-          // console.log(re.status);
-        },
-        (err: HttpErrorResponse) => {
-          console.log('error executed');
-          this.loggedIn = false;
-          this.loginStateService.loggedOut();
-        }
-      );
-
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      this.checkUserStatus(token);
     } else {
-      this.loggedIn = false;
-      this.loginStateService.loggedOut();
+      this.logoutCleanup();
     }
   }
 
-  onSubmit(){
-    console.log('submit');
-    // console.log(this.user.email, this.user.password);
+private checkUserStatus(token: string) {
+  this.http.get<{ status: string; data: UserStatus }>('/api/auth/status', {
+    headers: new HttpHeaders().set('Authorization', token)
+  }).subscribe({
+    next: (res) => {
+      const userInfo = res.data;
+      console.log(userInfo);
+      this.loggedIn = true;
+      this.isAdmin = userInfo.admin;
 
-    this.http.post('/api/auth/login', {"email": this.email.value, "password": this.password.value}, {
-        observe: 'response',
-        // withCredentials: true,
-        headers: new HttpHeaders()
-          .set('content-type', 'application/json')
-      }
+    this.loginStateService.loggedIn(this.isAdmin, userInfo.email);
+    },
+    error: () => this.logoutCleanup()
+  });
+}
 
-    ).subscribe((re) => {
-        let credentials = re.body;
-        // console.log(credentials['auth_token']);
-        localStorage.setItem('auth_token', credentials['auth_token']);
+  onSubmit() {
+  const payload = { email: this.email.value, password: this.password.value };
 
-        // console.log(JSON.stringify(re));
-        // console.log(re.status);
-        this.loggedIn = true;
-        this.loginStateService.loggedIn();
-        this.loginStateService.isUserLoggedIn.next({'loggedIn': true});
-        //location.reload();
+  this.http.post<{ status: string; auth_token: string }>('/api/auth/login', payload)
+    .subscribe({
+      next: (res) => {
+        localStorage.setItem('auth_token', res.auth_token);
+        this.checkUserStatus(res.auth_token);
       },
-      (err: HttpErrorResponse) => {
-        this.dialog.open(LoginFailComponent, {data: {'error': err.error.message} });
-        console.log(err.error.message);
-        console.log(JSON.stringify(err));
-        console.log(err.status);
+      error: (err: HttpErrorResponse) => {
+        this.dialog.open(LoginFailComponent, { data: { error: err.error.message } });
+        this.logoutCleanup();
       }
-    );
+    });
+}
 
+  logout() {
+    const token = localStorage.getItem('auth_token');
+    if (!token) return this.logoutCleanup();
+
+    this.http.post('/api/auth/logout', {}, {
+      headers: new HttpHeaders().set('Authorization', token)
+    }).subscribe({
+      next: () => this.logoutCleanup(),
+      error: () => this.logoutCleanup()
+    });
   }
 
-  logout(){
-    this.http.post('/api/auth/logout', {}, {
-        observe: 'response',
-        headers: new HttpHeaders()
-          .set('Authorization', localStorage.getItem('auth_token'))
-          .set('content-type', 'application/json')
-      }
-
-    ).subscribe((re) => {
-        let logoutReply = re.body;
-
-        if(logoutReply['status'] === 'success') {
-          localStorage.removeItem('auth_token');
-          this.loggedIn = false;
-          this.loginStateService.loggedOut();
-          this.loginStateService.isUserLoggedIn.next({'loggedIn': false});
-          location.reload();
-        }
-
-
-        // console.log(JSON.stringify(re));
-        // console.log(re.status);
-
-      },
-      (err: HttpErrorResponse) => {
-        console.log(err.error.message);
-        console.log(JSON.stringify(err));
-        console.log(err.status);
-      }
-    );
+  private logoutCleanup() {
+    localStorage.removeItem('auth_token');
+    this.loggedIn = false;
+    this.isAdmin = false;
+    this.loginStateService.loggedOut();
   }
 
   getErrorMessage() {
     return this.email.hasError('required') ? 'You must enter a value' :
-      this.email.hasError('email') ? 'Not a valid email' : '';
+           this.email.hasError('email') ? 'Not a valid email' : '';
   }
-
 }

@@ -1,3 +1,11 @@
-<p>
-  user-portal-layout works!
-</p>
+<header class="user-portal-toolbar">
+  <div class="logo">User Portal</div>
+
+  <nav class="nav-links">
+    <a routerLink="my_assays" routerLinkActive="active-link">My Assays</a>
+  </nav>
+</header>
+
+<div class="portal-content">
+  <router-outlet></router-outlet>
+</div>

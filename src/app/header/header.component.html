@@ -44,6 +44,12 @@
           <li class="menu-item">
             <a routerLink="/about" (click)="collapseNav()">about</a>
           </li>
+          <li class="menu-item" *ngIf="loggedIn">
+            <a routerLink="/user_portal" (click)="collapseNav()">user portal</a>
+          </li>
+          <li class="menu-item" *ngIf="isAdmin">
+            <a routerLink="/internal/proposals" (click)="collapseNav()">calibr admins</a>
+          </li>
           <li class="menu-item">
             <a routerLink="/contact-us" (click)="collapseNav()">contact us</a>
           </li>

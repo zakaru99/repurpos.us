@@ -24,6 +24,7 @@ export class HeaderComponent implements OnInit {
   routeDef: RouteDef[];
   loginBox: boolean = false;
   loggedIn: boolean = false;
+  isAdmin: boolean = false;
   expanded: boolean = false;
   isMobile: boolean;
   current_year: number;
@@ -38,6 +39,7 @@ export class HeaderComponent implements OnInit {
     this.loginSubscription = this.loginStateService.loginState
       .subscribe((state: LoginState) => {
         this.loggedIn = state.loggedIn;
+         this.isAdmin = state.isAdmin;
       });
   }
 
