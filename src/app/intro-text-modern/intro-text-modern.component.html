@@ -54,7 +54,7 @@
         <div class="card">
           <h3>Compound QC Data</h3>
           <p>LCMS/NMR QC data if available</p>
-          <button routerLink="/compound_data/KTUFNOKKBVMGRW;qid=Q82870894">Compound Page</button>
+          <button [routerLink]="['/compound_data', 'KTUFNOKKBVMGRW']" [queryParams]="{ qid: 'Q82870894' }">Compound Page</button>
         </div>
         <div class="card">
           <h3>Dose Response Data</h3>
@@ -77,7 +77,7 @@
         <div class="card">
           <h3>Primary Screening Data</h3>
           <p>Indicates whether compounds are primary hits or not</p>
-          <button routerLink="/compound_data/KTUFNOKKBVMGRW;qid=Q82870894">Compound Page</button>
+          <button [routerLink]="['/compound_data', 'KTUFNOKKBVMGRW']" [queryParams]="{ qid: 'Q82870894' }">Compound Page</button>
         </div>
       </div>
     </section>
