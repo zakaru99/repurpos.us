@@ -1,110 +1,76 @@
-<div class="container-fluid" id="content">
-  <div class="row summary-box">
 
-    <div class="col">
-      <div class="assay-header">
 
-        <div class="assay-header-text">
-          <h1>Assay descriptions</h1>
-          <div class="summary" id="main_summary">
-            Experimental data and methodology for each high throughput screen
-          </div>
 
-          <app-dropdown [types]="getDistinctTypes()" (typeSelected)="onTypeSelected($event)">
-          </app-dropdown>
+  <div class="container-fluid" id="content">
 
-      <br>
+  <div class="top-tiles-wrapper">
 
-          <div class="flex-container search-bar">
-            <label for="typeSelect">Search:</label>
-            <input style="width: 65%;" class="form-control" [(ngModel)]="queryString" type="text" (keydown.enter)="onEnter()" placeholder="search by assay ID, title, summary, purpose, or indication">
-            <button mat-raised-button color="primary" *ngIf="showClearButton" (click)="clearSearch()" @fadeInOut>Clear Search</button>
-          </div>
+    <div class="top-tiles">
 
-          <p id="assaysFound" *ngIf="assaysFound > 0">Total assays found: ({{ assaysFound }})</p>
-          
-          <p id="noResMessage" *ngIf="assaysFound === 0">No assays found for your search</p>
-          
-          <!-- <div class="click-helper-container">
-            <div class="right-align click-helper">
-              click <span class="accent">indication</span> or <span class="accent">type</span> to filter
-            </div>
-            <svg _ngcontent-c12="" class="swoopy-arrow-container" height="25" viewBox="0 0 50 20" width="50" transform="translate(40,0)">
-              <defs _ngcontent-c12="">
-                <marker _ngcontent-c12="" id="arrow" markerHeight="12" markerWidth="12" orient="auto" refX="6" refY="6" viewBox="0 0 12 12">
-                  <path _ngcontent-c12="" class="arrowHead" d="M2,2 L10,6 L2,10 L6,6 L2,2"></path>
-                </marker>
-              </defs>
-              <path _ngcontent-c12="" class="swoopy-arrow annotation--upper-right" d="M12 0 C 12 5, 20 10, 35 0" marker-end="url(#arrow)"></path>
-            </svg>
-          </div> -->
+      <div class="left-tile">
+        <h1>Assay Descriptions</h1>
+        <div class="summary" id="main_summary">
+          Experimental data and methodology for each high throughput screen
         </div>
 
-        <!-- <div class="summary-plot-container">
-          <app-treemap class="right-pad" [data]="indications" [colorScale]="indicColorScale" *ngIf="indications"></app-treemap>
-          <app-barplot [data]="types" [yDomain]="typeDomain" [colorScale]="typeColorScale" *ngIf="types && typeDomain"></app-barplot>
-        </div> -->
+        <app-dropdown [types]="getDistinctTypes()" (typeSelected)="onTypeSelected($event)"></app-dropdown>
+
+        <div class="flex-container search-bar">
+          <label for="typeSelect">Search:</label>
+          <input class="form-control" [(ngModel)]="queryString" type="text"
+                 (keydown.enter)="onEnter()"
+                 placeholder="search by assay ID, title, summary, purpose, or indication">
+          <button mat-raised-button *ngIf="showClearButton" (click)="clearSearch()">Clear Search</button>
+        </div>
+
+        <p id="assaysFound" *ngIf="assaysFound > 0">Total assays found: ({{ assaysFound }})</p>
+        <p id="noResMessage" *ngIf="assaysFound === 0">No assays found for your search</p>
       </div>
 
-      <!-- <div class="filter float-right" *ngIf="isFiltered">
-        <span class="filter-descrip">
-          {{ selAssays.length }} of {{ assayList.length }} assays selected for:
-          <ng-container *ngFor="let filterText of filter; let i=index">
-            <b [ngStyle]="{'color': filter_color[i]}">
-              <span [outerHTML]="filterText | sciItalicize"></span>
-            </b>
-            <span *ngIf="i < filter.length - 1"> or </span>
-          </ng-container>
-        </span>
+      <!-- Right Tile -->
+      <div class="right-tile">
+        <ul class="stat-list">
+          <li class="stat-item">
+            <span class="stat-label">Published Dose Response Data</span>
+            <span class="stat-value">{{publishshedDrNum}}</span>
+          </li>
+          <li class="stat-item">
+            <span class="stat-label">Assays Pending Publication</span>
+            <span class="stat-value">{{pendingAssayNum}}</span>
+          </li>
+          <li class="stat-item">
+            <span class="stat-label">Published Primary Data</span>
+            <span class="stat-value">{{publishedPdataNum}}</span>
+          </li>
+          <li class="stat-item">
+            <span class="stat-label">Unavailable Primary Data<br><i>data not shared with ReFRAME team<br>(author's unable or willing to provide)</i></span>
+            <span class="stat-value">{{unavailablePrimaryNum}}</span>
+          </li>
+          <li class="stat-item">
+            <span class="stat-label">Secondary Screens</span>
+            <span class="stat-value">{{secondaryNum}}</span>
+          </li>
+        </ul>
+      </div>
 
-        <mat-button-toggle value="bold" (click)="removeFilter()">remove filter</mat-button-toggle>
-      </div> -->
     </div>
-
-
-<ul class="stat-list" *ngIf="!isMobile">
-  <li class="stat-item">
-    <span class="stat-label">Published Dose Response Data</span>
-    <span class="stat-value">{{publishshedDrNum}}</span>
-  </li>
-  <li class="stat-item">
-    <span class="stat-label">Assays Pending Publication</span>
-    <span class="stat-value">{{pendingAssayNum}}</span>
-  </li>
-  <li class="stat-item">
-    <span class="stat-label">Published Primary Data</span>
-    <span class="stat-value">{{publishedPdataNum}}</span>
-  </li>
-  <li class="stat-item">
-    <span class="stat-label">Unavailable Primary Data<br><i>data not shared with ReFRAME team<br>(author's unable or willing to provide)</i></span>
-    <span class="stat-value">{{unavailablePrimaryNum}}</span>
-  </li>
-  <li class="stat-item">
-    <span class="stat-label">Secondary Screens</span>
-    <span class="stat-value">{{secondaryNum}}</span>
-  </li>
-</ul>
-    
-
   </div>
-
+<hr class="section-separator">
   <div class="row flex-row">
 
     <div *ngFor="let assay of selAssays" class="col-xl-3 col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch assay-type">
 
-      <div class='card ' *ngIf="assay.published == true">
+      <div class='card'>
 
-
-        <div class="row">
+        <div class="card-header">
+          <div class="col-xs-auto col-sm-auto col-md-auto col-lg-auto col-xl-auto id">
+            {{ assay.assay_id }}
+          </div>
           <div class="col card-title">
             <a [routerLink]="['/assays/', assay.assay_id]">
               <span [outerHTML]="assay.title | sciItalicize">
               </span>
             </a>
-          </div>
-
-          <div class="col-xs-auto col-sm-auto col-md-auto col-lg-auto col-xl-auto id">
-            {{ assay.assay_id }}
           </div>
         </div>
 
@@ -114,7 +80,6 @@
             </span>
           </a>
         </div>
-
 
         <div class="flexP">
           <div class="flexC indication-group">
@@ -129,7 +94,6 @@
           <div class="flexC">
             <mat-chip-list class="text-right">
               <mat-chip class="type text-right" *ngFor="let type of assay.type_arr" (click)="onTypeSelected(type)" [ngStyle]="{'background-color': getTypeColor(type)[0], 'border': '1px solid ' + getTypeColor(type)[1], 'color': getTypeColor(type)[1]}">
-                <!-- (click)="filterType(type)" [ngStyle]="{'background-color': 'white', 'border': '1px solid ' + getTypeColor(type)[1], 'color': getTypeColor(type)[1]}"> -->
                 {{ type | standardizeAssayType }}
               </mat-chip>
             </mat-chip-list>
@@ -138,5 +102,6 @@
 
       </div>
     </div>
-
   </div>
+
+</div>

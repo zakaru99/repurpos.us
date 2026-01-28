@@ -11,6 +11,7 @@
 .custom-select {
   display: inline-block; /* Ensure it doesn't take the full width */
   position: relative; /* Needed for positioning the pseudo-elements */
+  border-radius: 999px;
 }
 
 .custom-select select {

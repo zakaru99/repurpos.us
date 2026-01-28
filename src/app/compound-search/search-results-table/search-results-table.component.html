@@ -8,6 +8,25 @@
     {{ dataSource.data.length }} {{ dataSource.data.length === 1 ? "result" : "results" }} found
   </h4>
 
+    <!-- Match filter -->
+  <div class="match-filter d-flex align-items-center" style="gap: 0.5rem;">
+    <span class="filter-label">Matched in:</span>
+
+    <mat-button-toggle-group
+      class="match-toggle"
+      appearance="legacy"
+      [value]="matchFilter"
+      (change)="onMatchFilterChange($event)">
+      
+      <mat-button-toggle value="all">All</mat-button-toggle>
+      <mat-button-toggle value="name">Name</mat-button-toggle>
+      <mat-button-toggle value="target">Target</mat-button-toggle>
+      <mat-button-toggle value="moa">MOA</mat-button-toggle>
+    </mat-button-toggle-group>
+
+  </div>
+
+
   <div class="download-options" style="display: flex; align-items: center; gap: 0.5rem;">
     <span>Download Results:</span>
     <button class="dwnld-btn" (click)="dwnldSearch()" aria-label="Download CSV">CSV</button>
