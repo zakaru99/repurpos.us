@@ -7,4 +7,5 @@ export * from './search-result';
 export * from './vendor-data/index';
 export * from './WDQSData';
 export * from './schema';
+export * from './proposal';
 //export * from './similarity-data';
