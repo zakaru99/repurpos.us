@@ -1,0 +1,190 @@
+.proposal-detail-dialog {
+  background-color: #f8f9fb;
+  border-radius: 20px;
+  padding: 1.5rem;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.dialog-header .close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  color: #7b4dd6;
+  transition: transform 0.15s ease, color 0.15s ease;
+  outline: none;
+}
+
+.dialog-header .close-btn:hover {
+  transform: scale(1.2);
+  color: #633cb0;
+}
+
+.proposal-detail-dialog .section-title,
+.proposal-detail-dialog h2 {
+  border-left: 4px solid #3d6de0;
+  padding-left: 10px;
+  margin: 0 0 1.25rem 0;
+  font-weight: 600;
+  color: #212529;
+}
+
+.card-block {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s ease;
+}
+
+.card-block:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(155, 121, 210, 0.25);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-weight: 600;
+  color: #4a3c6c;
+}
+
+.value {
+  color: #333;
+  text-align: right;
+}
+
+.status-badge {
+  padding: 0.3rem 0.65rem;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.status-badge:hover {
+  transform: scale(1.05);
+}
+
+.status-badge.pending {
+  background-color: #fff4e6;
+  color: #d97706;
+}
+
+.status-badge.approved {
+  background-color: #e6f4ea;
+  color: #2f8f4e;
+}
+
+.sub-section {
+  margin-top: 1rem;
+}
+
+.sub-section h6 {
+  font-weight: 600;
+  color: #4a3c6c;
+  margin-bottom: 0.5rem;
+}
+
+.sub-section.dual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.sub-section.dual p {
+  color: #444;
+}
+.text-box {
+  background-color: #faf9fc;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+}
+
+.text-box p {
+  margin: 0;
+  line-height: 1.5;
+  color: #333;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid #e5e5ef;
+  margin: 1.25rem 0 1rem;
+}
+
+/* Dialog container */
+::ng-deep .mat-dialog-container {
+  border-radius: 24px !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  padding: 0;
+  background: #fff;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+::ng-deep .mat-dialog-container.ng-trigger-dialogContainer {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.btn-pill {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.5rem 1.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  min-width: 100px;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.btn-pill.approve {
+  background-color: #d0e9d7;
+  color: #1e5630;
+  border: 1px solid #b2d9b7;
+}
+
+.btn-pill.approve:hover {
+  background-color: #b9e0c1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.btn-pill.reject {
+  background-color: #ffcfcf;
+  color: #9b2c2c;
+  border: 1px solid #ffb3b3;
+}
+
+.btn-pill.reject:hover {
+  background-color: #ffbaba;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}

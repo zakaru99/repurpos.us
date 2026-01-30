@@ -1,0 +1,109 @@
+.proposals-page {
+  background-color: #f8f9fb;
+  padding: 2rem;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.proposals-page .card-block {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.proposals-page .card-block:hover {
+  box-shadow: 0 6px 16px rgba(61, 109, 224, 0.15);
+  transform: translateY(-2px);
+}
+
+.proposals-page h5.section-title {
+  border-left: 4px solid #3d6de0;
+  padding-left: 10px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.proposals-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.proposals-table th, .proposals-table td {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.proposals-table th {
+  border-bottom: 2px solid #e0e0e0;
+  font-weight: 600;
+}
+
+.proposals-table tr:nth-child(even) {
+  background-color: #f9f9fb;
+}
+
+.proposals-table tr:hover {
+  background-color: #f1f3f5;
+}
+
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+  display: inline-block;
+}
+
+.status-badge.approved {
+  background-color: #e6f4ea;
+  color: #2f8f4e;
+}
+
+.status-badge.pending {
+  background-color: #fff4e6;
+  color: #d97706;
+}
+
+.status-badge.rejected {
+  background-color: #ffe6e6;
+  color: #c53030;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+.status-filter {
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.status-filter .pill {
+  border: none;
+  border-radius: 999px;
+  padding: 0.35rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  color: #333;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.status-filter .pill:hover {
+  background-color: #e0d7f5;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.status-filter .pill.active {
+  background-color: #3d6de0;
+  color: white;
+}

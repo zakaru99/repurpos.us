@@ -1,0 +1,60 @@
+<div class="container-fluid proposals-page">
+  <div class="card-block">
+    <h5 class="section-title">Proposals</h5>
+
+<!-- Status Filter Pills -->
+<div class="status-filter">
+  <button 
+    class="pill" 
+    [ngClass]="{ active: selectedStatus === '' }" 
+    (click)="filterByStatus('')">All</button>
+  
+  <button 
+    class="pill" 
+    [ngClass]="{ active: selectedStatus === 'Pending' }" 
+    (click)="filterByStatus('Pending')">Pending</button>
+  
+  <button 
+    class="pill" 
+    [ngClass]="{ active: selectedStatus === 'Approved' }" 
+    (click)="filterByStatus('Approved')">Approved</button>
+  
+  <button 
+    class="pill" 
+    [ngClass]="{ active: selectedStatus === 'Rejected' }" 
+    (click)="filterByStatus('Rejected')">Rejected</button>
+</div>
+
+
+    <div class="table-responsive">
+      <table class="proposals-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Indication</th>
+            <th>Submitted By</th>
+            <th>Status</th>
+            <th>Submitted On</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let proposal of filteredProposals">
+            <td>{{ proposal.id }}</td>
+            <td>{{ proposal.indication }}</td>
+            <td>{{ proposal.submittedBy }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="proposal.status | lowercase">
+                {{ proposal.status }}
+              </span>
+            </td>
+            <td>{{ proposal.submittedOn | date:'mediumDate' }}</td>
+            <td>
+              <button mat-button color="primary" (click)="viewProposal(proposal)">View</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

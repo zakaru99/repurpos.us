@@ -1,0 +1,77 @@
+<div class="proposal-detail-dialog">
+
+  <!-- Top Title + Close -->
+  <div class="dialog-header">
+    <h5 class="section-title">Proposal Details</h5>
+    <button class="close-btn" (click)="closeDialog()">x</button>
+  </div>
+
+  <!-- Top Card -->
+  <div class="card-block">
+    <div class="detail-row">
+      <span class="label">ID</span>
+      <span class="value">{{ data.id }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="label">Submitted By</span>
+      <span class="value">{{ data.submittedBy }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="label">Email</span>
+      <span class="value">{{ data.email || 'No email provided' }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="label">Institution</span>
+      <span class="value">{{ data.institution || 'No institution provided' }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="label">Status</span>
+      <span class="value status-badge" [ngClass]="data.status?.toLowerCase()">
+        {{ data.status }}
+      </span>
+    </div>
+    <div class="detail-row">
+      <span class="label">Submitted On</span>
+      <span class="value">{{ data.submittedOn | date:'mediumDate' }}</span>
+    </div>
+  </div>
+
+  <!-- Bottom Card -->
+  <div class="card-block">
+    <div class="sub-section">
+      <h6>Indication</h6>
+      <p>{{ data.indication || 'No indication provided.' }}</p>
+    </div>
+    <div class="sub-section dual">
+      <div>
+        <h6>Volume</h6>
+        <p>{{ data.volume ? data.volume + ' µL' : 'Not specified' }}</p>
+      </div>
+      <div>
+        <h6>Concentration</h6>
+        <p>{{ data.concentration ? data.concentration + ' µM' : 'Not specified' }}</p>
+      </div>
+    </div>
+    <div class="sub-section">
+      <h6>Description</h6>
+      <p>{{ data.description || 'No description provided.' }}</p>
+    </div>
+    <div class="sub-section">
+      <h6>Notes</h6>
+      <p>{{ data.notes || 'No notes available.' }}</p>
+    </div>
+  </div>
+
+  <!-- Approval Actions -->
+  <div class="approval-actions">
+    <!-- <div class="approval-comment">
+      <label for="comment">Comment (optional)</label>
+      <textarea id="comment" [(ngModel)]="approvalComment" rows="2" placeholder="Add a note..."></textarea>
+    </div> -->
+
+    <div class="dialog-actions">
+      <button class="btn-pill approve" (click)="approveProposal()">Approve</button>
+      <button class="btn-pill reject" (click)="rejectProposal()">Reject</button>
+    </div>
+  </div>
+</div>

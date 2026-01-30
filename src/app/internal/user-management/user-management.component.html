@@ -1,0 +1,48 @@
+<div class="user-management-page">
+  <div class="card-block">
+    <h5 class="section-title">User Lookup</h5>
+    <div class="user-search">
+      <input type="text" placeholder="Enter user email or name" [(ngModel)]="searchQuery" (keydown.enter)="searchUser()"/>
+      <button (click)="searchUser()">Search</button>
+    </div>
+
+    <div *ngIf="searchResults?.length > 0" class="user-details">
+      <div *ngFor="let user of searchResults" class="user-card">
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Registered On:</strong> {{ user.registered_on | date }}</p>
+        <p>
+          <strong>Role:</strong>
+          <span class="status-badge" [ngClass]="{ 'admin': user.isAdmin }">
+            {{ user.isAdmin ? 'Admin' : 'User' }}
+          </span>
+        </p>
+        <button *ngIf="!user.isAdmin" (click)="makeAdmin(user)">Make Admin</button>
+      </div>
+    </div>
+    <p *ngIf="searchResults?.length === 0 && searchQuery">No users found.</p>
+  </div>
+
+  <div class="card-block">
+    <h5 class="section-title">Current CALIBR Admins</h5>
+    <div class="table-responsive">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let admin of admins">
+            <td>{{ admin.email }}</td>
+            <td><span class="status-badge admin">Admin</span></td>
+            <td>
+              <button (click)="revokeAdmin(admin)">Revoke</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
