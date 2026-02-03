@@ -8,4 +8,5 @@ export interface Proposal {
   indication?: string;
   description?: string;
   notes?: string;
+  denialReason?: string;
 }

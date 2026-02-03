@@ -36,8 +36,7 @@
     </div>
   </div>
 
-  <!-- Bottom Card -->
-  <div class="card-block">
+  <div class="card-block" *ngIf="!showRejectForm && data.status === 'Pending'">
     <div class="sub-section">
       <h6>Indication</h6>
       <p>{{ data.indication || 'No indication provided.' }}</p>
@@ -62,16 +61,32 @@
     </div>
   </div>
 
-  <!-- Approval Actions -->
-  <div class="approval-actions">
-    <!-- <div class="approval-comment">
-      <label for="comment">Comment (optional)</label>
-      <textarea id="comment" [(ngModel)]="approvalComment" rows="2" placeholder="Add a note..."></textarea>
-    </div> -->
+  <!-- Rejection card (shown when rejecting) -->
+  <div class="card-block rejection-card" *ngIf="showRejectForm">
+    <h6>Rejection justification</h6>
+    <textarea id="denialReason" #rejectionTextarea class="rejection-textarea" [(ngModel)]="denialReason" rows="6" placeholder="Enter justification for rejection"></textarea>
+    <div class="dialog-actions" style="margin-top:1rem;">
+      <button class="btn-pill reject" (click)="confirmReject()" [disabled]="!denialReason || !denialReason.trim()">Confirm Reject</button>
+      <button class="btn-pill" (click)="cancelReject()">Cancel</button>
+    </div>
+  </div>
 
-    <div class="dialog-actions">
+  <!-- Approval Actions -->
+  <div class="approval-actions" *ngIf="data.status === 'Pending'">
+    <!-- Normal actions (hidden while rejection form is open) -->
+    <div class="dialog-actions" *ngIf="!showRejectForm">
       <button class="btn-pill approve" (click)="approveProposal()">Approve</button>
       <button class="btn-pill reject" (click)="rejectProposal()">Reject</button>
+    </div>
+  </div>
+
+  <div class="card-block" *ngIf="data.status === 'Rejected'">
+    <h6>Denial Reason</h6>
+    <div class="denial-text-box">
+      <p *ngIf="data.denialReason; else noReason" class="denial-text">{{ data.denialReason }}</p>
+      <ng-template #noReason>
+        <p class="muted">No denial reason provided.</p>
+      </ng-template>
     </div>
   </div>
 </div>

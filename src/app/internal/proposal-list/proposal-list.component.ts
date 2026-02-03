@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { ProposalDetailDialogComponent } from '../proposal-detail-dialog/proposal-detail-dialog.component';
+import { reject } from 'lodash';
 
 interface Proposal {
   id: number;
@@ -15,6 +16,7 @@ interface Proposal {
   notes?: string;
   volume?: number;
   concentration?: number;
+  denialReason?: string;
 }
 
 
@@ -62,7 +64,8 @@ export class ProposalListComponent implements OnInit {
               description: p.description || '',
               notes: p.notes || '',
               volume: p.volume,
-              concentration: p.concentration
+              concentration: p.concentration,
+              denialReason: p.denialReason || ''
             }));
 
 
