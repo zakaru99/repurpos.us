@@ -30,7 +30,7 @@
         *ngFor="let suggestion of suggestions"
         (mousedown)="onSuggestionClick(suggestion)"
       >
-        {{ suggestion }}
+        {{ suggestion.value }}
       </li>
     </ul>
 
