@@ -173,14 +173,6 @@
   padding: 16px 12px;
 }
 
-.card-header .id {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #3d6de0; /* CREST accent */
-  margin-bottom: 4px;
-  text-align: center;
-  letter-spacing: 0.5px;
-}
 
 .card-header .card-title {
   font-size: 1.05rem;
@@ -235,4 +227,90 @@ mat-chip {
   background: #c9d8fb; /* soft blue */
   margin: 40px 0;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.card-header {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+/* NEW flex row */
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  flex-wrap: wrap; /* allows wrapping on small screens */
+}
+
+.card-header .id {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #3d6de0;
+  letter-spacing: 0.5px;
+}
+
+.card-title {
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+
+.status-indicator {
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.flex-container {
+  display: flex;
+  align-items: center; /* Aligns items vertically */
+}
+
+.flex-container label {
+  margin-right: 20px; /* Space between label and select */
+  white-space: nowrap; /* Prevents the label from wrapping */
+}
+
+.custom-select {
+  display: inline-block; /* Ensure it doesn't take the full width */
+  position: relative; /* Needed for positioning the pseudo-elements */
+  border-radius: 999px;
+  margin-top: 15px;
+}
+
+.custom-select select {
+  appearance: none;
+  width: 40% !important; /* Set a specific width */
+  font-size: 1.15rem;
+  padding: 0.675em 1em; /* Adjust padding as needed */
+  background-color: #fff;
+  border: 1px solid #caced1;
+  border-radius: 0.25rem;
+  color: #000;
+  cursor: pointer;
+}
+
+.custom-select::before,
+.custom-select::after {
+  --size: 0.3rem;
+  position: absolute;
+  content: "";
+  right: 1rem;
+  pointer-events: none;
+}
+
+.custom-select::before {
+  border-left: var(--size) solid transparent;
+  border-right: var(--size) solid transparent;
+  border-bottom: var(--size) solid black;
+  top: 40%;
+}
+
+.custom-select::after {
+  border-left: var(--size) solid transparent;
+  border-right: var(--size) solid transparent;
+  border-top: var(--size) solid black;
+  top: 55%;
 }

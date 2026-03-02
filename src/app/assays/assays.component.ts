@@ -56,13 +56,18 @@ export class AssaysComponent implements OnInit {
   filter: string[];
   filter_color: string[];
 
+  totalAssays: number = 0;
   secondaryNum: number = 0;
   publishshedDrNum: number = 0;
   publishedPdataNum: number = 0;
   unavailablePrimaryNum: number = 0;
   pendingAssayNum: number = 0;
+  statusView: 'all' | 'published' | 'pending' = 'all';
+  sliderTransform: string = 'translateX(0%)';
 
   isMobile: boolean = false;
+  flatStatuses: { group: string; status: string }[] = [];
+  statusCounts: { [status: string]: number } = {};
 
   meta_tags = [
     { property: 'og:title', content: 'reframeDB assay descriptions' },
@@ -98,6 +103,12 @@ export class AssaysComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.statusesGrouped.forEach(group => {
+    group.options.forEach(status => {
+      this.flatStatuses.push({ group: group.label, status });
+    });
+  });
+
     this.route.queryParams.subscribe(params => {
       this.queryString = params.query || '';
       this.retrieveAssayList();
@@ -108,11 +119,12 @@ export class AssaysComponent implements OnInit {
   }
   
   getCounts(){
+    this.totalAssays = this.assayList.length;
     this.secondaryNum = this.selAssays.filter(a => a.primary_screened === 'secondary').length
-    this.publishshedDrNum = this.selAssays.length
+    this.publishshedDrNum = this.selAssays.filter(a => a.published === true).length;
     this.publishedPdataNum = this.selAssays.filter(a => !isNaN(Number(a.primary_screened))).length;
     this.unavailablePrimaryNum = this.selAssays.filter(a => a.primary_screened === 'not available').length
-    this.pendingAssayNum = this.assayList.filter( a=> a.published === false).length
+    this.pendingAssayNum = this.assayList.filter(a => a.status === 'pending').length
   }
 
   private getFilteredAssays(query: string, types: string[] = []): AssayDetails[] {
@@ -165,7 +177,12 @@ export class AssaysComponent implements OnInit {
       this.getAssayKinds(searchFiltered);
   
       //Then apply type filter if active
-      this.selAssays = this.getFilteredAssays(this.queryString, this.filter ? this.filter : []).filter(a => a.published === true);
+      const baseFiltered = this.getFilteredAssays(this.queryString, this.filter ? this.filter : []);
+
+      this.computeStatusCounts(baseFiltered);
+
+    this.selAssays = this.applyStatusScope(baseFiltered);
+
   
       this.assaysFound = this.selAssays.length;
       this.isFiltered = this.queryString.trim().length > 0 || (this.filter && this.filter.length > 0);
@@ -176,6 +193,28 @@ export class AssaysComponent implements OnInit {
   }
   
   
+  private computeStatusCounts(list: AssayDetails[]) {
+
+    // Reset counts
+    this.statusCounts = {};
+
+    // Initialize all statuses to 0
+    this.statusesGrouped.forEach(group => {
+      group.options.forEach(status => {
+        this.statusCounts[status] = 0;
+      });
+    });
+
+    // Count occurrences
+    list.forEach(a => {
+      if (this.statusCounts[a.status] !== undefined) {
+        this.statusCounts[a.status]++;
+      }
+    });
+
+    // Optional: total count for "All"
+    this.statusCounts['All'] = list.length;
+  }
 
   setTypeColors(assayList) {
     this.types = assayList.map((d: any) => d.type_arr).reduce((acc, val) => acc.concat(val), []);
@@ -272,7 +311,74 @@ export class AssaysComponent implements OnInit {
   getAssayKinds(baseList: AssayDetails[] = this.selAssays) {
     this.types = baseList.map((d: any) => d.type_arr).reduce((acc, val) => acc.concat(val), []);
   }
-  
+statusGroupColors: { [key: string]: string } = {
+  'Pre-Screen': '#B8C0FF',     // soft indigo
+  'Screening': '#7DCBFF',      // soft blue
+  'Completed': '#9FD3A6'       // soft green
+};
+
+getStatusColor(status: string): string {
+
+  if (!status) return '#E0E0E0';
+
+  for (const group of this.statusesGrouped) {
+    if (group.options.includes(status)) {
+      return this.statusGroupColors[group.label] || '#E0E0E0';
+    }
+  }
+
+  // fallback
+  return '#E0E0E0';
+}
+
+applyStatusScope(list: AssayDetails[]): AssayDetails[] {
+
+  if (!this.selectedStatus || this.selectedStatus === 'All') {
+    return list;
+  }
+
+  return list.filter(a => a.status === this.selectedStatus);
+}
+
+
+statusesGrouped = [
+  {
+    label: 'Pre-Screen',
+    options: [
+      'ReFRAME Waiting for MTA',
+      'ReFRAME MTA Signed',
+      'ReFRAME LOPAC'
+    ]
+  },
+  {
+    label: 'Screening',
+    options: [
+      'ReFRAME Primary Screen Sent',
+      'ReFRAME Dose Response Sent',
+      'ReFRAME Dose Response Data Received'
+    ]
+  },
+  {
+    label: 'Completed',
+    options: [
+      'ReFRAME Screen Completed',
+      'ReFRAME Completed but need milestones',
+      'ReFRAME Screen Terminated and Closed'
+    ]
+  }
+];
+
+selectedStatus = 'All';
+
+setStatusView(status: string) {
+  this.selectedStatus = status;
+  this.retrieveAssayList();
+  console.log('Filtering by:', status);
+}
+
+showDetails() {
+  console.log('clicked')
+}
   getDistinctTypes(): string[] {
     const baseFiltered = this.getFilteredAssays(this.queryString, []); // Only use search term
     const filteredTypes: string[] = baseFiltered

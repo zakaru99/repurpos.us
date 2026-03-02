@@ -18,5 +18,6 @@ export interface AssayDetails {
 	// detection_dye?: string
 	title_short: string,
 	primary_screened?: string,
-	published: boolean
+	published: boolean,
+	status: string
 };
