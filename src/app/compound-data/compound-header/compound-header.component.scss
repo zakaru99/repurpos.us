@@ -110,14 +110,24 @@ div#cmpd-names {
 }
 
 .toxicity-alert {
-  background-color: #ffcc80;
-  color: #4a2c00;
   font-weight: 600;
-  border: 1px solid #ffa726;
   border-radius: 8px;
   padding: 8px 12px;
   margin: 12px 0;
   display: inline-block;
+  border: 1px solid transparent;
+}
+
+.toxicity-alert--toxic {
+  background-color: #ffcc80;
+  color: #4a2c00;
+  border-color: #ffa726;
+}
+
+.toxicity-alert--non-toxic {
+  background-color: #e8f5e9;
+  color: #1b5e20;
+  border-color: #a5d6a7;
 }
 
 .pediatric-alert {

@@ -24,6 +24,7 @@ export class CompoundHeaderComponent implements OnInit {
   public similarityResults: Array<Compound> = [];
 
   public isToxicA00295 = false;
+  public hasA00295Data = false;
   public assayData: AssayData[] = [];
 
   public integrityPediatrics: boolean = false;
@@ -73,18 +74,22 @@ export class CompoundHeaderComponent implements OnInit {
 checkToxicity(): void {
   if (!this.assayData || this.assayData.length === 0) {
     this.isToxicA00295 = false;
+    this.hasA00295Data = false;
     return;
   }
 
-  const assay = this.assayData.find(x =>
+  const a00295Assays = this.assayData.filter(x =>
     x.assay_id === 'A00295' &&
     x.activity_type &&
     x.activity_type.toUpperCase() === 'IC50' &&
-    !isNaN(Number(x.ac50)) &&
-    Number(x.ac50) < 10e-5
+    !isNaN(Number(x.ac50))
   );
 
-  this.isToxicA00295 = !!assay;
+  this.hasA00295Data = a00295Assays.length > 0;
+
+  this.isToxicA00295 = a00295Assays.some(x =>
+    Number(x.ac50) < 1e-5 
+  );
 }
 
 
