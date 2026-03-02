@@ -24,14 +24,21 @@
           
 
       <p class="update-info">
-      {{ newCompounds | number }} new compound profiles added for a total of 
-      {{ totalCompounds | number }} clinical-stage drugs in collection as of {{ lastUpdated | date:'longDate' }}
-    </p>
+        <strong>{{ newCompounds | number }}</strong> new compound profiles added for a total of 
+        <strong>{{ totalCompounds | number }}</strong> clinical-stage drugs in collection as of {{ lastUpdated | date:'longDate' }}
+      </p>
+      <p class="stats-line">
+        compounds dosed in pediatric patients <strong>482</strong>
+        <span class="divider">|</span>
+        compounds with PK data <strong>3,761</strong>
+      </p>
       <app-hero-search></app-hero-search>
     </section>
 
     <section class="how-to">
       <button class="menu-toggle" onclick="this.classList.toggle('active')">☰ How to Use REFRAMEdb</button>
+      <button class="menu-toggle" style="margin-left: 10px;" [routerLink]="'/assay_proposal'">Request a Copy of the Library</button>
+
       <div class="menu-content">
         <ul>
           <li><a [routerLink]="['about']" fragment="tutorial">Watch the tutorial video</a></li>

@@ -104,7 +104,7 @@
   text-decoration: underline;
 }
 
-.menu-toggle.active + .menu-content {
+.menu-toggle.active ~ .menu-content {
   display: block;
 }
 
@@ -221,6 +221,23 @@
   font-size: 0.95rem;
   color: #666;
   text-align: center;
+}
+
+.stats-line {
+  margin-top: 0.25rem;
+  font-size: 0.95rem;
+  color: #666;
+  text-align: center;
+}
+
+strong {
+  font-weight: 600;
+  color: #444;
+}
+
+.stats-line .divider {
+  margin: 0 0.75rem;
+  color: #aaa;
 }
 
 /* Whats New Trigger Button */
