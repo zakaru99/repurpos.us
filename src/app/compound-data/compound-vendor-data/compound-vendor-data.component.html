@@ -237,7 +237,7 @@
               </tr>
               <tr *ngFor="let a of x['entity_name']; let i = index">
                 <td class="content">{{x['entity_name'][i]}}</td>
-                <td class="content"><a href="https://ec2-35-92-254-147.us-west-2.compute.amazonaws.com/ontology-tree?src={{x['entity_id'][i]}}&search_id={{x['node_id'][i]}}">{{x['parent_moa'][i]}}</a></td>
+                <td class="content"><a href="/ontology-tree?src={{x['entity_id'][i]}}&search_id={{x['node_id'][i]}}">{{x['parent_moa'][i]}}</a></td>
                 <td class="content">{{x['xref'][i]}}</td>
               </tr>
             </table>
