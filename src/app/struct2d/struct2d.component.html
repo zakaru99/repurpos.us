@@ -5,10 +5,13 @@
 </div>
 </div>
 
-<a [routerLink]="['/search/']" [queryParams]="{ query: smiles, type: 'structure' }" *ngIf="launch_search == true">
-  <button aria-label="launch structure search" type="button" class="struct-search" >
-    launch structure search
-  </button>
-</a>
+<button
+  *ngIf="launch_search"
+  [routerLink]="['/search/']"
+  [queryParams]="{ query: smiles, type: 'structure' }"
+  class="struct-search"
+  aria-label="launch structure search"
+>Launch Structure Search</button>
+
 
 <!-- <img src="http://stitch.embl.de/images/chemicals/normal/{{smiles}}.png" class="img-responsive" alt="structure"> -->
