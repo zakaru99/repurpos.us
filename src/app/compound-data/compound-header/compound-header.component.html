@@ -154,9 +154,15 @@
   <div *ngIf="hasA00295Data && isToxicA00295" class="toxicity-alert toxicity-alert--toxic">
     This compound has been found to inhibit growth of HEK293 cells with IC50 < 10μM
   </div>
+  <div *ngIf="hasA00296Data && isToxicA00296" class="toxicity-alert toxicity-alert--toxic">
+    This compound has been found to inhibit growth of HepG2 cells with IC50 < 10μM
+  </div>  
 
   <div *ngIf="hasA00295Data && !isToxicA00295" class="toxicity-alert toxicity-alert--non-toxic">
     No inhibition of HEK293 cell growth at 12.5μM
+  </div>
+  <div *ngIf="hasA00296Data && !isToxicA00296" class="toxicity-alert toxicity-alert--non-toxic">
+    No inhibition of HepG2 cell growth at 12.5μM
   </div>
 
   <div  class="pediatric-alert">

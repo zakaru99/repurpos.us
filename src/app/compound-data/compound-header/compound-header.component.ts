@@ -25,6 +25,8 @@ export class CompoundHeaderComponent implements OnInit {
 
   public isToxicA00295 = false;
   public hasA00295Data = false;
+  public isToxicA00296 = false;
+  public hasA00296Data = false; 
   public assayData: AssayData[] = [];
 
   public integrityPediatrics: boolean = false;
@@ -75,6 +77,8 @@ checkToxicity(): void {
   if (!this.assayData || this.assayData.length === 0) {
     this.isToxicA00295 = false;
     this.hasA00295Data = false;
+    this.isToxicA00296 = false;
+    this.hasA00296Data = false;
     return;
   }
 
@@ -88,6 +92,19 @@ checkToxicity(): void {
   this.hasA00295Data = a00295Assays.length > 0;
 
   this.isToxicA00295 = a00295Assays.some(x =>
+    Number(x.ac50) < 1e-5 
+);
+
+  const a00296Assays = this.assayData.filter(x =>
+    x.assay_id === 'A00296' &&
+    x.activity_type &&
+    x.activity_type.toUpperCase() === 'IC50' &&
+    !isNaN(Number(x.ac50))
+  );
+
+  this.hasA00296Data = a00296Assays.length > 0;
+
+  this.isToxicA00296 = a00296Assays.some(x =>
     Number(x.ac50) < 1e-5 
   );
 }
