@@ -1,8 +1,6 @@
 
-<div
-  (deferLoad)="showMyElement=true">
-<div class="svg-wrapper group" [innerHTML]="svg" *ngIf="showMyElement;">
-</div>
+<div (deferLoad)="showMyElement=true">
+  <img class="svg-wrapper group" [src]="svg" *ngIf="showMyElement;">
 </div>
 
 <button
