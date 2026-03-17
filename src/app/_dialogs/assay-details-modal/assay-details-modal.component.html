@@ -1,0 +1,35 @@
+<h2 mat-dialog-title class="dialog-title">
+  {{ data.title }}
+</h2>
+
+<mat-dialog-content class="dialog-content">
+
+  <div *ngIf="data.assays.length === 0" class="no-assays">
+    No assays found
+  </div>
+
+  <div *ngFor="let assay of data.assays" class="mini-card">
+
+    <div class="mini-header">
+      <div class="mini-id">
+        {{ assay.assay_id }}
+      </div>
+
+      <span class="status-indicator" [ngStyle]="{'background-color': getStatusColor(assay.status)}">
+        {{ assay.status }}
+      </span>
+    </div>
+
+    <div class="mini-title">
+      {{ assay.title }}
+    </div>
+
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+  <button mat-button class="crest-btn" (click)="closeDialog()">
+    Close
+  </button>
+</mat-dialog-actions>

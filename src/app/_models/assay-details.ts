@@ -20,4 +20,5 @@ export interface AssayDetails {
 	primary_screened?: string,
 	published: boolean,
 	status: string
+	publish_date?: string
 };

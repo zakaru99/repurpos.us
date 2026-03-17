@@ -24,7 +24,7 @@ import { UserPortalModule } from './user-portal/user-portal.module';
 
 // --- Components ---
 import { AppComponent } from './app.component';
-import { ForgotPasswordComponent, LoginFailComponent, UserRegistrationComponent } from './_dialogs/index';
+import { ForgotPasswordComponent, LoginFailComponent, UserRegistrationComponent, AssayDetailsModalComponent } from './_dialogs/index';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { HeaderComponent } from './header/header.component';
@@ -125,7 +125,8 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
     WorkflowComponent,
     OntologyTreeComponent,
     ContactUsComponent,
-    AssayProposalComponent
+    AssayProposalComponent,
+    AssayDetailsModalComponent
 
     // SearchResultHeaderComponent, ReframeFilterComponent, AssaysFilterComponent
   ],
@@ -171,7 +172,8 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
     DialogOverviewExampleDialog,
     UserRegistrationComponent,
     LoginFailComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    AssayDetailsModalComponent
   ],
 
   bootstrap: [AppComponent]
