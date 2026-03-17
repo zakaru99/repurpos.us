@@ -43,47 +43,36 @@
       <!-- Right Tile -->
       <div class="right-tile">
         <ul class="stat-list">
-          <li class="stat-item">
+          <li class="stat-item" (click)="showDetails('all')" style="cursor: pointer;">
             <span class="stat-label">Total Assays in the Workflow</span>
-            <span class="stat-value" (click)="showDetails()">{{ totalAssays }}</span>
+            <span class="stat-value" (click)="showDetails('all')">{{ totalAssays.length }}</span>
           </li>
-          <li class="stat-item">
+          <li class="stat-item" (click)="showDetails('primary')" style="cursor: pointer;">
             <span class="stat-label">Published Primary Data</span>
-            <span class="stat-value">{{publishedPdataNum}}</span>
+            <span class="stat-value">{{publishedPdataNum.length}}</span>
           </li>
           <li class="stat-item">
             <span class="stat-label">Dose Response Data</span>
             <span class="stat-sub">
-              Published: <span class="stat-value">{{publishshedDrNum}}</span>
-              &nbsp;|&nbsp;
-              Pending: <span class="stat-value">{{pendingAssayNum}}</span>
-            </span>
-          </li>
-          <!-- <li class="stat-item">
-            <span class="stat-label">Published Dose Response Data</span>
-            <span class="stat-value">{{publishshedDrNum}}</span>
-          </li> -->
-          <!-- <li class="stat-item">
-            <span class="stat-label">Assays Pending Publication</span>
-            <span class="stat-value">{{pendingAssayNum}}</span>
-          </li> -->
+              Published:
+              <span class="stat-value clickable"
+                    (click)="showDetails('published')">
+                {{ publishshedDrNum.length }}
+              </span>
 
-          <!-- <li class="stat-item">
-            <span class="stat-label">Primary Data</span>
-            <span class="stat-sub">
-              Published: <span class="stat-value">{{publishedPdataNum}}</span>
               &nbsp;|&nbsp;
-              Unavailable: <span class="stat-value">{{unavailablePrimaryNum}}</span>
+
+              Pending:
+              <span class="stat-value clickable"
+                    (click)="showDetails('pending')">
+                {{ pendingAssayNum.length }}
+              </span>
             </span>
-          </li> -->
-          <li class="stat-item">
-            <span class="stat-label">Unavailable Primary Data<br><i>data not shared with ReFRAME team</i></span>
-            <span class="stat-value">{{unavailablePrimaryNum}}</span>
           </li>
-          <!-- <li class="stat-item">
-            <span class="stat-label">Secondary Screens</span>
-            <span class="stat-value">{{secondaryNum}}</span>
-          </li> -->
+          <li class="stat-item" (click)="showDetails('unavailable')" style="cursor: pointer;">
+            <span class="stat-label">Unavailable Primary Data<br><i>data not shared with ReFRAME team</i></span>
+            <span class="stat-value">{{unavailablePrimaryNum.length}}</span>
+          </li>
         </ul>
       </div>
 

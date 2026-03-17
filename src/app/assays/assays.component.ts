@@ -2,12 +2,14 @@ import { Component, OnInit, forwardRef, Inject, Injectable, Input } from '@angul
 // import { ActivatedRoute } from '@angular/router';
 // import { Http, Response } from "@angular/http";
 import { Title, Meta } from '@angular/platform-browser';
+import { MatDialog } from '@angular/material/dialog';
 
 import * as d3 from 'd3';
 import * as chroma from 'chroma-js';
 
 import { AssayDetails } from '../_models/index';
 import { ColorPaletteService } from '../_services/index';
+import { AssayDetailsModalComponent } from '../_dialogs/assay-details-modal/assay-details-modal.component';
 
 import { StandardizeAssayTypePipe } from '../_pipes/standardize-assay-type.pipe';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -56,12 +58,12 @@ export class AssaysComponent implements OnInit {
   filter: string[];
   filter_color: string[];
 
-  totalAssays: number = 0;
-  secondaryNum: number = 0;
-  publishshedDrNum: number = 0;
-  publishedPdataNum: number = 0;
-  unavailablePrimaryNum: number = 0;
-  pendingAssayNum: number = 0;
+  totalAssays: AssayDetails[] = [];
+  secondaryNum: AssayDetails[] = [];
+  publishshedDrNum: AssayDetails[] = [];
+  publishedPdataNum: AssayDetails[] = [];
+  unavailablePrimaryNum: AssayDetails[] = [];
+  pendingAssayNum: AssayDetails[] = [];
   statusView: 'all' | 'published' | 'pending' = 'all';
   sliderTransform: string = 'translateX(0%)';
 
@@ -82,7 +84,8 @@ export class AssaysComponent implements OnInit {
     private stdize: StandardizeAssayTypePipe,
     private meta: Meta,
     private route: ActivatedRoute,
-    private router: Router) {
+    private router: Router,
+    public dialog: MatDialog) {
 
     for (let i = 0; i < this.meta_tags.length; i++) {
       this.meta.updateTag(this.meta_tags[i]);
@@ -119,12 +122,12 @@ export class AssaysComponent implements OnInit {
   }
   
   getCounts(){
-    this.totalAssays = this.assayList.length;
-    this.secondaryNum = this.selAssays.filter(a => a.primary_screened === 'secondary').length
-    this.publishshedDrNum = this.selAssays.filter(a => a.published === true).length;
-    this.publishedPdataNum = this.selAssays.filter(a => !isNaN(Number(a.primary_screened))).length;
-    this.unavailablePrimaryNum = this.selAssays.filter(a => a.primary_screened === 'not available').length
-    this.pendingAssayNum = this.assayList.filter(a => a.status === 'pending').length
+    this.totalAssays = this.assayList;
+    this.secondaryNum = this.selAssays.filter(a => a.primary_screened === 'secondary')
+    this.publishshedDrNum = this.selAssays.filter(a => a.published === true);
+    this.publishedPdataNum = this.selAssays.filter(a => !isNaN(Number(a.primary_screened)));
+    this.unavailablePrimaryNum = this.selAssays.filter(a => a.primary_screened === 'not available')
+    this.pendingAssayNum = this.assayList.filter(a => a.published === false && a.publish_date && new Date(a.publish_date) > new Date())
   }
 
   private getFilteredAssays(query: string, types: string[] = []): AssayDetails[] {
@@ -376,8 +379,46 @@ setStatusView(status: string) {
   console.log('Filtering by:', status);
 }
 
-showDetails() {
-  console.log('clicked')
+showDetails(
+  type: 'all' | 'primary' | 'published' | 'pending' | 'unavailable'
+): void {
+
+  let title = '';
+  let assays: AssayDetails[] = [];
+
+  switch (type) {
+
+    case 'all':
+      title = 'All Assays in Workflow';
+      assays = this.totalAssays;
+      break;
+
+    case 'primary':
+      title = 'Published Primary Data Assays';
+      assays = this.publishedPdataNum;
+      break;
+
+    case 'published':
+      title = 'Published Dose Response Assays';
+      assays = this.publishshedDrNum;
+      break;
+
+    case 'pending':
+      title = 'Pending Dose Response Assays';
+      assays = this.pendingAssayNum;
+      break;
+
+    case 'unavailable':
+      title = 'Unavailable Primary Data Assays';
+      assays = this.unavailablePrimaryNum;
+      break;
+  }
+
+  this.dialog.open(AssayDetailsModalComponent, {
+    width: '650px',
+    panelClass: 'crest-dialog',
+    data: { title, assays }
+  });
 }
   getDistinctTypes(): string[] {
     const baseFiltered = this.getFilteredAssays(this.queryString, []); // Only use search term

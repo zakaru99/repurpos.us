@@ -314,3 +314,12 @@ mat-chip {
   border-top: var(--size) solid black;
   top: 55%;
 }
+
+.clickable {
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.clickable:hover {
+  text-decoration: underline;
+}
