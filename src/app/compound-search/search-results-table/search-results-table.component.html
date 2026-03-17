@@ -182,11 +182,30 @@
               </mat-header-cell>
               <mat-cell *matCellDef="let element" [ngClass]="element['expanded'] ? 'expanded' : ''">
                 <div class="d-flex justify-content-end flex-grow-1" *ngIf="element.assay_types.length > 0; else no_assays">
-                  <ul class="assay-list d-flex flex-column">
-                    <li class="assay-title" *ngFor="let assay of element.assay_types; let i=index">
-                      <app-assay-indication [assay_name]="assay[0]" [assay_link]="assay[1]" [assay_type]="assay[2]"></app-assay-indication>
-                    </li>
-                  </ul>
+                  <ng-container *ngIf="element.assay_types.length <= num_assays; else lotsa_assays">
+                    <ul class="assay-list d-flex flex-column">
+                      <li class="assay-title" *ngFor="let assay of element.assay_types; let i=index">
+                        <app-assay-indication [assay_name]="assay[0]" [assay_link]="assay[1]" [assay_type]="assay[2]"></app-assay-indication>
+                      </li>
+                    </ul>
+                  </ng-container>
+                  <ng-template #lotsa_assays>
+                    <mat-expansion-panel (opened)="element.assay_showall = true" (closed)="element.assay_showall = false">
+                      <mat-expansion-panel-header collapsedHeight="auto">
+                        <mat-panel-title>
+                          <ng-container *ngFor="let assay of element.assay_types | slice:0:num_assays; let i=index">
+                            <app-assay-indication [assay_name]="assay[0]" [assay_link]="assay[1]" [assay_type]="assay[2]"></app-assay-indication>
+                          </ng-container>
+                          <a id="more">{{element['assay_showall'] ? 'show less' : 'show more'}}</a>
+                        </mat-panel-title>
+                      </mat-expansion-panel-header>
+                      <ul class="assay-list d-flex flex-column">
+                        <li class="assay-title" *ngFor="let assay of element.assay_types | slice:num_assays:element.assay_types.length; let i=index">
+                          <app-assay-indication [assay_name]="assay[0]" [assay_link]="assay[1]" [assay_type]="assay[2]"></app-assay-indication>
+                        </li>
+                      </ul>
+                    </mat-expansion-panel>
+                  </ng-template>
                 </div>
                 <ng-template #no_assays></ng-template>
               </mat-cell>

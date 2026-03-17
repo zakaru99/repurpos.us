@@ -370,7 +370,15 @@ a#more {
   margin-right: 15px;
 }
 
-/deep/ mat-cell {
-  margin-top: 6px;
-  margin-bottom: 6px;
+/deep/ .mat-expansion-panel:not([class*=mat-elevation-z]) {
+  box-shadow: none;
+}
+
+.mat-expansion-panel-header-title {
+  flex-wrap: wrap;
+}
+
+/deep/ .mat-expansion-panel-body,
+/deep/ .mat-expansion-panel-header {
+  padding: 1px;
 }

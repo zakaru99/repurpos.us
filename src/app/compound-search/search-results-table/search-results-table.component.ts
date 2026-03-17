@@ -73,6 +73,7 @@ export class SearchResultsTableComponent implements OnInit {
   dataSource = new MatTableDataSource<Compound>();
 
   num_aliases: number = 5; // maximum number of aliases to show at one time
+  num_assays: number = 2; // maximum number of assays to show at one time
 
   tanimotoScale: any; // color scale for tanimoto scores
   getFontColor: any; // function to get the font color for a tanimoto score
