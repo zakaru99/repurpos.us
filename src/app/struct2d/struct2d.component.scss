@@ -10,16 +10,18 @@ $substructure-strokewidth: 2.25; // 1.67 by default
 //#
 
 .svg-wrapper {
-  position: relative;
   width: 100%;
+  height: 400px;          /* fixed visual height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /deep/ .svg-wrapper svg {
-  margin: 10px auto 20px;
-  width: 90%;
+  max-height: 100%;
+  max-width: 100%;
   height: auto;
-  max-height: 400px;
-  display: inline-block;
+  width: auto;
 }
 
 /deep/ rect {
