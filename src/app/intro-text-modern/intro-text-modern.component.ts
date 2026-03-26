@@ -12,6 +12,8 @@ export class IntroTextModernComponent implements AfterViewInit, OnDestroy {
   lastUpdated = new Date('2026/01/31');
   // What's New items with dates
   whatsNewItems: Array<{ date: Date; text: string }> = [
+    { date: new Date('2026/03/02'), text: 'Assay description page sortable by status' },
+    { date: new Date('2026/03/02'), text: 'All assay descriptions in the workflow loaded' },
     { date: new Date('2026/1/28'), text: 'Added user dashboard' },
     { date: new Date('2026/1/25'), text: 'Added built in assay proposal form' },
     { date: new Date('2025/12/02'), text: 'Modernized workflow & about UI' },
@@ -76,4 +78,11 @@ export class IntroTextModernComponent implements AfterViewInit, OnDestroy {
   link.download = 'reframe_smiles_list.csv';
   link.click();
 }
+
+  downloadAssayData() {
+    const link = document.createElement('a');
+    link.href = '../../assets/csv/reframe_assay_data.zip';
+    link.download = 'reframe_assay_data.zip';
+    link.click();
+  }
 }
