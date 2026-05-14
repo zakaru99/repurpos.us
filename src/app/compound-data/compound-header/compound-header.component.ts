@@ -30,6 +30,7 @@ export class CompoundHeaderComponent implements OnInit {
   public assayData: AssayData[] = [];
 
   public integrityPediatrics: boolean = false;
+  public disclosureDate: string = '';
 
   num_aliases: number;
   all_shown: boolean = false;
@@ -70,6 +71,10 @@ export class CompoundHeaderComponent implements OnInit {
     })
     this.cmpdSvc.integrityPediatricsState.subscribe((integrityPediatrics: boolean) => {
       this.integrityPediatrics = integrityPediatrics;
+    })
+
+    this.cmpdSvc.disclosureDateState.subscribe((disclosureDate: string) => {
+      this.disclosureDate = disclosureDate;
     })
   }
   
@@ -125,6 +130,17 @@ checkToxicity(): void {
 
   ngOnInit() {
     this.checkToxicity();
+  }
+
+  get reframeStatus(): { key: string; label: string; tooltip: string } {
+    const map: Record<string, { key: string; label: string; tooltip: string }> = {
+      plated:             { key: 'plated',             label: 'reframedb collection',          tooltip: 'This compound is included in the reframe screening collection' },
+      one_off:            { key: 'one_off',            label: 'available for one-off testing', tooltip: 'This compound is not included in the reframe screening collection, but is available for one-off testing' },
+      historical:         { key: 'historical',         label: 'historical',                    tooltip: 'This compound is no longer included in the reframe screening collection' },
+      historical_one_off: { key: 'historical_one_off', label: 'historical, one-off available', tooltip: 'This compound is no longer included in the reframe screening collection, but is available for one-off testing' },
+      on_order:           { key: 'on_order',           label: 'on order',                      tooltip: 'This compound is on order and will be included in the reframe screening collection soon' },
+    };
+    return map[this.reframeCmpd] || { key: 'not', label: 'not in collection', tooltip: 'This compound is not included in the reframe screening collection' };
   }
 
   showMore() {

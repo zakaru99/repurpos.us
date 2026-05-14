@@ -20,20 +20,34 @@ h1 {
   margin-left: 30px;
   margin-bottom: 25px;
 }
-/* Binary buttons if available */
-.avail-table,
-.reframe_cmpd {
-  width: 100%;
+
+.cmpd-disclosure {
+  opacity: 0.75;
+  margin-left: 30px;
+  margin-bottom: 8px;
+  font-size: 0.75em;
+}
+.name-and-indicator {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.rfm-circle,
-td {
-  vertical-align: baseline;
-  text-align: left;
-}
+.rfm-tile {
+  font-size: 0.8em;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 5px 10px;
+  display: inline-block;
+  border: 1px solid transparent;
 
-td.circle {
-  margin-right: 10px;
+  &--plated           { background-color: #c8f5d4; color: #155724; border-color: #28a745; }
+  &--one_off          { background-color: #ffd6d9; color: #7b1a21; border-color: #FF5B67; }
+  &--historical       { background-color: #d0ddf9; color: #1a2f6b; border-color: #3D6DE0; }
+  &--historical_one_off { background-color: #d6eeff; color: #0c3a6b; border-color: lightskyblue; }
+  &--on_order         { background-color: #ffe4b5; color: #7a4500; border-color: #FFA500; }
+  &--not              { background-color: #f0f0f0; color: #555;    border-color: #aaa; }
 }
 
 .chem-props {

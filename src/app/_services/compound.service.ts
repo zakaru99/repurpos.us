@@ -62,6 +62,9 @@ export class CompoundService {
   public integrityPediatricsSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   integrityPediatricsState = this.integrityPediatricsSubject.asObservable();
 
+  public disclosureDateSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  disclosureDateState = this.disclosureDateSubject.asObservable();
+
   private aliases: string[] = [];
   public aliasSubject: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   aliasState = this.aliasSubject.asObservable();
@@ -256,6 +259,7 @@ export class CompoundService {
       this.smilesSubject.next('');
       this.rfmSubject.next('');
       this.integrityPediatricsSubject.next(false);
+      this.disclosureDateSubject.next('');
       this.aliasSubject.next([]);
       this.chemSourceSubject.next([]);
       this.similarSubject.next([]);
@@ -527,6 +531,8 @@ export class CompoundService {
 
             this.integrityPediatricsSubject.next(b.integrity_pediatrics || false);
 
+            this.disclosureDateSubject.next(b.disclosure_date || '');
+            
             // Pull out assay data --> compound-assay-data
             this.assaysSubject.next(<AssayData[]>b.assay);
 
