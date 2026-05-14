@@ -3,3 +3,4 @@ export * from './login-fail/login-fail.component';
 export * from './terms/terms.component';
 export * from './user-registration/user-registration.component';
 export * from './salt-warning/salt-warning.component';
+export * from './assay-details-modal/assay-details-modal.component';
