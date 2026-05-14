@@ -28,7 +28,7 @@
     <ul class="suggestions-dropdown" *ngIf="suggestions.length > 0 && inputFocused">
       <li
         *ngFor="let suggestion of suggestions"
-        (mousedown)="onSuggestionClick(suggestion)"
+        (mousedown)="onSuggestionClick(suggestion.value)"
       >
         {{ suggestion.value }}
       </li>
