@@ -1,3 +1,8 @@
+:host {
+    position: relative;
+    z-index: 10;
+}
+
 /deep/ .mat-tab-body-content {
     // overflow: hidden !important;
     overflow-y: hidden;

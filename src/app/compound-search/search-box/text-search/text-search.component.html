@@ -1,19 +1,31 @@
 <div class="search row">
-  <!-- <input type="text" placeholder="search"/>
-  <button>send</button>
-  < -->
   <!-- Search bar -->
-  <div class="col-md-4 d-flex">
-    <input type="text" class="search form-control" placeholder="search" autofocus [(ngModel)]="searchQuery" aria-label="search input" (keyup.enter)="onSubmit()" >
+  <div class="col-md-4 d-flex align-items-start">
+    <div class="input-container" [class.dropdown-open]="dropdownVisible">
+      <input #searchInput type="text" class="search form-control" placeholder="search" autofocus
+             [(ngModel)]="searchQuery"
+             aria-label="search input"
+             (keydown)="onKeyDown($event)"
+             (ngModelChange)="onQueryChange($event)">
+
+      <ul class="predictive-dropdown" *ngIf="dropdownVisible" [ngStyle]="dropdownStyle">
+        <li *ngFor="let item of suggestions; let i = index"
+            [class.highlighted]="i === highlightedIndex"
+            (mouseenter)="setHighlight(i)"
+            (click)="selectSuggestion(item.value)"
+            class="suggestion-item">
+          <span class="suggestion-value">{{ item.value }}</span>
+          <span class="suggestion-pill">{{ item.type }}</span>
+        </li>
+      </ul>
+    </div>
 
     <button mat-icon-button class='search-btn' (click)="onSubmit()" aria-label="submit search">
-      <mat-icon aria-label="search" color="accent" >search</mat-icon>
+      <mat-icon aria-label="search" color="accent">search</mat-icon>
     </button>
   </div>
 
-
-
-<!-- Example searches -->
+  <!-- Example searches -->
   <div class="examples col-md-4">
     <h6>example queries</h6>
     <div class="ex-query" *ngFor="let example of examples">
@@ -21,6 +33,4 @@
         <span class="ex-type">{{example.label}}</span>: {{example.description}}</a>
     </div>
   </div>
-
-  <!-- <button mat-raised-button color="accent" class="float-right">search</button> -->
 </div>
