@@ -5,25 +5,28 @@
     <div *ngIf="!['A00635', 'A00434'].includes(aid); else wrong_format">
 
       <div class="row data-header d-flex">
-      <!-- <div class="row data-header d-flex" *ngIf="assayData.length > 0"> -->
         <div class="col">
           <h3 id="data-title" class="d-inline-block">Assay data</h3>
-          <app-assay-dwnld [assay_title]="assay_title"></app-assay-dwnld>
+          <app-assay-dwnld *ngIf="hasDoseResponseData;" [assay_title]="assay_title"></app-assay-dwnld>
         </div>
 
-
         <div class="col-xs-auto col-sm-auto col-md-auto col-lg-auto col-xl-auto float-right">
-          <!-- Assay tab panes -->
           <app-assay-type-btn></app-assay-type-btn>
         </div>
       </div>
 
-      <!-- Call D3 component -->
-      <app-dot-plot></app-dot-plot>
-      <!-- <app-dot-plot *ngIf="filteredData.length > 0" [data]="filteredData" [tooltipData]="tooltipData" (tooltipEmitter)="showTooltip($event)"></app-dot-plot> -->
+      <!-- Plot or Banner -->
+      <ng-container *ngIf="hasDoseResponseData; else noDataBanner">
+        <app-dot-plot></app-dot-plot>
+        <app-assay-pagination></app-assay-pagination>
+      </ng-container>
 
-      <!-- pagination -->
-      <app-assay-pagination></app-assay-pagination>
+      <ng-template #noDataBanner>
+        <div class="no-data-banner">
+          No dose response data available yet.
+        </div>
+      </ng-template>
+
     </div>
   </div>
 </ng-container>

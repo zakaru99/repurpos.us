@@ -18,6 +18,8 @@ export class AssayPlotsComponent implements OnDestroy {
   public loggedIn: boolean;
 
   private loginSubscription: Subscription;
+  public hasDoseResponseData = true;
+  private dataSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,6 +34,10 @@ export class AssayPlotsComponent implements OnDestroy {
           this.dataSvc.retrieveAssayData(this.aid);
         }
       })
+
+      this.dataSubscription = this.dataSvc.flatAssayDataSource.subscribe(data => {
+        this.hasDoseResponseData = !!data && data.length > 0;
+      });
   }
 
   getDownloadUrl(){
@@ -46,6 +52,7 @@ export class AssayPlotsComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.loginSubscription.unsubscribe();
+    this.dataSubscription.unsubscribe();
   }
 
 }

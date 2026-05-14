@@ -156,3 +156,15 @@ h3#data-title {
   background-color: #e1e4e7; /* Light background change on hover */
   color: black; /* Darker text color on hover, similar to the default link color */
 }
+
+.no-data-banner {
+  margin: 40px 0;
+  padding: 28px;
+  border-radius: 18px;
+  background: #f5f7fb;
+  border: 1px solid #e1e6f0;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: #6c757d;
+}
