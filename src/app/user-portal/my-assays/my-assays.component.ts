@@ -7,7 +7,7 @@ interface Assay {
   name: string;
   indication: string;
   status: 'Pending' | 'Approved' | 'Rejected';
-  submittedOn: string;
+  submittedOn?: string | Date | null;
 }
 
 @Component({
@@ -42,7 +42,9 @@ export class MyAssaysComponent implements OnInit {
     .subscribe({
       next: (res) => {
         if (res.success) {
-          this.assays = res.data;
+          // Convert submittedOn strings to Date objects for consistent display
+          console.log('assay data:', res.data);
+          this.assays = res.data.map(a => ({ ...a, submittedOn: a.submittedOn ? new Date(String(a.submittedOn)) : null }));
         } else {
           this.assays = [];
         }
