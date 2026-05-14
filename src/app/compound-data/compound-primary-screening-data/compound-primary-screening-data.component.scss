@@ -128,3 +128,17 @@ span.btn {
 .nav-item {
   display: block;
 }
+
+.sortable {
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+}
+
+.sort-arrow {
+  font-size: 0.7em;
+  margin-left: 5px;
+  vertical-align: middle;
+  color: #555;
+  transition: transform 0.2s ease;
+}

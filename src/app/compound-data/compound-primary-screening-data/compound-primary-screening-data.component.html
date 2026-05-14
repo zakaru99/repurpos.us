@@ -25,11 +25,19 @@
     </ul>
       <table class="assay-table table">
         <tr class="">
-          <th class="header-title align-middle">Assay ID</th>
-          <th class="header-title align-middle assay-name col">Assay title</th>
-          <th class="header-title align-middle assay-indic">indication</th>
+          <th class="header-title align-middle sortable" (click)="sortData('assay_id')">
+            Assay ID <span class="sort-arrow" *ngIf="sortColumn === 'assay_id'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
+          </th>
+          <th class="header-title align-middle assay-name col sortable" (click)="sortData('title_short')">
+            Assay title <span class="sort-arrow" *ngIf="sortColumn === 'title_short'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
+          </th>
+          <th class="header-title align-middle assay-indic sortable" (click)="sortData('indication')">
+            indication <span class="sort-arrow" *ngIf="sortColumn === 'indication'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
+          </th>
 <!--          <th class="header-title align-middle">Activity<br/>type</th>-->
-          <th class="header-title align-middle">Screening hit</th>
+          <th class="header-title align-middle sortable" (click)="sortData('hit')">
+            Screening hit <span class="sort-arrow" *ngIf="sortColumn === 'hit'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
+          </th>
 <!--          <th class="header-title align-middle"><span class="invisible">Measure</span></th>-->
           <th class="header-title align-middle">Assay Source</th>
 <!--          <th class="header-title align-middle" *ngIf="showVendor">Compound Vendor</th>-->

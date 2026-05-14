@@ -11,6 +11,10 @@ import { CompoundService, ColorPaletteService } from '../../_services';
 export class CompoundPrimaryScreeningDataComponent implements OnInit {
   primaryData: Array<PrimaryScreenData> = [];
 
+  // Sorting
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
+
   constructor(private cmpdSvc: CompoundService, public colorSvc: ColorPaletteService) { }
 
   ngOnInit() {
@@ -29,6 +33,31 @@ export class CompoundPrimaryScreeningDataComponent implements OnInit {
     }else{
       this.psd_text = 'Hide Data'
     }
+  }
+
+  // Sorting function
+  sortData(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    this.primaryData.sort((a: any, b: any) => {
+      let valA = a[column];
+      let valB = b[column];
+
+      // Handle numbers
+      if (!isNaN(valA) && !isNaN(valB)) {
+        return this.sortDirection === 'asc' ? valA - valB : valB - valA;
+      }
+
+      // Handle strings
+      valA = valA ? valA.toString().toLowerCase() : '';
+      valB = valB ? valB.toString().toLowerCase() : '';
+      return this.sortDirection === 'asc' ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
+    });
   }
 
   update_tabs(){
