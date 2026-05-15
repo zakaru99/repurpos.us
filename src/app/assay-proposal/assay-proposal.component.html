@@ -175,25 +175,15 @@
     </div>
 
     <!-- Additional Notes -->
-    <div
-      class="form-row"
-      [ngClass]="{ 'has-error': notes.invalid && (notes.touched || proposalForm.submitted) }"
-    >
+    <div class="form-row">
       <label for="notes">Additional Notes/Questions</label>
       <textarea
         id="notes"
         name="notes"
         rows="3"
         [(ngModel)]="formData.notes"
-        required
         #notes="ngModel"
       ></textarea>
-      <div
-        class="error-message"
-        *ngIf="notes.invalid && (notes.touched || proposalForm.submitted)"
-      >
-        Notes are required.
-      </div>
     </div>
 
     <!-- Submit -->
