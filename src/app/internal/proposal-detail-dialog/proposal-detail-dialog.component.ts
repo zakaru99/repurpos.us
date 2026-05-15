@@ -48,6 +48,16 @@ export class ProposalDetailDialogComponent implements AfterViewChecked {
     this.hasFocused = false;
   }
 
+  exportJson(): void {
+    const blob = new Blob([JSON.stringify(this.data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `reframe-proposal-${this.data.id}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   ngAfterViewChecked(): void {
     if (this.showRejectForm && this.rejectionTextarea && !this.hasFocused) {
       try {
