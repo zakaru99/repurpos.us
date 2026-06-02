@@ -98,10 +98,6 @@
             <ng-template #notReady>
               <li><span id="label">Primary screening data curation in progress</span></li>
             </ng-template>
-
-            <li *ngIf="assayDetails.dr_screened > 0">
-              <span id="label">Compounds screened in dose response: </span> {{ assayDetails.dr_screened | number }}
-            </li>
         </ul>
       </div>
     </div>
