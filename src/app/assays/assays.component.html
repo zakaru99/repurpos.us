@@ -138,6 +138,20 @@
           </div>
         </div>
 
+        <div class="screening-banner" *ngIf="showScreeningBanner(assay)">
+          <span class="banner-label">compounds screened:</span>
+          <ng-container *ngIf="parsePrimaryScreened(assay.primary_screened) > 0">
+            <span class="banner-val">{{ assay.primary_screened | number }} primary</span>
+          </ng-container>
+          <ng-container *ngIf="assay.primary_screened === 'secondary'">
+            <span class="banner-val">secondary assay</span>
+          </ng-container>
+          <ng-container *ngIf="assay.dr_screened > 0">
+            <span class="banner-divider" *ngIf="parsePrimaryScreened(assay.primary_screened) > 0 || assay.primary_screened === 'secondary'"> | </span>
+            <span class="banner-val">{{ assay.dr_screened | number }} dose response</span>
+          </ng-container>
+        </div>
+
       </div>
     </div>
   </div>

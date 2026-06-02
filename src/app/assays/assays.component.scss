@@ -323,3 +323,30 @@ mat-chip {
 .clickable:hover {
   text-decoration: underline;
 }
+
+.screening-banner {
+  border-top: 2px solid #c9d8fb;
+  background: #e9f0ff;
+  border-radius: 0 0 16px 16px;
+  padding: 8px 14px;
+  font-size: 0.82rem;
+  color: #1d3b76;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.screening-banner .banner-label {
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.screening-banner .banner-val {
+  color: #1d3b76;
+  font-weight: 600;
+}
+
+.screening-banner .banner-divider {
+  color: #7f9feb;
+}

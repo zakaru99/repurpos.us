@@ -450,6 +450,17 @@ showDetails(
     });
   }
 
+  parsePrimaryScreened(val: string): number {
+    const n = Number(val);
+    return isNaN(n) ? 0 : n;
+  }
+
+  showScreeningBanner(assay: AssayDetails): boolean {
+    return this.parsePrimaryScreened(assay.primary_screened) > 0
+      || assay.primary_screened === 'secondary'
+      || (assay.dr_screened > 0);
+  }
+
   get showClearButton(): boolean {
     return this.queryString.trim().length > 0;
   }
