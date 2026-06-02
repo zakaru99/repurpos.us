@@ -219,6 +219,18 @@ li.assay-title {
   border-radius: 3px;
 }
 
+.assay-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.assay-scroll {
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+}
+
 .assay-title a {
   color: #212529;
 }
