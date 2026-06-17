@@ -47,4 +47,15 @@ src/assets/A00211_dotplot.svg
 src/assets/logo_card.ai
 yarn.lock
 src/assets/qc_files
-src/app/ontology-tree/rancho_ontology.json
+src/app/ontology-tree/*.json
+
+# Large assets
+src/assets/video/
+src/assets/assay_one_offs/
+src/assets/csv/*.zip
+src/assets/workflow/
+
+# Claude Code local config
+.claude/
+
+src/assets/synthetic_routes/
