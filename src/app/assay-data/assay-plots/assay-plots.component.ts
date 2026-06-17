@@ -45,6 +45,8 @@ export class AssayPlotsComponent implements OnDestroy {
       return "../../../assets/assay_one_offs/A00635_TP Reframe Dose response.xlsx";
     } else if (this.aid === 'A00434') {
       return "../../../assets/assay_one_offs/A00434.zip";
+    } else if (this.aid === 'A00236') {
+      return "../../../assets/assay_one_offs/A00236-ReframeDeconvolution-Combined.xlsx";
     }
     // Add more conditions as needed
     return ""; // Default or empty if no match

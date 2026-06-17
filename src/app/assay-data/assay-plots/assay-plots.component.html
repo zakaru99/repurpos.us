@@ -2,7 +2,7 @@
 <!-- VIS -->
 <ng-container>
   <div id="vis" *ngIf="loggedIn; else log_in">
-    <div *ngIf="!['A00635', 'A00434'].includes(aid); else wrong_format">
+    <div *ngIf="!['A00635', 'A00434', 'A00236'].includes(aid); else wrong_format">
 
       <div class="row data-header d-flex">
         <div class="col">
