@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   site_name: "ReframeDB",
-  description: "ReframeDB is an open and extendable drug repurposing database and screening set of over 12,000 compounds",
+  description: "ReframeDB is an open and extendable drug repurposing database and screening set of over 13,288 compounds",
   api_url: 'http://localhost:8000/api', //'https://reframedb.org/api',
   host_url: 'http://localhost/', //'https://reframedb.org/',
   url: 'http://localhost/',
