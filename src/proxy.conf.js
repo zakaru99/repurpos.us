@@ -3,6 +3,7 @@ const PROXY_CONFIG = [
     "context": [
       "/api",
       "/api/search",
+      "/api/suggest",
       "/api/data",
       "/api/assay_details",
       "/api/assay_list",
