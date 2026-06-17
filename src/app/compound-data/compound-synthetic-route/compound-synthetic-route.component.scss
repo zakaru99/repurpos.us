@@ -1,0 +1,73 @@
+.sr-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 8px;
+}
+
+.sr-toggle {
+  background: none;
+  border: none;
+  color: #3D6DE0;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.85em;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.sr-body {
+  display: none;
+  margin-top: 10px;
+
+  &.expanded {
+    display: block;
+  }
+
+  iframe {
+    display: block;
+  }
+}
+
+.sr-tabs {
+  ::ng-deep .mat-tab-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.85em;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    opacity: 1;
+    color: #717e8c;
+    min-width: 100px;
+    height: 36px;
+  }
+
+  ::ng-deep .mat-tab-label-active {
+    color: #3D6DE0;
+  }
+
+  ::ng-deep .mat-ink-bar {
+    background-color: #3D6DE0;
+  }
+
+  ::ng-deep .mat-tab-body-content {
+    padding-top: 10px;
+  }
+}
+
+.sr-footer {
+  padding: 8px 0 0;
+  font-size: 0.85em;
+  margin-bottom: 60px;
+}

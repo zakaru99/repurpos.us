@@ -1,0 +1,32 @@
+<div *ngIf="loggedIn && pdfEntries.length > 0">
+
+  <div class="sr-header first-entry">
+    <h3 class="vendor-title">Synthetic Route</h3>
+    <button class="sr-toggle" (click)="expanded = !expanded">
+      {{ expanded ? 'Hide' : 'Show' }}
+    </button>
+  </div>
+
+  <div class="sr-body" [class.expanded]="expanded">
+
+    <!-- Single PDF: no tabs -->
+    <ng-container *ngIf="pdfEntries.length === 1">
+      <iframe [src]="pdfEntries[0].url" width="100%" height="700px" frameborder="0"></iframe>
+      <div class="sr-footer last-entry">
+        <a [href]="pdfEntries[0].href" target="_blank" rel="noreferrer">Open in new tab</a>
+      </div>
+    </ng-container>
+
+    <!-- Multiple PDFs: tabbed -->
+    <mat-tab-group *ngIf="pdfEntries.length > 1" class="sr-tabs">
+      <mat-tab *ngFor="let entry of pdfEntries" [label]="entry.label">
+        <iframe [src]="entry.url" width="100%" height="700px" frameborder="0"></iframe>
+        <div class="sr-footer last-entry">
+          <a [href]="entry.href" target="_blank" rel="noreferrer">Open in new tab</a>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+  </div>
+
+</div>
