@@ -31,37 +31,37 @@
         </tr>
 
         <tr *ngFor="let x of assayData">
-          <td class="content align-middle">
+          <td class="content align-middle" data-label="Assay ID">
             <a [routerLink]="['/assays', x['assay_id']]">
               <span [outerHTML]="x['assay_id'] | sciItalicize"></span>
             </a>
           </td>
 
-          <td class="content align-middle assay-title">
+          <td class="content align-middle assay-title" data-label="Assay Title">
             <a [routerLink]="['/assays', x['assay_id']]">
               <span [outerHTML]="x['title_short'] | sciItalicize" *ngIf="x['title_short']; else notitle"></span>
-              <ng-template #notitle> 
-                <span [outerHTML]="x['assay_title'] | sciItalicize"></span> 
+              <ng-template #notitle>
+                <span [outerHTML]="x['assay_title'] | sciItalicize"></span>
               </ng-template>
             </a>
           </td>
 
-          <td class="content align-middle">
+          <td class="content align-middle" data-label="Indication">
             <div class="assay-type" *ngIf="x['indication']" [ngStyle]="{'background-color': colorSvc.getIndicColor(x['indication'])['background'], 'color': colorSvc.getIndicColor(x['indication'])['font']}">
               <span [outerHTML]="x['indication'] | sciItalicize"></span>
             </div>
           </td>
 
-          <td class="align-middle">
+          <td class="align-middle" data-label="Activity">
             <span *ngIf="x['activity_type']" [outerHTML]="x['activity_type'].replace('50', '<sub>50</sub>')"></span>
           </td>
 
-          <td class="align-middle" [ngClass]="{'toxic': x.assay_id === 'A00295' && x.activity_type === 'IC50' && x.ac50 < 10e-5}">
+          <td class="align-middle" data-label="Measurement" [ngClass]="{'toxic': x.assay_id === 'A00295' && x.activity_type === 'IC50' && x.ac50 < 10e-5}">
             <span *ngIf="x.ac_precision != ''">{{ x.ac_precision }} </span>
             {{ x['ac50'] ? x['ac50'].toExponential(2) : 'NA' }}
           </td>
 
-          <td class="align-middle">
+          <td class="align-middle" data-label="Source">
             <a href="https://www.calibr.org/" target="_blank" rel="noreferrer">Calibr</a>
           </td>
         </tr>

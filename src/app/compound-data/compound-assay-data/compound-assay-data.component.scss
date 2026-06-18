@@ -86,3 +86,54 @@ td {
   color: #555;
   transition: transform 0.2s ease;
 }
+
+@media (max-width: 640px) {
+  /* Remove the horizontal scroll wrapper — cards don't need it */
+  .table-responsive {
+    overflow: visible;
+  }
+
+  .assay-table {
+    /* Hide column headers */
+    thead, tr:first-child { display: none; }
+
+    /* Each data row becomes a card */
+    tr {
+      display: block;
+      border: 1px solid #e5edf9;
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+      margin-bottom: 0.75rem;
+      background: #f9fbff;
+    }
+
+    /* Each cell is a label + value row */
+    td {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      padding: 0.2rem 0;
+      height: auto;
+      border: none;
+
+      &::before {
+        content: attr(data-label);
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #4a5568;
+        min-width: 82px;
+        flex-shrink: 0;
+      }
+
+      &.toxic { background: none; }
+      &.toxic::after { content: ' ⚠'; color: orange; }
+    }
+  }
+
+  .assay-type {
+    font-size: 0.75em;
+    padding: 3px 6px;
+  }
+}

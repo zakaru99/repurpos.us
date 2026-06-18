@@ -66,3 +66,30 @@ a {
 .element {
   @include clearfix;
 }
+
+@media (max-width: 640px) {
+  .container-fluid,
+  .container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  [class*="col-"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-bottom: 0.5rem;
+  }
+
+  @media (hover: none) {
+    [class*="card"]:hover,
+    [class*="card-block"]:hover {
+      transform: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+  }
+}
