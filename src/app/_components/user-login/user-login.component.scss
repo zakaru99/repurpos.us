@@ -1,7 +1,7 @@
-.divider{
-  width:10px;
-  height:auto;
-  display:inline-block;
+.divider {
+  width: 10px;
+  height: auto;
+  display: inline-block;
 }
 
 body {
@@ -19,7 +19,6 @@ body {
 }
 
 /deep/ .mat-fab.mat-warn, .mat-flat-button.mat-warn, .mat-mini-fab.mat-warn, .mat-raised-button.mat-warn {
-  // background-color: #c3142e;
   background-color: #7e8b98;
 }
 
@@ -30,4 +29,56 @@ body {
 
 .logout-button {
   border-radius: 15px !important;
+}
+
+@media (max-width: 760px) {
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 0.25rem 0 0.5rem;
+    width: 100%;
+    align-items: center;
+  }
+
+  form span { display: block; width: 100%; }
+  form .divider { display: none; }
+
+  /* Stretch mat-form-field to match button width */
+  mat-form-field { width: 100%; display: block; }
+
+  /* Restyle Material fields as clean outlined boxes */
+  mat-form-field /deep/ .mat-form-field-wrapper   { padding-bottom: 0; }
+  mat-form-field /deep/ .mat-form-field-flex {
+    background: #f5f8fd;
+    border: 1px solid #c5d4f5;
+    border-radius: 10px;
+    padding: 0 0.9rem;
+  }
+  mat-form-field /deep/ .mat-form-field-infix     { border-top: 0; padding: 0.6em 0; }
+  mat-form-field /deep/ .mat-form-field-label     { color: #9ba4ae; }
+  mat-form-field /deep/ .mat-form-field-underline { display: none; }
+  mat-form-field /deep/ .mat-form-field-subscript-wrapper { display: none; }
+  mat-form-field /deep/ input                     { font-size: 16px !important; }
+
+  .login-button {
+    width: 100%;
+    min-height: 46px;
+    display: block;
+    margin-top: 0.25rem;
+  }
+
+  /* Logout state: plain nav-style item */
+  .logout-button {
+    display: block !important;
+    width: 100% !important;
+    background: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    text-align: left !important;
+    padding: 0.7rem 1rem !important;
+    font-size: 0.95rem !important;
+    color: #c0392b !important;
+    border: none !important;
+  }
 }

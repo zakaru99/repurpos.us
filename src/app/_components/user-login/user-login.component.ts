@@ -47,6 +47,8 @@ private checkUserStatus(token: string) {
       this.isAdmin = userInfo.admin;
 
     this.loginStateService.loggedIn(this.isAdmin, userInfo.email);
+    this.email.reset();
+    this.password.reset();
     },
     error: () => this.logoutCleanup()
   });
@@ -85,6 +87,8 @@ private checkUserStatus(token: string) {
     this.loggedIn = false;
     this.isAdmin = false;
     this.loginStateService.loggedOut();
+    this.email.reset();
+    this.password.reset();
   }
 
   getErrorMessage() {

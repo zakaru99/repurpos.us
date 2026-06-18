@@ -35,11 +35,12 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // subscribe to the login state
-    this.loginSubscription = this.loginStateService.loginState
+    this.loginSubscription = this.loginStateService.isUserLoggedIn
       .subscribe((state: LoginState) => {
         this.loggedIn = state.loggedIn;
-         this.isAdmin = state.isAdmin;
+        this.isAdmin = state.isAdmin;
+        this.loginBox = false;
+        this.expanded = false;
       });
   }
 
@@ -71,8 +72,13 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  @HostListener('document:click', ['$event']) clickedOutside($event){
-    if (this.loginBox)
+  @HostListener('window:resize') onResize() {
+    this.checkMobile();
+  }
+
+  @HostListener('document:click', ['$event']) clickedOutside($event) {
+    if (this.loginBox) {
       this.loginBox = false;
+    }
   }
 }
