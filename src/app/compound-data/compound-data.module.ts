@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 // --- routing ---
 import { CompoundDataRoutingModule } from './compound-data-routing.module';
@@ -35,6 +36,7 @@ import { CompoundSyntheticRouteComponent } from './compound-synthetic-route/comp
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
     CompoundDataRoutingModule,
     Struct2dModule,
     MaterialModule,

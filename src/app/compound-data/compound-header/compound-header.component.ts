@@ -2,6 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Location } from '@angular/common';
 import { CompoundService } from '../../_services/index';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { LoginStateService } from '../../_services';
+import { FavoritesService } from '../../_services/favorites.service';
+import { CompoundListsService, CompoundList } from '../../_services/compound-lists.service';
 
 import { AssayData, Compound } from '../../_models';
 declare var $ : any
@@ -26,7 +29,7 @@ export class CompoundHeaderComponent implements OnInit {
   public isToxicA00295 = false;
   public hasA00295Data = false;
   public isToxicA00296 = false;
-  public hasA00296Data = false; 
+  public hasA00296Data = false;
   public assayData: AssayData[] = [];
 
   public integrityPediatrics: boolean = false;
@@ -36,84 +39,146 @@ export class CompoundHeaderComponent implements OnInit {
   all_shown: boolean = false;
   alias_ct: number;
 
+  compoundId: string = '';
+  compoundName: string = '';
+  loggedIn: boolean = false;
+  lists: CompoundList[] = [];
+  showListDropdown: boolean = false;
+  newListName: string = '';
+  toastMessage: string = '';
+  toastType: 'success' | 'error' = 'success';
+  private toastTimer: any = null;
 
-  constructor(private cmpdSvc: CompoundService) {
+  constructor(
+    private cmpdSvc: CompoundService,
+    private loginStateService: LoginStateService,
+    public favoritesService: FavoritesService,
+    public listsService: CompoundListsService
+  ) {
     this.getNumAliases();
 
+    this.cmpdSvc.idSubject.subscribe((idData: any) => {
+      this.compoundId = idData && idData.id ? idData.id : '';
+    });
+
     this.cmpdSvc.nameState.subscribe(cmpdName => {
-      // console.log(cmpdName)
-        this.label = cmpdName;
-    })
+      this.label = cmpdName;
+      this.compoundName = cmpdName || '';
+    });
 
     this.cmpdSvc.rfmState.subscribe((rfm: string) => {
       this.reframeCmpd = rfm;
-    })
+    });
 
     this.cmpdSvc.whoState.subscribe((who: string) => {
       this.whoName = who;
-    })
+    });
 
     this.cmpdSvc.aliasState.subscribe((aliasList: string[]) => {
       this.aliases = aliasList;
-    })
+    });
 
     this.cmpdSvc.chemSourceState.subscribe((sources: Object[]) => {
       this.chemVendors = sources;
-    })
+    });
 
     this.cmpdSvc.similarState.subscribe((sdata: Compound[]) => {
       this.similarityResults = sdata;
-    })
+    });
 
-    this.cmpdSvc.assaysState.subscribe((assays: AssayData[]) =>{
+    this.cmpdSvc.assaysState.subscribe((assays: AssayData[]) => {
       this.assayData = assays;
       this.checkToxicity();
-    })
+    });
+
     this.cmpdSvc.integrityPediatricsState.subscribe((integrityPediatrics: boolean) => {
       this.integrityPediatrics = integrityPediatrics;
-    })
+    });
 
     this.cmpdSvc.disclosureDateState.subscribe((disclosureDate: string) => {
       this.disclosureDate = disclosureDate;
-    })
+    });
+
+    loginStateService.isUserLoggedIn.subscribe(state => {
+      this.loggedIn = state.loggedIn;
+    });
+
+    listsService.lists$.subscribe(lists => {
+      this.lists = lists;
+    });
   }
-  
-checkToxicity(): void {
-  if (!this.assayData || this.assayData.length === 0) {
-    this.isToxicA00295 = false;
-    this.hasA00295Data = false;
-    this.isToxicA00296 = false;
-    this.hasA00296Data = false;
-    return;
+
+  get isFavorite(): boolean {
+    return this.favoritesService.isFavorite(this.compoundId);
   }
 
-  const a00295Assays = this.assayData.filter(x =>
-    x.assay_id === 'A00295' &&
-    x.activity_type &&
-    x.activity_type.toUpperCase() === 'IC50' &&
-    !isNaN(Number(x.ac50))
-  );
+  private showToast(msg: string, type: 'success' | 'error' = 'success'): void {
+    if (this.toastTimer) { clearTimeout(this.toastTimer); }
+    this.toastMessage = '';
+    setTimeout(() => {
+      this.toastMessage = msg;
+      this.toastType = type;
+      this.toastTimer = setTimeout(() => { this.toastMessage = ''; }, 3000);
+    }, 10);
+  }
 
-  this.hasA00295Data = a00295Assays.length > 0;
+  toggleFavorite(): void {
+    const wasFavorite = this.isFavorite;
+    this.favoritesService.toggle(this.compoundId, this.compoundName);
+    this.showToast(wasFavorite ? 'Removed from favorites' : 'Saved to favorites');
+  }
 
-  this.isToxicA00295 = a00295Assays.some(x =>
-    Number(x.ac50) < 1e-5 
-);
+  addToList(listId: number): void {
+    const list = this.lists.find(l => l.id === listId);
+    this.listsService.addToList(listId, this.compoundId, this.compoundName).subscribe();
+    this.showListDropdown = false;
+    this.showToast('Added to ' + (list ? '"' + list.name + '"' : 'list'));
+  }
 
-  const a00296Assays = this.assayData.filter(x =>
-    x.assay_id === 'A00296' &&
-    x.activity_type &&
-    x.activity_type.toUpperCase() === 'IC50' &&
-    !isNaN(Number(x.ac50))
-  );
+  createAndAddList(): void {
+    const name = this.newListName.trim();
+    if (!name) { return; }
+    this.newListName = '';
+    this.showListDropdown = false;
+    this.listsService.createList(name).subscribe((res: any) => {
+      if (res && res.id) {
+        this.listsService.addToList(res.id, this.compoundId, this.compoundName).subscribe();
+        this.showToast('Added to "' + name + '"');
+      } else {
+        this.showToast('Created "' + name + '" — add compound from My Lists', 'success');
+      }
+    });
+  }
 
-  this.hasA00296Data = a00296Assays.length > 0;
+  checkToxicity(): void {
+    if (!this.assayData || this.assayData.length === 0) {
+      this.isToxicA00295 = false;
+      this.hasA00295Data = false;
+      this.isToxicA00296 = false;
+      this.hasA00296Data = false;
+      return;
+    }
 
-  this.isToxicA00296 = a00296Assays.some(x =>
-    Number(x.ac50) < 1e-5 
-  );
-}
+    const a00295Assays = this.assayData.filter(x =>
+      x.assay_id === 'A00295' &&
+      x.activity_type &&
+      x.activity_type.toUpperCase() === 'IC50' &&
+      !isNaN(Number(x.ac50))
+    );
 
+    this.hasA00295Data = a00295Assays.length > 0;
+    this.isToxicA00295 = a00295Assays.some(x => Number(x.ac50) < 1e-5);
+
+    const a00296Assays = this.assayData.filter(x =>
+      x.assay_id === 'A00296' &&
+      x.activity_type &&
+      x.activity_type.toUpperCase() === 'IC50' &&
+      !isNaN(Number(x.ac50))
+    );
+
+    this.hasA00296Data = a00296Assays.length > 0;
+    this.isToxicA00296 = a00296Assays.some(x => Number(x.ac50) < 1e-5);
+  }
 
   onAnchorClick(anchor_tag: string) {
     let anchor_div = document.querySelector("#" + anchor_tag);
@@ -125,8 +190,6 @@ checkToxicity(): void {
   backClick() {
     this._location.back();
   }
-
-  
 
   ngOnInit() {
     this.checkToxicity();
@@ -153,68 +216,55 @@ checkToxicity(): void {
   }
 
   getNumAliases() {
-    // determine how many aliases to show
-        if (window.screen.width > 800) {
-          this.num_aliases = 15;
-        } else {
-          this.num_aliases = 5;
-        }
-        this.alias_ct = this.num_aliases;
+    if (window.screen.width > 800) {
+      this.num_aliases = 15;
+    } else {
+      this.num_aliases = 5;
+    }
+    this.alias_ct = this.num_aliases;
   }
 
   onResize(event) {
     this.getNumAliases();
   }
 
-
-
-
-
-  clickedQC(vendor_ikey){
-
+  clickedQC(vendor_ikey) {
     function saveAs(uri, filename) {
       var link = document.createElement('a');
       if (typeof link.download === 'string') {
-          document.body.appendChild(link); // Firefox requires the link to be in the body
-          link.download = filename;
-          link.href = uri;
-          link.click();
-          document.body.removeChild(link); // remove the link when done
+        document.body.appendChild(link);
+        link.download = filename;
+        link.href = uri;
+        link.click();
+        document.body.removeChild(link);
       } else {
-          location.replace(uri);
+        location.replace(uri);
       }
-  }
+    }
 
     $.ajax({
       type: "POST",
       async: false,
       url: "https://reframedb.org/php/getQCdownloadID.php",
       data: {ikey: vendor_ikey},
-      dataType:'JSON', 
-      success: function(response){
-          var fileData = response.data;
-          if(fileData !== undefined)
-          {
-            for (var i=0; i<fileData.length; i++)
-            {
-              //console.log('downloading file id:' + fileData[i].upload_id + ' name: ' + fileData[i].file_name);
-              console.log(fileData[i]);
-              var filepath = '../../assets/QC_files/' + fileData[i].upload_id + fileData[i].extension;
-              //var file_name = fileData[i].file_name.substring(0, fileData[i].file_name.length-4) +  fileData[i].extension;
-              if(fileData[i].extension == '.pdf'){
-                var file_name = fileData[i].file_name.split('.')[0];
-              }else{
-                var file_name = fileData[i].file_name;
-              }
-              saveAs(filepath, file_name);
+      dataType: 'JSON',
+      success: function(response) {
+        var fileData = response.data;
+        if (fileData !== undefined) {
+          for (var i = 0; i < fileData.length; i++) {
+            console.log(fileData[i]);
+            var filepath = '../../assets/QC_files/' + fileData[i].upload_id + fileData[i].extension;
+            if (fileData[i].extension == '.pdf') {
+              var file_name = fileData[i].file_name.split('.')[0];
+            } else {
+              var file_name = fileData[i].file_name;
             }
+            saveAs(filepath, file_name);
           }
-          else
-          {
-            alert("sorry, QC data for this compound is not yet available");
-          }
+        } else {
+          alert("sorry, QC data for this compound is not yet available");
         }
+      }
     });
-
-}
+  }
 }

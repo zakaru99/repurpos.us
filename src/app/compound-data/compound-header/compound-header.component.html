@@ -1,83 +1,93 @@
 <div class="cmpd-header" (window:resize)="onResize($event)">
-    
-  <!-- Back button -->
-  <div class="row">
-    <div class="col-12">
-      <a (click)="backClick()">
-        << return to previous page</a>
-    </div>
+
+  <div class="hdr-back">
+    <a (click)="backClick()"><< return to previous page</a>
   </div>
 
-  <!-- HEADER: name, aliases -->
   <div id="header">
-    <div class="row">
 
-      <!-- LEFT SIDE -->
-      <div id="cmpd-names" class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-        <!-- Drug Name + Reframe tile -->
-        <div class="row">
-          <div class="cmpd-name col-12">
-            <div class="name-and-indicator">
-              <h1>{{ label }}</h1>
-              <div class="rfm-tile rfm-tile--{{ reframeStatus.key }}"
-                   [matTooltip]="reframeStatus.tooltip">
-                {{ reframeStatus.label }}
-              </div>
+    <!-- Top row: compound name + rfm tile + desktop action buttons (in flow, no overlap) -->
+    <div class="hdr-top-row">
+      <div class="hdr-name-wrap">
+        <h1>{{ label }}</h1>
+        <div class="rfm-tile rfm-tile--{{ reframeStatus.key }}" [matTooltip]="reframeStatus.tooltip">{{ reframeStatus.label }}</div>
+      </div>
+      <div class="header-actions" *ngIf="loggedIn && compoundId">
+        <button class="hdr-icon-btn" [class.active]="isFavorite" (click)="toggleFavorite()">{{ isFavorite ? '&#9829;' : '&#9825;' }} <span class="hdr-label">{{ isFavorite ? 'Saved' : 'Save' }}</span></button>
+        <div class="list-dropdown-wrap">
+          <button class="hdr-icon-btn" (click)="showListDropdown = !showListDropdown">&#9776; <span class="hdr-label">Add to list</span></button>
+          <div class="list-dropdown" *ngIf="showListDropdown">
+            <div *ngIf="lists.length === 0" class="dropdown-empty">No lists yet</div>
+            <button class="dropdown-item" *ngFor="let list of lists" (click)="addToList(list.id)">{{ list.name }}<span class="dropdown-count">{{ list.item_count }}</span></button>
+            <div class="dropdown-divider" *ngIf="lists.length > 0"></div>
+            <div class="dropdown-new">
+              <input class="dropdown-input" type="text" placeholder="New list…" [(ngModel)]="newListName" (keyup.enter)="createAndAddList()" />
+              <button class="dropdown-create" (click)="createAndAddList()" [disabled]="!newListName.trim()">Add</button>
             </div>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div class="row cmpd-disclosure" *ngIf="disclosureDate">
-          <div class="col-12">
-            <h6><b>Structure Disclosure Date:</b> {{ disclosureDate | date:'mediumDate' }}</h6>
+    <!-- Mobile compact row: status chip + action buttons -->
+    <div class="hdr-mobile-row">
+      <div class="hdr-status-chip">
+        <span class="status-chip status-{{ reframeStatus.key }}">{{ reframeStatus.label }}</span>
+      </div>
+      <div class="header-actions mobile-actions" *ngIf="loggedIn && compoundId">
+        <button class="hdr-icon-btn" [class.active]="isFavorite" (click)="toggleFavorite()">{{ isFavorite ? '&#9829;' : '&#9825;' }} <span class="hdr-label">{{ isFavorite ? 'Saved' : 'Save' }}</span></button>
+        <div class="list-dropdown-wrap">
+          <button class="hdr-icon-btn" (click)="showListDropdown = !showListDropdown">&#9776; <span class="hdr-label">Add to list</span></button>
+          <div class="list-dropdown" *ngIf="showListDropdown">
+            <div *ngIf="lists.length === 0" class="dropdown-empty">No lists yet</div>
+            <button class="dropdown-item" *ngFor="let list of lists" (click)="addToList(list.id)">{{ list.name }}<span class="dropdown-count">{{ list.item_count }}</span></button>
+            <div class="dropdown-divider" *ngIf="lists.length > 0"></div>
+            <div class="dropdown-new">
+              <input class="dropdown-input" type="text" placeholder="New list…" [(ngModel)]="newListName" (keyup.enter)="createAndAddList()" />
+              <button class="dropdown-create" (click)="createAndAddList()" [disabled]="!newListName.trim()">Add</button>
+            </div>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div class="row cmpd-source" *ngIf="chemVendors.length > 0">
-          <div class="col-12">
-            <h6><span *ngIf="chemVendors[0]['chem_vendor'] != ''">available via <span *ngFor="let vendor of chemVendors; let i = index;">
-          {{ vendor['chem_vendor'] }}
-          <span *ngIf="vendor['chem_vendor_id']">({{ vendor['chem_vendor_id'] }})</span>
-            <span class='data-separator' *ngIf="i + 1 < chemVendors.length"></span></span></span></h6>
-          </div>
+    <!-- Two-column content -->
+    <div class="row">
+
+      <!-- LEFT: vendor, disclosure date, QC download -->
+      <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12 hdr-col-left">
+
+        <div class="cmpd-source" *ngIf="chemVendors.length > 0">
+          <h6>available via <span *ngFor="let vendor of chemVendors; let i = index;">{{ vendor['chem_vendor'] }}<span *ngIf="vendor['chem_vendor_id']"> ({{ vendor['chem_vendor_id'] }})</span><span class='data-separator' *ngIf="i + 1 < chemVendors.length"></span></span></h6>
         </div>
 
-        <!-- Matching warning -->
-        <div class="row">
-          <div class="warning accent-color col-12">
-            <span class="underline">Note</span>: counterions may differ between data sources.
-            <app-salt-warning-dialog></app-salt-warning-dialog>
-          </div>
+        <div class="cmpd-disclosure" *ngIf="disclosureDate">
+          <b>Structure Disclosure Date:</b> {{ disclosureDate | date:'mediumDate' }}
+        </div>
+
+        <div id="downloadQC" *ngIf="chemVendors.length > 0">
+          <button class="dwnld-btn" (click)="clickedQC(chemVendors[0]['chem_vendor_ikey'])">
+            Download QC Data
+          </button>
         </div>
 
       </div>
 
-      <!-- RIGHT SIDE -->
-      <!-- WHO Name -->
-      <div id="cmpd-names" class="col-lg-8 col-md-6 col-sm-12 col-xs-12">
+      <!-- RIGHT: WHO name, aliases, similar compounds, note -->
+      <div class="col-lg-8 col-md-7 col-sm-12 col-xs-12 hdr-col-right">
+
         <div class="row who-name" *ngIf="whoName">
-          <div class="col-12">
-            <b>World Health Organisation International Nonproprietary Name:</b> {{ whoName }}
-          </div>
+          <div class="col-12"><b>World Health Organisation International Nonproprietary Name:</b> {{ whoName }}</div>
         </div>
 
-        <!-- Aliases -->
         <div class="row alias" *ngIf="aliases.length > 0">
           <div class="col-12">
             <b>Aliases: </b>
-            <span *ngFor="let alias of aliases | slice:0:alias_ct; let i=index;">
-          {{alias}}
-          <span *ngIf="i + 1 < alias_ct && i + 1 < aliases.length" class='data-separator'></span></span>
-
-            <a *ngIf="alias_ct <= aliases.length" id="more" (click)="showMore()" class="center-block">
-            show {{ all_shown ? 'less' : 'more' }}
-          </a>
+            <span *ngFor="let alias of aliases | slice:0:alias_ct; let i=index;">{{alias}}<span *ngIf="i + 1 < alias_ct && i + 1 < aliases.length" class='data-separator'></span></span>
+            <a *ngIf="alias_ct <= aliases.length" id="more" (click)="showMore()" class="center-block">show {{ all_shown ? 'less' : 'more' }}</a>
           </div>
         </div>
 
-
-
-        <!-- Related compounds -->
         <div class="row related" *ngIf="similarityResults && similarityResults.length > 0">
           <div class="col-12">
             <b>Similar compounds: </b>
@@ -86,45 +96,39 @@
           </div>
         </div>
 
-        <script src="clickedQC.js"></script>
-
-          <!-- download qc -->
-          <div class="row download" *ngIf="chemVendors.length > 0">
-            <div class="col-12">
-              <div id="downloadQC" class="qc-data">
-                <button class="dwnld-btn" (click)="clickedQC(chemVendors[0]['chem_vendor_ikey'])">
-                  Download QC Data
-                </button>
-              </div>
-            </div>
-          </div>
+        <div class="hdr-note">
+          <span class="underline">Note</span>: counterions may differ between data sources.
+          <app-salt-warning-dialog></app-salt-warning-dialog>
+        </div>
 
       </div>
 
-
-
     </div>
+
+    <!-- Vendor bar (mobile only) -->
+    <div class="hdr-vendor-bar" *ngIf="chemVendors.length > 0">
+      {{ chemVendors[0]['chem_vendor'] }}<span *ngIf="chemVendors[0]['chem_vendor_id']"> &middot; {{ chemVendors[0]['chem_vendor_id'] }}</span>
+    </div>
+
   </div>
 
   <div *ngIf="hasA00295Data && isToxicA00295" class="toxicity-alert toxicity-alert--toxic">
-    This compound has been found to inhibit growth of HEK293 cells with IC50 < 10μM
+    This compound has been found to inhibit growth of HEK293 cells with IC50 &lt; 10μM
   </div>
   <div *ngIf="hasA00296Data && isToxicA00296" class="toxicity-alert toxicity-alert--toxic">
-    This compound has been found to inhibit growth of HepG2 cells with IC50 < 10μM
-  </div>  
-
+    This compound has been found to inhibit growth of HepG2 cells with IC50 &lt; 10μM
+  </div>
   <div *ngIf="hasA00295Data && !isToxicA00295" class="toxicity-alert toxicity-alert--non-toxic">
     No inhibition of HEK293 cell growth at 12.5μM
   </div>
   <div *ngIf="hasA00296Data && !isToxicA00296" class="toxicity-alert toxicity-alert--non-toxic">
     No inhibition of HepG2 cell growth at 12.5μM
   </div>
-
-  <div  class="pediatric-alert">
+  <div *ngIf="integrityPediatrics" class="pediatric-alert">
     Drug tested for PK in pediatric patients
-    <span class="pediatric-note">
-      (Clarivate Pharmacokinetics Datafeed reports that this drug has been administered in a pediatric patient in a clinical study)
-    </span>
+    <span class="pediatric-note">(Clarivate Pharmacokinetics Datafeed reports that this drug has been administered in a pediatric patient in a clinical study)</span>
   </div>
 
 </div>
+
+<div class="cmpd-toast" *ngIf="toastMessage" [ngClass]="toastType">{{ toastMessage }}</div>
