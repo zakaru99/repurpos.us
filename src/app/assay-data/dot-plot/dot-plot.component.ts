@@ -97,11 +97,15 @@ export class DotPlotComponent implements OnInit {
 
 
   getSVGDims() {
-    // Find container; define width/height of svg obj.
     this.element = this.chartContainer.nativeElement;
     this.element_dims = this.element.getBoundingClientRect();
+    this.margin.left = window.innerWidth < 640 ? 130 : 300;
     this.width = this.element.offsetWidth - this.margin.left - this.margin.right;
-    this.height = Math.max(this.min_height, window.innerHeight - this.element_dims.top) - this.margin.top - this.margin.bottom - this.margin.pages;
+    if (window.innerWidth < 640) {
+      this.height = this.min_height;
+    } else {
+      this.height = Math.max(this.min_height, window.innerHeight - this.element_dims.top) - this.margin.top - this.margin.bottom - this.margin.pages;
+    }
   }
 
   updateChartSize() {
@@ -124,7 +128,10 @@ export class DotPlotComponent implements OnInit {
     this.xAxis = d3.axisTop(this.x)
       .tickValues(d3.range(-10, -4, 0.25).map(d => Math.pow(10, d)).filter(d => d <= this.assay_domain[0] && d >= this.assay_domain[1]));
 
-    // create initial x & y axis
+    // update chart group and x-axis position when margin.left changes
+    d3.select('#dotplot')
+      .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
+
     d3.select('.axis--x')
       .attr('transform', `translate(${this.margin.left}, ${this.margin.top - this.margin.xaxis})`);
 
@@ -343,9 +350,12 @@ export class DotPlotComponent implements OnInit {
         });
 
       // Update the children text values
+      const truncateName = (name: string) =>
+        name && name.length > 22 && window.innerWidth < 640 ? name.substring(0, 20) + '…' : name;
+
       ytextGlow.merge(ytextGlowEnter)
         .attr('id', d => d.key)
-        .text(d => d.value.name)
+        .text(d => truncateName(d.value.name))
         .style("filter", "url(#glow)")
         .style("fill-opacity", 1)
         .transition(t)
@@ -353,7 +363,7 @@ export class DotPlotComponent implements OnInit {
 
       ytext.merge(ytextEnter)
         .attr('id', d => d.key)
-        .text(d => d.value.name)
+        .text(d => truncateName(d.value.name))
 
 
       // --- LOLLIS ---
