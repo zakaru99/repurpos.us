@@ -182,6 +182,26 @@
 }
 
 @media (max-width: 768px) {
+  .homepage {
+    padding: 1rem;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .how-to {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .menu-toggle {
+    width: 100%;
+    margin-left: 0 !important;
+  }
+
   .quick-links a {
     display: inline-block;
     margin: 0.5rem;
@@ -189,6 +209,18 @@
 
   .download-row {
     gap: 1rem;
+  }
+
+  .download-row .card {
+    flex: 0 1 100%;
+    max-width: none;
+  }
+
+  @media (hover: none) {
+    .card:hover {
+      transform: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
   }
 }
 
@@ -238,6 +270,10 @@ strong {
 .stats-line .divider {
   margin: 0 0.75rem;
   color: #aaa;
+}
+
+.hero-stats-compact {
+  display: none;
 }
 
 /* Whats New Trigger Button */
@@ -311,18 +347,35 @@ strong {
   margin-top: 2px;
 }
 
-/* Slideout Panel (widened to 420px) */
+/* Badge on trigger */
+.whats-new-trigger .badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #e53e3e;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-left: 2px;
+}
+
+/* Slideout Panel */
 .whats-new-panel {
   position: fixed;
   top: 0;
-  right: -420px; /* hide off-screen by panel width */
+  right: -420px;
   width: 420px;
   height: 100vh;
   background: #ffffff;
   border-left: 4px solid #3D6DE0;
   box-shadow: -6px 0 30px rgba(0,0,0,0.12);
-  padding: 28px 24px;
-  /* slower, smoother motion */
+  display: flex;
+  flex-direction: column;
   transition: right 520ms cubic-bezier(.22,.9,.27,1), box-shadow 520ms ease;
   z-index: 2000;
 }
@@ -332,32 +385,84 @@ strong {
   box-shadow: -10px 0 40px rgba(0,0,0,0.12);
 }
 
-.whats-new-panel .close-btn {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: transparent;
-  border: none;
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-  color: #444;
-  padding: 6px;
-  border-radius: 6px;
-}
-
-.whats-new-panel .close-btn:hover {
-  background: rgba(0,0,0,0.04);
+/* Panel header row */
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 14px;
+  border-bottom: 2px solid #e5e7eb;
+  flex-shrink: 0;
 }
 
 .whats-new-panel h2 {
-  color: #3D6DE0;
-  margin-bottom: 16px;
-  font-size: 1.4rem;
+  color: #1a1a2e;
+  font-size: 1.3rem;
   font-weight: 700;
+  margin: 0;
 }
 
-/* List layout and item styles (match inspector snippet) */
+.whats-new-panel .close-btn {
+  background: #f3f4f6;
+  border: none;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.whats-new-panel .close-btn:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+/* Scrollable list body */
+.panel-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 16px 24px 48px;
+  scroll-behavior: smooth;
+}
+
+/* Fade hint that more content is below */
+.whats-new-panel::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.96));
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Month group */
+.month-group {
+  margin-bottom: 20px;
+}
+
+.month-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #3d6de0;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* List */
 .whats-new-panel ul {
   margin: 0;
   padding: 0;
@@ -366,25 +471,74 @@ strong {
 
 .whats-new-panel li {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-  line-height: 1.4;
   align-items: flex-start;
-  border-bottom: 1px solid rgba(0,0,0,0.04);
-  padding-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 10px;
+  line-height: 1.45;
+}
+
+.item-dot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d1d5db;
+  margin-top: 7px;
 }
 
 .item-text {
   flex: 1 1 auto;
   color: #222;
-  // font-weight: 400; /* normal weight to match inspector */
+  font-size: 0.92rem;
 }
 
 .item-date {
   flex: 0 0 auto;
-  color: #666; /* muted gray */
-  font-size: 0.85rem;
+  color: #999;
+  font-size: 0.8rem;
   white-space: nowrap;
-  margin-left: 12px;
+  margin-left: 4px;
+  margin-top: 1px;
+}
+
+@media (max-width: 640px) {
+  /* Swap verbose stats for compact badge */
+  .update-info { display: none; }
+  .stats-line   { display: none; }
+
+  .hero-stats-compact {
+    display: block;
+    font-size: 0.85rem;
+    color: #666;
+    text-align: center;
+    margin: 0.2rem 0 0.5rem;
+  }
+
+  /* FAB: pin to bottom-right, never overlaps hero */
+  .whats-new-trigger {
+    bottom: 16px;
+    top: auto;
+    right: 8px;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    transition: bottom 420ms cubic-bezier(.22,.9,.27,1), opacity 300ms ease, background 180ms ease;
+  }
+
+  /* Hidden state: slide off bottom when panel is open */
+  .whats-new-trigger.hidden {
+    bottom: -80px;
+    right: 8px;
+    opacity: 0;
+    transform: none;
+  }
+
+  /* Panel: full-width on mobile */
+  .whats-new-panel {
+    width: 100vw;
+    right: -100vw;
+  }
+
+  .whats-new-panel.open {
+    right: 0;
+  }
 }

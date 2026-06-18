@@ -241,11 +241,35 @@
 }
 
 @media (max-width: 768px) {
-  .search-bar-wrapper input {
-    width: 300px;
+  .search-bar-wrapper {
+    flex-direction: column;
+    align-items: stretch;
   }
+
+  .input-container {
+    width: 100%;
+  }
+
+  .search-bar-wrapper input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .search-bar-wrapper button {
+    width: 100%;
+  }
+
   .hero-search-row {
     flex-direction: column;
     gap: 8px;
+    align-items: stretch;
+  }
+
+  .toggle-wrapper {
+    justify-content: center;
+  }
+
+  .structure-link {
+    text-align: center;
   }
 }

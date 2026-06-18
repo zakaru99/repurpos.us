@@ -12,6 +12,9 @@ export class IntroTextModernComponent implements AfterViewInit, OnDestroy {
   lastUpdated = new Date('2026/01/31');
   // What's New items with dates
   whatsNewItems: Array<{ date: Date; text: string }> = [
+    { date: new Date('2026/06/17'), text: 'Mobile optimizations across the site' },
+    { date: new Date('2026/06/17'), text: 'Save compounds to favorites and custom lists' },
+    { date: new Date('2026/06/17'), text: 'New My Account, My Favorites, and My Lists pages' },
     { date: new Date('2026/03/02'), text: 'Assay description page sortable by status' },
     { date: new Date('2026/03/02'), text: 'All assay descriptions in the workflow loaded' },
     { date: new Date('2026/1/28'), text: 'Added user dashboard' },
@@ -25,6 +28,23 @@ export class IntroTextModernComponent implements AfterViewInit, OnDestroy {
   ];
   @ViewChild('bellIcon') bellIcon!: ElementRef;
   @ViewChild('panel') panelRef!: ElementRef;
+
+  get recentCount(): number {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 90);
+    return this.whatsNewItems.filter(item => item.date >= cutoff).length;
+  }
+
+  get groupedItems(): Array<{ label: string; items: Array<{ date: Date; text: string }> }> {
+    const groups: { [key: string]: Array<{ date: Date; text: string }> } = {};
+    const order: string[] = [];
+    for (const item of this.whatsNewItems) {
+      const label = item.date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      if (!groups[label]) { groups[label] = []; order.push(label); }
+      groups[label].push(item);
+    }
+    return order.map(label => ({ label, items: groups[label] }));
+  }
 
   private triggerBell(): void {
     const bell = this.bellIcon && (this.bellIcon.nativeElement as HTMLElement);

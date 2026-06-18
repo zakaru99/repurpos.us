@@ -3,19 +3,27 @@
     <i #bellIcon class="bell-icon"></i>
     <div class="label-container">
       <span class="label">What's New</span>
-      <span class="update-date">Last updated {{ whatsNewItems.length ? (whatsNewItems[0].date | date:'longDate') : (lastUpdated | date:'longDate') }}</span>
+      <span class="update-date">{{ whatsNewItems.length ? (whatsNewItems[0].date | date:'MMM d, y') : (lastUpdated | date:'MMM d, y') }}</span>
     </div>
   </div>
 
   <div #panel class="whats-new-panel" [class.open]="isWhatsNewOpen" role="dialog" [attr.aria-hidden]="!isWhatsNewOpen" (click)="$event.stopPropagation()">
-    <button class="close-btn" aria-label="Close" (click)="closeWhatsNew($event)">✕</button>
-    <h2>What's New</h2>
-    <ul>
-      <li *ngFor="let item of whatsNewItems">
-        <span class="item-text">{{ item.text }}</span>
-        <span class="item-date">{{ item.date | date:'longDate' }}</span>
-      </li>
-    </ul>
+    <div class="panel-header">
+      <h2>What's New</h2>
+      <button class="close-btn" aria-label="Close" (click)="closeWhatsNew($event)">✕</button>
+    </div>
+    <div class="panel-body">
+      <div *ngFor="let group of groupedItems" class="month-group">
+        <div class="month-label">{{ group.label }}</div>
+        <ul>
+          <li *ngFor="let item of group.items">
+            <span class="item-dot"></span>
+            <span class="item-text">{{ item.text }}</span>
+            <span class="item-date">{{ item.date | date:'MMM d' }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <div class="homepage">
@@ -24,13 +32,16 @@
           
 
       <p class="update-info">
-        <strong>{{ newCompounds | number }}</strong> new compound profiles added for a total of 
+        <strong>{{ newCompounds | number }}</strong> new compound profiles added for a total of
         <strong>{{ totalCompounds | number }}</strong> clinical-stage drugs in collection as of {{ lastUpdated | date:'longDate' }}
       </p>
       <p class="stats-line">
         compounds dosed in pediatric patients <strong>482</strong>
         <span class="divider">|</span>
         compounds with PK data <strong>3,761</strong>
+      </p>
+      <p class="hero-stats-compact">
+        <strong>{{ totalCompounds | number }}</strong> drugs &middot; Updated {{ lastUpdated | date:'MMM yyyy' }}
       </p>
       <app-hero-search></app-hero-search>
     </section>
