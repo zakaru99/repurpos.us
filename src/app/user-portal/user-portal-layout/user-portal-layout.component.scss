@@ -1,3 +1,5 @@
+/* ── Desktop toolbar ─────────────────────────────────────── */
+
 .user-portal-toolbar {
   display: flex;
   justify-content: space-between;
@@ -16,19 +18,76 @@
   font-size: 1.2rem;
 }
 
-.user-portal-toolbar .nav-links a {
+.desktop-nav a {
   text-decoration: none;
   margin-left: 1.25rem;
   padding: 0.3rem 0.6rem;
   border-radius: 12px;
   transition: background 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
 }
 
-.user-portal-toolbar .nav-links a:hover {
+.desktop-nav a:hover {
   background-color: rgba(61, 109, 224, 0.15);
 }
 
-.user-portal-toolbar .nav-links a.active-link {
+.desktop-nav a.active-link {
   color: white;
-  background-color:  #3D6DE0;
+  background-color: #3D6DE0;
+}
+
+/* Mobile tab strip hidden on desktop */
+.mobile-tab-strip { display: none; }
+
+/* ── Mobile ──────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+
+  .user-portal-toolbar {
+    border-radius: 0;
+    padding: 0 1.25rem;
+    height: 48px;
+  }
+
+  .desktop-nav { display: none; }
+
+  .mobile-tab-strip {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    background: rgba(61, 109, 224, 0.06);
+    border-bottom: 1px solid #c5d4f5;
+    padding: 0 0.75rem;
+    gap: 0.15rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .mobile-tab-strip::-webkit-scrollbar { display: none; }
+
+  .mobile-tab-strip a {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 0.85rem;
+    height: 40px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #6e8ed4;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .mobile-tab-strip a:active { color: #3d6de0; }
+
+  .mobile-tab-strip a.strip-active {
+    color: #3d6de0;
+    font-weight: 600;
+    border-bottom-color: #3d6de0;
+  }
 }

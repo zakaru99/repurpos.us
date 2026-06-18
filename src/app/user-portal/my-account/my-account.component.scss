@@ -1,0 +1,379 @@
+.my-account-page {
+  background-color: #f8f9fb;
+  padding: 2rem 3rem;
+  min-height: 100vh;
+}
+
+.card-block {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.card-block:hover {
+  box-shadow: 0 6px 16px rgba(61, 109, 224, 0.18);
+  transform: translateY(-2px);
+}
+
+.section-title {
+  border-left: 4px solid #7f9feb;
+  padding-left: 10px;
+  margin-bottom: 1.75rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+/* ── Layout ──────────────────────────────────────────────── */
+
+.account-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.account-identity {
+  flex: 0 0 38%;
+  padding-right: 2rem;
+}
+
+.v-divider {
+  width: 1px;
+  align-self: stretch;
+  border-left: 1px dashed #c4d4e8;
+  flex-shrink: 0;
+}
+
+.account-actions {
+  flex: 1;
+  padding-left: 2rem;
+}
+
+/* ── Profile ─────────────────────────────────────────────── */
+
+.profile-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #3d6de0;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 8px rgba(61, 109, 224, 0.3);
+}
+
+.profile-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.profile-email {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #212529;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-sub {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+}
+
+.role-badge.admin      { background-color: #3d6de0; }
+.role-badge.researcher { background-color: #6c757d; }
+
+.member-since { color: #6c757d; }
+
+/* ── Identity details ────────────────────────────────────── */
+
+.identity-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e8f0fa;
+}
+
+.detail-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-size: 0.8rem;
+}
+
+.detail-label {
+  width: 68px;
+  flex-shrink: 0;
+  font-weight: 600;
+  color: #9ba4ae;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.detail-value {
+  color: #1a3a6c;
+  font-weight: 500;
+}
+
+.detail-muted {
+  color: #9ba4ae;
+  font-weight: 400;
+}
+
+/* ── CRESTdb banner ──────────────────────────────────────── */
+
+.crest-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  background: #edf2ff;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-top: 1.75rem;
+}
+
+.crest-banner-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1a3a6c;
+  margin-bottom: 0.2rem;
+}
+
+.crest-banner-desc {
+  font-size: 0.78rem;
+  color: #6c757d;
+  line-height: 1.45;
+}
+
+.crest-banner-btn {
+  flex-shrink: 0;
+  display: inline-block;
+  background: #3d6de0;
+  color: white;
+  text-decoration: none;
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.crest-banner-btn:hover { background: #335cc0; }
+
+/* ── Action rows ─────────────────────────────────────────── */
+
+.actions-group-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #b0b8c4;
+  margin-bottom: 0.65rem;
+}
+
+.action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.action-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.action-row-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.danger-label { color: #9e5a5a; }
+
+.action-row-desc {
+  font-size: 0.78rem;
+  color: #9ba4ae;
+}
+
+.action-row-control { flex-shrink: 0; }
+
+.actions-h-divider {
+  border: none;
+  border-top: 1px dashed #d4e4f8;
+  margin: 0.85rem 0;
+}
+
+.status-text { font-size: 0.8rem; color: #9ba4ae; }
+.status-text.sent { color: #6b9e78; font-weight: 500; }
+
+.danger-note {
+  font-size: 0.75rem;
+  color: #9e5a5a;
+  margin-top: 0.2rem;
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+
+.btn-secondary {
+  border: 1px solid #b0c4e8;
+  background: #fff;
+  color: #1a3a6c;
+  padding: 0.35rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #e5efff;
+  border-color: #7f9feb;
+}
+
+.btn-secondary:disabled { opacity: 0.45; cursor: default; }
+
+.btn-danger {
+  border: 1px solid #c08080;
+  background: transparent;
+  color: #9e5a5a;
+  padding: 0.35rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-danger:hover:not(:disabled) { background: #9e5a5a; color: white; }
+.btn-danger:disabled { opacity: 0.45; cursor: default; }
+
+/* ── Delete confirmation ─────────────────────────────────── */
+
+.confirm-block { padding-top: 0.25rem; }
+
+.confirm-prompt {
+  font-size: 0.8rem;
+  color: #555;
+  margin: 0 0 0.6rem 0;
+}
+
+.confirm-input {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  padding: 0.38rem 0.65rem;
+  border: 1px solid #d0b8b8;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: #212529;
+  background: #fff;
+  margin-bottom: 0.65rem;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.confirm-input:focus { border-color: #b55555; }
+.confirm-actions { display: flex; gap: 0.5rem; }
+
+/* ── Mobile ──────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .my-account-page {
+    padding: 1rem;
+  }
+
+  .card-block {
+    padding: 1.25rem;
+  }
+
+  .account-layout {
+    flex-direction: column;
+  }
+
+  .account-identity {
+    flex: none;
+    width: 100%;
+    padding-right: 0;
+    padding-bottom: 1.25rem;
+  }
+
+  .v-divider {
+    width: 100%;
+    height: 0;
+    align-self: auto;
+    border-left: none;
+    border-top: 1px dashed #c4d4e8;
+    margin-bottom: 1.25rem;
+  }
+
+  .account-actions {
+    padding-left: 0;
+  }
+
+  .action-row {
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .action-row-info {
+    flex: 1 1 100%;
+  }
+
+  .action-row-control {
+    flex-shrink: 0;
+  }
+
+  .confirm-input {
+    max-width: 100%;
+  }
+
+  .crest-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+
+  .crest-banner-btn {
+    align-self: flex-start;
+  }
+}

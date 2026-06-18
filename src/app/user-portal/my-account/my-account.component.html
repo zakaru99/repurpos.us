@@ -1,0 +1,100 @@
+<div class="my-account-page">
+  <div class="card-block">
+
+    <h5 class="section-title">My Account</h5>
+
+    <div class="account-layout">
+
+      <!-- Left: identity & stats -->
+      <div class="account-identity">
+        <div class="profile-section">
+          <div class="avatar">
+            {{ (userStatus?.email || '?') | slice:0:1 | uppercase }}
+          </div>
+          <div class="profile-meta">
+            <div class="profile-email">{{ userStatus?.email || '—' }}</div>
+            <div class="profile-sub">
+              <span class="role-badge" [ngClass]="userStatus?.admin ? 'admin' : 'researcher'">
+                {{ userStatus?.admin ? 'Administrator' : 'Researcher' }}
+              </span>
+              <span class="member-since" *ngIf="userStatus">
+                &nbsp;·&nbsp; Member since {{ userStatus.registered_on | date:'MMMM y' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="identity-details" *ngIf="assaySummary">
+          <div class="detail-row">
+            <span class="detail-label">Proposals</span>
+            <span class="detail-value">
+              {{ assaySummary.total }} total
+              <span class="detail-muted">&nbsp;·&nbsp; {{ assaySummary.approved }} approved &nbsp;·&nbsp; {{ assaySummary.pending }} pending &nbsp;·&nbsp; {{ assaySummary.rejected }} rejected</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vertical dashed divider -->
+      <div class="v-divider"></div>
+
+      <!-- Right: actions -->
+      <div class="account-actions">
+
+        <div class="actions-group-label">Security</div>
+        <div class="action-row">
+          <div class="action-row-info">
+            <span class="action-row-label">Password</span>
+            <span class="action-row-desc">Send a reset link to your email</span>
+          </div>
+          <div class="action-row-control">
+            <button *ngIf="resetState === 'idle'" class="btn-secondary" (click)="resetPassword()" [disabled]="!userStatus">
+              Send Reset Link
+            </button>
+            <span *ngIf="resetState === 'loading'" class="status-text">Sending...</span>
+            <span *ngIf="resetState === 'sent'" class="status-text sent">&#10003;&nbsp; Sent — check your inbox</span>
+          </div>
+        </div>
+
+        <div class="actions-h-divider"></div>
+
+        <div class="actions-group-label">Account</div>
+
+        <div class="action-row" *ngIf="deleteState === 'idle' || deleteState === 'unavailable'">
+          <div class="action-row-info">
+            <span class="action-row-label danger-label">Delete Account</span>
+            <span class="action-row-desc">Permanently remove your account and all data</span>
+            <span class="danger-note" *ngIf="deleteState === 'unavailable'">Not yet available — contact an administrator</span>
+          </div>
+          <div class="action-row-control">
+            <button class="btn-danger" (click)="startDelete()" [disabled]="!userStatus">Delete My Account</button>
+          </div>
+        </div>
+
+        <div *ngIf="deleteState === 'confirming'" class="confirm-block">
+          <p class="confirm-prompt"><strong>Permanent and cannot be undone.</strong> Type your email to confirm.</p>
+          <input
+            class="confirm-input"
+            type="email"
+            [(ngModel)]="deleteConfirmEmail"
+            [placeholder]="userStatus?.email || 'your email'"
+          />
+          <div class="confirm-actions">
+            <button class="btn-secondary" (click)="cancelDelete()">Cancel</button>
+            <button class="btn-danger" (click)="confirmDelete()" [disabled]="!canConfirmDelete">Permanently Delete</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="crest-banner">
+      <div class="crest-banner-text">
+        <div class="crest-banner-title">Your account also works on CRESTdb.org</div>
+        <div class="crest-banner-desc">Explore the CREST collection of unique compounds available for screening using the same login.</div>
+      </div>
+      <a class="crest-banner-btn" href="https://crestdb.org" target="_blank">Visit CRESTdb</a>
+    </div>
+
+  </div>
+</div>

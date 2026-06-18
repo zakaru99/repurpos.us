@@ -1,0 +1,24 @@
+<div class="my-favorites-page">
+  <div class="card-block">
+    <h5 class="section-title">My Favorites</h5>
+
+    <div *ngIf="favorites.length === 0" class="empty-state">
+      <div class="empty-icon">&#9825;</div>
+      <p class="empty-title">No saved compounds yet</p>
+      <p class="empty-sub">Bookmark a compound from any search result or compound page.</p>
+    </div>
+
+    <div *ngIf="favorites.length > 0" class="favorites-grid">
+      <div class="fav-card" *ngFor="let fav of favorites">
+        <div class="fav-card-body">
+          <a class="fav-name" [routerLink]="['/compound_data', fav.compound_id]">{{ fav.label || fav.compound_id }}</a>
+          <span class="fav-ikey">{{ fav.compound_id }}</span>
+        </div>
+        <div class="fav-footer">
+          <span class="fav-date">Saved {{ fav.saved_on | date:'MMM d, y' }}</span>
+          <button class="fav-remove" (click)="remove(fav.compound_id)" title="Remove from favorites">&#10005;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

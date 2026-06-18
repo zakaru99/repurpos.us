@@ -1,0 +1,58 @@
+<div class="my-lists-page">
+
+  <div class="card-block">
+    <div class="lists-header">
+      <h5 class="section-title">My Lists</h5>
+      <button class="btn-new" (click)="showNewInput = !showNewInput">+ New List</button>
+    </div>
+
+    <div class="new-list-form" *ngIf="showNewInput">
+      <input
+        class="new-list-input"
+        type="text"
+        placeholder="List name…"
+        [(ngModel)]="newListName"
+        (keyup.enter)="createList()"
+      />
+      <button class="btn-create" (click)="createList()" [disabled]="!newListName.trim()">Create</button>
+      <button class="btn-cancel" (click)="showNewInput = false; newListName = ''">Cancel</button>
+    </div>
+
+    <div *ngIf="lists.length === 0 && !showNewInput" class="empty-state">
+      <div class="empty-icon">&#9776;</div>
+      <p class="empty-title">No lists yet</p>
+      <p class="empty-sub">Create a list to organize compounds across sessions.</p>
+    </div>
+
+    <div class="lists-rows" *ngIf="lists.length > 0">
+      <div class="list-row" *ngFor="let list of lists">
+
+        <div class="list-row-header" (click)="toggleExpand(list.id)">
+          <div class="list-row-info">
+            <span class="list-name">{{ list.name }}</span>
+            <span class="list-meta">{{ list.item_count }} compound{{ list.item_count !== 1 ? 's' : '' }} &nbsp;·&nbsp; Created {{ list.created_on | date:'MMM d, y' }}</span>
+          </div>
+          <div class="list-row-actions">
+            <span class="list-chevron">{{ expandedListId === list.id ? '&#9650;' : '&#9660;' }}</span>
+            <button class="btn-delete-list" (click)="deleteList(list.id); $event.stopPropagation()" title="Delete list">&#10005;</button>
+          </div>
+        </div>
+
+        <div class="list-items" *ngIf="expandedListId === list.id">
+          <div *ngIf="expandedItems.length === 0" class="items-empty">No compounds in this list.</div>
+          <div class="list-item-row" *ngFor="let item of expandedItems">
+            <div class="item-info">
+              <a class="item-label" [routerLink]="['/compound_data', item.compound_id]">
+                {{ item.label || item.compound_id }}
+              </a>
+              <span class="item-id">{{ item.compound_id }}</span>
+            </div>
+            <button class="btn-remove-item" (click)="removeItem(item.compound_id)" title="Remove from list">&#10005;</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,317 @@
+.my-lists-page {
+  background-color: #f8f9fb;
+  padding: 2rem 3rem;
+  min-height: 100vh;
+}
+
+.card-block {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+/* ── Header row ──────────────────────────────────────────── */
+
+.lists-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.section-title {
+  border-left: 4px solid #7f9feb;
+  padding-left: 10px;
+  margin-bottom: 0;
+  font-weight: 600;
+  color: #1a2840;
+}
+
+.btn-new {
+  background: #3d6de0;
+  color: white;
+  border: none;
+  padding: 0.38rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-new:hover { background: #335cc0; }
+
+/* ── New list form ───────────────────────────────────────── */
+
+.new-list-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1rem;
+  background: #f5f8ff;
+  border-radius: 8px;
+  border: 1px solid #c5d4f5;
+}
+
+.new-list-input {
+  flex: 1;
+  padding: 0.38rem 0.65rem;
+  border: 1px solid #b0c4e8;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #212529;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.new-list-input:focus { border-color: #7f9feb; }
+
+.btn-create {
+  background: #3d6de0;
+  color: white;
+  border: none;
+  padding: 0.38rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-create:disabled { opacity: 0.45; cursor: default; }
+.btn-create:not(:disabled):hover { background: #335cc0; }
+
+.btn-cancel {
+  background: none;
+  border: 1px solid #b0c4e8;
+  color: #6c757d;
+  padding: 0.38rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.btn-cancel:hover { border-color: #9ba4ae; color: #212529; }
+
+/* ── Empty state ─────────────────────────────────────────── */
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.empty-icon {
+  font-size: 2rem;
+  color: #7f9feb;
+  margin-bottom: 0.75rem;
+}
+
+.empty-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a2840;
+  margin: 0 0 0.35rem;
+}
+
+.empty-sub {
+  font-size: 0.83rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* ── List rows ───────────────────────────────────────────── */
+
+.lists-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.list-row {
+  border: 1px solid #c5d4f5;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.list-row:hover {
+  border-color: #7f9feb;
+  box-shadow: 0 3px 10px rgba(61, 109, 224, 0.12);
+}
+
+.list-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.1rem;
+  cursor: pointer;
+  background: #f0f5ff;
+  transition: background 0.15s;
+  user-select: none;
+}
+
+.list-row-header:hover { background: #e5efff; }
+
+.list-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.list-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a2840;
+}
+
+.list-meta {
+  font-size: 0.78rem;
+  color: #4b5563;
+}
+
+.list-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.list-chevron {
+  font-size: 0.6rem;
+  color: #7f9feb;
+}
+
+.btn-delete-list {
+  background: none;
+  border: 1px solid #9ab8e0;
+  border-radius: 50%;
+  color: #4a6aa0;
+  font-size: 0.72rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btn-delete-list:hover,
+.btn-delete-list:active {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+/* ── List items ──────────────────────────────────────────── */
+
+.list-items {
+  border-top: 1px solid #dce8fa;
+  padding: 0.4rem 0;
+  background: #fff;
+}
+
+.items-empty {
+  font-size: 0.82rem;
+  color: #6b7280;
+  padding: 0.75rem 1.1rem;
+}
+
+.list-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1.1rem;
+  transition: background 0.12s;
+  border-bottom: 1px solid #edf5ff;
+}
+
+.list-item-row:last-child { border-bottom: none; }
+.list-item-row:hover { background: #f5f8ff; }
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.item-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1a2840;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-label:hover { color: #3d6de0; text-decoration: underline; }
+
+.item-id {
+  font-size: 0.75rem;
+  color: #555e6b;
+  word-break: break-all;
+}
+
+.btn-remove-item {
+  background: none;
+  border: 1px solid #9ab8e0;
+  border-radius: 50%;
+  color: #4a6aa0;
+  font-size: 0.7rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btn-remove-item:hover,
+.btn-remove-item:active {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+/* ── Mobile ──────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .my-lists-page { padding: 1.25rem 1.5rem; }
+}
+
+@media (max-width: 480px) {
+  .my-lists-page {
+    padding: 0.75rem 0.75rem #{"max(1.5rem, env(safe-area-inset-bottom))"};
+    overflow-x: hidden;
+  }
+  .card-block { padding: 1rem; }
+  .section-title { font-size: 1rem; }
+  .lists-header { margin-bottom: 1rem; }
+  .btn-new { min-height: 44px; padding: 0 1rem; }
+  .new-list-form { flex-wrap: wrap; padding: 0.6rem 0.75rem; }
+  .new-list-input { flex: 1 1 100%; font-size: 16px; }
+  .btn-create { flex: 1; text-align: center; min-height: 44px; }
+  .btn-cancel { flex: 1; text-align: center; min-height: 44px; }
+  .list-row { -webkit-tap-highlight-color: transparent; }
+  .list-row-header { padding: 0.85rem 1rem; min-height: 56px; }
+  .list-name { font-size: 0.9rem; }
+  .list-meta { font-size: 0.72rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+  .list-item-row { padding: 0.6rem 1rem; min-height: 52px; }
+  .item-label { font-size: 0.85rem; }
+  .item-id { font-size: 0.7rem; }
+  .btn-delete-list, .btn-remove-item { min-width: 44px; min-height: 44px; }
+}

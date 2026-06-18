@@ -16,3 +16,5 @@ export * from './citation.service';
 export * from './assay-data.service';
 export * from './assay-metadata.service';
 export * from './primary-data.service';
+export * from './favorites.service';
+export * from './compound-lists.service';

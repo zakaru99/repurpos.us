@@ -1,10 +1,20 @@
 <header class="user-portal-toolbar">
   <div class="logo">User Portal</div>
 
-  <nav class="nav-links">
+  <nav class="nav-links desktop-nav">
     <a routerLink="my_assays" routerLinkActive="active-link">My Assays</a>
+    <a routerLink="my_favorites" routerLinkActive="active-link">My Favorites</a>
+    <a routerLink="my_lists" routerLinkActive="active-link">My Lists</a>
+    <a routerLink="my_account" routerLinkActive="active-link">My Account</a>
   </nav>
 </header>
+
+<nav class="mobile-tab-strip">
+  <a routerLink="my_assays" routerLinkActive="strip-active">Assays</a>
+  <a routerLink="my_favorites" routerLinkActive="strip-active">Favorites</a>
+  <a routerLink="my_lists" routerLinkActive="strip-active">Lists</a>
+  <a routerLink="my_account" routerLinkActive="strip-active">Account</a>
+</nav>
 
 <div class="portal-content">
   <router-outlet></router-outlet>
