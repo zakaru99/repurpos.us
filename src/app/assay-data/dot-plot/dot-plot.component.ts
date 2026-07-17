@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import * as d3Chromatic from 'd3-scale-chromatic';
 import { CmpdTooltipComponent } from './cmpd-tooltip/cmpd-tooltip.component';
 
-import { Subscription } from 'rxjs/subscription';
+import { Subscription } from 'rxjs/Subscription';
 
 import { AssayDataService } from '../../_services/index';
 
