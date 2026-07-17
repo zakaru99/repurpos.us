@@ -168,3 +168,34 @@ h3#data-title {
   font-weight: 500;
   color: #6c757d;
 }
+
+@media (max-width: 640px) {
+  .subtitle {
+    font-size: 1.2rem;
+  }
+
+  .summary {
+    font-size: 0.95rem;
+  }
+
+  .nav-link {
+    padding: 6px 10px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  #vis {
+    margin-bottom: 40px;
+  }
+
+  #content {
+    margin: 8px;
+  }
+
+  .no-data-banner {
+    margin: 20px 0;
+    padding: 18px;
+    border-radius: 12px;
+  }
+}
