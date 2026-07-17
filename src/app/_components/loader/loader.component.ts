@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Subscription } from 'rxjs/subscription';
+import { Subscription } from 'rxjs/Subscription';
 
 import { LoaderStateService } from '../../_services/index';
 import { LoaderState } from '../../_models/index';

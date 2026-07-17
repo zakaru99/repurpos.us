@@ -1,7 +1,7 @@
 import { Component, Inject, Injectable, OnInit, HostListener } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
-import { Subscription } from 'rxjs/subscription';
+import { Subscription } from 'rxjs/Subscription';
 
 import { CompoundSearchComponent } from '../compound-search/compound-search.component'
 import { CompoundDataComponent } from "../compound-data/compound-data.component";

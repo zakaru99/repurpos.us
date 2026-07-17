@@ -4,7 +4,7 @@ import { DatePipe } from '@angular/common';
 
 import { environment } from '../../../environments/environment';
 
-import { Subscription } from 'rxjs/subscription';
+import { Subscription } from 'rxjs/Subscription';
 import { AssayDataService } from '../../_services';
 
 @Component({

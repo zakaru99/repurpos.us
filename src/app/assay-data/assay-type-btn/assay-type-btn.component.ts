@@ -1,7 +1,7 @@
 import { Component, OnChanges, OnDestroy } from '@angular/core';
 import * as d3 from 'd3';
 
-import { Subscription } from 'rxjs/subscription';
+import { Subscription } from 'rxjs/Subscription';
 import { AssayDataService } from '../../_services/index';
 
 @Component({
