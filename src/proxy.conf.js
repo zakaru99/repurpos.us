@@ -1,32 +1,12 @@
-const PROXY_CONFIG = [
-  {
-    "context": [
-      "/api",
-      "/api/search",
-      "/api/suggest",
-      "/api/data",
-      "/api/assay_details",
-      "/api/assay_list",
-      "/api/auth/login/",
-      "/api/auth/status/",
-      "/api/auth/register",
-      "/api/auth/reset_pass/check",
-      "/api/auth/reset_pass/link",
-      "/api/auth/reset_pass",
-      "/api/auth/reset_pass/link",
-      "/api/auth/confirm",
-      "/api/auth/confirm/link",
-      "/api/compound_svg",
-
-
-    ],
-    "target": "http://localhost:8000",
-    "secure": false,
-    "logLevel": "debug",
-    "pathRewrite": {
-      "^/api": ""
-    }
+const PROXY_CONFIG = {
+  "/api": {
+    // target: "https://reframedb.org",
+    target: "http://localhost:8000",
+    changeOrigin: true,
+    secure: false,
+    logLevel: "debug",
+    pathRewrite: { "^/api": "" }  // strips /api prefix for local backend
   }
-]
+};
 
 module.exports = PROXY_CONFIG;
