@@ -226,6 +226,29 @@
             </table>
           </tr>
 
+          <!-- Combination Products -->
+          <tr *ngIf="x && x.hasOwnProperty('combo_name') && x['combo_name'].length > 0">
+            <td class="title">Combination Products</td>
+            <table class="pk_table">
+              <tr class="header-title align-middle assay-name col">
+                <th class="header-title align-middle assay-name col">Combination Name</th>
+                <th class="header-title align-middle assay-name col">Therapeutic Group</th>
+                <th class="header-title align-middle assay-name col">Highest Phase</th>
+              </tr>
+              <tr *ngFor="let combo of x['combo_name']; let i = index">
+                <td class="content">
+                  <a class="launch-search" [routerLink]="['/search/']" [queryParams]='{ query: "\"" + combo + "\"", type: "string" }' [matTooltip]="'launch search for ' + combo">{{combo}}</a>
+                </td>
+                <td class="content">
+                  <ng-container *ngIf="x['combo_category'] && x['combo_category'][i]">
+                    <ng-template [ngTemplateOutlet]="x['combo_category'][i]['wikidata'] ? wikidata_term : unmatched_term" [ngTemplateOutletContext]="{ value: x['combo_category'][i] }"></ng-template>
+                  </ng-container>
+                </td>
+                <td class="content">{{ x['combo_phase'] ? x['combo_phase'][i] : '' }}</td>
+              </tr>
+            </table>
+          </tr>
+
           <tr *ngIf="x && (x.hasOwnProperty('node_id'))">
             <td class="title">Ontology Data</td>
             <table class="pk_table">

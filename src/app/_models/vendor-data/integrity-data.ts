@@ -11,4 +11,8 @@ export interface IntegrityData {
   pk: string;
   wikidata: string;
   pubchem_cid?: string;
+  combo_name?: string[];
+  combo_category?: MappedTerm[];
+  combo_phase?: string[];
+  combo_id?: string[];
 }
