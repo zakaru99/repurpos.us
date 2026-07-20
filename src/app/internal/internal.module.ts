@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { MaintenanceWindowComponent } from './maintenance-window/maintenance-window.component';
+import { MaintenanceWindowDialogComponent } from './maintenance-window-dialog/maintenance-window-dialog.component';
 
 @NgModule({
   imports: [
@@ -24,9 +25,13 @@ import { MaintenanceWindowComponent } from './maintenance-window/maintenance-win
     MatFormFieldModule,
     FormsModule
   ],
-  declarations: [InternalLayoutComponent, ProposalListComponent, ProposalDetailDialogComponent, DashboardComponent, UserManagementComponent, MaintenanceWindowComponent],
+  declarations: [
+    InternalLayoutComponent, ProposalListComponent, ProposalDetailDialogComponent, DashboardComponent,
+    UserManagementComponent, MaintenanceWindowComponent, MaintenanceWindowDialogComponent
+  ],
   entryComponents: [
-    ProposalDetailDialogComponent
+    ProposalDetailDialogComponent,
+    MaintenanceWindowDialogComponent
   ],
 })
 export class InternalModule { }

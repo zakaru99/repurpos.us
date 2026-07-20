@@ -1,0 +1,98 @@
+.maintenance-window-dialog-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  border-left: 4px solid #7f9feb;
+  padding-left: 10px;
+  margin: 0;
+  font-weight: 600;
+  color: #212529;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #9ba4ae;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.1rem;
+}
+
+.form-row label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.date-hour-row {
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.date-hour-row > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.form-row input[type="date"],
+.form-row select,
+.form-row textarea {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #d0d7e2;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #212529;
+  font-family: inherit;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e8ecf2;
+}
+
+.btn-secondary {
+  border: 1px solid #b0c4e8;
+  background: #fff;
+  color: #1a3a6c;
+  padding: 0.35rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-pill {
+  border: none;
+  background: #3d6de0;
+  color: #fff;
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-pill:disabled { opacity: 0.55; cursor: default; }
+
+.status-text.error { font-size: 0.8rem; color: #9e5a5a; }

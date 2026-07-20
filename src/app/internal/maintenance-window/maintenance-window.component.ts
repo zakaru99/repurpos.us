@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
 import { MaintenanceWindow } from '../../_models';
-import { utcIsoToPacificDateTimeLocal as toLocal, pacificDateTimeLocalToUtcIso as toUtc } from '../../_services';
+import { formatPacificDisplay } from '../../_services';
+import { MaintenanceWindowDialogComponent } from '../maintenance-window-dialog/maintenance-window-dialog.component';
 
 @Component({
   selector: 'app-maintenance-window',
@@ -9,47 +11,69 @@ import { utcIsoToPacificDateTimeLocal as toLocal, pacificDateTimeLocalToUtcIso a
   styleUrls: ['./maintenance-window.component.css']
 })
 export class MaintenanceWindowComponent implements OnInit {
-  state: 'loading' | 'idle' | 'saving' | 'saved' | 'error' = 'loading';
+  windows: MaintenanceWindow[] = [];
+  isLoading = false;
   errorMessage = '';
 
-  enabled = false;
-  scheduledStartLocal = '';
-  message = '';
-
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.http.get<MaintenanceWindow>('/api/maintenance_window').subscribe({
+    this.fetchWindows();
+  }
+
+  fetchWindows(): void {
+    const token = localStorage.getItem('auth_token');
+    if (!token) { return; }
+    this.isLoading = true;
+    this.http.get<{ status: string; data: MaintenanceWindow[] }>('/api/maintenance_window/list', {
+      headers: new HttpHeaders().set('Authorization', token)
+    }).subscribe({
       next: (res) => {
-        this.enabled = !!res.enabled;
-        this.scheduledStartLocal = res.scheduledStart ? toLocal(res.scheduledStart) : '';
-        this.message = res.message || '';
-        this.state = 'idle';
+        this.windows = res.data;
+        this.isLoading = false;
       },
       error: () => {
-        this.errorMessage = 'Failed to load the current maintenance schedule.';
-        this.state = 'error';
+        this.errorMessage = 'Failed to load the maintenance queue.';
+        this.isLoading = false;
       }
     });
   }
 
-  save(): void {
+  isPast(w: MaintenanceWindow): boolean {
+    return !!w.scheduledStart && new Date(w.scheduledStart).getTime() < Date.now();
+  }
+
+  formatScheduled(w: MaintenanceWindow): string {
+    return w.scheduledStart ? formatPacificDisplay(w.scheduledStart) : '—';
+  }
+
+  addWindow(): void {
+    const dialogRef = this.dialog.open(MaintenanceWindowDialogComponent, {
+      data: null, width: '500px', panelClass: 'maintenance-window-dialog'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.saved) { this.fetchWindows(); }
+    });
+  }
+
+  editWindow(w: MaintenanceWindow): void {
+    const dialogRef = this.dialog.open(MaintenanceWindowDialogComponent, {
+      data: w, width: '500px', panelClass: 'maintenance-window-dialog'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.saved) { this.fetchWindows(); }
+    });
+  }
+
+  deleteWindow(w: MaintenanceWindow): void {
+    if (!confirm('Delete this scheduled maintenance window?')) { return; }
     const token = localStorage.getItem('auth_token');
     if (!token) { return; }
-    this.state = 'saving';
-    const payload = {
-      enabled: this.enabled,
-      scheduledStart: this.scheduledStartLocal ? toUtc(this.scheduledStartLocal) : null,
-      message: this.message || null
-    };
-    this.http.post('/api/maintenance_window', payload, {
+    this.http.delete(`/api/maintenance_window/${w.id}`, {
       headers: new HttpHeaders().set('Authorization', token)
     }).subscribe({
-      next: () => { this.state = 'saved'; },
-      error: () => {
-        this.errorMessage = 'Failed to save the maintenance schedule.';
-        this.state = 'error';
-      }
+      next: () => this.fetchWindows(),
+      error: () => { this.errorMessage = 'Failed to delete.'; }
     });
   }
 }

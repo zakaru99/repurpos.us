@@ -39,6 +39,24 @@ export function pacificDateTimeLocalToUtcIso(localValue: string): string {
   return new Date(utcGuess.getTime() - offsetMillis).toISOString();
 }
 
+/** Splits a UTC ISO string into a Pacific-time date-input value ("YYYY-MM-DD") and hour-of-day (0-23). Minutes/seconds are discarded. */
+export function utcIsoToPacificDateAndHour(iso: string): { date: string; hour: number } {
+  const local = utcIsoToPacificDateTimeLocal(iso);
+  const [date, time] = local.split('T');
+  return { date, hour: Number(time.split(':')[0]) };
+}
+
+/** Combines a Pacific-time date-input value and an hour-of-day (0-23) into a UTC ISO string. */
+export function pacificDateAndHourToUtcIso(date: string, hour: number): string {
+  const hh = hour < 10 ? `0${hour}` : `${hour}`;
+  return pacificDateTimeLocalToUtcIso(`${date}T${hh}:00`);
+}
+
+/** Today's date in Pacific time as a "YYYY-MM-DD" string, suitable as a date-input `min` to block past dates. */
+export function todayInPacificDateString(): string {
+  return utcIsoToPacificDateTimeLocal(new Date().toISOString()).split('T')[0];
+}
+
 /** Formats a UTC ISO string as e.g. "Saturday, July 19 at 9:00 AM PDT". Falls back to a plain string on unsupported browsers. */
 export function formatPacificDisplay(iso: string): string {
   try {

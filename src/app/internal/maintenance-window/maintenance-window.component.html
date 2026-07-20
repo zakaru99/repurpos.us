@@ -1,50 +1,40 @@
-<div class="maintenance-window-page">
+<div class="container-fluid maintenance-window-page">
   <div class="card-block">
-
-    <h5 class="section-title">Maintenance Notice</h5>
+    <div class="page-header">
+      <h5 class="section-title">Maintenance Queue</h5>
+      <button mat-button color="primary" (click)="addWindow()">+ Schedule Maintenance</button>
+    </div>
     <p class="section-desc">
-      Schedule an advance-notice banner shown to all visitors before a planned Elasticsearch rebuild / maintenance window.
+      Scheduled windows show an advance-notice banner to all site visitors ahead of a planned Elasticsearch rebuild / maintenance window.
     </p>
 
-    <div *ngIf="state === 'loading'" class="status-text">Loading...</div>
+    <div *ngIf="errorMessage" class="status-text error">{{ errorMessage }}</div>
 
-    <form *ngIf="state !== 'loading'" (ngSubmit)="save()">
-      <div class="form-row">
-        <label>
-          <input type="checkbox" [(ngModel)]="enabled" name="enabled" />
-          Show banner to site visitors
-        </label>
-      </div>
-
-      <div class="form-row">
-        <label for="scheduledStart">Scheduled start (Pacific time)</label>
-        <input
-          id="scheduledStart"
-          type="datetime-local"
-          [(ngModel)]="scheduledStartLocal"
-          name="scheduledStart"
-        />
-      </div>
-
-      <div class="form-row">
-        <label for="message">Custom message (optional)</label>
-        <textarea
-          id="message"
-          [(ngModel)]="message"
-          name="message"
-          rows="3"
-          placeholder="Leave blank to auto-generate from the scheduled start time"
-        ></textarea>
-      </div>
-
-      <div class="form-actions">
-        <button type="submit" class="btn-secondary" [disabled]="state === 'saving'">
-          {{ state === 'saving' ? 'Saving...' : 'Save' }}
-        </button>
-        <span *ngIf="state === 'saved'" class="status-text sent">&#10003;&nbsp; Saved</span>
-        <span *ngIf="state === 'error'" class="status-text error">{{ errorMessage }}</span>
-      </div>
-    </form>
-
+    <div class="table-responsive">
+      <table class="windows-table">
+        <thead>
+          <tr>
+            <th>Scheduled (Pacific)</th>
+            <th>Message</th>
+            <th>Enabled</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let w of windows" [class.past-row]="isPast(w)">
+            <td>{{ formatScheduled(w) }}</td>
+            <td>{{ w.message || '—' }}</td>
+            <td>{{ w.enabled ? 'Yes' : 'No' }}</td>
+            <td>
+              <button mat-button color="primary" (click)="editWindow(w)">Edit</button>
+              <button mat-button color="warn" (click)="deleteWindow(w)">Delete</button>
+            </td>
+          </tr>
+          <tr *ngIf="!isLoading && windows.length === 0">
+            <td colspan="4" class="empty-row">No maintenance windows scheduled.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
