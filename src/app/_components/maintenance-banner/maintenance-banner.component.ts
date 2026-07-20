@@ -53,7 +53,7 @@ export class MaintenanceBannerComponent implements OnInit {
     this.scheduledStart = notice.scheduledStart;
     this.displayText = notice.message && notice.message.trim()
       ? notice.message
-      : `Scheduled maintenance ${formatPacificDisplay(notice.scheduledStart)} — the site will be briefly unavailable.`;
+      : `Scheduled maintenance ${formatPacificDisplay(notice.scheduledStart)} — the site will be down for a few hours.`;
     this.visible = true;
   }
 }
