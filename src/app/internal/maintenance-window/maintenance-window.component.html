@@ -1,14 +1,56 @@
 <div class="container-fluid maintenance-window-page">
-  <div class="card-block">
-    <div class="page-header">
-      <h5 class="section-title">Maintenance Queue</h5>
-      <button mat-button color="primary" (click)="addWindow()">+ Schedule Maintenance</button>
+
+  <div class="card-block form-card">
+    <h5 class="section-title">{{ editingId ? 'Edit Maintenance Window' : 'Schedule Maintenance' }}</h5>
+
+    <div class="form-row">
+      <label>
+        <input type="checkbox" [(ngModel)]="enabled" name="enabled" />
+        Show banner to site visitors
+      </label>
     </div>
+
+    <div class="form-row date-hour-row">
+      <div>
+        <label for="date">Date (Pacific)</label>
+        <input id="date" type="date" [(ngModel)]="date" name="date" [min]="minDate" />
+      </div>
+      <div>
+        <label for="hour">Hour (Pacific)</label>
+        <select id="hour" [(ngModel)]="hour" name="hour">
+          <option *ngFor="let h of hours" [ngValue]="h.value">{{ h.label }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label for="message">Custom message (optional)</label>
+      <textarea
+        id="message"
+        [(ngModel)]="message"
+        name="message"
+        rows="2"
+        placeholder="Leave blank to auto-generate from the scheduled start time"
+      ></textarea>
+    </div>
+
+    <div *ngIf="formState === 'error'" class="status-text error">{{ formError }}</div>
+
+    <div class="form-actions">
+      <button class="btn-pill" (click)="save()" [disabled]="formState === 'saving'">
+        {{ formState === 'saving' ? 'Saving...' : (editingId ? 'Save Changes' : 'Schedule') }}
+      </button>
+      <button *ngIf="editingId" class="btn-secondary" (click)="cancelEdit()">Cancel</button>
+    </div>
+  </div>
+
+  <div class="card-block">
+    <h5 class="section-title">Maintenance Queue</h5>
     <p class="section-desc">
       Scheduled windows show an advance-notice banner to all site visitors ahead of a planned Elasticsearch rebuild / maintenance window.
     </p>
 
-    <div *ngIf="errorMessage" class="status-text error">{{ errorMessage }}</div>
+    <div *ngIf="listError" class="status-text error">{{ listError }}</div>
 
     <div class="table-responsive">
       <table class="windows-table">
@@ -21,13 +63,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let w of windows" [class.past-row]="isPast(w)">
+          <tr *ngFor="let w of windows" [class.past-row]="isPast(w)" [class.editing-row]="editingId === w.id">
             <td>{{ formatScheduled(w) }}</td>
             <td>{{ w.message || '—' }}</td>
             <td>{{ w.enabled ? 'Yes' : 'No' }}</td>
             <td>
-              <button mat-button color="primary" (click)="editWindow(w)">Edit</button>
-              <button mat-button color="warn" (click)="deleteWindow(w)">Delete</button>
+              <button class="btn-link" (click)="startEdit(w)">Edit</button>
+              <button class="btn-link danger" (click)="deleteWindow(w)">Delete</button>
             </td>
           </tr>
           <tr *ngIf="!isLoading && windows.length === 0">
@@ -37,4 +79,5 @@
       </table>
     </div>
   </div>
+
 </div>
