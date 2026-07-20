@@ -18,3 +18,4 @@ export * from './assay-metadata.service';
 export * from './primary-data.service';
 export * from './favorites.service';
 export * from './compound-lists.service';
+export * from './pacific-time';

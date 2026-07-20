@@ -1,0 +1,6 @@
+<div *ngIf="visible" class="alert alert-warning alert-dismissible maintenance-banner" role="status">
+  <span>{{ displayText }}</span>
+  <button type="button" class="close" aria-label="Dismiss maintenance notice" (click)="dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>

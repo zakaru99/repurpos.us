@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserManagementComponent } from './user-management/user-management.component';
+import { MaintenanceWindowComponent } from './maintenance-window/maintenance-window.component';
 
 @NgModule({
   imports: [
@@ -23,7 +24,7 @@ import { UserManagementComponent } from './user-management/user-management.compo
     MatFormFieldModule,
     FormsModule
   ],
-  declarations: [InternalLayoutComponent, ProposalListComponent, ProposalDetailDialogComponent, DashboardComponent, UserManagementComponent],
+  declarations: [InternalLayoutComponent, ProposalListComponent, ProposalDetailDialogComponent, DashboardComponent, UserManagementComponent, MaintenanceWindowComponent],
   entryComponents: [
     ProposalDetailDialogComponent
   ],

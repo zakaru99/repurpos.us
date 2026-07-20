@@ -1,0 +1,81 @@
+.maintenance-window-page {
+  background-color: #f8f9fb;
+  padding: 2rem 3rem;
+  min-height: 100vh;
+}
+
+.card-block {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 560px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.section-title {
+  border-left: 4px solid #7f9feb;
+  padding-left: 10px;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.section-desc {
+  font-size: 0.82rem;
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+}
+
+.form-row label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.form-row input[type="datetime-local"],
+.form-row textarea {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #d0d7e2;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #212529;
+  font-family: inherit;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.btn-secondary {
+  border: 1px solid #b0c4e8;
+  background: #fff;
+  color: #1a3a6c;
+  padding: 0.35rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #e5efff;
+  border-color: #7f9feb;
+}
+
+.btn-secondary:disabled { opacity: 0.45; cursor: default; }
+
+.status-text { font-size: 0.8rem; color: #9ba4ae; }
+.status-text.sent { color: #6b9e78; font-weight: 500; }
+.status-text.error { color: #9e5a5a; }

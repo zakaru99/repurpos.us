@@ -49,7 +49,8 @@ import {
   DialogOverviewExample,
   DialogOverviewExampleDialog,
   MenuBarComponent,
-  MenubarItemComponent, EditItemComponent, MailSignupDialogComponent, MailSignupComponent
+  MenubarItemComponent, EditItemComponent, MailSignupDialogComponent, MailSignupComponent,
+  MaintenanceBannerComponent
 } from './_components/index';
 
 
@@ -126,7 +127,8 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
     OntologyTreeComponent,
     ContactUsComponent,
     AssayProposalComponent,
-    AssayDetailsModalComponent
+    AssayDetailsModalComponent,
+    MaintenanceBannerComponent
 
     // SearchResultHeaderComponent, ReframeFilterComponent, AssaysFilterComponent
   ],

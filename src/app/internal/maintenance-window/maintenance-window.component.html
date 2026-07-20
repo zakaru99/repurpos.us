@@ -1,0 +1,50 @@
+<div class="maintenance-window-page">
+  <div class="card-block">
+
+    <h5 class="section-title">Maintenance Notice</h5>
+    <p class="section-desc">
+      Schedule an advance-notice banner shown to all visitors before a planned Elasticsearch rebuild / maintenance window.
+    </p>
+
+    <div *ngIf="state === 'loading'" class="status-text">Loading...</div>
+
+    <form *ngIf="state !== 'loading'" (ngSubmit)="save()">
+      <div class="form-row">
+        <label>
+          <input type="checkbox" [(ngModel)]="enabled" name="enabled" />
+          Show banner to site visitors
+        </label>
+      </div>
+
+      <div class="form-row">
+        <label for="scheduledStart">Scheduled start (Pacific time)</label>
+        <input
+          id="scheduledStart"
+          type="datetime-local"
+          [(ngModel)]="scheduledStartLocal"
+          name="scheduledStart"
+        />
+      </div>
+
+      <div class="form-row">
+        <label for="message">Custom message (optional)</label>
+        <textarea
+          id="message"
+          [(ngModel)]="message"
+          name="message"
+          rows="3"
+          placeholder="Leave blank to auto-generate from the scheduled start time"
+        ></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-secondary" [disabled]="state === 'saving'">
+          {{ state === 'saving' ? 'Saving...' : 'Save' }}
+        </button>
+        <span *ngIf="state === 'saved'" class="status-text sent">&#10003;&nbsp; Saved</span>
+        <span *ngIf="state === 'error'" class="status-text error">{{ errorMessage }}</span>
+      </div>
+    </form>
+
+  </div>
+</div>

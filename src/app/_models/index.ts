@@ -8,4 +8,5 @@ export * from './vendor-data/index';
 export * from './WDQSData';
 export * from './schema';
 export * from './proposal';
+export * from './maintenance-window';
 //export * from './similarity-data';

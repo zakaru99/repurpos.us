@@ -7,3 +7,4 @@ export * from './quick-search/quick-search.component';
 export * from './user-login/user-login.component';
 export * from './user-reg-button/user-reg-button.component';
 export * from './salt-warning-dialog/salt-warning-dialog.component';
+export * from './maintenance-banner/maintenance-banner.component';
