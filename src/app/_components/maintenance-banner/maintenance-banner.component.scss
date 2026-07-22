@@ -16,4 +16,9 @@
     line-height: 1;
     cursor: pointer;
   }
+
+  &-posted {
+    opacity: 0.75;
+    font-size: 0.8em;
+  }
 }

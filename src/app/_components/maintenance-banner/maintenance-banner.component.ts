@@ -14,6 +14,7 @@ const GRACE_HOURS = 12;
 export class MaintenanceBannerComponent implements OnInit {
   visible = false;
   displayText = '';
+  postedText = '';
 
   private scheduledStart: string | null = null;
 
@@ -54,6 +55,7 @@ export class MaintenanceBannerComponent implements OnInit {
     this.displayText = notice.message && notice.message.trim()
       ? notice.message
       : `Scheduled maintenance ${formatPacificDisplay(notice.scheduledStart)} — the site will be down for a few hours.`;
+    this.postedText = notice.postedAt ? `Posted ${formatPacificDisplay(notice.postedAt)}` : '';
     this.visible = true;
   }
 }

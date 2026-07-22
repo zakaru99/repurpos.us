@@ -67,6 +67,10 @@ export class MaintenanceWindowComponent implements OnInit {
     return w.scheduledStart ? formatPacificDisplay(w.scheduledStart) : '—';
   }
 
+  formatPosted(w: MaintenanceWindow): string {
+    return w.postedAt ? formatPacificDisplay(w.postedAt) : '—';
+  }
+
   startEdit(w: MaintenanceWindow): void {
     this.editingId = w.id;
     this.enabled = w.enabled;

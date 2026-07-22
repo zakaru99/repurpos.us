@@ -65,6 +65,7 @@
               <tr>
                 <th>Scheduled (Pacific)</th>
                 <th>Message</th>
+                <th>Posted</th>
                 <th>Enabled</th>
                 <th>Actions</th>
               </tr>
@@ -73,6 +74,7 @@
               <tr *ngFor="let w of windows" [class.past-row]="isPast(w)" [class.editing-row]="editingId === w.id">
                 <td>{{ formatScheduled(w) }}</td>
                 <td>{{ w.message || '—' }}</td>
+                <td>{{ formatPosted(w) }}</td>
                 <td>{{ w.enabled ? 'Yes' : 'No' }}</td>
                 <td>
                   <button class="btn-link" (click)="startEdit(w)">Edit</button>
@@ -80,7 +82,7 @@
                 </td>
               </tr>
               <tr *ngIf="!isLoading && windows.length === 0">
-                <td colspan="4" class="empty-row">No maintenance windows scheduled.</td>
+                <td colspan="5" class="empty-row">No maintenance windows scheduled.</td>
               </tr>
             </tbody>
           </table>
