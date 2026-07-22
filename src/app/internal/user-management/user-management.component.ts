@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 interface User {
   id: number;
@@ -27,7 +27,8 @@ export class UserManagementComponent implements OnInit {
 
   loadAdmins(): void {
     const params = new HttpParams().set('admins', 'true');
-    this.http.get<{ success: boolean; data: User[] }>('/api/users', { params })
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
+    this.http.get<{ success: boolean; data: User[] }>('/api/users', { params, headers })
       .subscribe({
         next: (res) => {
           if (res.success) {
@@ -52,7 +53,8 @@ export class UserManagementComponent implements OnInit {
     }
 
     const params = new HttpParams().set('search', term);
-    this.http.get<{ success: boolean; data: User[] }>('/api/users', { params })
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
+    this.http.get<{ success: boolean; data: User[] }>('/api/users', { params, headers })
       .subscribe({
         next: (res) => {
           if (res.success) {
@@ -70,10 +72,11 @@ export class UserManagementComponent implements OnInit {
   }
 
   makeAdmin(user: User): void {
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
     this.http.post<{ success: boolean; message: string }>('/api/users', {
       user_id: user.id,
       make_admin: true
-    }).subscribe({
+    }, { headers }).subscribe({
       next: (res) => {
         if (res.success) {
           user.isAdmin = true;
@@ -94,10 +97,11 @@ export class UserManagementComponent implements OnInit {
 
 
   revokeAdmin(user: User): void {
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
     this.http.post<{ success: boolean; message: string }>('/api/users', {
       user_id: user.id,
       make_admin: false  // <-- revoke
-    }).subscribe({
+    }, { headers }).subscribe({
       next: (res) => {
         if (res.success) {
           // Remove from admin list
