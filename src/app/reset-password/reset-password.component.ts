@@ -26,7 +26,6 @@ export class PasswordValidation {
 })
 export class ResetPasswordComponent implements OnInit {
 	rid: string;
-	uid: string;
 	resetResponse: string;
 	resetReady: boolean = false;
 	resetSuccess: boolean = false;
@@ -55,7 +54,6 @@ export class ResetPasswordComponent implements OnInit {
   		this.resetResponse = res.body['message'];
   		if (res.body['status'] == 'success') {
   			this.resetReady = true;
-  			this.uid = res.body['data']['user_id'];
   		}
   	},
   	(err: HttpErrorResponse) => {
@@ -71,7 +69,7 @@ export class ResetPasswordComponent implements OnInit {
   onSubmit(event) {
   	this.http.post('/api/auth/reset_pass',
       {
-      	'user_id': this.uid,
+      	'token': this.rid,
       	'password': this.resetPasswordForm.controls.password.value
       },
       {
