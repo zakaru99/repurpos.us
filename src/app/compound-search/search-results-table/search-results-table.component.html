@@ -38,7 +38,7 @@
        Table (old style)
   ---------------------------- -->
   <div class="search-result-container mat-elevation-z0" *ngIf="dataSource.data.length > 0">
-              <mat-table #table matSort [dataSource]="dataSource" (matSortChange)="onSortChange($event)">
+              <mat-table #table matSort [dataSource]="dataSource" [trackBy]="trackById" (matSortChange)="onSortChange($event)">
 
             <!-- Drug name -->
             <ng-container matColumnDef="main_label">

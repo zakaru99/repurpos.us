@@ -1,13 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Location } from '@angular/common';
 import { CompoundService } from '../../_services/index';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { LoginStateService } from '../../_services';
 import { FavoritesService } from '../../_services/favorites.service';
 import { CompoundListsService, CompoundList } from '../../_services/compound-lists.service';
 
 import { AssayData, Compound } from '../../_models';
-declare var $ : any
 
 @Component({
   selector: 'app-compound-header',
@@ -53,7 +52,8 @@ export class CompoundHeaderComponent implements OnInit {
     private cmpdSvc: CompoundService,
     private loginStateService: LoginStateService,
     public favoritesService: FavoritesService,
-    public listsService: CompoundListsService
+    public listsService: CompoundListsService,
+    private http: HttpClient
   ) {
     this.getNumAliases();
 
@@ -242,28 +242,26 @@ export class CompoundHeaderComponent implements OnInit {
       }
     }
 
-    $.ajax({
-      type: "POST",
-      async: false,
-      url: "https://reframedb.org/php/getQCdownloadID.php",
-      data: {ikey: vendor_ikey},
-      dataType: 'JSON',
-      success: function(response) {
-        var fileData = response.data;
+    const body = new HttpParams().set('ikey', vendor_ikey);
+    this.http.post<{ data?: Array<{ upload_id: string; extension: string; file_name: string }> }>(
+      'https://reframedb.org/php/getQCdownloadID.php',
+      body.toString(),
+      { headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded') }
+    ).subscribe({
+      next: (response) => {
+        const fileData = response.data;
         if (fileData !== undefined) {
-          for (var i = 0; i < fileData.length; i++) {
-            console.log(fileData[i]);
-            var filepath = '../../assets/QC_files/' + fileData[i].upload_id + fileData[i].extension;
-            if (fileData[i].extension == '.pdf') {
-              var file_name = fileData[i].file_name.split('.')[0];
-            } else {
-              var file_name = fileData[i].file_name;
-            }
+          for (const f of fileData) {
+            const filepath = '../../assets/QC_files/' + f.upload_id + f.extension;
+            const file_name = f.extension === '.pdf' ? f.file_name.split('.')[0] : f.file_name;
             saveAs(filepath, file_name);
           }
         } else {
           alert("sorry, QC data for this compound is not yet available");
         }
+      },
+      error: () => {
+        alert("sorry, QC data for this compound is not yet available");
       }
     });
   }

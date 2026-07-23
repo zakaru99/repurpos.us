@@ -294,6 +294,10 @@ export class DataTable implements DataTableParams, OnInit {
         this.rows.toArray().forEach(row => row.selected = value);
     }
 
+    trackByItem = (index: number, item: any) => {
+        return item && item.id !== undefined ? item.id : index;
+    }
+
     onRowSelectChanged(row: DataTableRow) {
 
         // maintain the selectedRow(s) view

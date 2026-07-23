@@ -72,6 +72,8 @@ export class SearchResultsTableComponent implements OnInit {
   displayedColumns: string[]; // minimal set of columns to include
   dataSource = new MatTableDataSource<Compound>();
 
+  trackById = (index: number, item: Compound) => item.id;
+
   num_aliases: number = 5; // maximum number of aliases to show at one time
   num_assays: number = 2; // maximum number of assays to show at one time
 
