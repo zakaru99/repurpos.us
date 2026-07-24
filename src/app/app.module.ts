@@ -20,7 +20,6 @@ import { PipesModule } from './_pipes/pipes.module';
 import { CitationModule } from './citation/citation.module';
 import { Struct2dModule } from './struct2d/struct2d.module';
 import { TermsModule } from './terms/terms.module';
-import { UserPortalModule } from './user-portal/user-portal.module';
 
 // --- Components ---
 import { AppComponent } from './app.component';
@@ -152,8 +151,7 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
     TermsModule,
     FormsModule,
     ReactiveFormsModule,
-    RecaptchaModule.forRoot(),
-    UserPortalModule
+    RecaptchaModule.forRoot()
   ],
   providers: [
     { provide: SearchResultService, useClass: SearchResultService },

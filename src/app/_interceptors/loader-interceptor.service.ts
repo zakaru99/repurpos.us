@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/do';
+import { finalize, tap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 
 import { LoaderStateService } from '../_services/loader-state.service';
@@ -25,18 +25,16 @@ export class LoaderInterceptorService implements HttpInterceptor {
         this.showLoader();
       }
 
-      return next.handle(req).do(
-        (event: HttpEvent<any>) => {
-          if (event instanceof HttpResponse && !shouldSkip) {
-            this.hideLoader();
-          }
-        },
-        (err: any) => {
+      return next.handle(req).pipe(
+        tap({
+          error: () => console.log('loading complete with err')
+        }),
+        finalize(() => {
           if (!shouldSkip) {
             this.hideLoader();
           }
-          console.log('loading complete with err');
-      });
+        })
+      );
     // }
   }
 

@@ -29,7 +29,7 @@ export const TABLE_TEMPLATE = `
                     </th>
                 </tr>
             </thead>
-            <tbody *ngFor="let item of items; let index=index" class="data-table-row-wrapper"
+            <tbody *ngFor="let item of items; let index=index; trackBy: trackByItem" class="data-table-row-wrapper"
                    dataTableRow #row [item]="item" [index]="index" (selectedChange)="onRowSelectChanged(row)">
             </tbody>
             <tbody class="substitute-rows" *ngIf="pagination && substituteRows">
