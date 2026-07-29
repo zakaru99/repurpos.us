@@ -23,7 +23,10 @@
           <!-- Vendor ID: Integrity -->
           <div *ngIf="x && x.hasOwnProperty('id') && vendors[k].name != 'Ontology'" class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
             <span class="title">{{vendors[k].name}} ID: </span>
-            <span>{{ x['id'] }}</span>
+            <span *ngIf="vendors[k].id === 'integrity'; else plainId">
+              <a href="https://www.cortellis.com/drugdiscovery/entity/drug/{{x['id']}}/product" target="_blank" rel="noreferrer">{{ x['id'] }}</a>
+            </span>
+            <ng-template #plainId>{{ x['id'] }}</ng-template>
           </div>
           <!-- uncomment to enable adis Vendor ID: adis 
           <div *ngIf="x && x.hasOwnProperty('adis_id')" class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
@@ -36,19 +39,18 @@
             <span>{{ x['informa_id'] }}</span> -->
           </div>
 
-          <!-- Highest phase -->
-          <div *ngIf="x && x.hasOwnProperty('highest_phase')" class="col-xl-5 col-lg-5 col-md-5">
+          <!-- Highest phase (elevated to a combo product's phase if more advanced) -->
+          <div *ngIf="x && hasDisplayPhase(x, vendors[k].id)" class="col-xl-5 col-lg-5 col-md-5">
             <span class="title">Highest Phase: </span>
-            <span>{{x['highest_phase']}}</span>
-            <app-clinical-phase [phase]="[x['highest_phase']]" [vendorName]="vendors[k].id"></app-clinical-phase>
+            <span>{{ displayHighestPhase(x, vendors[k].id) }}</span>
+            <app-clinical-phase [phase]="[displayHighestPhase(x, vendors[k].id)]" [vendorName]="vendors[k].id"></app-clinical-phase>
           </div>
 
           <!-- Phase -->
-          <div *ngIf="x && x.hasOwnProperty('phase') && x['phase'].length > 0" class="col-xl-5 col-lg-5 col-md-5">
-            <span class="title">Phase: </span>
-            <span><span *ngFor="let y of x['phase']; let i = index">{{y}}<span *ngIf="i + 1 < x['phase'].length" class='data-separator'></span></span>
-            </span>
-            <app-clinical-phase [phase]="x['phase']" [vendorName]="vendors[k].id"></app-clinical-phase>
+          <div *ngIf="x && !hasDisplayPhase(x, vendors[k].id) && ((x.hasOwnProperty('phase') && x['phase'].length > 0) || x.hasOwnProperty('highest_phase'))" class="col-xl-5 col-lg-5 col-md-5">
+            <span class="title">{{ getDisplayPhaseTitle(x, vendors[k].id) }}</span>
+            <span>{{ displayHighestPhase(x, vendors[k].id) }}</span>
+            <app-clinical-phase [phase]="getDisplayPhaseValues(x, vendors[k].id)" [vendorName]="vendors[k].id"></app-clinical-phase>
           </div>
 
           <!-- Salt form -->
