@@ -60,7 +60,7 @@ export class CompoundVendorDataComponent implements OnInit {
 
   public displayHighestPhase(x: any): string {
     const candidates = this.getPhaseCandidates(x);
-    const ranked = candidates.filter(c => c && this.PHASE_ORDER[c] !== undefined);
+    const ranked = candidates.filter((c: string) => !!c && this.PHASE_ORDER[c] !== undefined);
     if (ranked.length === 0) {
       return candidates.find(c => c) || '';
     }
