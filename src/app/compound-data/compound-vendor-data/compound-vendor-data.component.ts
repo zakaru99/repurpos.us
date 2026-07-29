@@ -62,7 +62,7 @@ export class CompoundVendorDataComponent implements OnInit {
     const candidates = this.getPhaseCandidates(x);
     const ranked = candidates.filter((c: string) => !!c && this.PHASE_ORDER[c] !== undefined);
     if (ranked.length === 0) {
-      return candidates.find(c => c) || '';
+      return candidates.find((c: string) => !!c) || '';
     }
     return ranked.reduce((a, b) => this.PHASE_ORDER[b] > this.PHASE_ORDER[a] ? b : a);
   }
