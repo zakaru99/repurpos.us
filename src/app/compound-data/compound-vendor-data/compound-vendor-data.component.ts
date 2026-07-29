@@ -54,13 +54,67 @@ export class CompoundVendorDataComponent implements OnInit {
   // A combo product (Cortellis "Integrity" combo_phase) can be further along than the
   // single agent alone, e.g. a monotherapy still in Phase II that's part of a Launched
   // combo. Surface the more advanced of the two as the displayed highest phase.
-  public displayHighestPhase(x: any): string {
-    const candidates: string[] = [x && x['highest_phase'], ...((x && x['combo_phase']) || [])];
-    const ranked = candidates.filter(c => c && this.PHASE_ORDER[c] !== undefined);
+  public hasDisplayPhase(x: any, vendorId?: string): boolean {
+    if (vendorId !== 'integrity') {
+      return false;
+    }
+
+    const comboPhases = Array.isArray(x && x['combo_phase']) ? x['combo_phase'] : [];
+    return comboPhases.some((c: string) => !!c && this.PHASE_ORDER[c] !== undefined);
+  }
+
+  public displayHighestPhase(x: any, vendorId?: string): string {
+    if (vendorId !== 'integrity') {
+      const values = this.getDisplayPhaseValues(x, vendorId);
+      return values.length > 0 ? values[0] : '';
+    }
+
+    const candidates = this.getPhaseCandidates(x);
+    const ranked = candidates.filter((c: string) => !!c && this.PHASE_ORDER[c] !== undefined);
     if (ranked.length === 0) {
-      return x && x['highest_phase'];
+      return candidates.find((c: string) => !!c) || '';
     }
     return ranked.reduce((a, b) => this.PHASE_ORDER[b] > this.PHASE_ORDER[a] ? b : a);
+  }
+
+  public getDisplayPhaseValues(x: any, vendorId?: string): string[] {
+    if (vendorId === 'integrity' && this.hasDisplayPhase(x, vendorId)) {
+      return this.getPhaseCandidates(x);
+    }
+
+    const phaseValue = x && x['phase'];
+    if (Array.isArray(phaseValue)) {
+      return phaseValue;
+    }
+
+    const highestPhase = x && x['highest_phase'];
+    return highestPhase ? [highestPhase] : [];
+  }
+
+  public getDisplayPhaseTitle(x: any, vendorId?: string): string {
+    if (vendorId === 'integrity' && this.hasDisplayPhase(x, vendorId)) {
+      return 'Highest Phase:';
+    }
+
+    return x && x['highest_phase'] ? 'Highest Phase:' : 'Phase:';
+  }
+
+  private getPhaseCandidates(x: any): string[] {
+    const candidates: string[] = [];
+
+    const addCandidate = (value: any) => {
+      if (Array.isArray(value)) {
+        candidates.push(...value);
+      } else if (value) {
+        candidates.push(value);
+      }
+    };
+
+    addCandidate(x && x['highest_phase']);
+    addCandidate(x && x['phase']);
+    addCandidate(x && x['combo_phase']);
+
+    return candidates;
   }
 
 }
