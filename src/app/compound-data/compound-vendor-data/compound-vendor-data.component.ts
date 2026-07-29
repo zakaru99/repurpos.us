@@ -24,6 +24,24 @@ export class CompoundVendorDataComponent implements OnInit {
 
   public vendor_data: VendorData;
 
+  // Mirrors PHASE_ORDER in search-results-table.component.ts and
+  // best_phase()/PHASE_ORDER in repurpos-backend views.py.
+  private PHASE_ORDER: { [key: string]: number } = {
+    'IND Filed': 1,
+    'Phase 0': 2,
+    'Clinical': 3,
+    'Discontinued': 4,
+    'Phase I': 5,
+    'Phase I/II': 6,
+    'Phase II': 7,
+    'Phase II/III': 8,
+    'Phase III': 9,
+    'Pre-Registered': 10,
+    'Registered': 11,
+    'Withdrawn': 12,
+    'Launched': 13
+  };
+
   constructor(private cmpdSvc: CompoundService) {
     this.cmpdSvc.vendorState.subscribe((vdata: VendorData) => {
       this.vendor_data = vdata;
@@ -31,6 +49,18 @@ export class CompoundVendorDataComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  // A combo product (Cortellis "Integrity" combo_phase) can be further along than the
+  // single agent alone, e.g. a monotherapy still in Phase II that's part of a Launched
+  // combo. Surface the more advanced of the two as the displayed highest phase.
+  public displayHighestPhase(x: any): string {
+    const candidates: string[] = [x && x['highest_phase'], ...((x && x['combo_phase']) || [])];
+    const ranked = candidates.filter(c => c && this.PHASE_ORDER[c] !== undefined);
+    if (ranked.length === 0) {
+      return x && x['highest_phase'];
+    }
+    return ranked.reduce((a, b) => this.PHASE_ORDER[b] > this.PHASE_ORDER[a] ? b : a);
   }
 
 }

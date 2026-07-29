@@ -36,11 +36,11 @@
             <span>{{ x['informa_id'] }}</span> -->
           </div>
 
-          <!-- Highest phase -->
+          <!-- Highest phase (elevated to a combo product's phase if more advanced) -->
           <div *ngIf="x && x.hasOwnProperty('highest_phase')" class="col-xl-5 col-lg-5 col-md-5">
             <span class="title">Highest Phase: </span>
-            <span>{{x['highest_phase']}}</span>
-            <app-clinical-phase [phase]="[x['highest_phase']]" [vendorName]="vendors[k].id"></app-clinical-phase>
+            <span>{{ displayHighestPhase(x) }}</span>
+            <app-clinical-phase [phase]="[displayHighestPhase(x)]" [vendorName]="vendors[k].id"></app-clinical-phase>
           </div>
 
           <!-- Phase -->
