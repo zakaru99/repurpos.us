@@ -23,7 +23,10 @@
           <!-- Vendor ID: Integrity -->
           <div *ngIf="x && x.hasOwnProperty('id') && vendors[k].name != 'Ontology'" class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
             <span class="title">{{vendors[k].name}} ID: </span>
-            <span>{{ x['id'] }}</span>
+            <span *ngIf="vendors[k].id === 'integrity'; else plainId">
+              <a href="https://www.cortellis.com/drugdiscovery/entity/drug/{{x['id']}}/product" target="_blank" rel="noreferrer">{{ x['id'] }}</a>
+            </span>
+            <ng-template #plainId>{{ x['id'] }}</ng-template>
           </div>
           <!-- uncomment to enable adis Vendor ID: adis 
           <div *ngIf="x && x.hasOwnProperty('adis_id')" class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
