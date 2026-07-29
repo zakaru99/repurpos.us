@@ -54,13 +54,35 @@ export class CompoundVendorDataComponent implements OnInit {
   // A combo product (Cortellis "Integrity" combo_phase) can be further along than the
   // single agent alone, e.g. a monotherapy still in Phase II that's part of a Launched
   // combo. Surface the more advanced of the two as the displayed highest phase.
+  public hasDisplayPhase(x: any): boolean {
+    return this.getPhaseCandidates(x).some(c => c && this.PHASE_ORDER[c] !== undefined);
+  }
+
   public displayHighestPhase(x: any): string {
-    const candidates: string[] = [x && x['highest_phase'], ...((x && x['combo_phase']) || [])];
+    const candidates = this.getPhaseCandidates(x);
     const ranked = candidates.filter(c => c && this.PHASE_ORDER[c] !== undefined);
     if (ranked.length === 0) {
-      return x && x['highest_phase'];
+      return candidates.find(c => c) || '';
     }
     return ranked.reduce((a, b) => this.PHASE_ORDER[b] > this.PHASE_ORDER[a] ? b : a);
+  }
+
+  private getPhaseCandidates(x: any): string[] {
+    const candidates: string[] = [];
+
+    const addCandidate = (value: any) => {
+      if (Array.isArray(value)) {
+        candidates.push(...value);
+      } else if (value) {
+        candidates.push(value);
+      }
+    };
+
+    addCandidate(x && x['highest_phase']);
+    addCandidate(x && x['phase']);
+    addCandidate(x && x['combo_phase']);
+
+    return candidates;
   }
 
 }
