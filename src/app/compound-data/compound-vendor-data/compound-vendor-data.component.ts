@@ -65,7 +65,8 @@ export class CompoundVendorDataComponent implements OnInit {
 
   public displayHighestPhase(x: any, vendorId?: string): string {
     if (vendorId !== 'integrity') {
-      return x && x['highest_phase'] ? x['highest_phase'] : '';
+      const values = this.getDisplayPhaseValues(x, vendorId);
+      return values.length > 0 ? values[0] : '';
     }
 
     const candidates = this.getPhaseCandidates(x);
@@ -74,6 +75,28 @@ export class CompoundVendorDataComponent implements OnInit {
       return candidates.find((c: string) => !!c) || '';
     }
     return ranked.reduce((a, b) => this.PHASE_ORDER[b] > this.PHASE_ORDER[a] ? b : a);
+  }
+
+  public getDisplayPhaseValues(x: any, vendorId?: string): string[] {
+    if (vendorId === 'integrity' && this.hasDisplayPhase(x, vendorId)) {
+      return this.getPhaseCandidates(x);
+    }
+
+    const phaseValue = x && x['phase'];
+    if (Array.isArray(phaseValue)) {
+      return phaseValue;
+    }
+
+    const highestPhase = x && x['highest_phase'];
+    return highestPhase ? [highestPhase] : [];
+  }
+
+  public getDisplayPhaseTitle(x: any, vendorId?: string): string {
+    if (vendorId === 'integrity' && this.hasDisplayPhase(x, vendorId)) {
+      return 'Highest Phase:';
+    }
+
+    return x && x['highest_phase'] ? 'Highest Phase:' : 'Phase:';
   }
 
   private getPhaseCandidates(x: any): string[] {
