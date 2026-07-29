@@ -47,7 +47,7 @@
           </div>
 
           <!-- Phase -->
-          <div *ngIf="x && x.hasOwnProperty('phase') && x['phase'].length > 0" class="col-xl-5 col-lg-5 col-md-5">
+          <div *ngIf="x && x.hasOwnProperty('phase') && x['phase'].length > 0 && !hasDisplayPhase(x)" class="col-xl-5 col-lg-5 col-md-5">
             <span class="title">Phase: </span>
             <span><span *ngFor="let y of x['phase']; let i = index">{{y}}<span *ngIf="i + 1 < x['phase'].length" class='data-separator'></span></span>
             </span>
