@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+
+declare var grecaptcha: any;
+
 @Component({
   selector: 'app-contact-us',
   templateUrl: './contact-us.component.html',
@@ -10,6 +13,7 @@ export class ContactUsComponent {
   isSubmitting = false;
   toastMessage = "";
   toastType = "";
+  recaptchaToken: string;
 
   formData = {
     name: '',
@@ -20,12 +24,16 @@ export class ContactUsComponent {
 
   constructor(private http: HttpClient) {}
 
+  onCaptchaResolved(token: string) {
+    this.recaptchaToken = token;
+  }
+
   onSubmit(form: any) {
-    if (!form.valid) return;
+    if (!form.valid || !this.recaptchaToken) return;
 
     this.isSubmitting = true;
 
-    this.http.post('/api/contact', this.formData).subscribe({
+    this.http.post('/api/contact', { ...this.formData, recaptcha_token: this.recaptchaToken }).subscribe({
       next: () => {
         this.toastMessage = "Message sent successfully!";
         this.toastType = "success";
@@ -37,6 +45,8 @@ export class ContactUsComponent {
       },
       complete: () => {
         this.isSubmitting = false;
+        this.recaptchaToken = null;
+        grecaptcha.reset();
         setTimeout(() => (this.toastMessage = ''), 3000);
       }
     });
