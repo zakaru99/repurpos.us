@@ -59,6 +59,12 @@
   outline: none;
 }
 
+.captcha-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
 .form-actions {
   text-align: center;
   margin-top: 1.5rem;

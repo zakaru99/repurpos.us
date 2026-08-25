@@ -96,9 +96,14 @@
       </div>
     </div>
 
+    <!-- Captcha -->
+    <div class="captcha-row">
+      <re-captcha (resolved)="onCaptchaResolved($event)" siteKey="6LcFYqYrAAAAAIHNVzxAutwuxAyHiSNuvi97tfj-"></re-captcha>
+    </div>
+
     <!-- Submit -->
     <div class="form-actions">
-      <button type="submit" [disabled]="!contactForm.valid || isSubmitting">
+      <button type="submit" [disabled]="!contactForm.valid || !recaptchaToken || isSubmitting">
         {{ isSubmitting ? 'Sending...' : 'Send Message' }}
       </button>
     </div>
