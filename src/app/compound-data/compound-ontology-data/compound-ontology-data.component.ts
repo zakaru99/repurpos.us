@@ -11,8 +11,8 @@ import { CompoundService } from '../../_services/index';
 
 export class CompoundOntologyDataComponent implements OnInit {
   private vendors: Array<Object> = [
+    { 'name': 'Clarivate Integrity', 'link': 'https://www.cortellis.com/drugdiscovery/home', 'id': 'integrity', 'updated': ''},
     { 'name': 'GVK Excelra GoStar', 'link': 'https://gostardb.com/gostar/loginEntry.do', 'id': 'gvk', 'updated': ''},
-    { 'name': 'Clarivate Integrity', 'link': 'https://www.cortellis.com/drugdiscovery/home', 'id': 'integrity', 'updated': ''},    
     { 'name': 'Citeline Pharmaprojects', 'link': 'https://pharmaintelligence.informa.com/contact/contact-us', 'id': 'informa', 'updated': ''}, //needs to be above adis to work
     { 'name': 'Ontology', 'link': 'https://google.com','id': 'ontology', 'updated': ''}, //needs to be above adis to work
   ];

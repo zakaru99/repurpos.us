@@ -3,8 +3,8 @@ import { GVKData, IntegrityData, InformaData, OntologyData} from './index';
 
 
   export interface VendorData extends Array<GVKData[] | IntegrityData[] | InformaData[] | OntologyData[]> {
-  0: GVKData[];
-  1: IntegrityData[];
+  0: IntegrityData[];
+  1: GVKData[];
   //UNCOMMENT TO ENABLE ADIS --> 2: AdisData[];
   2: InformaData[];
   3: OntologyData[]

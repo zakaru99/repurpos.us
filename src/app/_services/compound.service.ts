@@ -562,7 +562,7 @@ export class CompoundService {
             // b.integrity = [b.integrity]
             // b.informa = [b.informa]
             //b.adis = [b.adis]
-            this.vendorSubject.next(<VendorData>[b.gvk, b.integrity, b.informa, b.ontology]);
+            this.vendorSubject.next(<VendorData>[b.integrity, b.gvk, b.informa, b.ontology]);
 
 
             // pull out aliases & names

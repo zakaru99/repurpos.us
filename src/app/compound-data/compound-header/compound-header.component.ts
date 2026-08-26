@@ -29,6 +29,8 @@ export class CompoundHeaderComponent implements OnInit {
   public hasA00295Data = false;
   public isToxicA00296 = false;
   public hasA00296Data = false;
+  public isToxicA01229 = false;
+  public hasA01229Data = false;
   public assayData: AssayData[] = [];
 
   public integrityPediatrics: boolean = false;
@@ -156,6 +158,8 @@ export class CompoundHeaderComponent implements OnInit {
       this.hasA00295Data = false;
       this.isToxicA00296 = false;
       this.hasA00296Data = false;
+      this.isToxicA01229 = false;
+      this.hasA01229Data = false;
       return;
     }
 
@@ -178,6 +182,16 @@ export class CompoundHeaderComponent implements OnInit {
 
     this.hasA00296Data = a00296Assays.length > 0;
     this.isToxicA00296 = a00296Assays.some(x => Number(x.ac50) < 1e-5);
+
+    const a01229Assays = this.assayData.filter(x =>
+      x.assay_id === 'A01229' &&
+      x.activity_type &&
+      x.activity_type.toUpperCase() === 'IC50' &&
+      !isNaN(Number(x.ac50))
+    );
+
+    this.hasA01229Data = a01229Assays.length > 0;
+    this.isToxicA01229 = a01229Assays.some(x => Number(x.ac50) < 1e-5);
   }
 
   onAnchorClick(anchor_tag: string) {
