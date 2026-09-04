@@ -1,9 +1,3 @@
-.divider {
-  width: 10px;
-  height: auto;
-  display: inline-block;
-}
-
 body {
   font-family: Roboto, Arial, sans-serif;
   margin: 0;
@@ -13,9 +7,76 @@ body {
   padding: 5px;
 }
 
+.login-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.login-title {
+  display: block;
+  margin: 0 0 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8792a3;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+/* Outlined field skin, shared by desktop + mobile */
+mat-form-field {
+  width: 100%;
+  display: block;
+}
+
+mat-form-field /deep/ .mat-form-field-wrapper { padding-bottom: 0; }
+
+mat-form-field /deep/ .mat-form-field-flex {
+  background: #f5f8fd;
+  border: 1px solid #c5d4f5;
+  border-radius: 10px;
+  padding: 0 0.9rem;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+mat-form-field /deep/ .mat-form-field-flex:hover {
+  border-color: #9db4f0;
+}
+
+mat-form-field.mat-focused /deep/ .mat-form-field-flex {
+  border-color: #3D6DE0;
+  background: #fff;
+}
+
+mat-form-field /deep/ .mat-form-field-infix { border-top: 0; padding: 0.45em 0; }
+mat-form-field /deep/ .mat-form-field-label { color: #9ba4ae; }
+mat-form-field /deep/ .mat-form-field-underline { display: none; }
+mat-form-field /deep/ .mat-form-field-subscript-wrapper { margin-top: 2px; }
+mat-form-field /deep/ input { font-size: 16px !important; }
+
 .login-button {
   color: #fff;
   background-color: #3D6DE0;
+  width: 100%;
+  min-height: 42px;
+  border-radius: 10px !important;
+  margin-top: 0.25rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  box-shadow: 0 4px 10px rgba(61, 109, 224, 0.25) !important;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    background-color: #335cc0;
+    transform: translateY(-1px);
+  }
 }
 
 /deep/ .mat-fab.mat-warn, .mat-flat-button.mat-warn, .mat-mini-fab.mat-warn, .mat-raised-button.mat-warn {
@@ -31,41 +92,39 @@ body {
   border-radius: 15px !important;
 }
 
+.login-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid #e6ecf9;
+  font-size: 0.82rem;
+
+  .footer-divider {
+    color: #c2cbdb;
+  }
+
+  /deep/ .btn-xs {
+    padding: 0;
+    font-weight: 500;
+  }
+}
+
 @media (max-width: 760px) {
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
-    padding: 0.25rem 0 0.5rem;
-    width: 100%;
-    align-items: center;
+  .login-title {
+    align-self: flex-start;
   }
 
-  form span { display: block; width: 100%; }
-  form .divider { display: none; }
-
-  /* Stretch mat-form-field to match button width */
-  mat-form-field { width: 100%; display: block; }
-
-  /* Restyle Material fields as clean outlined boxes */
-  mat-form-field /deep/ .mat-form-field-wrapper   { padding-bottom: 0; }
-  mat-form-field /deep/ .mat-form-field-flex {
-    background: #f5f8fd;
-    border: 1px solid #c5d4f5;
-    border-radius: 10px;
-    padding: 0 0.9rem;
+  .login-footer {
+    border-top: none;
+    margin-top: 0.5rem;
+    padding-top: 0;
   }
-  mat-form-field /deep/ .mat-form-field-infix     { border-top: 0; padding: 0.6em 0; }
-  mat-form-field /deep/ .mat-form-field-label     { color: #9ba4ae; }
-  mat-form-field /deep/ .mat-form-field-underline { display: none; }
-  mat-form-field /deep/ .mat-form-field-subscript-wrapper { display: none; }
-  mat-form-field /deep/ input                     { font-size: 16px !important; }
 
   .login-button {
-    width: 100%;
     min-height: 46px;
-    display: block;
-    margin-top: 0.25rem;
   }
 
   /* Logout state: plain nav-style item */

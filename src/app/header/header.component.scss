@@ -97,7 +97,6 @@
 /* Ensure reveal/sign-in panel sits above floating buttons (like whats-new-trigger) */
 .reveal.open {
   z-index: 3000;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
 
 /* Sign-in link */
@@ -194,17 +193,45 @@ li.sign-in a {
       position: absolute;
       top: 62px;
       right: 0;
+      background: transparent;
+      border-bottom-left-radius: 0;
     }
 
     &.open {
-      height: 110px;
-      width: 530px;
+      height: auto;
+      width: auto;
+      overflow: visible;
+      padding-right: 0;
     }
 
     &.logout {
       height: auto;
       width: auto;
     }
+  }
+
+  /* Popover card holding the actual sign-in form */
+  .reveal.open:not(.logout) .login-sheet {
+    display: block;
+    width: 300px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem 1rem;
+    box-shadow: 0 12px 32px rgba(20, 30, 60, 0.16);
+    animation: fadeSlideIn 0.18s ease-out forwards;
+  }
+
+  /* Small pointer connecting the card back to the "sign in" trigger */
+  .reveal.open:not(.logout)::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 24px;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    transform: rotate(45deg);
+    box-shadow: -2px -2px 4px rgba(20, 30, 60, 0.05);
   }
 }
 
@@ -213,6 +240,11 @@ li.sign-in a {
 ---------------------------- */
 @keyframes fadeSlideIn {
   from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sheetSlideUp {
+  from { opacity: 0; transform: translateY(28px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -321,8 +353,8 @@ li.sign-in a {
     background: rgba(10, 5, 25, 0.55) !important;
     display: flex !important;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: stretch;
+    justify-content: flex-end;
     overflow: visible !important;
     padding: 0 !important;
     border-radius: 0 !important;
@@ -331,14 +363,26 @@ li.sign-in a {
 
   .reveal.open .login-sheet {
     background: white;
-    border-radius: 0;
+    border-radius: 20px 20px 0 0;
     width: 100%;
-    padding: 1.25rem 1.75rem 2rem;
-    box-shadow: 0 4px 32px rgba(0,0,0,0.22);
+    padding: 0.25rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.18);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    animation: fadeSlideIn 0.22s ease-out forwards;
+    align-items: stretch;
+    box-sizing: border-box;
+    animation: sheetSlideUp 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+
+  /* Drag-handle affordance, standard for bottom sheets */
+  .reveal.open .login-sheet::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: #d9dfec;
+    margin: 0.6rem auto 0.9rem;
   }
 
   .reveal.open .sheet-header {

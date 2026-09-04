@@ -2,27 +2,29 @@
 
 
 <ng-template #lgin>
+  <div class="login-card">
+    <span class="login-title">Sign in</span>
 
-  <!-- ngSubmit not firing so removed and put a click event on button -->
-  <form #userForm="ngForm">
-    <span>
+    <!-- ngSubmit not firing so removed and put a click event on button -->
+    <form #userForm="ngForm" class="login-form">
       <mat-form-field color="primary">
-        <input matInput placeholder="Enter your email" [formControl]="email" required  id="email"
+        <input matInput placeholder="Email address" [formControl]="email" required id="email"
                name="email" aria-label="email">
         <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
       </mat-form-field>
-      </span>
-    <div class="divider"></div>
-    <span>
-        <mat-form-field color="primary">
-          <input matInput placeholder="Password"  id="password" [type]="'password'"
-          aria-label="password" required [formControl]="password" name="password">
-        </mat-form-field>
 
-      </span>
-    <div class="divider"></div>
-    <button class="login-button" mat-raised-button color="primary" type="submit" (click)="onSubmit()" aria-label="login">Login</button>
-  </form>
-  <app-reg-user-dialog class="link"></app-reg-user-dialog>
-  <app-forgot-pass-button class="link"></app-forgot-pass-button>
+      <mat-form-field color="primary">
+        <input matInput placeholder="Password" id="password" [type]="'password'"
+               aria-label="password" required [formControl]="password" name="password">
+      </mat-form-field>
+
+      <button class="login-button" mat-raised-button color="primary" type="submit" (click)="onSubmit()" aria-label="login">Login</button>
+    </form>
+
+    <div class="login-footer">
+      <app-forgot-pass-button class="link"></app-forgot-pass-button>
+      <span class="footer-divider">&middot;</span>
+      <app-reg-user-dialog class="link"></app-reg-user-dialog>
+    </div>
+  </div>
 </ng-template>
