@@ -243,11 +243,6 @@ li.sign-in a {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes sheetSlideUp {
-  from { opacity: 0; transform: translateY(28px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
 @media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
 
   /* Show hamburger, hide subtitle */
@@ -353,36 +348,27 @@ li.sign-in a {
     background: rgba(10, 5, 25, 0.55) !important;
     display: flex !important;
     flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: center;
     overflow: visible !important;
-    padding: 0 !important;
+    padding: 1rem !important;
     border-radius: 0 !important;
+    box-sizing: border-box;
     z-index: 3100;
   }
 
   .reveal.open .login-sheet {
     background: white;
-    border-radius: 20px 20px 0 0;
+    border-radius: 16px;
     width: 100%;
-    padding: 0.25rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.18);
+    max-width: 380px;
+    padding: 1.25rem 1.5rem 1.5rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
     display: flex;
     flex-direction: column;
     align-items: stretch;
     box-sizing: border-box;
-    animation: sheetSlideUp 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  }
-
-  /* Drag-handle affordance, standard for bottom sheets */
-  .reveal.open .login-sheet::before {
-    content: '';
-    display: block;
-    width: 36px;
-    height: 4px;
-    border-radius: 2px;
-    background: #d9dfec;
-    margin: 0.6rem auto 0.9rem;
+    animation: fadeSlideIn 0.22s ease-out forwards;
   }
 
   .reveal.open .sheet-header {
