@@ -7,8 +7,8 @@ import { Component, AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@ang
 })
 export class IntroTextModernComponent implements AfterViewInit, OnDestroy {
   isWhatsNewOpen = false;
-  newCompounds = 424;
-  totalCompounds = 13288;
+  newCompounds = 159;
+  totalCompounds = 13831;
   lastUpdated = new Date('2026/01/31');
   // What's New items with dates
   whatsNewItems: Array<{ date: Date; text: string }> = [
