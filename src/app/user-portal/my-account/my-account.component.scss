@@ -1,3 +1,5 @@
+@import 'cards';
+
 .my-account-page {
   background-color: #f8f9fb;
   padding: 2rem 3rem;
@@ -5,16 +7,14 @@
 }
 
 .card-block {
-  background: #fff;
-  border-radius: 12px;
+  @include app-card;
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .card-block:hover {
-  box-shadow: 0 6px 16px rgba(61, 109, 224, 0.18);
+  @include app-card-hover;
   transform: translateY(-2px);
 }
 

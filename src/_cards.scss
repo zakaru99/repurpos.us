@@ -1,0 +1,18 @@
+// Shared card/panel shell — one radius, one elevation scale.
+//
+// Previously each "card" container (homepage download cards, assay-type cards,
+// my-account/user-management card blocks) independently defined its own
+// border-radius (8px/12px/16px) and box-shadow recipe. This mixin gives new and
+// existing cards one place to inherit that treatment from (see
+// UI_UX_DESIGN_AUDIT.md item #4). Requires angular.json's
+// stylePreprocessorOptions.includePaths to include "src" so `@import 'cards';`
+// resolves from any component directory.
+@mixin app-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-container);
+  box-shadow: var(--shadow-resting);
+}
+
+@mixin app-card-hover {
+  box-shadow: var(--shadow-raised);
+}

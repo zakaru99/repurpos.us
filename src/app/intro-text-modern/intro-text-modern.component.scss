@@ -1,3 +1,5 @@
+@import 'cards';
+
 /* General Layout */
 .homepage {
   font-family: "Inter", sans-serif;
@@ -128,13 +130,11 @@
 }
 
 .card {
+  @include app-card;
   flex: 0 1 250px;
   max-width: 250px;
-  background: #fff;
-  border-radius: 16px;
   padding: 1.5rem;
   text-align: center;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   flex-direction: column;
@@ -142,8 +142,8 @@
 }
 
 .card:hover {
+  @include app-card-hover;
   transform: translateY(-5px);
-  box-shadow: 0 6px 20px #3D6DE0;
 }
 
 .card h3 {
