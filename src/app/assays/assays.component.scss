@@ -99,6 +99,27 @@
   box-shadow: 0 6px 16px rgba(0,0,0,0.1);
 }
 
+// Only tiles that are clickable as a whole get the pointer cursor + focus
+// ring — previously this was an inline style repeated on 3 elements (and
+// missing on the 2 clickable numbers inside "Dose Response Data" entirely).
+.stat-item-clickable {
+  cursor: pointer;
+}
+
+.stat-item-clickable:focus-visible,
+.stat-value.clickable:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+// The two clickable numbers inside "Dose Response Data" previously looked
+// identical to plain (non-clickable) stat values until hovered — coloring
+// them at rest signals they're actionable before the user touches them.
+.stat-value.clickable {
+  color: var(--color-brand-500);
+  font-weight: 600;
+}
+
 #assaysFound, #noResMessage {
   margin-top: 15px;
   padding: 0.5rem 1rem;
