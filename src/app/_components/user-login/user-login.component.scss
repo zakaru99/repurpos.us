@@ -26,7 +26,11 @@ body {
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  // Wider than it looks like it "needs" to be at rest: the floating label
+  // animation moves upward into this gap when a field is focused, and the
+  // fields themselves are deliberately compact (no infix border-top spacer),
+  // so without this room the password label overlaps the email field above.
+  gap: 0.75rem;
   width: 100%;
 }
 
@@ -37,6 +41,17 @@ mat-form-field {
 }
 
 mat-form-field /deep/ .mat-form-field-wrapper { padding-bottom: 0; }
+
+// Material positions .mat-form-field-subscript-wrapper (the mat-error/hint
+// row) with `position: absolute; top: calc(100% - Xem)`, calculated against
+// the *default* wrapper padding-bottom above. Zeroing that padding out
+// without this override leaves the error text positioned at its old
+// coordinates - overlapping the input/label instead of sitting below it.
+// Static positioning lets it flow naturally in normal document flow instead.
+mat-form-field /deep/ .mat-form-field-subscript-wrapper {
+  position: static;
+  margin-top: 2px;
+}
 
 mat-form-field /deep/ .mat-form-field-flex {
   background: #f5f8fd;
@@ -55,10 +70,18 @@ mat-form-field.mat-focused /deep/ .mat-form-field-flex {
   background: #fff;
 }
 
+// The error text was removed for a lighter/less cluttered box (only shows
+// after a failed submit, via errorMatcher in the component) - this red
+// border is now the only invalid-state signal, so it needs to be explicit
+// since this custom .mat-form-field-flex skin doesn't inherit Material's
+// own invalid-state color the way the (hidden) underline normally would.
+mat-form-field.mat-form-field-invalid /deep/ .mat-form-field-flex {
+  border-color: var(--color-danger);
+}
+
 mat-form-field /deep/ .mat-form-field-infix { border-top: 0; padding: 0.45em 0; }
 mat-form-field /deep/ .mat-form-field-label { color: #9ba4ae; }
 mat-form-field /deep/ .mat-form-field-underline { display: none; }
-mat-form-field /deep/ .mat-form-field-subscript-wrapper { margin-top: 2px; }
 mat-form-field /deep/ input { font-size: 16px !important; }
 
 .login-button {

@@ -44,11 +44,16 @@ header li, footer li {
 // hug their content tightly. app-header is the direct flex child of
 // .app-wrapper, which spans the full page, so this is the level that
 // actually has room for it to stay pinned while the rest of the page scrolls.
+// z-index here has to beat every other fixed/sticky element on the page
+// (e.g. the homepage's "What's New" trigger/panel at 2000-2001) — giving
+// app-header its own position+z-index creates a new stacking context for
+// the whole header, which traps the login panel's internal z-index (3000)
+// inside it, capped at whatever value is set here.
 app-header {
   display: block;
   position: sticky;
   top: 0;
-  z-index: 1030;
+  z-index: 2500;
 }
 
 .main-container {

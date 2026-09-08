@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
 import { FormControl, Validators } from "@angular/forms";
-import { MatDialog } from '@angular/material';
+import { MatDialog, ErrorStateMatcher } from '@angular/material';
 import { LoginFailComponent } from '../../_dialogs/index';
 import { LoginStateService } from '../../_services/index';
 
@@ -24,6 +24,15 @@ export class UserLoginComponent implements OnInit {
 
   email = new FormControl('', [Validators.required, Validators.email]);
   password = new FormControl('', [Validators.required]);
+
+  // Errors only surface after a failed submit attempt, not as soon as a
+  // field is blurred - Material's default (touched-based) error matcher
+  // was flagging fields the instant a user tabbed through the form.
+  submitted = false;
+  errorMatcher: ErrorStateMatcher = {
+    isErrorState: (control: FormControl | null): boolean =>
+      !!(control && control.invalid && this.submitted)
+  };
 
   constructor(private http: HttpClient, private loginStateService: LoginStateService, public dialog: MatDialog) { }
 
@@ -55,6 +64,10 @@ private checkUserStatus(token: string) {
 }
 
   onSubmit() {
+  this.submitted = true;
+  if (this.email.invalid || this.password.invalid) {
+    return;
+  }
   const payload = { email: this.email.value, password: this.password.value };
 
   this.http.post<{ status: string; auth_token: string }>('/api/auth/login', payload)
@@ -89,10 +102,6 @@ private checkUserStatus(token: string) {
     this.loginStateService.loggedOut();
     this.email.reset();
     this.password.reset();
-  }
-
-  getErrorMessage() {
-    return this.email.hasError('required') ? 'You must enter a value' :
-           this.email.hasError('email') ? 'Not a valid email' : '';
+    this.submitted = false;
   }
 }
