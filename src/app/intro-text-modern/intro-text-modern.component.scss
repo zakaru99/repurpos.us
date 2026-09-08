@@ -1,4 +1,4 @@
-@import 'cards';
+@import '../../_cards';
 
 /* General Layout */
 .homepage {
@@ -278,9 +278,9 @@ strong {
 
 /* Whats New Trigger Button */
 .whats-new-trigger {
-  position: fixed; 
+  position: fixed;
   right: 16px;
-  background: #7b4dd6;
+  background: var(--color-brand-500);
   color: white;
   padding: 10px 14px;
   display: flex;
@@ -296,7 +296,7 @@ strong {
 }
 
 .whats-new-trigger:hover {
-  background: #633cb0;
+  background: var(--color-brand-600);
 }
 
 /* hidden state when panel is open (adjusted for 420px panel) */
@@ -343,7 +343,7 @@ strong {
 
 .whats-new-trigger .update-date {
   font-size: 0.75rem;
-  color: #f0e6ff;
+  color: var(--color-brand-100);
   margin-top: 2px;
 }
 

@@ -25,10 +25,7 @@
               "src/styles.scss",
               "src/material_style.scss"
             ],
-            "scripts": [],
-            "stylePreprocessorOptions": {
-              "includePaths": ["src"]
-            }
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -78,9 +75,6 @@
               "src/styles.scss",
               "src/material_style.scss"
             ],
-            "stylePreprocessorOptions": {
-              "includePaths": ["src"]
-            },
             "assets": [
               "src/assets",
               "src/sitemap.xml",

@@ -4,9 +4,10 @@
 // my-account/user-management card blocks) independently defined its own
 // border-radius (8px/12px/16px) and box-shadow recipe. This mixin gives new and
 // existing cards one place to inherit that treatment from (see
-// UI_UX_DESIGN_AUDIT.md item #4). Requires angular.json's
-// stylePreprocessorOptions.includePaths to include "src" so `@import 'cards';`
-// resolves from any component directory.
+// UI_UX_DESIGN_AUDIT.md item #4). Import with a relative path from the
+// consuming component, e.g. `@import '../../_cards';` — not a bare
+// `@import 'cards';`, since IDE/editor SCSS tooling doesn't reliably honor
+// angular.json's stylePreprocessorOptions.includePaths the way the CLI build does.
 @mixin app-card {
   background: var(--color-surface);
   border-radius: var(--radius-container);
