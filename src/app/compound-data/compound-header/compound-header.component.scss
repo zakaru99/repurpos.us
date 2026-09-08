@@ -92,8 +92,8 @@ h1 {
   line-height: 1;
   transition: color 0.2s, background 0.2s, border-color 0.2s;
 
-  &:hover  { color: #3d6de0; background: rgba(61,109,224,0.07); border-color: #7f9feb; }
-  &.active { color: #3d6de0; border-color: #3d6de0; background: rgba(61,109,224,0.07); }
+  &:hover  { color: var(--color-brand-500); background: rgba(61,109,224,0.07); border-color: #7f9feb; }
+  &.active { color: var(--color-brand-500); border-color: var(--color-brand-500); background: rgba(61,109,224,0.07); }
 }
 
 .hdr-label {
@@ -170,16 +170,16 @@ h1 {
 }
 
 .dropdown-create {
-  background: #3d6de0;
+  background: var(--color-brand-500);
   color: white;
   border: none;
   padding: 0.28rem 0.6rem;
-  border-radius: 6px;
+  border-radius: var(--radius-control);
   font-size: 0.78rem;
   cursor: pointer;
   white-space: nowrap;
   &:disabled { opacity: 0.45; cursor: default; }
-  &:not(:disabled):hover { background: #335cc0; }
+  &:not(:disabled):hover { background: var(--color-brand-600); }
 }
 
 /* ── Content ── */

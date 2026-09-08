@@ -51,14 +51,14 @@
 }
 
 .crest-btn {
-  background: #3d6de0;
+  background: var(--color-brand-500);
   color: white;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   padding: 6px 20px;
 }
 
 .crest-btn:hover {
-  background: #335cc0;
+  background: var(--color-brand-600);
 }
 
 :host ::ng-deep .crest-dialog .mdc-dialog__surface {

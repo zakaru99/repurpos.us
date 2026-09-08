@@ -59,8 +59,8 @@
 }
 
 .left-tile .search-bar button {
-  border-radius: 999px;
-  background: #3d6de0; /* CREST blue */
+  border-radius: var(--radius-pill);
+  background: var(--color-brand-500);
   color: white;
   padding: 0.6rem 1.5rem;
   cursor: pointer;
@@ -68,7 +68,7 @@
 }
 
 .left-tile .search-bar button:hover {
-  background: #335cc0; /* darker CREST blue */
+  background: var(--color-brand-600);
 }
 
 .right-tile .stat-list {
