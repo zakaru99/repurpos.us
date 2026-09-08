@@ -3,7 +3,12 @@
 ---------------------------- */
 footer {
   border-top: 4px solid #7f9feb;
-  margin-top: 50px;
+  // Was 50px — redundant with .main-container's flex:1 stretch
+  // (app.component.scss), which already pushes the footer to the bottom of
+  // the viewport on short pages. Stacking a large fixed margin on top of
+  // that stretch was adding extra height beyond what's needed, tipping
+  // short pages (e.g. the homepage) past one viewport's worth of scroll.
+  margin-top: 20px;
   padding: 1em 2em;
   font-size: 1em;
   display: flex;
