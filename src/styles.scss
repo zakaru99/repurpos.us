@@ -1,3 +1,5 @@
+@import 'tokens';
+
 // support for Firefox / Opera use of Material Icons
 // from: https://stackoverflow.com/questions/47671219/material-icons-not-working-via-react-materialize
 @font-face {
@@ -38,10 +40,10 @@ html.cdk-global-scrollblock {
 /* Basic text, colors */
 body,
 header {
-  font-family: "Lato", Arial, sans-serif;
-  font-size: 16px;
-  font-weight: 300;
-  color: #212529;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text);
 }
 // For reframedb brand
 .bold {
@@ -60,7 +62,7 @@ header {
 // hyperlinks
 
 a {
-  color: #3D6DE0;
+  color: var(--color-brand-500);
 }
 
 a:hover {
@@ -68,30 +70,39 @@ a:hover {
 }
 
 a.launch-search {
-  color: #212529;
+  color: var(--color-text);
 }
 // colors
 .main-color {
-  color: #3D6DE0;
+  color: var(--color-brand-500);
+}
+
+// Small text-style action buttons (e.g. "Create Account...", "Forgot Password...").
+// Previously duplicated verbatim across 3 component-local stylesheets with a
+// slightly different one-off blue (#2968ed) — centralized here on the brand token
+// since Angular's view encapsulation means a shared class must live in a global
+// stylesheet to actually be shared.
+.btn-xs {
+  color: var(--color-brand-500);
 }
 
 .accent-color,
 .mat-error {
-  color: #fd5457 !important;
+  color: var(--color-danger) !important;
 }
 
 .mat-form-field {
   &.mat-form-field-invalid {
     .mat-form-field-label,
     .mat-input-element {
-      color: #fd5457 !important;
+      color: var(--color-danger) !important;
 
       &.mat-accent {
-        color: #fd5457 !important;
+        color: var(--color-danger) !important;
       }
 
       .mat-form-field-required-marker {
-        color: #fd5457 !important;
+        color: var(--color-danger) !important;
       }
     }
   }
@@ -126,7 +137,7 @@ $circle_diam: 15px;
 .circle {
   height: $circle_diam;
   width: $circle_diam;
-  border: #212529 solid 1px;
+  border: var(--color-text) solid 1px;
   border-radius: 50%;
   display: block;
   margin: auto;
@@ -135,12 +146,12 @@ $circle_diam: 15px;
 
 .available,
 .cmpd-avail .circle {
-  background-color: #28a745;
+  background-color: var(--color-success);
 }
 
 .historical,
 .cmpd-historical .circle {
-  background-color: #3D6DE0;
+  background-color: var(--color-brand-500);
 }
 
 .historical_one_off,
@@ -226,7 +237,7 @@ table.cmpd-table {
 
 .title {
   text-transform: uppercase;
-  font-weight: 300;
+  font-weight: var(--font-weight-regular);
   // opacity: 0.6;
   color: #9ba4ae;
   font-size: 0.85em;
@@ -262,7 +273,7 @@ table.cmpd-table {
 }
 
 .header-label {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   color: #b7bec5;
   font-size: 1em;
@@ -270,7 +281,7 @@ table.cmpd-table {
 
 h3,
 h4 {
-  font-weight: 300;
+  font-weight: var(--font-weight-regular);
   margin-bottom: 3px;
 }
 

@@ -36,18 +36,18 @@
 }
 
 .download-options .dwnld-btn {
-  background-color: #3D6DE0;
+  background-color: var(--color-brand-500);
   color: white;
   border: none;
-  padding: 5px 15px;
+  padding: var(--space-2) 14px;
   font-size: 0.9rem;
-  border-radius: 20px; 
+  border-radius: var(--radius-control);
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .download-options .dwnld-btn:hover {
-  background-color: #2f5ccf;
+  background-color: var(--color-brand-600);
 }
 
 .dwnld-link {

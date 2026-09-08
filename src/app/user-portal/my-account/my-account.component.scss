@@ -250,12 +250,12 @@
 
 /* ── Buttons ─────────────────────────────────────────────── */
 
-.btn-secondary {
+.account-btn-secondary {
   border: 1px solid #b0c4e8;
   background: #fff;
   color: #1a3a6c;
   padding: 0.35rem 0.85rem;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
@@ -263,19 +263,19 @@
   transition: background 0.2s, border-color 0.2s;
 }
 
-.btn-secondary:hover:not(:disabled) {
+.account-btn-secondary:hover:not(:disabled) {
   background: #e5efff;
   border-color: #7f9feb;
 }
 
-.btn-secondary:disabled { opacity: 0.45; cursor: default; }
+.account-btn-secondary:disabled { opacity: 0.45; cursor: default; }
 
-.btn-danger {
+.account-btn-danger {
   border: 1px solid #c08080;
   background: transparent;
   color: #9e5a5a;
   padding: 0.35rem 0.85rem;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
@@ -283,8 +283,8 @@
   transition: background 0.2s, color 0.2s;
 }
 
-.btn-danger:hover:not(:disabled) { background: #9e5a5a; color: white; }
-.btn-danger:disabled { opacity: 0.45; cursor: default; }
+.account-btn-danger:hover:not(:disabled) { background: #9e5a5a; color: white; }
+.account-btn-danger:disabled { opacity: 0.45; cursor: default; }
 
 /* ── Delete confirmation ─────────────────────────────────── */
 
