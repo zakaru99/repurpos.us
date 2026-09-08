@@ -38,6 +38,19 @@ header li, footer li {
   min-height: 100vh;
 }
 
+// Sticky has to be applied here, not inside header.component's own <header>/
+// <nav> — a sticky element only has room to stick within its *immediate*
+// parent's height, and both <header> and the <app-header> custom element
+// hug their content tightly. app-header is the direct flex child of
+// .app-wrapper, which spans the full page, so this is the level that
+// actually has room for it to stay pinned while the rest of the page scrolls.
+app-header {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+
 .main-container {
   flex: 1 0 auto;
 }

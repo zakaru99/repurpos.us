@@ -27,6 +27,7 @@ export class HeaderComponent implements OnInit {
   isAdmin: boolean = false;
   expanded: boolean = false;
   isMobile: boolean;
+  scrolled: boolean = false;
   current_year: number;
   private loginSubscription: Subscription;
 
@@ -74,6 +75,10 @@ export class HeaderComponent implements OnInit {
 
   @HostListener('window:resize') onResize() {
     this.checkMobile();
+  }
+
+  @HostListener('window:scroll') onWindowScroll() {
+    this.scrolled = window.pageYOffset > 40;
   }
 
   @HostListener('document:click', ['$event']) clickedOutside($event) {
