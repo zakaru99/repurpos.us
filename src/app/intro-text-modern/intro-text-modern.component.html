@@ -31,15 +31,19 @@
       <h1>Welcome to <span class="highlight">REFRAMEdb</span><span class="subheading">the world's largest open-access drug repurposing library</span></h1>
           
 
-      <p class="update-info">
-        <strong>{{ newCompounds | number }}</strong> new compound profiles added for a total of
-        <strong>{{ totalCompounds | number }}</strong> clinical-stage drugs in collection as of {{ lastUpdated | date:'longDate' }}
-      </p>
-      <p class="stats-line">
-        compounds dosed in pediatric patients <strong>482</strong>
-        <span class="divider">|</span>
-        compounds with PK data <strong>3,761</strong>
-      </p>
+      <!-- Full stats on regular screens; collapses to .hero-stats-compact
+           below (one toggle point instead of two) once space is tight. -->
+      <div class="stats-full">
+        <p class="update-info">
+          <strong>{{ newCompounds | number }}</strong> new compound profiles added for a total of
+          <strong>{{ totalCompounds | number }}</strong> clinical-stage drugs in collection as of {{ lastUpdated | date:'longDate' }}
+        </p>
+        <p class="stats-line">
+          compounds dosed in pediatric patients <strong>482</strong>
+          <span class="divider">|</span>
+          compounds with PK data <strong>3,761</strong>
+        </p>
+      </div>
       <p class="hero-stats-compact">
         <strong>{{ totalCompounds | number }}</strong> drugs &middot; Updated {{ lastUpdated | date:'MMM yyyy' }}
       </p>

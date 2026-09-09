@@ -503,8 +503,7 @@ strong {
 
 @media (max-width: 640px) {
   /* Swap verbose stats for compact badge */
-  .update-info { display: none; }
-  .stats-line   { display: none; }
+  .stats-full { display: none; }
 
   .hero-stats-compact {
     display: block;
