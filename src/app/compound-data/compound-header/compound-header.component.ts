@@ -1,5 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Location } from '@angular/common';
+import { Component, OnInit, AfterViewInit, OnDestroy, Input, ElementRef } from '@angular/core';
 import { CompoundService } from '../../_services/index';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { LoginStateService } from '../../_services';
@@ -14,9 +13,14 @@ import { AssayData, Compound } from '../../_models';
   styleUrls: ['./compound-header.component.scss']
 })
 
-export class CompoundHeaderComponent implements OnInit {
+export class CompoundHeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() results_per_page: number;
-  @Input() _location: Location;
+  // Set by CompoundDataComponent, which owns the IntersectionObserver -
+  // this component is itself sticky, so a sentinel placed inside it would
+  // get pinned in place along with everything else and never scroll out of
+  // view to detect anything. The trigger has to live in the parent's normal
+  // (non-sticky) document flow, just before this component's tag.
+  @Input() scrolled: boolean = false;
 
   public label: string;
   public aliases: Array<string> = [];
@@ -49,13 +53,17 @@ export class CompoundHeaderComponent implements OnInit {
   toastMessage: string = '';
   toastType: 'success' | 'error' = 'success';
   private toastTimer: any = null;
+  // Typed any: this TS/lib version predates ResizeObserver's ambient type
+  // declarations (unlike the older IntersectionObserver, used elsewhere).
+  private resizeObserver: any;
 
   constructor(
     private cmpdSvc: CompoundService,
     private loginStateService: LoginStateService,
     public favoritesService: FavoritesService,
     public listsService: CompoundListsService,
-    private http: HttpClient
+    private http: HttpClient,
+    private elementRef: ElementRef
   ) {
     this.getNumAliases();
 
@@ -201,12 +209,33 @@ export class CompoundHeaderComponent implements OnInit {
     }
   }
 
-  backClick() {
-    this._location.back();
-  }
-
   ngOnInit() {
     this.checkToxicity();
+  }
+
+  // Publishes this header's real rendered height (which differs between its
+  // expanded and .compact states) as a CSS custom property, so the sticky
+  // left-column sidebar (compound-data.component.scss) can position itself
+  // below it using the actual value instead of a hardcoded guess.
+  // ResizeObserver rather than a setTimeout guessing when the collapse
+  // transition finishes (a manual-timing approach that proved unreliable
+  // for the analogous site-header measurement - see HeaderComponent).
+  // It fires once, correctly, whenever this element's real size changes
+  // for any reason (compact toggle, content changes, font load, etc.).
+  private publishHeaderHeight(): void {
+    const height = this.elementRef.nativeElement.offsetHeight;
+    document.documentElement.style.setProperty('--compound-header-height', height + 'px');
+  }
+
+  ngAfterViewInit(): void {
+    this.resizeObserver = new (window as any).ResizeObserver(() => this.publishHeaderHeight());
+    this.resizeObserver.observe(this.elementRef.nativeElement);
+  }
+
+  ngOnDestroy(): void {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
   }
 
   get reframeStatus(): { key: string; label: string; tooltip: string } {

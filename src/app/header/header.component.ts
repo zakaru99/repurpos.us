@@ -1,4 +1,4 @@
-import { Component, Inject, Injectable, OnInit, HostListener } from '@angular/core';
+import { Component, Inject, Injectable, OnInit, AfterViewInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
 import { Subscription } from 'rxjs/Subscription';
@@ -19,7 +19,7 @@ import { LoginState, RouteDef } from '../_models/index';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   routeDef: RouteDef[];
   loginBox: boolean = false;
@@ -27,12 +27,47 @@ export class HeaderComponent implements OnInit {
   isAdmin: boolean = false;
   expanded: boolean = false;
   isMobile: boolean;
-  scrolled: boolean = false;
   current_year: number;
   private loginSubscription: Subscription;
+  // Typed any: this TS/lib version predates ResizeObserver's ambient type
+  // declarations (unlike the older IntersectionObserver, used elsewhere).
+  private resizeObserver: any;
 
-  constructor(@Inject(DOCUMENT) private document: any, private http: HttpClient, private loginStateService: LoginStateService) {
+  constructor(
+    @Inject(DOCUMENT) private document: any,
+    private http: HttpClient,
+    private loginStateService: LoginStateService,
+    private elementRef: ElementRef
+  ) {
     this.checkMobile();
+  }
+
+  // Publishes this (sticky) header's real rendered height as a CSS custom
+  // property, so other sticky elements further down the page (e.g. the
+  // compound-detail page's own sticky header/sidebar) can position
+  // themselves against the actual value instead of a hardcoded guess.
+  // Driven by a ResizeObserver (see ngAfterViewInit) rather than a pile of
+  // manually-guessed re-measurement triggers (font load, login-state
+  // change, window resize) - those fired independently and could race each
+  // other, publishing stale/inconsistent values. ResizeObserver fires once,
+  // correctly, for any actual size change regardless of cause.
+  private publishHeaderHeight(): void {
+    const height = this.elementRef.nativeElement.offsetHeight;
+    this.document.documentElement.style.setProperty('--site-header-height', height + 'px');
+  }
+
+  ngAfterViewInit(): void {
+    this.resizeObserver = new (window as any).ResizeObserver(() => this.publishHeaderHeight());
+    this.resizeObserver.observe(this.elementRef.nativeElement);
+  }
+
+  ngOnDestroy(): void {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
+    if (this.loginSubscription) {
+      this.loginSubscription.unsubscribe();
+    }
   }
 
   ngOnInit(): void {
@@ -75,10 +110,6 @@ export class HeaderComponent implements OnInit {
 
   @HostListener('window:resize') onResize() {
     this.checkMobile();
-  }
-
-  @HostListener('window:scroll') onWindowScroll() {
-    this.scrolled = window.pageYOffset > 40;
   }
 
   @HostListener('document:click', ['$event']) clickedOutside($event) {

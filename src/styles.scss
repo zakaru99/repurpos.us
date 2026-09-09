@@ -31,6 +31,10 @@
   font-feature-settings: "liga";
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html.cdk-global-scrollblock {
   /*background-color: #0d71bb;*/
   overflow: hidden;

@@ -4,38 +4,16 @@
 .blue-fill {
   background-color: #f5f8fd;
   padding-top: 6px;
-  padding-bottom: 12px;
-  margin-bottom: 6px;
+  // Was padding-bottom: 12px + margin-bottom: 6px. A margin is never
+  // covered by its own element's background - it sits outside the box - so
+  // that 6px was a permanently transparent strip beneath the header,
+  // letting scrolled page content show through it now that the header is
+  // sticky. Folding it into padding keeps the same total space but makes
+  // all of it part of this element's own opaque background.
+  padding-bottom: 18px;
   border-bottom: 3px solid #7f9feb;
   align-items: center;
   justify-content: space-between;
-  transition: padding 0.2s ease, box-shadow 0.2s ease;
-}
-
-// Shrinks once the page is scrolled, so the header stays reachable (search,
-// nav) without permanently eating vertical space on long pages like
-// compound-detail or the assays browser.
-.blue-fill.compact {
-  padding-top: 2px;
-  padding-bottom: 2px;
-  box-shadow: var(--shadow-resting);
-
-  .navbar-brand img {
-    width: 26px;
-    height: 26px;
-  }
-
-  .site-name {
-    font-size: 1.1em;
-  }
-
-  .site-subtitle {
-    display: none;
-  }
-}
-
-.navbar-brand img {
-  transition: width 0.2s ease, height 0.2s ease;
 }
 
 .logo {

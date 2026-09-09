@@ -4,6 +4,51 @@ h1 {
   margin-top: 0;
 }
 
+// Scroll-trigger marker for app-compound-header's collapse - must sit in
+// normal (non-sticky) document flow, ahead of the header itself, so it
+// actually scrolls out of view (see compound-data.component.ts).
+.header-sentinel {
+  height: 1px;
+}
+
+// Sticks directly below the main site header once scrolled. display:block
+// is needed because custom elements default to display:inline, which
+// breaks sticky. top uses the site header's real measured height
+// (--site-header-height, published by HeaderComponent) rather than a
+// hardcoded pixel guess - a guess that's even slightly too large leaves a
+// gap between the two headers where underlying page content shows through;
+// too small and they overlap. The fallback (70px) only applies for the
+// first paint before JS has measured and set the real value.
+app-compound-header {
+  display: block;
+  position: sticky;
+  top: var(--site-header-height, 70px);
+  z-index: 1500;
+}
+
+// Sticky sidebar: the structure image + chemical IDs + PK data + ontology
+// data stay in view while the (much longer) right column scrolls beneath
+// them. This works because Bootstrap's flex .row stretches col-lg-4 to
+// match col-lg-8's height, giving this inner row real room to stick within
+// as its parent scrolls past - sticking it directly on col-lg-4 itself
+// wouldn't do anything, since that box is already stretched to fill that
+// full height with no separate "room" to move within.
+//
+// top stacks the site header's height with the compound header's real
+// measured height (--compound-header-height, published by
+// CompoundHeaderComponent - it changes between the expanded and .compact
+// states) for the same reason as above: a hardcoded guess drifts out of
+// sync and either overlaps or leaves a gap.
+.col-lg-4.pr-4 > .row {
+  position: sticky;
+  top: calc(var(--site-header-height, 70px) + var(--compound-header-height, 70px));
+  // Explicitly below app-compound-header's z-index (1500) - both are sticky
+  // and can occupy overlapping screen space near the top, and without this
+  // their stacking order was unpredictable (ontology-data's MoA tags were
+  // painting over the header instead of staying behind it).
+  z-index: 10;
+}
+
 
 a {
   cursor: pointer;

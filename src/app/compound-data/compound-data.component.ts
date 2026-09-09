@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Inject, Injectable, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, forwardRef, Inject, Injectable, Input, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Http, Response } from "@angular/http";
 import { Location } from '@angular/common';
@@ -22,12 +22,22 @@ import { environment } from "../../environments/environment";
   templateUrl: './compound-data.component.html',
   styleUrls: ['./compound-data.component.scss'],
 })
-export class CompoundDataComponent implements OnInit {
+export class CompoundDataComponent implements OnInit, AfterViewInit, OnDestroy {
   qid: string;
   id: string;
   smiles: string;
   loggedIn: boolean;
   showVendor: boolean = false;
+
+  // Drives app-compound-header's collapse-to-minimal state. Has to live
+  // here rather than inside CompoundHeaderComponent itself: that component
+  // is sticky, so a sentinel placed inside it would get pinned in place
+  // along with everything else and never scroll out of view to trigger
+  // anything. This sentinel sits in normal document flow right before
+  // <app-compound-header>, so it actually scrolls with the page.
+  @ViewChild('headerSentinel') headerSentinel: ElementRef;
+  headerScrolled: boolean = false;
+  private headerSentinelObservers: IntersectionObserver[] = [];
   // label: string;
   tableData: Array<Object> = [];
   aliases: Array<string> = [];
@@ -117,6 +127,35 @@ export class CompoundDataComponent implements OnInit {
 
 
   ngOnInit() {
+  }
+
+  ngAfterViewInit() {
+    if (this.headerSentinel) {
+      const el = this.headerSentinel.nativeElement;
+
+      // Hysteresis via two observers on the same sentinel, each only ever
+      // moving the state one direction: collapse fires at a smaller margin
+      // (80px scrolled), expand fires at a larger one (200px). Between
+      // those two points neither one changes anything, so a scroll position
+      // that hovers near a single boundary (mouse wheel, trackpad momentum)
+      // can't flip the state back and forth every frame - it did with only
+      // one observer/threshold.
+      const collapseObserver = new IntersectionObserver(
+        (entries) => { if (!entries[0].isIntersecting) { this.headerScrolled = true; } },
+        { rootMargin: '80px 0px 0px 0px', threshold: 0 }
+      );
+      const expandObserver = new IntersectionObserver(
+        (entries) => { if (entries[0].isIntersecting) { this.headerScrolled = false; } },
+        { rootMargin: '200px 0px 0px 0px', threshold: 0 }
+      );
+      collapseObserver.observe(el);
+      expandObserver.observe(el);
+      this.headerSentinelObservers = [collapseObserver, expandObserver];
+    }
+  }
+
+  ngOnDestroy() {
+    this.headerSentinelObservers.forEach(o => o.disconnect());
   }
 
 

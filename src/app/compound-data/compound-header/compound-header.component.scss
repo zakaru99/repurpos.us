@@ -21,16 +21,56 @@ h1 {
 }
 
 .cmpd-header {
-  margin-top: 12px;
+  margin-top: 0;
   padding-bottom: 25px;
   margin-bottom: 45px;
   border-bottom: 10px #d3d7dc solid;
   position: relative;
+  // Needs to be opaque at all times, not just once .compact - this is
+  // sticky-positioned in both states, so without a background the right
+  // column's content shows through as it scrolls underneath.
+  background: var(--color-surface);
+  transition: padding-bottom 0.2s ease, margin-bottom 0.2s ease, border-bottom-width 0.2s ease;
 }
 
-.hdr-back {
-  margin-bottom: 8px;
-  font-size: 0.9em;
+// Minimal version once scrolled past: name + status + actions stay; the
+// vendor/disclosure/QC column, WHO-name/aliases/similar-compounds column,
+// mobile vendor bar, and toxicity/pediatric banners collapse via the
+// grid-rows transition below rather than display:none, which can't be
+// animated. Everything stays in the DOM and comes back scrolling back up.
+.cmpd-header.compact {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  border-bottom-width: 3px;
+
+  // hdr-top-row's default margin-bottom (0.75rem) exists to separate it
+  // from the collapsible content below - with that content collapsed to
+  // nothing, it was just adding extra space before the border that has no
+  // matching space above the row, making it look bottom-heavy.
+  .hdr-top-row {
+    margin-bottom: 0;
+  }
+}
+
+// The 1fr/0fr grid-rows trick: animating a track size (rather than the
+// content's own height, which display:none/height:auto can't transition)
+// lets an auto-height block shrink to nothing smoothly. The inner wrapper
+// needs overflow:hidden + min-height:0 so it can actually shrink below its
+// content's natural size instead of blocking the track from collapsing.
+.cmpd-header-collapsible {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.cmpd-header-collapsible-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.cmpd-header.compact .cmpd-header-collapsible {
+  grid-template-rows: 0fr;
 }
 
 /* ── Top row: name + rfm tile + action buttons in normal flow ── */
@@ -38,7 +78,7 @@ h1 {
 
 .hdr-top-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 0.75rem;
