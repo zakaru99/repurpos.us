@@ -15,11 +15,12 @@ import { AssayData, Compound } from '../../_models';
 
 export class CompoundHeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() results_per_page: number;
-  @ViewChild('shadowSentinel') shadowSentinel: ElementRef;
+  @ViewChild('borderSentinel') borderSentinel: ElementRef;
   // Whether the fixed name row is floating over scrolled content (past the
-  // header's own bottom border) - drives the shadow only, no layout impact.
+  // header's own bottom border) - only then does it need its own copy of
+  // that border, so the two don't both show at once while still at the top.
   pastHeader: boolean = false;
-  private shadowObserver: any;
+  private borderObserver: any;
 
   // Publishes the fixed name row's own height so the sticky left sidebar
   // (compound-data.component.scss) can start below it, not just below the
@@ -220,12 +221,22 @@ export class CompoundHeaderComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngAfterViewInit(): void {
-    if (this.shadowSentinel) {
-      this.shadowObserver = new IntersectionObserver(
+    if (this.borderSentinel && this.fixedRow) {
+      // The sentinel sits right next to the real border, but that border is
+      // covered up by the site header + this fixed name row well before it
+      // scrolls past the raw viewport top - without accounting for their
+      // combined height, there's a gap where the real border is already
+      // hidden behind them but this row's own border hasn't kicked in yet,
+      // so neither is visible.
+      const siteHeaderHeight = parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--site-header-height')
+      ) || 70;
+      const fixedRowHeight = this.fixedRow.nativeElement.offsetHeight;
+      this.borderObserver = new IntersectionObserver(
         (entries) => { this.pastHeader = !entries[0].isIntersecting; },
-        { threshold: 0 }
+        { threshold: 0, rootMargin: `-${siteHeaderHeight + fixedRowHeight}px 0px 0px 0px` }
       );
-      this.shadowObserver.observe(this.shadowSentinel.nativeElement);
+      this.borderObserver.observe(this.borderSentinel.nativeElement);
     }
 
     if (this.fixedRow) {
@@ -239,8 +250,8 @@ export class CompoundHeaderComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnDestroy(): void {
-    if (this.shadowObserver) {
-      this.shadowObserver.disconnect();
+    if (this.borderObserver) {
+      this.borderObserver.disconnect();
     }
     if (this.fixedRowObserver) {
       this.fixedRowObserver.disconnect();

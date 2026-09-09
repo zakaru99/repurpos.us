@@ -23,7 +23,7 @@
     </div>
 
     <!-- The real, interactive, always-visible row. -->
-    <div #fixedRow class="hdr-top-row hdr-top-row--fixed" [class.shadow]="pastHeader">
+    <div #fixedRow class="hdr-top-row hdr-top-row--fixed" [class.past-header]="pastHeader">
       <div class="hdr-name-wrap">
         <h1>{{ label }}</h1>
         <div class="rfm-tile rfm-tile--{{ reframeStatus.key }}" [matTooltip]="reframeStatus.tooltip">{{ reframeStatus.label }}</div>
@@ -149,13 +149,11 @@
       <span class="pediatric-note">(Clarivate Pharmacokinetics Datafeed reports that this drug has been administered in a pediatric patient in a clinical study)</span>
     </div>
 
-    <!-- Marks the header's own bottom edge (the grey border) - scrolls
-         normally like anything else in #header, so watching it tells us
-         whether the fixed name row is now floating over scrolled content
-         (shadow should show) or still sitting over the visible header
-         (no shadow needed yet). Purely cosmetic - a class toggle, not a
-         layout change, so none of the reflow-feedback risk from earlier. -->
-    <div #shadowSentinel class="header-shadow-sentinel"></div>
+    <!-- Marks the header's own bottom edge (the grey border) - once this
+         scrolls out of view, the fixed name row shows its own copy of that
+         border; until then, showing both at once would look like a
+         duplicate. Purely cosmetic - a class toggle, not a layout change. -->
+    <div #borderSentinel class="header-border-sentinel"></div>
 
   </div>
 
