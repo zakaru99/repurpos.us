@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Input, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, Input, ViewChild, ElementRef } from '@angular/core';
 import { CompoundService } from '../../_services/index';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { LoginStateService } from '../../_services';
@@ -15,12 +15,22 @@ import { AssayData, Compound } from '../../_models';
 
 export class CompoundHeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() results_per_page: number;
-  // Set by CompoundDataComponent, which owns the IntersectionObserver -
-  // this component is itself sticky, so a sentinel placed inside it would
-  // get pinned in place along with everything else and never scroll out of
-  // view to detect anything. The trigger has to live in the parent's normal
-  // (non-sticky) document flow, just before this component's tag.
-  @Input() scrolled: boolean = false;
+  @ViewChild('shadowSentinel') shadowSentinel: ElementRef;
+  // Whether the fixed name row is floating over scrolled content (past the
+  // header's own bottom border) - drives the shadow only, no layout impact.
+  pastHeader: boolean = false;
+  private shadowObserver: any;
+
+  // Publishes the fixed name row's own height so the sticky left sidebar
+  // (compound-data.component.scss) can start below it, not just below the
+  // site header - without this, the sidebar tried to stick at
+  // --site-header-height alone, which the higher z-index fixed row then
+  // covered the top of, and the sidebar didn't visibly look "stuck" until
+  // much further down the page. Safe to measure with ResizeObserver here
+  // (unlike the earlier collapsing-header attempt): this row's height
+  // never changes now, so there's no reflow for a tight observer to fight.
+  @ViewChild('fixedRow') fixedRow: ElementRef;
+  private fixedRowObserver: any;
 
   public label: string;
   public aliases: Array<string> = [];
@@ -53,17 +63,13 @@ export class CompoundHeaderComponent implements OnInit, AfterViewInit, OnDestroy
   toastMessage: string = '';
   toastType: 'success' | 'error' = 'success';
   private toastTimer: any = null;
-  // Typed any: this TS/lib version predates ResizeObserver's ambient type
-  // declarations (unlike the older IntersectionObserver, used elsewhere).
-  private resizeObserver: any;
 
   constructor(
     private cmpdSvc: CompoundService,
     private loginStateService: LoginStateService,
     public favoritesService: FavoritesService,
     public listsService: CompoundListsService,
-    private http: HttpClient,
-    private elementRef: ElementRef
+    private http: HttpClient
   ) {
     this.getNumAliases();
 
@@ -213,28 +219,31 @@ export class CompoundHeaderComponent implements OnInit, AfterViewInit, OnDestroy
     this.checkToxicity();
   }
 
-  // Publishes this header's real rendered height (which differs between its
-  // expanded and .compact states) as a CSS custom property, so the sticky
-  // left-column sidebar (compound-data.component.scss) can position itself
-  // below it using the actual value instead of a hardcoded guess.
-  // ResizeObserver rather than a setTimeout guessing when the collapse
-  // transition finishes (a manual-timing approach that proved unreliable
-  // for the analogous site-header measurement - see HeaderComponent).
-  // It fires once, correctly, whenever this element's real size changes
-  // for any reason (compact toggle, content changes, font load, etc.).
-  private publishHeaderHeight(): void {
-    const height = this.elementRef.nativeElement.offsetHeight;
-    document.documentElement.style.setProperty('--compound-header-height', height + 'px');
-  }
-
   ngAfterViewInit(): void {
-    this.resizeObserver = new (window as any).ResizeObserver(() => this.publishHeaderHeight());
-    this.resizeObserver.observe(this.elementRef.nativeElement);
+    if (this.shadowSentinel) {
+      this.shadowObserver = new IntersectionObserver(
+        (entries) => { this.pastHeader = !entries[0].isIntersecting; },
+        { threshold: 0 }
+      );
+      this.shadowObserver.observe(this.shadowSentinel.nativeElement);
+    }
+
+    if (this.fixedRow) {
+      const publish = () => {
+        const height = this.fixedRow.nativeElement.offsetHeight;
+        document.documentElement.style.setProperty('--compound-header-height', height + 'px');
+      };
+      this.fixedRowObserver = new (window as any).ResizeObserver(publish);
+      this.fixedRowObserver.observe(this.fixedRow.nativeElement);
+    }
   }
 
   ngOnDestroy(): void {
-    if (this.resizeObserver) {
-      this.resizeObserver.disconnect();
+    if (this.shadowObserver) {
+      this.shadowObserver.disconnect();
+    }
+    if (this.fixedRowObserver) {
+      this.fixedRowObserver.disconnect();
     }
   }
 
