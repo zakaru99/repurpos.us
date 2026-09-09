@@ -324,6 +324,11 @@ div#cmpd-names { position: inherit; }
   .hdr-top-row .header-actions { display: none; }
   .rfm-tile { display: none; }
 
+  /* Compound name is too large on mobile, especially in the fixed/pinned row */
+  .hdr-top-row h1 {
+    font-size: 1.25rem;
+  }
+
   /* Show mobile compact row */
   .hdr-mobile-row {
     display: flex;
