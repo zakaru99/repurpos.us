@@ -1,4 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatChipsModule } from '@angular/material';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { SaltFormComponent } from './salt-form.component';
 
@@ -8,6 +10,7 @@ describe('SaltFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ MatChipsModule, NoopAnimationsModule ],
       declarations: [ SaltFormComponent ]
     })
     .compileComponents();

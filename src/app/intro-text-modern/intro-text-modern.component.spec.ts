@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { IntroTextModernComponent } from './intro-text-modern.component';
+
+@Component({ selector: 'app-hero-search', template: '' })
+class HeroSearchStubComponent {}
 
 describe('IntroTextModernComponent', () => {
   let component: IntroTextModernComponent;
@@ -8,7 +13,8 @@ describe('IntroTextModernComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ IntroTextModernComponent ]
+      imports: [ RouterTestingModule ],
+      declarations: [ IntroTextModernComponent, HeroSearchStubComponent ]
     })
     .compileComponents();
   }));

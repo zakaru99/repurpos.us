@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { SciItalicizePipe } from '.';
+import { SciItalicizePipe, TitleCasePipe } from '.';
 
 @NgModule({
   imports: [
     CommonModule
   ],
-  declarations: [ SciItalicizePipe ],
-  exports: [ SciItalicizePipe]
+  declarations: [ SciItalicizePipe, TitleCasePipe ],
+  exports: [ SciItalicizePipe, TitleCasePipe ]
 })
 
 export class PipesModule { }

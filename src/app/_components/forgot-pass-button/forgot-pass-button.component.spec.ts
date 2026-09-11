@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material';
 
 import { ForgotPassButtonComponent } from './forgot-pass-button.component';
 
@@ -8,7 +9,10 @@ describe('ForgotPassButtonComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ForgotPassButtonComponent ]
+      declarations: [ ForgotPassButtonComponent ],
+      providers: [
+        { provide: MatDialog, useValue: jasmine.createSpyObj('MatDialog', ['open']) }
+      ]
     })
     .compileComponents();
   }));

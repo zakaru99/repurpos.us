@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { TreemapComponent } from './treemap.component';
+import { ColorPaletteService } from '../../_services';
 
 describe('TreemapComponent', () => {
   let component: TreemapComponent;
@@ -8,7 +10,9 @@ describe('TreemapComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TreemapComponent ]
+      imports: [HttpClientTestingModule],
+      declarations: [ TreemapComponent ],
+      providers: [ColorPaletteService]
     })
     .compileComponents();
   }));
@@ -16,6 +20,8 @@ describe('TreemapComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TreemapComponent);
     component = fixture.componentInstance;
+    component.data = [];
+    component.colorScale = () => '#000000';
     fixture.detectChanges();
   });
 
