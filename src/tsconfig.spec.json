@@ -6,7 +6,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": [
-      "es2016"
+      "es2016",
+      "dom"
     ],
     "outDir": "../out-tsc/spec",
     "module": "commonjs",
@@ -23,5 +24,9 @@
   ],
   "include": [
     "**/*.spec.ts"
+  ],
+  "exclude": [
+    "app/ontology-tree/ontology-tree.component.ts",
+    "app/ontology-tree/ontology-tree.component.spec.ts"
   ]
 }

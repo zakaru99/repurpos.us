@@ -4,7 +4,7 @@ import { CompoundOntologyDataComponent } from './compound-ontology-data.componen
 
 describe('CompoundOntologyDataComponent', () => {
   let component: CompoundOntologyDataComponent;
-  let fixture: ComponentFixture<CompoundVendorDataComponent>;
+  let fixture: ComponentFixture<CompoundOntologyDataComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
