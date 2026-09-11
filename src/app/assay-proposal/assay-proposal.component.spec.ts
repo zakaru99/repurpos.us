@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { AssayProposalComponent } from './assay-proposal.component';
+import { LoginStateService } from '../_services';
 
 describe('AssayProposalComponent', () => {
   let component: AssayProposalComponent;
@@ -8,7 +11,9 @@ describe('AssayProposalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AssayProposalComponent ]
+      imports: [FormsModule, HttpClientTestingModule],
+      declarations: [ AssayProposalComponent ],
+      providers: [LoginStateService]
     })
     .compileComponents();
   }));

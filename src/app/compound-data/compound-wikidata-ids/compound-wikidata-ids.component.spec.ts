@@ -1,6 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 
 import { CompoundWikidataIdsComponent } from './compound-wikidata-ids.component';
+import { CompoundService } from '../../_services/index';
+
+class CompoundServiceStub {
+  idStates = of({ qid: null, id: '' });
+  smilesSubject = of('');
+  chiralityState = of('');
+  wikiIDsState = of({ chem: [], ids: [] });
+}
 
 describe('CompoundWikidataIdsComponent', () => {
   let component: CompoundWikidataIdsComponent;
@@ -8,7 +17,10 @@ describe('CompoundWikidataIdsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CompoundWikidataIdsComponent ]
+      declarations: [ CompoundWikidataIdsComponent ],
+      providers: [
+        { provide: CompoundService, useValue: new CompoundServiceStub() }
+      ]
     })
     .compileComponents();
   }));

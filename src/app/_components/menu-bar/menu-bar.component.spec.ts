@@ -1,6 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, Input } from '@angular/core';
 
 import { MenuBarComponent } from './menu-bar.component';
+import { RouteDef } from '../../_models/index';
+
+@Component({ selector: 'menubar-item', template: '' })
+class MenubarItemStubComponent {
+  @Input('item') item: RouteDef;
+}
 
 describe('MenuBarComponent', () => {
   let component: MenuBarComponent;
@@ -8,7 +15,7 @@ describe('MenuBarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MenuBarComponent ]
+      declarations: [ MenuBarComponent, MenubarItemStubComponent ]
     })
     .compileComponents();
   }));

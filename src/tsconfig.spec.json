@@ -27,6 +27,8 @@
   ],
   "exclude": [
     "app/ontology-tree/ontology-tree.component.ts",
-    "app/ontology-tree/ontology-tree.component.spec.ts"
+    "app/ontology-tree/ontology-tree.component.spec.ts",
+    "app/compound-data/ngl/ngl.component.ts",
+    "app/compound-data/ngl/ngl.component.spec.ts"
   ]
 }

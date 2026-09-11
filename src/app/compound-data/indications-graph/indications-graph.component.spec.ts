@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { IndicationsGraphComponent } from './indications-graph.component';
+import { GraphDataService, SearchResultService } from '../../_services/index';
 
 describe('IndicationsGraphComponent', () => {
   let component: IndicationsGraphComponent;
@@ -8,7 +9,8 @@ describe('IndicationsGraphComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ IndicationsGraphComponent ]
+      declarations: [ IndicationsGraphComponent ],
+      providers: [ SearchResultService, GraphDataService ]
     })
     .compileComponents();
   }));

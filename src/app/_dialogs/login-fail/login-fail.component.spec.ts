@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MAT_DIALOG_DATA } from '@angular/material';
 
 import { LoginFailComponent } from './login-fail.component';
 
@@ -8,7 +9,10 @@ describe('LoginFailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LoginFailComponent ]
+      declarations: [ LoginFailComponent ],
+      providers: [
+        { provide: MAT_DIALOG_DATA, useValue: { error: 'Test error' } }
+      ]
     })
     .compileComponents();
   }));
