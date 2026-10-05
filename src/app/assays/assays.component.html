@@ -43,11 +43,17 @@
       <!-- Right Tile -->
       <div class="right-tile">
         <ul class="stat-list">
-          <li class="stat-item" (click)="showDetails('all')" style="cursor: pointer;">
+          <li class="stat-item stat-item-clickable" role="button" tabindex="0"
+              (click)="showDetails('all')"
+              (keydown.enter)="showDetails('all')"
+              (keydown.space)="showDetails('all'); $event.preventDefault()">
             <span class="stat-label">Total Assays in the Workflow</span>
-            <span class="stat-value" (click)="showDetails('all')">{{ totalAssays.length }}</span>
+            <span class="stat-value">{{ totalAssays.length }}</span>
           </li>
-          <li class="stat-item" (click)="showDetails('primary')" style="cursor: pointer;">
+          <li class="stat-item stat-item-clickable" role="button" tabindex="0"
+              (click)="showDetails('primary')"
+              (keydown.enter)="showDetails('primary')"
+              (keydown.space)="showDetails('primary'); $event.preventDefault()">
             <span class="stat-label">Published Primary Data</span>
             <span class="stat-value">{{publishedPdataNum.length}}</span>
           </li>
@@ -55,21 +61,28 @@
             <span class="stat-label">Dose Response Data</span>
             <span class="stat-sub">
               Published:
-              <span class="stat-value clickable"
-                    (click)="showDetails('published')">
+              <span class="stat-value clickable" role="button" tabindex="0"
+                    (click)="showDetails('published')"
+                    (keydown.enter)="showDetails('published')"
+                    (keydown.space)="showDetails('published'); $event.preventDefault()">
                 {{ publishshedDrNum.length }}
               </span>
 
               &nbsp;|&nbsp;
 
               Pending:
-              <span class="stat-value clickable"
-                    (click)="showDetails('pending')">
+              <span class="stat-value clickable" role="button" tabindex="0"
+                    (click)="showDetails('pending')"
+                    (keydown.enter)="showDetails('pending')"
+                    (keydown.space)="showDetails('pending'); $event.preventDefault()">
                 {{ pendingAssayNum.length }}
               </span>
             </span>
           </li>
-          <li class="stat-item" (click)="showDetails('unavailable')" style="cursor: pointer;">
+          <li class="stat-item stat-item-clickable" role="button" tabindex="0"
+              (click)="showDetails('unavailable')"
+              (keydown.enter)="showDetails('unavailable')"
+              (keydown.space)="showDetails('unavailable'); $event.preventDefault()">
             <span class="stat-label">Unavailable Primary Data<br><i>data not shared with ReFRAME team</i></span>
             <span class="stat-value">{{unavailablePrimaryNum.length}}</span>
           </li>

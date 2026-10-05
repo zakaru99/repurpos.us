@@ -4,6 +4,30 @@ h1 {
   margin-top: 0;
 }
 
+// Custom elements default to display:inline, which can cause inconsistent
+// behavior for sticky-positioned descendants nested inside (see
+// .hdr-top-row in compound-header.component.scss).
+app-compound-header {
+  display: block;
+}
+
+// Sticky sidebar: the structure image + chemical IDs + PK data + ontology
+// data stay pinned while the (much longer) right column scrolls beneath
+// them. This works because Bootstrap's flex .row stretches col-lg-4 to
+// match col-lg-8's height, giving this inner row real room to stick within
+// as its parent scrolls past.
+//
+// top stacks the site header's height with the compound page's fixed name
+// row (--compound-header-height, published by CompoundHeaderComponent) -
+// without the second part, the sidebar tried to stick right at the site
+// header's edge, where the higher z-index fixed name row then covered its
+// top portion, and it didn't look properly "stuck" until much further
+// down the page.
+.col-lg-4.pr-4 > .row {
+  position: sticky;
+  top: calc(var(--site-header-height, 70px) + var(--compound-header-height, 60px));
+  z-index: 10;
+}
 
 a {
   cursor: pointer;

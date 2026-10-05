@@ -1,5 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Location } from '@angular/common';
+import { Component, OnInit, AfterViewInit, OnDestroy, Input, ViewChild, ElementRef } from '@angular/core';
 import { CompoundService } from '../../_services/index';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { LoginStateService } from '../../_services';
@@ -14,9 +13,25 @@ import { AssayData, Compound } from '../../_models';
   styleUrls: ['./compound-header.component.scss']
 })
 
-export class CompoundHeaderComponent implements OnInit {
+export class CompoundHeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() results_per_page: number;
-  @Input() _location: Location;
+  @ViewChild('borderSentinel') borderSentinel: ElementRef;
+  // Whether the fixed name row is floating over scrolled content (past the
+  // header's own bottom border) - only then does it need its own copy of
+  // that border, so the two don't both show at once while still at the top.
+  pastHeader: boolean = false;
+  private borderObserver: any;
+
+  // Publishes the fixed name row's own height so the sticky left sidebar
+  // (compound-data.component.scss) can start below it, not just below the
+  // site header - without this, the sidebar tried to stick at
+  // --site-header-height alone, which the higher z-index fixed row then
+  // covered the top of, and the sidebar didn't visibly look "stuck" until
+  // much further down the page. Safe to measure with ResizeObserver here
+  // (unlike the earlier collapsing-header attempt): this row's height
+  // never changes now, so there's no reflow for a tight observer to fight.
+  @ViewChild('fixedRow') fixedRow: ElementRef;
+  private fixedRowObserver: any;
 
   public label: string;
   public aliases: Array<string> = [];
@@ -201,12 +216,46 @@ export class CompoundHeaderComponent implements OnInit {
     }
   }
 
-  backClick() {
-    this._location.back();
-  }
-
   ngOnInit() {
     this.checkToxicity();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.borderSentinel && this.fixedRow) {
+      // The sentinel sits right next to the real border, but that border is
+      // covered up by the site header + this fixed name row well before it
+      // scrolls past the raw viewport top - without accounting for their
+      // combined height, there's a gap where the real border is already
+      // hidden behind them but this row's own border hasn't kicked in yet,
+      // so neither is visible.
+      const siteHeaderHeight = parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--site-header-height')
+      ) || 70;
+      const fixedRowHeight = this.fixedRow.nativeElement.offsetHeight;
+      this.borderObserver = new IntersectionObserver(
+        (entries) => { this.pastHeader = !entries[0].isIntersecting; },
+        { threshold: 0, rootMargin: `-${siteHeaderHeight + fixedRowHeight}px 0px 0px 0px` }
+      );
+      this.borderObserver.observe(this.borderSentinel.nativeElement);
+    }
+
+    if (this.fixedRow) {
+      const publish = () => {
+        const height = this.fixedRow.nativeElement.offsetHeight;
+        document.documentElement.style.setProperty('--compound-header-height', height + 'px');
+      };
+      this.fixedRowObserver = new (window as any).ResizeObserver(publish);
+      this.fixedRowObserver.observe(this.fixedRow.nativeElement);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.borderObserver) {
+      this.borderObserver.disconnect();
+    }
+    if (this.fixedRowObserver) {
+      this.fixedRowObserver.disconnect();
+    }
   }
 
   get reframeStatus(): { key: string; label: string; tooltip: string } {

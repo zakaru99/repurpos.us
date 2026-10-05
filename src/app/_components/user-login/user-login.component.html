@@ -9,13 +9,13 @@
     <form #userForm="ngForm" class="login-form">
       <mat-form-field color="primary">
         <input matInput placeholder="Email address" [formControl]="email" required id="email"
-               name="email" aria-label="email">
-        <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
+               name="email" aria-label="email" [errorStateMatcher]="errorMatcher">
       </mat-form-field>
 
       <mat-form-field color="primary">
         <input matInput placeholder="Password" id="password" [type]="'password'"
-               aria-label="password" required [formControl]="password" name="password">
+               aria-label="password" required [formControl]="password" name="password"
+               [errorStateMatcher]="errorMatcher">
       </mat-form-field>
 
       <button class="login-button" mat-raised-button color="primary" type="submit" (click)="onSubmit()" aria-label="login">Login</button>

@@ -21,28 +21,64 @@ h1 {
 }
 
 .cmpd-header {
-  margin-top: 12px;
+  margin-top: 0;
   padding-bottom: 25px;
   margin-bottom: 45px;
   border-bottom: 10px #d3d7dc solid;
   position: relative;
 }
 
-.hdr-back {
-  margin-bottom: 8px;
-  font-size: 0.9em;
-}
-
-/* ── Top row: name + rfm tile + action buttons in normal flow ── */
+/* ── Top row: name + rfm tile + action buttons, permanently pinned ── */
+// position:sticky was tried here first and doesn't work for "pinned for
+// the whole page": a sticky element can't stay stuck past its own
+// containing block's bounds, and #header's box ends well before the
+// page's actual content does (right after the vendor/WHO-name/aliases
+// section, before the long list of assay/vendor-data/etc. components that
+// follow as later siblings of <app-compound-header> - it un-stuck exactly
+// at that boundary). position:fixed isn't bounded by any container, so it
+// stays pinned for the entire page regardless. Two copies: this one
+// (--placeholder) stays in normal flow purely to reserve the row's real
+// height so nothing shifts; the actual visible, interactive one right
+// after it is --fixed.
 #header { position: relative; }
 
 .hdr-top-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 0.75rem;
   flex-wrap: wrap;
+  padding: 0.6rem 1.5rem;
+}
+
+.hdr-top-row--placeholder {
+  visibility: hidden;
+}
+
+.hdr-top-row--fixed {
+  position: fixed;
+  top: var(--site-header-height, 70px);
+  // Insets match the two nested .container-fluid gutters between the
+  // viewport edge and .cmpd-header (app.component's outer one + this
+  // page's own one, 15px each) so this bar's border lines up with
+  // .cmpd-header's border-bottom instead of running edge-to-edge.
+  left: 30px;
+  right: 30px;
+  z-index: 1500;
+  background: var(--color-surface);
+  border-bottom: 10px solid transparent;
+
+  // Only shown once scrolled past the header's own bottom border - while
+  // that border is still on screen, showing this one too would look like
+  // a duplicate.
+  &.past-header {
+    border-bottom-color: #d3d7dc;
+  }
+}
+
+.header-border-sentinel {
+  height: 1px;
 }
 
 .hdr-name-wrap {
@@ -92,8 +128,8 @@ h1 {
   line-height: 1;
   transition: color 0.2s, background 0.2s, border-color 0.2s;
 
-  &:hover  { color: #3d6de0; background: rgba(61,109,224,0.07); border-color: #7f9feb; }
-  &.active { color: #3d6de0; border-color: #3d6de0; background: rgba(61,109,224,0.07); }
+  &:hover  { color: var(--color-brand-500); background: rgba(61,109,224,0.07); border-color: #7f9feb; }
+  &.active { color: var(--color-brand-500); border-color: var(--color-brand-500); background: rgba(61,109,224,0.07); }
 }
 
 .hdr-label {
@@ -170,16 +206,16 @@ h1 {
 }
 
 .dropdown-create {
-  background: #3d6de0;
+  background: var(--color-brand-500);
   color: white;
   border: none;
   padding: 0.28rem 0.6rem;
-  border-radius: 6px;
+  border-radius: var(--radius-control);
   font-size: 0.78rem;
   cursor: pointer;
   white-space: nowrap;
   &:disabled { opacity: 0.45; cursor: default; }
-  &:not(:disabled):hover { background: #335cc0; }
+  &:not(:disabled):hover { background: var(--color-brand-600); }
 }
 
 /* ── Content ── */
@@ -203,17 +239,17 @@ div#cmpd-names { position: inherit; }
 .underline { text-decoration: underline; }
 
 .dwnld-btn {
-  background-color: #3D6DE0;
+  background-color: var(--color-brand-500);
   color: white;
   border: none;
-  border-radius: 4px;
-  padding: 8px 14px;
+  border-radius: var(--radius-control);
+  padding: var(--space-2) 14px;
   font-size: 0.85em;
   font-weight: 500;
   font-family: 'Lato', sans-serif;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  &:hover { background-color: #2f5ccf; }
+  &:hover { background-color: var(--color-brand-600); }
 }
 
 #downloadQC { padding-top: 10px; }
@@ -291,6 +327,18 @@ div#cmpd-names { position: inherit; }
   /* Hide desktop action buttons and rfm-tile in top row (mobile row covers these) */
   .hdr-top-row .header-actions { display: none; }
   .rfm-tile { display: none; }
+
+  /* Compound name is too large on mobile, especially in the fixed/pinned row */
+  .hdr-top-row h1 {
+    font-size: 1.25rem;
+  }
+
+  /* Desktop insets match the nested .container-fluid gutters, but mobile's
+     .cmpd-header has no side padding of its own - go edge-to-edge here too. */
+  .hdr-top-row--fixed {
+    left: 0;
+    right: 0;
+  }
 
   /* Show mobile compact row */
   .hdr-mobile-row {

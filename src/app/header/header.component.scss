@@ -4,8 +4,13 @@
 .blue-fill {
   background-color: #f5f8fd;
   padding-top: 6px;
-  padding-bottom: 12px;
-  margin-bottom: 6px;
+  // Was padding-bottom: 12px + margin-bottom: 6px. A margin is never
+  // covered by its own element's background - it sits outside the box - so
+  // that 6px was a permanently transparent strip beneath the header,
+  // letting scrolled page content show through it now that the header is
+  // sticky. Folding it into padding keeps the same total space but makes
+  // all of it part of this element's own opaque background.
+  padding-bottom: 18px;
   border-bottom: 3px solid #7f9feb;
   align-items: center;
   justify-content: space-between;
