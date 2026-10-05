@@ -48,7 +48,7 @@
             <span class="action-row-desc">Send a reset link to your email</span>
           </div>
           <div class="action-row-control">
-            <button *ngIf="resetState === 'idle'" class="btn-secondary" (click)="resetPassword()" [disabled]="!userStatus">
+            <button *ngIf="resetState === 'idle'" class="account-btn-secondary" (click)="resetPassword()" [disabled]="!userStatus">
               Send Reset Link
             </button>
             <span *ngIf="resetState === 'loading'" class="status-text">Sending...</span>
@@ -67,7 +67,7 @@
             <span class="danger-note" *ngIf="deleteState === 'unavailable'">Not yet available — contact an administrator</span>
           </div>
           <div class="action-row-control">
-            <button class="btn-danger" (click)="startDelete()" [disabled]="!userStatus">Delete My Account</button>
+            <button class="account-btn-danger" (click)="startDelete()" [disabled]="!userStatus">Delete My Account</button>
           </div>
         </div>
 
@@ -80,8 +80,8 @@
             [placeholder]="userStatus?.email || 'your email'"
           />
           <div class="confirm-actions">
-            <button class="btn-secondary" (click)="cancelDelete()">Cancel</button>
-            <button class="btn-danger" (click)="confirmDelete()" [disabled]="!canConfirmDelete">Permanently Delete</button>
+            <button class="account-btn-secondary" (click)="cancelDelete()">Cancel</button>
+            <button class="account-btn-danger" (click)="confirmDelete()" [disabled]="!canConfirmDelete">Permanently Delete</button>
           </div>
         </div>
 

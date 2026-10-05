@@ -1,8 +1,10 @@
+@import '../../_cards';
+
 .top-tiles-wrapper {
   padding: 25px;
-  background: #f9f9fb; 
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+  background: #f9f9fb;
+  border-radius: var(--radius-container);
+  box-shadow: var(--shadow-raised);
   margin-bottom: 40px;
 }
 
@@ -59,8 +61,8 @@
 }
 
 .left-tile .search-bar button {
-  border-radius: 999px;
-  background: #3d6de0; /* CREST blue */
+  border-radius: var(--radius-pill);
+  background: var(--color-brand-500);
   color: white;
   padding: 0.6rem 1.5rem;
   cursor: pointer;
@@ -68,7 +70,7 @@
 }
 
 .left-tile .search-bar button:hover {
-  background: #335cc0; /* darker CREST blue */
+  background: var(--color-brand-600);
 }
 
 .right-tile .stat-list {
@@ -95,6 +97,27 @@
 .right-tile .stat-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+// Only tiles that are clickable as a whole get the pointer cursor + focus
+// ring — previously this was an inline style repeated on 3 elements (and
+// missing on the 2 clickable numbers inside "Dose Response Data" entirely).
+.stat-item-clickable {
+  cursor: pointer;
+}
+
+.stat-item-clickable:focus-visible,
+.stat-value.clickable:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+// The two clickable numbers inside "Dose Response Data" previously looked
+// identical to plain (non-clickable) stat values until hovered — coloring
+// them at rest signals they're actionable before the user touches them.
+.stat-value.clickable {
+  color: var(--color-brand-500);
+  font-weight: 600;
 }
 
 #assaysFound, #noResMessage {
@@ -137,7 +160,7 @@
 }
 
 .card-inner {
-  border-radius: 8px;
+  border-radius: var(--radius-container);
   overflow: hidden;
 }
 
@@ -147,10 +170,8 @@
 }
 
 .assay-type .card {
+  @include app-card;
   border: 1px solid #d4e1fb; /* replaced purple border */
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 0 4px 12px rgba(61, 109, 224, 0.25); /* replaced purple shadow */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   margin-bottom: 25px;
   display: flex;
@@ -160,9 +181,9 @@
 }
 
 .assay-type .card:hover {
+  @include app-card-hover;
   /* cursor: pointer; */
   transform: translateY(-5px);
-  box-shadow: 0 6px 20px #7f9feb; /* light CREST hover blue */
 }
 
 .card-header {

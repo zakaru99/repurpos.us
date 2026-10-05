@@ -1,0 +1,63 @@
+// Design tokens — single source of truth for color, spacing, type, radius, and shadow.
+//
+// Every value here was chosen because it is already the most common variant of that
+// intent somewhere in the app (see UI_UX_DESIGN_AUDIT.md, item #1) — this file doesn't
+// introduce a new visual language, it names the one that's already dominant so future
+// components stop reinventing it.
+//
+// Declared as CSS custom properties (not SCSS $variables) so they cascade into every
+// component's emulated-encapsulation styles via var(...) without needing an @import
+// in each component stylesheet.
+:root {
+  // Color — brand
+  --color-brand-100: #e9f0ff; // light tint, e.g. subtle backgrounds/highlights
+  --color-brand-500: #3d6de0; // primary brand blue
+  --color-brand-600: #335cc0; // hover/active state of brand-500
+  --color-brand-700: #1d3b76; // dark blue, e.g. headings on light backgrounds
+
+  // Color — semantic
+  --color-success: #28a745;
+  --color-danger: #fd5457;
+  --color-warning: #ffa500;
+
+  // Color — neutrals
+  --color-text: #212529; // primary body text
+  --color-text-muted: #6b7280; // secondary/meta text
+  --color-border: #eff1f2; // subtle dividers
+  --color-border-strong: #c5cbd0; // input borders, stronger separators
+  --color-surface: #ffffff;
+  --color-surface-muted: #f5f6f7; // table stripes, recessed panels
+
+  // Spacing — 4px base scale
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  // Typography
+  --font-family-base: "Lato", Arial, sans-serif;
+  --font-size-xs: 0.75rem; // meta text, timestamps
+  --font-size-sm: 0.85rem; // secondary labels
+  --font-size-base: 1rem; // body
+  --font-size-md: 1.1rem; // emphasized body / small subheading
+  --font-size-lg: 1.25rem; // section titles
+  --font-size-xl: 1.75rem; // major section headings
+  --font-size-xxl: 2.5rem; // hero / page title
+  --font-weight-regular: 300;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  // Border radius — two purposes only
+  --radius-control: 8px; // buttons, inputs
+  --radius-container: 12px; // cards, panels, dialogs
+  --radius-pill: 999px; // pill-shaped buttons/badges
+
+  // Shadow — three elevation levels, always soft rgba (never a solid-color glow)
+  --shadow-resting: 0 2px 6px rgba(0, 0, 0, 0.06);
+  --shadow-raised: 0 6px 18px rgba(0, 0, 0, 0.08);
+  --shadow-overlay: 0 10px 30px rgba(0, 0, 0, 0.12);
+}

@@ -1,13 +1,29 @@
 <div class="cmpd-header" (window:resize)="onResize($event)">
 
-  <div class="hdr-back">
-    <a (click)="backClick()"><< return to previous page</a>
-  </div>
-
   <div id="header">
 
-    <!-- Top row: compound name + rfm tile + desktop action buttons (in flow, no overlap) -->
-    <div class="hdr-top-row">
+    <!-- Invisible placeholder: sticky can't stay pinned past its own
+         container's bounds (that's the bug just found - it un-stuck once
+         #header's own end was reached, well before the page's actual
+         content ends). This copy stays in normal flow purely to reserve
+         the row's height so nothing shifts; the real, always-visible
+         copy right below is position:fixed, which isn't bounded by any
+         container at all. -->
+    <div class="hdr-top-row hdr-top-row--placeholder" aria-hidden="true">
+      <div class="hdr-name-wrap">
+        <h1>{{ label }}</h1>
+        <div class="rfm-tile rfm-tile--{{ reframeStatus.key }}">{{ reframeStatus.label }}</div>
+      </div>
+      <div class="header-actions" *ngIf="loggedIn && compoundId">
+        <button class="hdr-icon-btn">{{ isFavorite ? '&#9829;' : '&#9825;' }} <span class="hdr-label">{{ isFavorite ? 'Saved' : 'Save' }}</span></button>
+        <div class="list-dropdown-wrap">
+          <button class="hdr-icon-btn">&#9776; <span class="hdr-label">Add to list</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- The real, interactive, always-visible row. -->
+    <div #fixedRow class="hdr-top-row hdr-top-row--fixed" [class.past-header]="pastHeader">
       <div class="hdr-name-wrap">
         <h1>{{ label }}</h1>
         <div class="rfm-tile rfm-tile--{{ reframeStatus.key }}" [matTooltip]="reframeStatus.tooltip">{{ reframeStatus.label }}</div>
@@ -110,29 +126,35 @@
       {{ chemVendors[0]['chem_vendor'] }}<span *ngIf="chemVendors[0]['chem_vendor_id']"> &middot; {{ chemVendors[0]['chem_vendor_id'] }}</span>
     </div>
 
-  </div>
+    <div *ngIf="hasA00295Data && isToxicA00295" class="toxicity-alert toxicity-alert--toxic">
+      This compound has been found to inhibit growth of HEK293 cells with IC50 &lt; 10μM
+    </div>
+    <div *ngIf="hasA00296Data && isToxicA00296" class="toxicity-alert toxicity-alert--toxic">
+      This compound has been found to inhibit growth of HepG2 cells with IC50 &lt; 10μM
+    </div>
+    <div *ngIf="hasA01229Data && isToxicA01229" class="toxicity-alert toxicity-alert--toxic">
+      This compound has been found to inhibit growth of U2OS cells with IC50 &lt; 10μM
+    </div>
+    <div *ngIf="hasA00295Data && !isToxicA00295" class="toxicity-alert toxicity-alert--non-toxic">
+      No inhibition of HEK293 cell growth at 12.5μM
+    </div>
+    <div *ngIf="hasA00296Data && !isToxicA00296" class="toxicity-alert toxicity-alert--non-toxic">
+      No inhibition of HepG2 cell growth at 12.5μM
+    </div>
+    <div *ngIf="hasA01229Data && !isToxicA01229" class="toxicity-alert toxicity-alert--non-toxic">
+      No inhibition of U2OS cell growth at 12.5μM
+    </div>
+    <div *ngIf="integrityPediatrics" class="pediatric-alert">
+      Drug tested for PK in pediatric patients
+      <span class="pediatric-note">(Clarivate Pharmacokinetics Datafeed reports that this drug has been administered in a pediatric patient in a clinical study)</span>
+    </div>
 
-  <div *ngIf="hasA00295Data && isToxicA00295" class="toxicity-alert toxicity-alert--toxic">
-    This compound has been found to inhibit growth of HEK293 cells with IC50 &lt; 10μM
-  </div>
-  <div *ngIf="hasA00296Data && isToxicA00296" class="toxicity-alert toxicity-alert--toxic">
-    This compound has been found to inhibit growth of HepG2 cells with IC50 &lt; 10μM
-  </div>
-  <div *ngIf="hasA01229Data && isToxicA01229" class="toxicity-alert toxicity-alert--toxic">
-    This compound has been found to inhibit growth of U2OS cells with IC50 &lt; 10μM
-  </div>
-  <div *ngIf="hasA00295Data && !isToxicA00295" class="toxicity-alert toxicity-alert--non-toxic">
-    No inhibition of HEK293 cell growth at 12.5μM
-  </div>
-  <div *ngIf="hasA00296Data && !isToxicA00296" class="toxicity-alert toxicity-alert--non-toxic">
-    No inhibition of HepG2 cell growth at 12.5μM
-  </div>
-  <div *ngIf="hasA01229Data && !isToxicA01229" class="toxicity-alert toxicity-alert--non-toxic">
-    No inhibition of U2OS cell growth at 12.5μM
-  </div>
-  <div *ngIf="integrityPediatrics" class="pediatric-alert">
-    Drug tested for PK in pediatric patients
-    <span class="pediatric-note">(Clarivate Pharmacokinetics Datafeed reports that this drug has been administered in a pediatric patient in a clinical study)</span>
+    <!-- Marks the header's own bottom edge (the grey border) - once this
+         scrolls out of view, the fixed name row shows its own copy of that
+         border; until then, showing both at once would look like a
+         duplicate. Purely cosmetic - a class toggle, not a layout change. -->
+    <div #borderSentinel class="header-border-sentinel"></div>
+
   </div>
 
 </div>

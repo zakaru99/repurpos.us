@@ -28,6 +28,7 @@ export class CompoundDataComponent implements OnInit {
   smiles: string;
   loggedIn: boolean;
   showVendor: boolean = false;
+
   // label: string;
   tableData: Array<Object> = [];
   aliases: Array<string> = [];
@@ -118,7 +119,6 @@ export class CompoundDataComponent implements OnInit {
 
   ngOnInit() {
   }
-
 
   // showMore(clickEvent, qid: string): void {
   //   let elementID: string = clickEvent.srcElement.id;
