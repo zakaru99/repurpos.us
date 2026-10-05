@@ -1,6 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { ForgotPasswordComponent } from './forgot-password.component';
+
+@Component({ selector: 'mat-form-field', template: '<ng-content></ng-content>' })
+class MatFormFieldStubComponent {}
+
+@Component({ selector: 'mat-error', template: '<ng-content></ng-content>' })
+class MatErrorStubComponent {}
 
 describe('ForgotPasswordComponent', () => {
   let component: ForgotPasswordComponent;
@@ -8,7 +17,8 @@ describe('ForgotPasswordComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ForgotPasswordComponent ]
+      imports: [ ReactiveFormsModule, HttpClientTestingModule ],
+      declarations: [ ForgotPasswordComponent, MatFormFieldStubComponent, MatErrorStubComponent ]
     })
     .compileComponents();
   }));

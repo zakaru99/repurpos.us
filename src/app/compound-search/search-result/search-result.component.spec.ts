@@ -1,6 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
 
 import { SearchResultComponent } from './search-result.component';
+
+@Component({ selector: 'app-search-results-table', template: '' })
+class SearchResultsTableStubComponent {}
 
 describe('SearchResultComponent', () => {
   let component: SearchResultComponent;
@@ -8,7 +12,7 @@ describe('SearchResultComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SearchResultComponent ]
+      declarations: [ SearchResultComponent, SearchResultsTableStubComponent ]
     })
     .compileComponents();
   }));

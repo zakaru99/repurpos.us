@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material';
 
 import { SaltWarningDialogComponent } from './salt-warning-dialog.component';
 
@@ -8,7 +9,10 @@ describe('SaltWarningDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SaltWarningDialogComponent ]
+      declarations: [ SaltWarningDialogComponent ],
+      providers: [
+        { provide: MatDialog, useValue: jasmine.createSpyObj('MatDialog', ['open']) }
+      ]
     })
     .compileComponents();
   }));

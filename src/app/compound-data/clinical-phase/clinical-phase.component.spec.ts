@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatTooltipModule } from '@angular/material';
 
 import { ClinicalPhaseComponent } from './clinical-phase.component';
+import { TitleCasePipe } from '../../_pipes';
 
 describe('ClinicalPhaseComponent', () => {
   let component: ClinicalPhaseComponent;
@@ -8,7 +10,8 @@ describe('ClinicalPhaseComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ClinicalPhaseComponent ]
+      imports: [MatTooltipModule],
+      declarations: [ ClinicalPhaseComponent, TitleCasePipe ]
     })
     .compileComponents();
   }));

@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { CompoundCalibrPkDataComponent } from './compound-calibr-pk-data.component';
+import { CompoundService, LoginStateService, BackendSearchService } from '../../_services';
 
 describe('CompoundCalibrPkDataComponent', () => {
   let component: CompoundCalibrPkDataComponent;
@@ -8,7 +10,9 @@ describe('CompoundCalibrPkDataComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CompoundCalibrPkDataComponent ]
+      imports: [HttpClientTestingModule],
+      declarations: [ CompoundCalibrPkDataComponent ],
+      providers: [CompoundService, LoginStateService, BackendSearchService]
     })
     .compileComponents();
   }));

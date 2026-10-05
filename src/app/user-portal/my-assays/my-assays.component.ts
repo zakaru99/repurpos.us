@@ -34,7 +34,7 @@ export class MyAssaysComponent implements OnInit {
 
   loadAssays(userEmail: string): void {
     let params = new HttpParams().set('email', userEmail);
-    if(this.selectedStatus){
+    if (this.selectedStatus) {
       params = params.set('status', this.selectedStatus);
     }
 
@@ -60,18 +60,18 @@ export class MyAssaysComponent implements OnInit {
     this.selectedStatus = status;
 
     const email = this.loginState.getUserEmail();
-    if (!email) return;
+    if (!email) { return; }
 
     this.loadAssays(email);
   }
 
-    viewAssay(assay: Assay): void {
+  viewAssay(assay: Assay): void {
     console.log('View assay', assay);
     // Navigate to a details page or open modal
   }
 
   editAssay(assay: Assay): void {
-    if (assay.status !== 'Pending') return;
+    if (assay.status !== 'Pending') { return; }
     console.log('Edit assay', assay);
     // Open edit modal or navigate to edit form
   }

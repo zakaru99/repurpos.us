@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatTooltipModule } from '@angular/material';
 
 import { AvailableDataComponent } from './available-data.component';
 
@@ -8,6 +9,7 @@ describe('AvailableDataComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [MatTooltipModule],
       declarations: [ AvailableDataComponent ]
     })
     .compileComponents();
@@ -16,6 +18,7 @@ describe('AvailableDataComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AvailableDataComponent);
     component = fixture.componentInstance;
+    component.availData = [];
     fixture.detectChanges();
   });
 

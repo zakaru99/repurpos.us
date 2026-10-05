@@ -1,11 +1,14 @@
 import { TestBed, inject } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { AssayDataService } from './assay-data.service';
+import { StructureSvgService } from './structure-svg.service';
 
 describe('AssayDataService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [AssayDataService]
+      imports: [HttpClientTestingModule],
+      providers: [AssayDataService, StructureSvgService]
     });
   });
 

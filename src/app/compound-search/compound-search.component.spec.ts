@@ -1,6 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
 
 import { CompoundSearchComponent } from './compound-search.component';
+
+@Component({ selector: 'search-box', template: '' })
+class SearchBoxStubComponent {}
+
+@Component({ selector: 'search-result', template: '' })
+class SearchResultStubComponent {}
 
 describe('CompoundSearchComponent', () => {
   let component: CompoundSearchComponent;
@@ -8,7 +15,7 @@ describe('CompoundSearchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CompoundSearchComponent ]
+      declarations: [ CompoundSearchComponent, SearchBoxStubComponent, SearchResultStubComponent ]
     })
     .compileComponents();
   }));

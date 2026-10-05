@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { AssayTypeBtnComponent } from './assay-type-btn.component';
+import { StructureSvgService } from '../../_services/structure-svg.service';
 
 describe('AssayTypeBtnComponent', () => {
   let component: AssayTypeBtnComponent;
@@ -8,7 +10,9 @@ describe('AssayTypeBtnComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AssayTypeBtnComponent ]
+      imports: [HttpClientTestingModule],
+      declarations: [ AssayTypeBtnComponent ],
+      providers: [StructureSvgService]
     })
     .compileComponents();
   }));

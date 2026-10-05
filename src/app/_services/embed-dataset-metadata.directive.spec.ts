@@ -2,7 +2,7 @@ import { EmbedDatasetMetadataDirective } from './embed-dataset-metadata.directiv
 
 describe('EmbedDatasetMetadataDirective', () => {
   it('should create an instance', () => {
-    const directive = new EmbedDatasetMetadataDirective();
+    const directive = new EmbedDatasetMetadataDirective({} as any, {} as any, {} as any);
     expect(directive).toBeTruthy();
   });
 });

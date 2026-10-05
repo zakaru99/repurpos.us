@@ -10,13 +10,14 @@ import { DeferLoadModule } from '@trademe/ng-defer-load'
   templateUrl: './struct2d.component.html',
   styleUrls: ['./struct2d.component.scss']
 })
-export class Struct2dComponent implements OnInit {
+export class Struct2dComponent implements OnInit, OnChanges {
   @Input() smiles: string;
   @Input() structure: string;
   @Input() struct_type: string;
-  @Input() launch_search: boolean = true;
+  @Input() launch_search = true;
   svg: SafeHtml;
   svgUrl: string;
+  showMyElement: boolean;
 
   constructor(private domSanitizer: DomSanitizer, private svgSvc: StructureSvgService) { }
 
@@ -38,8 +39,7 @@ export class Struct2dComponent implements OnInit {
             // console.log(err)
           }
         );
-    }
-    else {
+    } else {
       this.svg = this.domSanitizer.bypassSecurityTrustHtml(this.structure);
     }
   }
@@ -64,6 +64,5 @@ export class Struct2dComponent implements OnInit {
   //     }
   //   }
   // }
-  showMyElement: boolean;
 
 }

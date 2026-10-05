@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 
 import { CompoundSearchOptionsComponent } from './compound-search-options.component';
 
@@ -8,6 +9,7 @@ describe('CompoundSearchOptionsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ FormsModule ],
       declarations: [ CompoundSearchOptionsComponent ]
     })
     .compileComponents();

@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogRef } from '@angular/material';
 
 import { SaltWarningComponent } from './salt-warning.component';
 
@@ -8,7 +9,10 @@ describe('SaltWarningComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SaltWarningComponent ]
+      declarations: [ SaltWarningComponent ],
+      providers: [
+        { provide: MatDialogRef, useValue: { close: () => {} } }
+      ]
     })
     .compileComponents();
   }));

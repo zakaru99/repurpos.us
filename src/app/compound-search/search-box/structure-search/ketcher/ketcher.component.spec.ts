@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { KetcherComponent } from './ketcher.component';
+import { SearchResultService, StructureService } from '../../../../_services/index';
 
 describe('KetcherComponent', () => {
   let component: KetcherComponent;
@@ -8,7 +10,12 @@ describe('KetcherComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ KetcherComponent ]
+      imports: [ HttpClientTestingModule ],
+      declarations: [ KetcherComponent ],
+      providers: [
+        SearchResultService,
+        StructureService
+      ]
     })
     .compileComponents();
   }));

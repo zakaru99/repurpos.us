@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { AssayPaginationComponent } from './assay-pagination.component';
+import { StructureSvgService } from '../../_services/structure-svg.service';
 
 describe('AssayPaginationComponent', () => {
   let component: AssayPaginationComponent;
@@ -8,7 +10,9 @@ describe('AssayPaginationComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AssayPaginationComponent ]
+      imports: [HttpClientTestingModule],
+      declarations: [ AssayPaginationComponent ],
+      providers: [StructureSvgService]
     })
     .compileComponents();
   }));

@@ -1,20 +1,31 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material';
 
-import { DialogOverviewExampleDialogComponent } from './dialog-overview-example-dialog.component';
+import { DialogOverviewExampleDialog } from './dialog-overview-example-dialog.component';
 
-describe('DialogOverviewExampleDialogComponent', () => {
-  let component: DialogOverviewExampleDialogComponent;
-  let fixture: ComponentFixture<DialogOverviewExampleDialogComponent>;
+@Component({ selector: 'mat-form-field', template: '<ng-content></ng-content>' })
+class MatFormFieldStubComponent {}
+
+describe('DialogOverviewExampleDialog', () => {
+  let component: DialogOverviewExampleDialog;
+  let fixture: ComponentFixture<DialogOverviewExampleDialog>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DialogOverviewExampleDialogComponent ]
+      imports: [ FormsModule, MatDialogModule ],
+      declarations: [ DialogOverviewExampleDialog, MatFormFieldStubComponent ],
+      providers: [
+        { provide: MatDialogRef, useValue: { close: () => {} } },
+        { provide: MAT_DIALOG_DATA, useValue: { name: 'Test', animal: '' } }
+      ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DialogOverviewExampleDialogComponent);
+    fixture = TestBed.createComponent(DialogOverviewExampleDialog);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

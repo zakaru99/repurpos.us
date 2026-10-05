@@ -7,6 +7,8 @@ import { MatDialog } from '@angular/material';
 import { User } from '../../_models/index';
 import { TermsComponent } from '../terms/terms.component';
 
+declare var grecaptcha: any;
+
 export class PasswordValidation {
 
   static MatchPassword(AC: AbstractControl) {

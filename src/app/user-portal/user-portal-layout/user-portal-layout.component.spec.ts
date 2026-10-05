@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { UserPortalLayoutComponent } from './user-portal-layout.component';
 
@@ -8,6 +9,7 @@ describe('UserPortalLayoutComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ RouterTestingModule ],
       declarations: [ UserPortalLayoutComponent ]
     })
     .compileComponents();

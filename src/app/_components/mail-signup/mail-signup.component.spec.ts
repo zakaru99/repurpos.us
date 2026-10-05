@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material';
 
 import { MailSignupComponent } from './mail-signup.component';
 
@@ -8,7 +9,10 @@ describe('MailSignupComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MailSignupComponent ]
+      declarations: [ MailSignupComponent ],
+      providers: [
+        { provide: MatDialog, useValue: jasmine.createSpyObj('MatDialog', ['open']) }
+      ]
     })
     .compileComponents();
   }));

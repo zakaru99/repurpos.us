@@ -25,52 +25,52 @@ export class PasswordValidation {
   styleUrls: ['./reset-password.component.scss']
 })
 export class ResetPasswordComponent implements OnInit {
-	rid: string;
-	resetResponse: string;
-	resetReady: boolean = false;
-	resetSuccess: boolean = false;
-	resetPasswordForm: FormGroup;
+  rid: string;
+  resetResponse: string;
+  resetReady: boolean = false;
+  resetSuccess: boolean = false;
+  resetPasswordForm: FormGroup;
 
   constructor(private route: ActivatedRoute, private http: HttpClient, @Inject(FormBuilder) fb: FormBuilder) {
-  	route.params.subscribe(params => {
-  		this.rid = params['rid'];
-  	});
+    route.params.subscribe(params => {
+      this.rid = params['rid'];
+    });
 
-  	this.resetPasswordForm = fb.group({
+    this.resetPasswordForm = fb.group({
       password: new FormControl('', Validators.minLength(8)),
       confirmPassword: new FormControl('', Validators.minLength(8)),
       }, {validator: PasswordValidation.MatchPassword});
   }
 
   ngOnInit() {
-  	this.http.post('/api/auth/reset_pass/check',
-  		{"token": this.rid},
-  		{
-  			observe: 'response',
-  			headers: new HttpHeaders()
-  				.set('content-type', 'application/json')
-  		}
-  	).subscribe(res => {
-  		this.resetResponse = res.body['message'];
-  		if (res.body['status'] == 'success') {
-  			this.resetReady = true;
-  		}
-  	},
-  	(err: HttpErrorResponse) => {
-  		console.log(err);
-  		this.resetResponse = err.error.message;
-  		this.resetReady = false;
-  	});
+    this.http.post('/api/auth/reset_pass/check',
+      {"token": this.rid},
+      {
+        observe: 'response',
+        headers: new HttpHeaders()
+          .set('content-type', 'application/json')
+      }
+    ).subscribe(res => {
+      this.resetResponse = res.body['message'];
+      if (res.body['status'] === 'success') {
+        this.resetReady = true;
+      }
+    },
+    (err: HttpErrorResponse) => {
+      console.log(err);
+      this.resetResponse = err.error.message;
+      this.resetReady = false;
+    });
   }
 
   /*
    * Submits the form and sends HTTP request to change password
    */
   onSubmit(event) {
-  	this.http.post('/api/auth/reset_pass',
+    this.http.post('/api/auth/reset_pass',
       {
-      	'token': this.rid,
-      	'password': this.resetPasswordForm.controls.password.value
+        'token': this.rid,
+        'password': this.resetPasswordForm.controls.password.value
       },
       {
         observe: 'response',
@@ -80,7 +80,7 @@ export class ResetPasswordComponent implements OnInit {
       }
 
     ).subscribe((re) => {
-        let credentials = re.body;
+        const credentials = re.body;
         this.resetResponse = credentials['message'];
         this.resetSuccess = (credentials['status'] === 'success');
       },

@@ -16,6 +16,8 @@ describe('AssaySparklineComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AssaySparklineComponent);
     component = fixture.componentInstance;
+    component.currentVal = [] as any;
+    component.assayMin = 1.25e-4;
     fixture.detectChanges();
   });
 
