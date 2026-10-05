@@ -555,7 +555,9 @@ export class CompoundService {
             this.chiralitySubject.next(this.chirality);
 
             // Pull out chemical vendor source data --> compound-header
-            this.chemSourceSubject.next(<Object[]>b.chem_vendors);
+            // (skip entries with no vendor name - e.g. on-order compounds - so the
+            // header doesn't show an empty "available via" / QC download button)
+            this.chemSourceSubject.next(<Object[]>(b.chem_vendors || []).filter(v => v['chem_vendor']));
 
             // Pull out vendor data --> compound-vendor-data
             // b.gvk = [b.gvk]
