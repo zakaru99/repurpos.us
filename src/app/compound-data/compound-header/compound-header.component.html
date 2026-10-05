@@ -1,10 +1,10 @@
-<div class="cmpd-header" [class.cmpd-header--loading]="!label" (window:resize)="onResize($event)">
+<div class="cmpd-header" (window:resize)="onResize($event)">
 
   <div class="hdr-back">
     <a (click)="backClick()"><< return to previous page</a>
   </div>
 
-  <div id="header" *ngIf="label">
+  <div id="header">
 
     <!-- Top row: compound name + rfm tile + desktop action buttons (in flow, no overlap) -->
     <div class="hdr-top-row">
