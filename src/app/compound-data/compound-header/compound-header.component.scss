@@ -26,6 +26,9 @@ h1 {
   margin-bottom: 45px;
   border-bottom: 10px #d3d7dc solid;
   position: relative;
+
+  /* hide the divider bar until the compound has loaded */
+  &--loading { border-bottom-color: transparent; }
 }
 
 .hdr-back {
