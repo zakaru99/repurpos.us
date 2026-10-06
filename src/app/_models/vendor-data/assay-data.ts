@@ -18,6 +18,7 @@ export interface AssayData {
   url?: string;
   r_sq?: number;
   assay_type?: string;
+  curve_keys?: string[];
 }
 
 // For nesting; converts some of the fields to arrays and adds some additional fields

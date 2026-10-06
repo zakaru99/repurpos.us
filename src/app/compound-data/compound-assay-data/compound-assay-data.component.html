@@ -25,6 +25,9 @@
           <th class="header-title align-middle sortable" (click)="sortData('ac50')">
             Measurement <span class="sort-arrow" *ngIf="sortColumn === 'ac50'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
           </th>
+          <th class="header-title align-middle">
+            Curve
+          </th>
           <th class="header-title align-middle sortable" (click)="sortData('source')">
             Assay Source <span class="sort-arrow" *ngIf="sortColumn === 'source'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
           </th>
@@ -61,12 +64,24 @@
             {{ x['ac50'] ? x['ac50'].toExponential(2) : 'NA' }}
           </td>
 
+          <td class="align-middle" data-label="Curve">
+            <button type="button" class="curve-thumb-btn" *ngFor="let key of x.curve_keys" (click)="openCurve(key)"
+                    [attr.aria-label]="'Enlarge dose response curve for ' + x['assay_id']">
+              <img class="curve-thumb" [src]="curveUrl(key)" loading="lazy" alt="Dose response curve for {{ x['assay_id'] }}">
+            </button>
+          </td>
+
           <td class="align-middle" data-label="Source">
             <a href="https://www.calibr.org/" target="_blank" rel="noreferrer">Calibr</a>
           </td>
         </tr>
       </table>
     </div>
+  </div>
+
+  <!-- ENLARGED CURVE -->
+  <div class="curve-overlay" *ngIf="enlargedCurve" (click)="closeCurve()" role="dialog" aria-modal="true" aria-label="Dose response curve">
+    <img class="curve-full" [src]="enlargedCurve" alt="Dose response curve" (click)="$event.stopPropagation()">
   </div>
 
 </div>
