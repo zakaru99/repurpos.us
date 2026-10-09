@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { AssayData } from '../../_models/index';
 import { CompoundService, ColorPaletteService } from '../../_services/index';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-compound-assay-data',
@@ -19,6 +20,10 @@ export class CompoundAssayDataComponent implements OnInit {
   // Toggle activity
   activity_text = 'Show Data';
   hide_activity: boolean = true;
+
+  // Dose-response curve images, served by the backend from the ACAS uploads S3 bucket
+  curveUrlBase = environment.api_url + '/curve_image?key=';
+  enlargedCurve: string = null;
 
   displayedColumns: string[] = [
     'id',
@@ -43,6 +48,19 @@ export class CompoundAssayDataComponent implements OnInit {
   toggle_activity_data() {
     this.hide_activity = !this.hide_activity;
     this.activity_text = this.hide_activity ? 'Show Data' : 'Hide Data';
+  }
+
+  curveUrl(key: string): string {
+    return this.curveUrlBase + encodeURIComponent(key);
+  }
+
+  openCurve(key: string) {
+    this.enlargedCurve = this.curveUrl(key);
+  }
+
+  @HostListener('document:keydown.escape')
+  closeCurve() {
+    this.enlargedCurve = null;
   }
 
   // Sorting function
