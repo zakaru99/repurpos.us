@@ -34,7 +34,7 @@
     &.active {
       color: $ink;
       font-weight: 500;
-      border-bottom-color: $ink;
+      border-bottom-color: $accent;
     }
 
     @include focus-ring($accent, 2px);
@@ -56,7 +56,7 @@
   color: $ink;
   background: #fff;
   border: 1px solid $field-border;
-  border-radius: 4px;
+  border-radius: $radius-sharp;
   -webkit-appearance: none;
 
   &::placeholder {
@@ -82,10 +82,9 @@
   }
 }
 
+// Same height as the table beside it; scrolls on its own
 .detail {
-  position: sticky;
-  top: calc(var(--site-header-height, 65px) + 16px);
-  max-height: calc(100vh - var(--site-header-height, 65px) - 32px);
+  max-height: calc(100vh - var(--site-header-height, 65px) - 200px);
   overflow-y: auto;
   padding-left: 40px;
   border-left: 1px solid $rule;
@@ -103,6 +102,12 @@
 .error {
   @include error-text;
   margin: 0 0 16px !important;
+}
+
+.count {
+  margin: 0 0 10px !important;
+  font-size: 0.875rem;
+  color: $ink-soft;
 }
 
 .retry {

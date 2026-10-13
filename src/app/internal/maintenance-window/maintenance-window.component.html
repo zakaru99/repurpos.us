@@ -44,6 +44,7 @@
     <h2>Scheduled</h2>
     <p class="error" *ngIf="listError" role="alert">{{ listError }}</p>
 
+    <div class="scroll">
     <table class="table">
       <thead>
         <tr>
@@ -55,7 +56,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let w of windows" [class.past]="isPast(w)" [class.editing]="editingId === w.id">
+        <tr *ngFor="let w of visibleWindows" [class.past]="isPast(w)" [class.editing]="editingId === w.id">
           <td class="when">{{ formatScheduled(w) }}<span class="past-note" *ngIf="isPast(w)"> (past)</span></td>
           <td class="msg">{{ w.message || 'Standard message' }}</td>
           <td>{{ w.enabled ? 'Shown' : 'Hidden' }}</td>
@@ -80,5 +81,9 @@
         </tr>
       </tbody>
     </table>
+    </div>
+    <button type="button" class="show-older" *ngIf="hiddenCount > 0" (click)="showOlder = true">
+      Show {{ hiddenCount }} older {{ hiddenCount === 1 ? 'window' : 'windows' }}
+    </button>
   </section>
 </div>

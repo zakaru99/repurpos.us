@@ -15,6 +15,8 @@ export class UserManagementComponent implements OnInit {
   searching = false;
   admins: AdminUser[] = [];
   loadingAdmins = false;
+  readonly adminLimit = 10;
+  showAllAdmins = false;
   errorMsg = '';
 
   // The user whose access change is awaiting confirmation, and which change

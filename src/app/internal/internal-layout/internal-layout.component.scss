@@ -1,5 +1,6 @@
-// Admin portal shell: a title and section tabs on one line, then the section
-// on a plain white page.
+// Admin portal shell. The header is a compact version of the homepage hero
+// (navy band, hex lattice, eyebrow, white underline tabs like the hero search)
+// so moving from the site into the portal feels continuous.
 
 @import '../admin';
 
@@ -9,26 +10,43 @@
   background: #fff;
 }
 
-.toolbar {
-  display: flex;
-  align-items: baseline;
-  gap: 40px;
-  padding: 18px $admin-gutter 0;
-  border-bottom: 1px solid $rule;
-
-  h1 {
-    margin: 0;
-    font-family: $sans;
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: $ink;
-    white-space: nowrap;
-  }
+.band {
+  @include hex-lattice;
+  background: $navy;
+  color: #fff;
 }
 
+.inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  max-width: $admin-max;
+  height: 52px;
+  margin: 0 auto;
+  padding: 0 $admin-gutter;
+}
+
+// "CALIBR Admin" on one line, the label in the hero's eyebrow style
+.portal-name {
+  margin: 0 !important;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.eyebrow {
+  @include eyebrow(true);
+  margin-right: 6px;
+  font-size: 0.6875rem;
+}
+
+// Same treatment as the hero search's Compounds / Assays tabs
 .tabs {
   display: flex;
   gap: 28px;
+  align-self: stretch;
   overflow-x: auto;
   scrollbar-width: none;
 
@@ -37,32 +55,44 @@
   }
 
   a {
-    padding: 0 0 14px;
+    display: flex;
+    align-items: center;
     font-size: 0.9375rem;
+    font-weight: 500;
     white-space: nowrap;
-    color: $ink-soft;
+    color: rgba(255, 255, 255, 0.6);
     text-decoration: none;
     border-bottom: 2px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
 
     &:hover {
-      color: $ink;
+      color: #fff;
       text-decoration: none;
     }
 
     &.active {
-      color: $ink;
-      font-weight: 500;
-      border-bottom-color: $ink;
+      color: #fff;
+      border-bottom-color: #fff;
     }
 
-    @include focus-ring($accent, 2px);
+    @include focus-ring($accent-on-dark, 2px);
   }
 }
 
+.n {
+  margin-left: 8px;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: $accent-on-dark;
+}
+
 @media (max-width: $bp-phone) {
-  .toolbar {
-    flex-direction: column;
-    gap: 12px;
-    padding: 14px 16px 0;
+  .inner {
+    gap: 20px;
+    padding: 0 20px;
+  }
+
+  .portal-name {
+    display: none;
   }
 }

@@ -1,13 +1,15 @@
-<div class="toolbar">
-  <h1>Calibr admin</h1>
+<header class="band">
+  <div class="inner">
+    <p class="portal-name"><span class="eyebrow">Calibr</span> Admin</p>
 
-  <nav class="tabs" aria-label="Admin sections">
-    <a routerLink="dashboard" routerLinkActive="active">Overview</a>
-    <a routerLink="proposals" routerLinkActive="active">Proposals<ng-container *ngIf="pending > 0"> ({{ pending }})</ng-container></a>
-    <a routerLink="user_management" routerLinkActive="active">Admins</a>
-    <a routerLink="maintenance_window" routerLinkActive="active">Maintenance</a>
-  </nav>
-</div>
+    <nav class="tabs" aria-label="Admin sections">
+      <a routerLink="dashboard" routerLinkActive="active">Overview</a>
+      <a routerLink="proposals" routerLinkActive="active">Proposals<span class="n" *ngIf="pending > 0">{{ pending }} pending</span></a>
+      <a routerLink="user_management" routerLinkActive="active">Admins</a>
+      <a routerLink="maintenance_window" routerLinkActive="active">Maintenance</a>
+    </nav>
+  </div>
+</header>
 
 <main class="content">
   <router-outlet></router-outlet>

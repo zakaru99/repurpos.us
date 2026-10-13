@@ -15,6 +15,8 @@ export class ProposalTableComponent {
   @Input() selectedId: number = null;
   @Input() compact = false;
   @Input() showWaiting = false;
+  // CSS max-height for the scrolling region, e.g. '420px'; null = no limit
+  @Input() maxHeight: string = null;
   @Output() pick = new EventEmitter<AdminProposal>();
 
   daysWaiting(p: AdminProposal): number {

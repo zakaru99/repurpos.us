@@ -24,6 +24,10 @@ export class ProposalListComponent implements OnInit {
   query = '';
   selectedId: number = null;
 
+  // The table scrolls inside the space left below the headers, so the page
+  // itself never grows taller than the screen
+  readonly tableHeight = 'calc(100vh - var(--site-header-height, 65px) - 230px)';
+
   readonly filters: Array<{ value: StatusFilter; label: string }> = [
     { value: '', label: 'All' },
     { value: 'Pending', label: 'Pending' },

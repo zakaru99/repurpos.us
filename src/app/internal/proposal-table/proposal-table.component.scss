@@ -4,6 +4,11 @@
   display: block;
 }
 
+// Scrolls inside its own area when the parent sets a max height
+.scroll.limited {
+  @include table-scroll(none);
+}
+
 .table {
   @include data-table;
 

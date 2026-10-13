@@ -150,15 +150,19 @@ muted strip → navy footer. Don't put two dark bands next to each other.
   panel. It is not a full-width row.
 - **Footer**: navy, with link columns, the REFRAME citation (PNAS 2018, with a
   copy button) and white logos.
-- **Admin portal** (`/internal`): a plain internal tool. The page is white
-  and uses the full width, with a title and tabs (Overview, Proposals, Admins,
-  Maintenance) on one line. There are no cards. Tables run edge to edge, and
-  the Overview leads with what needs a decision. On the Proposals page the
-  detail pane opens only when a proposal is selected. Shared pieces (tables,
-  status text, fields, buttons) are in `src/app/internal/_admin.scss`; API
-  calls are in `admin-api.service.ts`. Any action that changes someone's
-  access or a proposal's status asks for confirmation in place, and the
-  interface only updates once the server confirms the change.
+- **Admin portal** (`/internal`): continues the homepage. A thin navy band
+  (hex lattice, "CALIBR Admin" in eyebrow style, white underline tabs like the
+  hero search) sits above white pages in a centred 1320px column. Pages use
+  eyebrow labels, weight-500 headings, square navy buttons and arrow links,
+  with no cards. Tables scroll inside a fixed-height area with a sticky header
+  (`table-scroll` mixin) rather than growing the page. The Overview is two
+  halves: proposals needing a decision on the left, maintenance, latest
+  submissions and admins on the right. On the Proposals page the detail pane
+  opens only when a proposal is selected. Shared pieces are in
+  `src/app/internal/_admin.scss`; API calls are in `admin-api.service.ts`.
+  Any action that changes someone's access or a proposal's status asks for
+  confirmation in place, and the interface only updates once the server
+  confirms the change.
 - **Status colours**: `$status-pending`, `$status-approved` and
   `$status-rejected`. In tables, show status as coloured text that spells out
   the word, never colour alone. The `-bg` tints are for rare emphasis only.

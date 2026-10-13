@@ -4,7 +4,8 @@
   <h2>Admins <span class="n" *ngIf="!loadingAdmins">{{ admins.length }}</span></h2>
 
   <p class="muted" *ngIf="loadingAdmins">Loading…</p>
-  <table class="table" *ngIf="!loadingAdmins && admins.length">
+  <div class="scroll" *ngIf="!loadingAdmins && admins.length">
+  <table class="table">
     <thead>
       <tr>
         <th>Email</th>
@@ -12,7 +13,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let admin of admins">
+      <tr *ngFor="let admin of (showAllAdmins ? admins : admins.slice(0, adminLimit))">
         <td>{{ admin.email }}</td>
         <td class="col-end">
           <ng-container *ngIf="!isConfirming(admin, false); else confirmRevoke">
@@ -29,6 +30,9 @@
       </tr>
     </tbody>
   </table>
+  </div>
+  <button type="button" class="show-all" *ngIf="!showAllAdmins && admins.length > adminLimit"
+          (click)="showAllAdmins = true">Show all {{ admins.length }} admins</button>
   <p class="muted" *ngIf="!loadingAdmins && !admins.length">No admins.</p>
 </section>
 

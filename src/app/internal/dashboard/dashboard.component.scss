@@ -4,60 +4,98 @@
   @include admin-page;
 }
 
-.lead {
-  margin-bottom: 24px;
+// Two halves: proposals needing a decision | maintenance, latest, admins
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 64px;
+  align-items: start;
 }
 
-// The one thing that matters on this page gets the size
+.eyebrow {
+  @include admin-eyebrow;
+}
+
 .headline {
-  margin: 0;
-  font-family: $sans;
-  font-size: 1.75rem;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: $ink;
+  @include admin-title;
 }
 
 .byline {
   margin: 6px 0 0 !important;
   font-size: 0.9375rem;
   color: $ink-soft;
+}
 
-  a {
-    margin-left: 6px;
-    color: $accent;
+.table {
+  display: block;
+  margin-top: 20px;
+}
+
+.arrow-link {
+  @include arrow-link;
+  font-size: 0.9375rem;
+}
+
+.more {
+  margin-top: 16px;
+}
+
+// Right column: short sections separated by rules
+.side {
+  section + section {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid $rule;
   }
 }
 
-.notes {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 48px;
-  margin-top: 48px;
-  padding-top: 20px;
-  border-top: 1px solid $rule;
+.note {
+  margin: 0 0 8px !important;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: $ink;
+  overflow-wrap: anywhere;
+}
 
-  h3 {
-    @include admin-heading;
-    margin-bottom: 6px;
-  }
+.latest {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 
-  p {
-    margin: 0 0 6px !important;
+  li {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 5px 0;
     font-size: 0.9375rem;
-    line-height: 1.55;
-    color: $ink;
-    overflow-wrap: anywhere;
   }
 
   a {
-    font-size: 0.875rem;
-    color: $accent;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: $ink;
+
+    &:hover {
+      color: $accent;
+    }
   }
+}
+
+.latest-meta {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  color: $ink-soft;
+}
+
+.status {
+  @include status-text;
 }
 
 .error {
   @include error-text;
+  margin: 8px 0 !important;
 }
 
 .loading {
@@ -65,9 +103,9 @@
   color: $ink-soft;
 }
 
-@media (max-width: $bp-tablet) {
-  .notes {
+@media (max-width: $bp-nav) {
+  .grid {
     grid-template-columns: 1fr;
-    gap: 28px;
+    gap: 48px;
   }
 }

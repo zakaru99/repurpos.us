@@ -54,8 +54,15 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['../proposals'], { relativeTo: this.route, queryParams: { id: p.id } });
   }
 
+  // Newest submissions, any status, for the right-hand column
+  get latest(): AdminProposal[] {
+    return (this.proposals || []).slice()
+      .sort((a, b) => submittedTime(b) - submittedTime(a))
+      .slice(0, 5);
+  }
+
   get adminEmails(): string {
-    return (this.admins || []).map(a => a.email).join(', ');
+    return (this.admins || []).slice(0, 6).map(a => a.email).join(', ');
   }
 
   get nextWindow(): MaintenanceWindow {

@@ -12,11 +12,16 @@
   {{ errorMessage }} <button type="button" class="retry" (click)="fetchProposals()">Try again</button>
 </p>
 <p class="muted" *ngIf="isLoading">Loading…</p>
+<p class="count" *ngIf="!isLoading && !errorMessage && filteredProposals.length">
+  {{ filteredProposals.length }} {{ filteredProposals.length === 1 ? 'proposal' : 'proposals' }}
+</p>
 
 <div class="layout" [class.open]="selected" *ngIf="!isLoading && !errorMessage">
   <div class="list">
     <app-proposal-table [proposals]="filteredProposals" [selectedId]="selectedId" [compact]="!!selected"
+                        [maxHeight]="tableHeight"
                         (pick)="select($event)"></app-proposal-table>
+
     <p class="muted empty" *ngIf="!filteredProposals.length">
       {{ proposals.length ? 'No proposals match.' : 'No proposals yet.' }}
     </p>

@@ -11,7 +11,11 @@
 h2 {
   @include admin-heading;
   margin-bottom: 14px;
-  font-size: 1.125rem;
+}
+
+.show-all {
+  @include admin-button(text);
+  margin-top: 12px;
 }
 
 .n {
@@ -28,6 +32,10 @@ h2 {
     white-space: nowrap;
     text-align: right;
   }
+}
+
+.scroll {
+  @include table-scroll(420px);
 }
 
 .confirm {
@@ -52,7 +60,7 @@ h2 {
     font-size: 0.9375rem;
     color: $ink;
     border: 1px solid $field-border;
-    border-radius: 4px;
+    border-radius: $radius-sharp;
     -webkit-appearance: none;
 
     &::placeholder {

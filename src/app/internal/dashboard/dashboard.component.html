@@ -1,17 +1,22 @@
-<div class="page" *ngIf="!loading; else loadingTpl">
+<div class="grid" *ngIf="!loading; else loadingTpl">
 
-  <!-- What needs a decision -->
-  <section class="lead">
+  <!-- Left half: what needs a decision -->
+  <section class="main">
+    <p class="eyebrow">Proposals</p>
     <ng-container *ngIf="proposals; else proposalsFailed">
       <h2 class="headline">
-        {{ waiting.length === 0 ? 'No proposals need a decision'
-           : waiting.length === 1 ? '1 proposal needs a decision'
-           : waiting.length + ' proposals need a decision' }}
+        {{ waiting.length === 0 ? 'Nothing needs a decision'
+           : waiting.length === 1 ? '1 needs a decision'
+           : waiting.length + ' need a decision' }}
       </h2>
-      <p class="byline">
-        {{ count('Approved') }} approved and {{ count('Rejected') }} rejected so far.
-        <a routerLink="../proposals">All proposals</a>
-      </p>
+      <p class="byline">Oldest first. {{ count('Approved') }} approved and {{ count('Rejected') }} rejected so far.</p>
+
+      <app-proposal-table *ngIf="waiting.length" class="table" [proposals]="waiting" [compact]="true"
+                          [showWaiting]="true" maxHeight="360px" (pick)="open($event)"></app-proposal-table>
+
+      <a class="arrow-link more" routerLink="../proposals" [queryParams]="waiting.length ? { status: 'Pending' } : {}">
+        {{ waiting.length ? 'Review in Proposals' : 'All proposals' }}
+      </a>
     </ng-container>
     <ng-template #proposalsFailed>
       <h2 class="headline">Proposals</h2>
@@ -19,31 +24,40 @@
     </ng-template>
   </section>
 
-  <app-proposal-table *ngIf="waiting.length" [proposals]="waiting" [showWaiting]="true"
-                      (pick)="open($event)"></app-proposal-table>
-
-  <!-- Quieter information -->
-  <div class="notes">
+  <!-- Right half: everything else -->
+  <aside class="side">
     <section>
-      <h3>Maintenance</h3>
+      <p class="eyebrow">Maintenance</p>
       <p class="error" *ngIf="!windows">Could not load the maintenance queue.</p>
       <ng-container *ngIf="windows">
-        <p *ngIf="nextWindow as w; else noWindow">
+        <p class="note" *ngIf="nextWindow as w; else noWindow">
           Next window {{ formatPacific(w.scheduledStart) }}.
           {{ w.enabled ? 'The banner is showing to visitors.' : 'The banner is hidden.' }}
         </p>
-        <ng-template #noWindow><p>Nothing scheduled.</p></ng-template>
+        <ng-template #noWindow><p class="note">Nothing scheduled.</p></ng-template>
       </ng-container>
-      <a routerLink="../maintenance_window">Schedule maintenance</a>
+      <a class="arrow-link" routerLink="../maintenance_window">Schedule maintenance</a>
+    </section>
+
+    <section *ngIf="proposals?.length">
+      <p class="eyebrow">Latest submissions</p>
+      <ul class="latest">
+        <li *ngFor="let p of latest">
+          <a routerLink="../proposals" [queryParams]="{ id: p.id }">{{ p.indication || 'Untitled proposal' }}</a>
+          <span class="latest-meta">{{ p.submittedOn | date:'d MMM' }} · <span class="status" [ngClass]="p.status | lowercase">{{ p.status }}</span></span>
+        </li>
+      </ul>
     </section>
 
     <section>
-      <h3>Admins</h3>
+      <p class="eyebrow">Admins</p>
       <p class="error" *ngIf="!admins">Could not load admins.</p>
-      <p *ngIf="admins">{{ adminEmails || 'None.' }}</p>
-      <a routerLink="../user_management">Manage admins</a>
+      <p class="note" *ngIf="admins">
+        {{ adminEmails || 'None.' }}<ng-container *ngIf="admins.length > 6"> and {{ admins.length - 6 }} more</ng-container>
+      </p>
+      <a class="arrow-link" routerLink="../user_management">Manage admins</a>
     </section>
-  </div>
+  </aside>
 </div>
 
 <ng-template #loadingTpl>

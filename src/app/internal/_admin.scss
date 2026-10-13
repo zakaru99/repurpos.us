@@ -1,21 +1,83 @@
 // Shared pieces for the Calibr admin portal, on top of src/_design.scss.
 // Import from an admin component with: @import '../admin';
 //
-// The portal is a plain internal tool: white page, full width, hierarchy from
-// type and hairline rules. No cards, no pills, no decorative copy (see the
-// "Looking hand-made" section of DESIGN.md).
+// The portal follows the homepage: a navy header band like the hero, then
+// white sections in a centred column with eyebrow labels, hairline rules,
+// square navy buttons and arrow links. No cards, pills or decorative copy
+// (see "Looking hand-made" in DESIGN.md).
 
 @import '../../design';
 
 $admin-gutter: 32px;
+$admin-max: 1320px; // wider than the homepage column: these pages are tables
 
-// Page body under the portal toolbar
+// Page body under the portal header, in the site's centred column
 @mixin admin-page {
   display: block;
-  padding: 28px $admin-gutter 56px;
+  max-width: $admin-max;
+  margin: 0 auto;
+  padding: 36px $admin-gutter 64px;
 
   @media (max-width: $bp-phone) {
-    padding: 20px 16px 40px;
+    padding: 24px 20px 48px;
+  }
+}
+
+// Homepage-style section label + heading
+@mixin admin-eyebrow {
+  @include eyebrow;
+  display: block;
+  margin: 0 0 8px !important;
+}
+
+@mixin admin-title {
+  margin: 0;
+  font-family: $sans;
+  font-size: 1.75rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: $ink;
+
+  @media (max-width: $bp-phone) {
+    font-size: 1.5rem;
+  }
+}
+
+// Scrolling region for a table: fixed max height, header stays visible.
+// Put the table inside an element using this, e.g. @include table-scroll(420px)
+@mixin table-scroll($max) {
+  max-height: $max;
+  overflow-y: auto;
+  border-bottom: 1px solid $rule;
+
+  th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding-top: 2px;
+    background: #fff;
+    box-shadow: inset 0 -1px 0 $rule;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+}
+
+// Previous / next pager under a table
+@mixin pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 14px;
+  font-size: 0.875rem;
+  color: $ink-soft;
+
+  .pages {
+    display: flex;
+    gap: 8px;
   }
 }
 
@@ -23,8 +85,9 @@ $admin-gutter: 32px;
 @mixin admin-heading {
   margin: 0;
   font-family: $sans;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
   color: $ink;
 }
 
@@ -58,7 +121,7 @@ $admin-gutter: 32px;
   }
 
   td {
-    padding: 11px 12px;
+    padding: 9px 12px;
     color: $ink;
     border-bottom: 1px solid $rule-soft;
     vertical-align: baseline;
@@ -106,7 +169,7 @@ $admin-gutter: 32px;
     color: $ink;
     background: #fff;
     border: 1px solid $field-border;
-    border-radius: 4px;
+    border-radius: $radius-sharp;
 
     &::placeholder {
       color: $ink-faint;
@@ -140,7 +203,7 @@ $admin-gutter: 32px;
   font-weight: 500;
   white-space: nowrap;
   border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: $radius-sharp;
   cursor: pointer;
 
   @if $variant == primary {

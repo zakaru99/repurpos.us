@@ -87,6 +87,26 @@ $bp-nav: 1080px;
   }
 }
 
+// Faint hexagonal lattice over navy bands (homepage hero, admin header).
+// Pointy-top tile = one ring plus the bond to the next row; fades in from the right.
+$hex-lattice: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='31.18' height='54' viewBox='0 0 31.18 54'%3E%3Cpath d='M15.59 0L31.18 9V27L15.59 36L0 27V9Z M15.59 36V54' fill='none' stroke='%23ffffff' stroke-width='1'/%3E%3C/svg%3E";
+
+@mixin hex-lattice($opacity: 0.07) {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url($hex-lattice);
+    background-size: 31.18px 54px;
+    opacity: $opacity;
+    -webkit-mask-image: linear-gradient(100deg, transparent 35%, #000 85%);
+    mask-image: linear-gradient(100deg, transparent 35%, #000 85%);
+    pointer-events: none;
+  }
+}
+
 // ---------------------------------------------------------------- type
 
 // Small uppercase label above a heading

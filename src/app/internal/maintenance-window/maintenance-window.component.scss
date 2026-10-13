@@ -14,7 +14,11 @@
 h2 {
   @include admin-heading;
   margin-bottom: 16px;
-  font-size: 1.125rem;
+}
+
+.show-older {
+  @include admin-button(text);
+  margin-top: 12px;
 }
 
 // ---------------------------------------------------------------- form
@@ -89,6 +93,10 @@ h2 {
   tr.editing td {
     background: $selected;
   }
+}
+
+.scroll {
+  @include table-scroll(calc(100vh - var(--site-header-height, 65px) - 200px));
 }
 
 .past-note {
