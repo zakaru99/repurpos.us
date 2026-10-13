@@ -8,6 +8,45 @@ import { takeUntil, filter } from "rxjs/operators";
 import * as d3 from "d3";
 
 import *  as  ontology_data from './phase2b_moa_updated.json'
+import { holdsCompounds } from './ontology-export';
+
+// Tree palette - matches the legend in the template and the site's design tokens
+const COLORS = {
+  categoryFill: '#dbe4f7',
+  categoryStroke: '#3d6de0',
+  moa: '#1f8a5b',          // category whose children are compounds
+  compoundFill: '#ffffff',
+  compoundStroke: '#3d6de0',
+  found: '#e5484d',        // search / hover path
+  link: '#c9ced6',
+  text: '#0f1b2d',
+  textSoft: '#4a5568'
+};
+const FONT = '"IBM Plex Sans", "Lato", Arial, sans-serif';
+const MONO = '"IBM Plex Mono", Consolas, monospace';
+
+
+function nodeFill(d: any): string {
+  if (d.class === 'found') { return COLORS.found; }
+  if (holdsCompounds(d.data)) { return COLORS.moa; }
+  if (d.data.children) { return COLORS.categoryFill; }
+  return COLORS.compoundFill;
+}
+
+function nodeStroke(d: any): string {
+  if (d.class === 'found') { return COLORS.found; }
+  if (holdsCompounds(d.data)) { return COLORS.moa; }
+  if (d.data.children) { return COLORS.categoryStroke; }
+  return COLORS.compoundStroke;
+}
+
+// Number of distinct compounds (leaf nodes) under an ontology root
+function countCompounds(node: any, seen: Set<string> = new Set()): number {
+  const kids = node.children || [];
+  if (!kids.length && node.inchikey) { seen.add(node.inchikey); }
+  kids.forEach(k => countCompounds(k, seen));
+  return seen.size;
+}
 
 @Component({
   selector: 'app-ontology-tree',
@@ -15,8 +54,17 @@ import *  as  ontology_data from './phase2b_moa_updated.json'
   styleUrls: ['./ontology-tree.component.scss']
 })
 export class OntologyTreeComponent implements OnInit, AfterViewInit {
-  instructions:boolean = true;
-  visible:boolean = false;
+  // The five ontology roots
+  ontologies: Array<{ label: string; count: number }> = ((ontology_data as any).entities || [])
+    .map(e => ({ label: e.preferred_name, count: countCompounds(e) }));
+
+  // 'columns' (Finder-style browser, default) or 'tree' (d3 tree)
+  view: 'columns' | 'tree' = 'columns';
+  currentRoot: any;
+  revealId: number = null;
+
+  // Flat list of every node in the current ontology, for the search box
+  searchIndex: Array<{ id: any; preferred_name: string; parent_name: string; lower: string }> = [];
 
   title = 'd3tree';
   @ViewChild('chart') private chartContainer: ElementRef;
@@ -74,67 +122,87 @@ ngAfterViewInit(): void {
     return; // important so the rest runs AFTER redirect
   }
 
-  // existing code continues...
-  this.beep = (ontology_data as any).entities[src];
-  this.updateTabs(parseInt(src));
-  this.renderTreeChart(this.beep);
-  this.switch_ontology_source({ target: { name: src, id: 'pharma_role' } });
+  this.view = this._route.snapshot.queryParams['view'] === 'tree' ? 'tree' : 'columns';
+  const searchParam = parseInt(this._route.snapshot.queryParams['search_id']);
+  // Defer so the bindings set here don't change during this check
+  setTimeout(() => {
+    // Apply any search from the URL first, so the first draw already shows it
+    if (!isNaN(searchParam)) {
+      this.search_id = searchParam;
+      this.revealId = searchParam;
+    }
+    this.switch_ontology_source({ target: { name: src } });
+    if (!isNaN(searchParam)) {
+      this.myControl.setValue(searchParam, { emitEvent: false });
+    }
+  });
 }
 
-
-  toggleCollapse(){
-    this.instructions = !this.instructions;
-    this.visible = !this.visible;
-  }
-
-  updateTabs(data_index) {  //updates the active class of tabs
-    const tabs = d3.select('#tabs');
-    if (data_index ==0) {
-      tabs.select('#pharma_role').classed('active', true);
-      tabs.select('#bio_role').classed('active', false);
-      tabs.select('#chem_role').classed('active', false);
-      tabs.select('#target_interaction').classed('active', false);
-      tabs.select('#target').classed('active', false);
-    } 
-    else if(data_index == '1') {
-      tabs.select('#pharma_role').classed('active', false);
-      tabs.select('#bio_role').classed('active', true);
-      tabs.select('#chem_role').classed('active', false);
-      tabs.select('#target_interaction').classed('active', false);
-      tabs.select('#target').classed('active', false);
-    }
-    else if(data_index == '2') {
-      tabs.select('#pharma_role').classed('active', false);
-      tabs.select('#bio_role').classed('active', false);
-      tabs.select('#chem_role').classed('active', true);
-      tabs.select('#target_interaction').classed('active', false);
-      tabs.select('#target').classed('active', false);
-    }
-    else if(data_index == '3') {
-      tabs.select('#pharma_role').classed('active', false);
-      tabs.select('#bio_role').classed('active', false);
-      tabs.select('#chem_role').classed('active', false);
-      tabs.select('#target_interaction').classed('active', true);
-      tabs.select('#target').classed('active', false);
-    }
-    else if(data_index == '4') {
-      tabs.select('#pharma_role').classed('active', false);
-      tabs.select('#bio_role').classed('active', false);
-      tabs.select('#chem_role').classed('active', false);
-      tabs.select('#target_interaction').classed('active', false);
-      tabs.select('#target').classed('active', true);
+  setView(view: 'columns' | 'tree') {
+    if (this.view === view) { return; }
+    this.view = view;
+    this._router.navigate([], { relativeTo: this._route, queryParams: { view }, queryParamsHandling: 'merge' });
+    if (view === 'tree') {
+      // The chart container has to be visible (sized) before d3 can draw into it
+      setTimeout(() => this.drawTree());
     }
   }
+
+  private drawTree() {
+    d3.select('#content').remove();
+    this.nameData_arr = [];
+    this.renderTreeChart(this.currentRoot);
+  }
+
+  private buildSearchIndex(root: any) {
+    const out = [];
+    const walk = (node, parent) => {
+      if (parent) {
+        out.push({ id: node.id, preferred_name: node.preferred_name, parent_name: parent.preferred_name,
+                   lower: String(node.preferred_name).toLowerCase() + ' ' + String(node.inchikey || '').toLowerCase() });
+      }
+      (node.children || []).forEach(k => walk(k, node));
+    };
+    walk(root, null);
+    this.searchIndex = out;
+    this.filteredOptions = this.myControl.valueChanges.pipe(
+      startWith(''),
+      map(v => {
+        const q = typeof v === 'string' ? v.trim().toLowerCase() : '';
+        if (q.length < 2) { return []; }
+        return this.searchIndex.filter(o => o.lower.includes(q)).slice(0, 50);
+      })
+    );
+  }
+
+  onSearchSelected(id: any) {
+    this.search_id = id;
+    this.revealId = id;
+    if (this.view === 'tree') {
+      this.searchTree();
+    } else {
+      this.handle_url_params();
+    }
+  }
+
+
   @ViewChild('searchInput') searchInput: ElementRef;
   switch_ontology_source(event) { //function switches data source from button clicks\
     //this.searchInput.nativeElement.value = '';
-    this.src = event.target.name
-    d3.select("#content").remove()      //clear the chart
-    this.nameData_arr = [];             //reset the search options
-    this.updateTabs(event.target.name)  //set the desired tab to active
+    const changed = this.src != null && this.src != event.target.name;
+    this.src = event.target.name;
+    this.currentRoot = (ontology_data as any).entities[event.target.name];
+    if (changed) {
+      this.search_id = undefined;
+      this.revealId = null;
+      this.myControl.setValue('', { emitEvent: true });
+    }
+    this.buildSearchIndex(this.currentRoot);
     this.handle_url_params();
-    this.renderTreeChart((ontology_data as any).entities[event.target.name]); //reload the chart with the selected data source
-    
+    if (this.view === 'tree') {
+      this.drawTree();
+    }
+
   }
 
   search_terms: string;
@@ -143,13 +211,11 @@ ngAfterViewInit(): void {
   nameData: Array<string> = [];
   nameData_arr: Array<{preferred_name: string, parent_name: string, id: string}> = [];  //array to hold the objects to pipe to the search dropdown
   filteredOptions: Observable<any[]>; //holds the filtered options
-  private _filter(value: string) {
-    return this.nameData_arr.filter(option => option.preferred_name.toLowerCase().includes(value));
-  }
 
-  getTitle(name_id: string) { //function takes in the id of a search and returns the nodes preferred name to display in the search box
-    let result = this.nameData_arr.find((nameObj) => nameObj.id === name_id);
-    return result.preferred_name + result.parent_name;
+  getTitle(name_id: any) { // shows the selected node's name in the search box
+    if (typeof name_id === 'string') { return name_id; }
+    const result = this.searchIndex.find(o => o.id == name_id);
+    return result ? result.preferred_name : '';
   }
 
   CollectName(d) {
@@ -163,12 +229,6 @@ ngAfterViewInit(): void {
     if(d.parent){ //if the object has a parent (i.e. not the root node) push the created object containing name, parent name, and id to the nameData_arr to send to the search dropdown
       this.nameData_arr.push({preferred_name: d.data.preferred_name, parent_name: "--("+d.parent.data.preferred_name+")", id: d.data.id})
     }
-    //this filters options every time the search input is changed
-    this.filteredOptions = this.myControl.valueChanges
-    .pipe(
-      startWith(''),  //this can filter out items from showing
-      map(preferred_name => preferred_name ? this._filter(preferred_name) : this.nameData_arr.slice()) //filter out any preferred name that doesnt match whats being typed
-    );
   }
 //===============================================
   remove_found(d) { //resets the found class of nodes
@@ -205,7 +265,7 @@ ngAfterViewInit(): void {
       relativeTo: this._route,
       queryParams: {
         src: this.src,
-        search_id: this.search_id
+        search_id: this.search_id || null
       },
       queryParamsHandling: 'merge',
       skipLocationChange: false
@@ -289,10 +349,8 @@ ngAfterViewInit(): void {
       }
     }
 
-    this.search_id = parseInt(this._route.snapshot.queryParams['search_id']);
-
-    if(this.search_id){
-      this.searchTree()
+    if (this.search_id) {
+      this.searchTree();
     }
   }
 
@@ -398,9 +456,8 @@ ngAfterViewInit(): void {
         return "node" + d.data.id //for path highlight
       })
       .attr('r', 1e-6)
-      .style('fill', (d) => {
-        return d._children ? 'lightsteelblue' : '#fff';
-      });
+      .style('fill', nodeFill)
+      .style('stroke', nodeStroke);
 
     nodeEnter.append('text')
       .attr('dy', '.35em')
@@ -410,7 +467,13 @@ ngAfterViewInit(): void {
       .attr('text-anchor', (d) => {
         return d.children || d._children ? 'end' : 'start';
       })
-      .style('font', '16px sans-serif')
+      .style('font', `14px ${FONT}`)
+      .style('fill', COLORS.text)
+      // White halo so links passing behind a label don't cut through it
+      .style('paint-order', 'stroke')
+      .style('stroke', '#fff')
+      .style('stroke-width', '4px')
+      .style('stroke-linejoin', 'round')
       .text((d) => { return d.data.preferred_name; });
 
     function get_ikey(d){
@@ -424,8 +487,13 @@ ngAfterViewInit(): void {
         var info = g.append('text')
         .classed('info', true)
         .attr('x', 20)
-        .attr('y', 20)
-        .text("IKEY: " + d.data.inchikey.substring(0,14));
+        .attr('y', 22)
+        .style('font', `12px ${MONO}`)
+        .style('fill', COLORS.textSoft)
+        .style('paint-order', 'stroke')
+        .style('stroke', '#fff')
+        .style('stroke-width', '4px')
+        .text("InChIKey " + d.data.inchikey.substring(0,14));
         g.on("click", function(d) {
           window.open("/" + "compound_data/" + get_ikey(d).substring(0,14));
         })
@@ -435,75 +503,35 @@ ngAfterViewInit(): void {
         .classed('info', true)
         .attr('x', 20)
         .attr('y', 40)
-        .text("SMILES: " + d.data.smiles);
+        .style('font', `12px ${MONO}`)
+        .style('fill', COLORS.textSoft)
+        .style('paint-order', 'stroke')
+        .style('stroke', '#fff')
+        .style('stroke-width', '4px')
+        .text("SMILES " + d.data.smiles);
       }
 
       //code below handles highlighting paths to hovered nodes
       //("circle").style("fill", "pink");
 
       d3.selectAll('circle.node')
-      .attr('r', 10)
-      .style('stroke-width', '3px')
-      .style('stroke', 'steelblue')
-      .style('fill', (d: any) => {
-        return d._children ? 'lightsteelblue' : '#fff';
-      })
-      .style("fill", function(d: any) {
-        if (d.class === "found") {
-            return "#ff4136"; //red
-        }
-        else{
-          let h = d.data
-          if("children" in h ){
-            if("inchikey" in h.children[0]){
-            return "green";
-            }
-            else{
-              return "lightsteelblue";
-            }
-          }
-          else{
-            return "lightsteelblue";
-          }
-        }
-    }).style("stroke", function(d: any) {
-      if (d.class === "found") {  //if the node is on a selected path
-          return "#ff4136"; //red
-      }
-      else{ 
-        let h = d.data
-        if("children" in h ){ //if the node has children
-          if("inchikey" in h.children[0]){  //if the child has an ikey, let the stroke be green
-            return "green";
-          }
-          else{
-            return "steelblue";
-          }
-        }
-        // else if(h['reframe_compound']=="true"){
-        //   return "pink";
-        // }
-        else if(h['reframe_compound']=="false"){
-          return "pink";
-        }
-        else{
-          return "steelblue";
-        }
-      }
-  })
-      .attr('cursor', 'pointer');
+        .attr('r', 7)
+        .style('stroke-width', '2px')
+        .style('fill', nodeFill)
+        .style('stroke', nodeStroke)
+        .attr('cursor', 'pointer');
 
-      d3.selectAll("path").style("stroke", "#c3c3c3");
+      d3.selectAll("path.link").style("stroke", COLORS.link);
       while (d.parent) {
         if("children" in d.data){
           if(!("inchikey" in d.data.children[0])){
-            d3.selectAll("#node"+d.data.id).style("fill", "red")
+            d3.selectAll("#node"+d.data.id).style("fill", COLORS.found).style("stroke", COLORS.found)
           }
         }else{
-          d3.selectAll("#node"+d.data.id).style("fill", "red")
+          d3.selectAll("#node"+d.data.id).style("fill", COLORS.found).style("stroke", COLORS.found)
         }
         if (d.parent != "null")
-          d3.select("#link"+d.parent.data.id + "-" + d.data.id).style("stroke", "red")
+          d3.select("#link"+d.parent.data.id + "-" + d.data.id).style("stroke", COLORS.found)
         d = d.parent;
       }
     })
@@ -522,32 +550,10 @@ ngAfterViewInit(): void {
       });
 
     nodeUpdate.select('circle.node')
-      .attr('r', 10)
-      .style('stroke-width', '3px')
-      .style('stroke', 'steelblue')
-      .style('fill', (d) => {
-        return d._children ? 'lightsteelblue' : '#fff';
-      })
-      .style("fill", function(d) {
-        if (d.class === "found") {
-            return "#ff4136"; //red
-        }
-        else{
-          let h = d.data
-          if("children" in h ){
-            if("inchikey" in h.children[0]){
-            return "green";
-            }
-            else{
-              return "lightsteelblue";
-            }
-          }
-          else{
-            return "lightsteelblue";
-          }
-          
-        }
-    })
+      .attr('r', 7)
+      .style('stroke-width', '2px')
+      .style('fill', nodeFill)
+      .style('stroke', nodeStroke)
       .attr('cursor', 'pointer');
 
     let nodeExit = node.exit().transition()
@@ -574,7 +580,8 @@ ngAfterViewInit(): void {
       })
       .style('fill', 'none')
 
-      .style('stroke-width', '2px')
+      .style('stroke-width', '1.5px')
+      .style('stroke', COLORS.link)
       .attr('d', function (d) {
         let o = { x: source.x0, y: source.y0 };
         return diagonal(o, o);
@@ -585,12 +592,8 @@ ngAfterViewInit(): void {
     linkUpdate.transition()
       .duration(this.duration)
       .style("stroke", function(d) {
-        if (d.class === "found") {
-            return "#ff4136";
-        }
-        else{
-          return  "#ccc";
-        }})
+        return d.class === "found" ? COLORS.found : COLORS.link;
+      })
       .attr('d', (d) => { return diagonal(d, d.parent); });
 
     let linkExit = link.exit().transition()

@@ -1,0 +1,439 @@
+// Finder-style column browser. Quiet surfaces, one accent for the current
+// selection, light grey for the rest of the open path.
+
+$ink: #0f1b2d;
+$ink-soft: #4a5568;
+$rule: #e3e6eb;
+$hover: #f2f4f7;
+$path: #e8ecf3;
+$accent: var(--color-brand-500);
+$moa: #1f8a5b;
+$mono: "IBM Plex Mono", SFMono-Regular, Consolas, monospace;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.browser {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+  outline: none;
+}
+
+// ---------------------------------------------------------------- breadcrumb
+
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  padding: 0 16px;
+  overflow-x: auto;
+  white-space: nowrap;
+  border-bottom: 1px solid $rule;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  // Overflowing flex rows drop their end padding; keep a gap after the last crumb
+  &::after {
+    content: '';
+    flex: 0 0 16px;
+  }
+}
+
+.crumb {
+  padding: 4px 6px;
+  font: inherit;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &:hover {
+    color: $ink;
+    background: $hover;
+  }
+
+  &.current {
+    color: $ink;
+    font-weight: 600;
+  }
+}
+
+.crumb-sep {
+  width: 5px;
+  height: 5px;
+  border-top: 1.5px solid #a0a8b5;
+  border-right: 1.5px solid #a0a8b5;
+  transform: rotate(45deg);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+// ---------------------------------------------------------------- columns
+
+.columns {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  // Wide layouts fold older columns instead of scrolling sideways
+  overflow: hidden;
+}
+
+// Folded earlier levels: a slim strip that steps back one level
+.fold {
+  flex: 0 0 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 0;
+  font: inherit;
+  color: $ink-soft;
+  background: #f7f8fa;
+  border: 0;
+  border-right: 1px solid $rule;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    color: $ink;
+    background: $hover;
+  }
+}
+
+.fold-chev {
+  width: 8px;
+  height: 8px;
+  border-left: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.fold-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.column {
+  flex: 0 0 300px;
+  overflow-y: auto;
+  border-right: 1px solid $rule;
+  animation: slideIn 0.22s cubic-bezier(0.22, 0.9, 0.27, 1);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.items {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  padding: 6px 10px;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  color: $ink;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    background: $hover;
+  }
+
+  &.selected {
+    background: $path;
+  }
+
+  &.current {
+    color: #fff;
+    background: $accent;
+
+    .count,
+    .chev {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .mark {
+      border-color: #fff;
+
+      &.moa {
+        background: #fff;
+      }
+    }
+  }
+}
+
+// Small marker: hollow = category, filled green = holds compounds, dot = compound
+.mark {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid #9aa6bb;
+  border-radius: 50%;
+
+  &.moa {
+    background: $moa;
+    border-color: $moa;
+  }
+
+  &.compound {
+    width: 6px;
+    height: 6px;
+    margin: 0 1px;
+    background: #9aa6bb;
+    border: 0;
+  }
+}
+
+.name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.count {
+  flex-shrink: 0;
+  font-family: $mono;
+  font-size: 0.75rem;
+  color: $ink-soft;
+}
+
+.chev {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  margin-left: 2px;
+  color: #a0a8b5;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
+
+// ---------------------------------------------------------------- detail pane
+
+.detail {
+  flex: 1 0 360px;
+  max-width: 520px;
+  overflow-y: auto;
+  padding: 28px 28px 32px;
+  background: #fbfcfd;
+  animation: slideIn 0.22s cubic-bezier(0.22, 0.9, 0.27, 1);
+
+  h2 {
+    margin: 0 0 12px;
+    font-family: inherit;
+    font-size: 1.375rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: $ink;
+  }
+}
+
+.structure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 180px;
+  margin-bottom: 20px;
+  background: #fff;
+  border: 1px solid $rule;
+  border-radius: 10px;
+
+  img {
+    max-width: 88%;
+    max-height: 84%;
+  }
+}
+
+// Compound name on the left, profile button pinned right on the same row
+.title-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.title-text {
+  min-width: 0;
+
+  h2 {
+    overflow-wrap: anywhere;
+  }
+}
+
+.kicker {
+  margin: 0 0 4px !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $ink-soft;
+}
+
+.comment {
+  margin: 0 0 16px !important;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: $ink-soft;
+}
+
+.facts {
+  margin: 0 0 24px;
+
+  div {
+    padding: 10px 0;
+    border-top: 1px solid $rule;
+  }
+
+  dt {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: $ink-soft;
+    margin-bottom: 3px;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 0.875rem;
+    color: $ink;
+  }
+
+  .big {
+    font-family: $mono;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .mono {
+    font-family: $mono;
+    font-size: 0.75rem;
+    overflow-wrap: anywhere;
+  }
+}
+
+.tag {
+  display: inline-block;
+  margin: 0 6px 6px 0;
+  padding: 2px 8px;
+  font-size: 0.8125rem;
+  background: $path;
+  border-radius: 6px;
+}
+
+.action {
+  display: inline-block;
+  padding: 10px 16px;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &.small {
+    flex-shrink: 0;
+    padding: 7px 12px;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+
+  &.primary {
+    color: #fff;
+    background: $accent;
+
+    &:hover {
+      background: var(--color-brand-600);
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+}
+
+// ---------------------------------------------------------------- empty state
+
+.empty {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 260px;
+  color: $ink-soft;
+  font-size: 0.9375rem;
+
+  p {
+    margin: 0 !important;
+  }
+}
+
+.keys {
+  font-size: 0.8125rem;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 20px;
+  margin-right: 3px;
+  padding: 1px 5px;
+  font-family: $mono;
+  font-size: 0.75rem;
+  text-align: center;
+  color: $ink;
+  background: #fff;
+  border: 1px solid $rule;
+  border-radius: 4px;
+  box-shadow: 0 1px 0 $rule;
+}
+
+// ---------------------------------------------------------------- small screens
+
+@media (max-width: 640px) {
+  // One column per screen width, swiped sideways
+  .columns {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+  }
+
+  .column,
+  .detail {
+    flex-basis: 86vw;
+    scroll-snap-align: start;
+  }
+
+  .empty {
+    display: none;
+  }
+}

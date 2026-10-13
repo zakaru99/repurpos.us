@@ -76,6 +76,7 @@ import {IndicationsGraphComponent} from "./compound-data/indications-graph/indic
 import {ShowMoreButtonComponent, ShowMorePane} from "./compound-data";
 import { WorkflowComponent } from './workflow/workflow.component';
 import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
+import { OntologyColumnsComponent } from './ontology-tree/ontology-columns/ontology-columns.component';
 
 // import { SearchResultHeaderComponent } from './compound-search/search-result-header/search-result-header.component';
 // import { ReframeFilterComponent } from './compound-search/search-result-header/reframe-filter/reframe-filter.component';
@@ -126,6 +127,7 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
     IndicationsGraphComponent,
     WorkflowComponent,
     OntologyTreeComponent,
+    OntologyColumnsComponent,
     ContactUsComponent,
     AssayProposalComponent,
     AssayDetailsModalComponent,
