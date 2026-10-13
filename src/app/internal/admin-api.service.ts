@@ -26,8 +26,18 @@ export interface AdminUser {
   id: number;
   email: string;
   isAdmin: boolean;
+  name?: string;          // not stored by the backend yet; used if it starts sending one
   registered_on?: string;
 }
+
+// The backend sends `admin`; the portal uses `isAdmin`
+const toUser = (u: any): AdminUser => ({
+  id: u.id,
+  email: u.email,
+  isAdmin: u.isAdmin !== undefined ? !!u.isAdmin : !!u.admin,
+  name: u.name || undefined,
+  registered_on: u.registered_on
+});
 
 // Calls used by the admin portal, in one place. Request shapes are unchanged
 // from the original per-component code.
@@ -76,7 +86,7 @@ export class AdminApiService {
     return this.http.get<{ success: boolean; data: AdminUser[] }>('/api/users', { params, headers: this.authHeaders }).pipe(
       map(res => {
         if (!res.success) { throw new Error('Failed to load admins'); }
-        return res.data;
+        return res.data.map(toUser);
       })
     );
   }
@@ -86,7 +96,7 @@ export class AdminApiService {
     return this.http.get<{ success: boolean; data: AdminUser[] }>('/api/users', { params, headers: this.authHeaders }).pipe(
       map(res => {
         if (!res.success) { throw new Error('Search failed'); }
-        return res.data;
+        return res.data.map(toUser);
       })
     );
   }

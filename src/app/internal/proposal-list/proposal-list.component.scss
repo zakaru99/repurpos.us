@@ -86,6 +86,11 @@
 
   &.open {
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+
+    // Wide screens: the list gets the larger share
+    @media (min-width: 1680px) {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 6fr);
+    }
   }
 }
 

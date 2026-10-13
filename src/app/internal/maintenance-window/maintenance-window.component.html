@@ -76,14 +76,14 @@
         <tr *ngIf="isLoading">
           <td colspan="5" class="muted">Loading…</td>
         </tr>
-        <tr *ngIf="!isLoading && windows.length === 0">
-          <td colspan="5" class="muted">Nothing scheduled.</td>
+        <tr *ngIf="!isLoading && visibleWindows.length === 0">
+          <td colspan="5" class="muted">Nothing upcoming.</td>
         </tr>
       </tbody>
     </table>
     </div>
-    <button type="button" class="show-older" *ngIf="hiddenCount > 0" (click)="showOlder = true">
-      Show {{ hiddenCount }} older {{ hiddenCount === 1 ? 'window' : 'windows' }}
+    <button type="button" class="show-older" *ngIf="pastCount > 0" (click)="showPast = !showPast">
+      {{ showPast ? 'Hide past windows' : 'Show past windows (' + pastCount + ')' }}
     </button>
   </section>
 </div>

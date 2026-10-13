@@ -26,9 +26,66 @@
   color: $ink-soft;
 }
 
+// Outcome bar: one segment per status, 2px gaps, rounded ends
+.mix {
+  display: flex;
+  gap: 2px;
+  height: 10px;
+  margin-top: 16px;
+
+  .seg {
+    flex: 1 1 0;
+    min-width: 4px;
+
+    &:first-child { border-radius: 4px 0 0 4px; }
+    &:last-child { border-radius: 0 4px 4px 0; }
+    &:only-child { border-radius: 4px; }
+
+    &.pending { background: $status-pending; }
+    &.approved { background: $status-approved; }
+    &.rejected { background: $status-rejected; }
+  }
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin: 10px 0 0 !important;
+  font-size: 0.875rem;
+  color: $ink;
+
+  .key {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+
+    &.pending { background: $status-pending; }
+    &.approved { background: $status-approved; }
+    &.rejected { background: $status-rejected; }
+  }
+
+  .of {
+    color: $ink-soft;
+  }
+}
+
+.table-label {
+  margin: 28px 0 0 !important;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $ink-soft;
+}
+
 .table {
   display: block;
-  margin-top: 20px;
+  margin-top: 8px;
   --table-max: 380px;
 }
 
@@ -41,12 +98,16 @@
   margin-top: 16px;
 }
 
-// Right column: short sections separated by rules
+// Right column on the homepage's tint band, for a touch of colour
 .side {
+  padding: 28px 32px;
+  background: $tint-bg;
+  border-radius: $radius-sharp;
+
   section + section {
     margin-top: 24px;
     padding-top: 24px;
-    border-top: 1px solid $rule;
+    border-top: 1px solid $rule-on-tint;
   }
 }
 

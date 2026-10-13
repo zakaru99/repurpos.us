@@ -23,9 +23,8 @@ export class MaintenanceWindowComponent implements OnInit {
   readonly minDate = todayInPacificDateString();
 
   windows: MaintenanceWindow[] = [];
-  // Past windows pile up over time; show the most recent few unless asked
-  readonly pastLimit = 5;
-  showOlder = false;
+  // Past windows are hidden until asked for
+  showPast = false;
   isLoading = false;
   listError = '';
 
@@ -66,14 +65,11 @@ export class MaintenanceWindowComponent implements OnInit {
   }
 
   get visibleWindows(): MaintenanceWindow[] {
-    if (this.showOlder) { return this.windows; }
-    const upcoming = this.windows.filter(w => !this.isPast(w));
-    const past = this.windows.filter(w => this.isPast(w));
-    return upcoming.concat(past.slice(0, this.pastLimit));
+    return this.showPast ? this.windows : this.windows.filter(w => !this.isPast(w));
   }
 
-  get hiddenCount(): number {
-    return this.windows.length - this.visibleWindows.length;
+  get pastCount(): number {
+    return this.windows.filter(w => this.isPast(w)).length;
   }
 
   isPast(w: MaintenanceWindow): boolean {

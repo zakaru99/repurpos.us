@@ -36,6 +36,19 @@
   }
 }
 
+// Compact tables hide the submitter columns; on wide screens the submitter
+// comes back (institution stays hidden so nothing wraps)
+.table.compact .extra,
+.table.compact .inst {
+  display: none;
+}
+
+@media (min-width: 1680px) {
+  .table.compact .extra {
+    display: table-cell;
+  }
+}
+
 .open {
   padding: 0;
   font: inherit;

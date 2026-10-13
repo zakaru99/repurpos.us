@@ -36,6 +36,14 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // Share of all proposals per status, for the outcome bar
+  get mix(): Array<{ status: string; n: number; pct: number }> {
+    const total = (this.proposals || []).length || 1;
+    return ['Pending', 'Approved', 'Rejected']
+      .map(status => ({ status, n: this.count(status), pct: this.count(status) / total * 100 }))
+      .filter(m => m.n > 0);
+  }
+
   count(status: string): number {
     return (this.proposals || []).filter(p => p.status === status).length;
   }

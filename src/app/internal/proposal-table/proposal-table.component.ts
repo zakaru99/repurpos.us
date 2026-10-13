@@ -3,7 +3,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AdminProposal } from '../admin-api.service';
 
 // Table of proposals, shared by the overview and the proposals page.
-// 'compact' drops the submitter columns when the detail pane is open;
+// 'compact' drops the submitter columns when the detail pane is open (except
+// on wide screens, where there's room for them);
 // 'waiting' shows how long each has waited instead of its status.
 @Component({
   selector: 'app-proposal-table',

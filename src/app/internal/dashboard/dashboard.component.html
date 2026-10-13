@@ -9,8 +9,18 @@
            : waiting.length === 1 ? '1 needs a decision'
            : waiting.length + ' need a decision' }}
       </h2>
-      <p class="byline">Oldest first. {{ count('Approved') }} approved and {{ count('Rejected') }} rejected so far.</p>
+      <!-- All proposals by outcome -->
+      <div class="mix" *ngIf="proposals.length" role="img"
+           [attr.aria-label]="count('Pending') + ' pending, ' + count('Approved') + ' approved, ' + count('Rejected') + ' rejected'">
+        <span *ngFor="let m of mix" class="seg" [ngClass]="m.status | lowercase" [style.flex-grow]="m.pct"
+              [title]="m.n + ' ' + (m.status | lowercase)"></span>
+      </div>
+      <p class="legend" *ngIf="proposals.length">
+        <span *ngFor="let m of mix" class="key"><span class="dot" [ngClass]="m.status | lowercase"></span>{{ m.n }} {{ m.status | lowercase }}</span>
+        <span class="of">of {{ proposals.length }} proposals</span>
+      </p>
 
+      <p class="table-label" *ngIf="waiting.length">Waiting longest first</p>
       <app-proposal-table *ngIf="waiting.length" class="table" [proposals]="waiting" [compact]="true"
                           [showWaiting]="true" [scroll]="true" (pick)="open($event)"></app-proposal-table>
 

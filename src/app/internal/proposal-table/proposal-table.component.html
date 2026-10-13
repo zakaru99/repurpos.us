@@ -4,8 +4,8 @@
     <tr>
       <th class="col-date">Submitted</th>
       <th>Indication</th>
-      <th *ngIf="!compact">Submitted by</th>
-      <th *ngIf="!compact">Institution</th>
+      <th class="extra">Submitted by</th>
+      <th class="inst">Institution</th>
       <th class="col-end">{{ showWaiting ? 'Waiting' : 'Status' }}</th>
     </tr>
   </thead>
@@ -18,8 +18,8 @@
         </button>
         <span class="id">#{{ p.id }}</span>
       </td>
-      <td *ngIf="!compact">{{ p.submittedBy || '—' }}</td>
-      <td *ngIf="!compact" class="muted">{{ p.institution || '—' }}</td>
+      <td class="extra">{{ p.submittedBy || '—' }}</td>
+      <td class="inst muted">{{ p.institution || '—' }}</td>
       <td class="col-end">
         <span *ngIf="showWaiting" class="waiting" [class.long]="daysWaiting(p) >= 14">{{ waitingLabel(p) }}</span>
         <span *ngIf="!showWaiting" class="status" [ngClass]="p.status | lowercase">{{ p.status }}</span>

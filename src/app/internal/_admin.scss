@@ -9,7 +9,7 @@
 @import '../../design';
 
 $admin-gutter: 32px;
-$admin-max: 1320px; // wider than the homepage column: these pages are tables
+$admin-max: 1920px; // effectively full width; only caps very wide monitors
 
 // Page body under the portal header, in the site's centred column
 @mixin admin-page {
@@ -48,6 +48,7 @@ $admin-max: 1320px; // wider than the homepage column: these pages are tables
 // Put the table inside an element using this, e.g. @include table-scroll(420px)
 @mixin table-scroll($max) {
   max-height: $max;
+  overflow-x: hidden;
   overflow-y: auto;
   border-bottom: 1px solid $rule;
 

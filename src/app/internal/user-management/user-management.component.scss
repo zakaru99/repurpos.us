@@ -4,56 +4,39 @@
   @include admin-page;
 }
 
-.block + .block {
-  margin-top: 48px;
+.layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
 }
 
-h2 {
-  @include admin-heading;
-  margin-bottom: 14px;
+.eyebrow {
+  @include admin-eyebrow;
 }
 
-.show-all {
-  @include admin-button(text);
-  margin-top: 12px;
+.headline {
+  @include admin-title;
+  margin-bottom: 20px;
 }
 
-.n {
-  margin-left: 4px;
-  font-weight: 400;
-  color: $ink-faint;
-}
+// ---------------------------------------------------------------- add (left)
 
-.table {
-  @include data-table;
-
-  .col-end {
-    width: 1%;
-    white-space: nowrap;
-    text-align: right;
-  }
-}
-
-.scroll {
-  @include table-scroll(420px);
-}
-
-.confirm {
-  margin-right: 12px;
-  font-size: 0.875rem;
-  color: $ink;
+.add {
+  min-height: 240px;
+  padding-right: 48px;
+  border-right: 1px solid $rule;
 }
 
 .lookup {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
+  gap: 8px;
+  margin: 6px 0 16px;
 
   input {
+    flex: 1 1 auto;
+    min-width: 0;
     box-sizing: border-box;
-    width: 360px;
-    max-width: 100%;
     height: 34px;
     padding: 0 10px;
     font: inherit;
@@ -75,8 +58,138 @@ h2 {
   }
 }
 
+.results {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  border-top: 1px solid $rule;
+
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid $rule-soft;
+  }
+}
+
+.result-who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.result-email {
+  font-size: 0.9375rem;
+  overflow-wrap: anywhere;
+}
+
+.result-meta {
+  font-size: 0.8125rem;
+  color: $ink-soft;
+}
+
+.confirm-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+// ---------------------------------------------------------------- admin cards (right)
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+// Same treatment as the homepage's download blocks: hairline box, navy top rule
+.card {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 4px 14px;
+  padding: 18px;
+  background: #fff;
+  border: 1px solid $rule;
+  border-top: 3px solid $navy;
+  border-radius: $radius-sharp;
+
+  &.confirming {
+    border-top-color: $status-rejected;
+  }
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: $navy;
+  border-radius: 50%;
+}
+
+.who {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: $ink;
+}
+
+.email {
+  font-size: 0.875rem;
+  color: $ink-soft;
+  overflow-wrap: anywhere;
+
+  &.solo {
+    font-size: 0.9375rem;
+    color: $ink;
+  }
+}
+
+.meta {
+  font-size: 0.8125rem;
+  color: $ink-faint;
+}
+
+.card-action {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid $rule-soft;
+}
+
+// ---------------------------------------------------------------- shared bits
+
+.confirm {
+  font-size: 0.875rem;
+  color: $ink;
+}
+
 .muted {
   margin: 0 !important;
+  font-size: 0.875rem;
   color: $ink-soft;
 }
 
@@ -89,29 +202,27 @@ h2 {
 .btn.secondary { @include admin-button(secondary); }
 .btn.danger { @include admin-button(danger); }
 .btn + .btn { margin-left: 8px; }
-.text { @include admin-button(text); }
-.text-danger { @include admin-button(text-danger); }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
+.text {
+  @include admin-button(text);
+  font-size: 0.875rem;
 }
 
-@media (max-width: $bp-phone) {
-  .lookup {
-    flex-wrap: wrap;
+.text-danger {
+  @include admin-button(text-danger);
+  font-size: 0.875rem;
+}
 
-    input {
-      width: 100%;
-    }
+@media (max-width: $bp-tablet) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
   }
 
-  .confirm {
-    display: block;
-    margin: 0 0 8px;
-    white-space: normal;
+  .add {
+    order: 2;
+    min-height: 0;
+    padding-right: 0;
+    border-right: 0;
   }
 }

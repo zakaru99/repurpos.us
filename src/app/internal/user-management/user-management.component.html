@@ -1,82 +1,78 @@
 <p class="error" *ngIf="errorMsg" role="alert">{{ errorMsg }}</p>
 
-<section class="block">
-  <h2>Admins <span class="n" *ngIf="!loadingAdmins">{{ admins.length }}</span></h2>
+<div class="layout">
+  <!-- Left: add an admin -->
+  <section class="add">
+    <p class="eyebrow">Add an admin</p>
+    <form class="lookup" (submit)="$event.preventDefault(); searchUser()">
+      <input type="search" [(ngModel)]="searchQuery" name="q" autocomplete="off"
+             placeholder="Search by email" aria-label="Find a user by email">
+      <button type="submit" class="btn secondary" [disabled]="searching || !searchQuery.trim()">
+        {{ searching ? 'Searching…' : 'Find' }}
+      </button>
+    </form>
 
-  <p class="muted" *ngIf="loadingAdmins">Loading…</p>
-  <div class="scroll" *ngIf="!loadingAdmins && admins.length">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Email</th>
-        <th class="col-end"><span class="sr-only">Actions</span></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let admin of (showAllAdmins ? admins : admins.slice(0, adminLimit))">
-        <td>{{ admin.email }}</td>
-        <td class="col-end">
+    <ul class="results" *ngIf="searchResults?.length">
+      <li *ngFor="let user of searchResults">
+        <div class="result-who">
+          <span class="result-email">{{ user.email }}</span>
+          <span class="result-meta">Joined {{ (user.registered_on | date:'d MMM y') || '—' }}</span>
+        </div>
+        <span class="muted" *ngIf="user.isAdmin">Admin</span>
+        <ng-container *ngIf="!user.isAdmin">
+          <ng-container *ngIf="!isConfirming(user, true); else confirmGrant">
+            <button type="button" class="btn secondary" (click)="askToGrant(user)">Make admin</button>
+          </ng-container>
+          <ng-template #confirmGrant>
+            <div class="confirm-block">
+              <span class="confirm">Give full admin access?</span>
+              <span>
+                <button type="button" class="btn primary" (click)="confirmChange()" [disabled]="saving">
+                  {{ saving ? 'Saving…' : 'Make admin' }}
+                </button>
+                <button type="button" class="btn secondary" (click)="cancelConfirm()" [disabled]="saving">Cancel</button>
+              </span>
+            </div>
+          </ng-template>
+        </ng-container>
+      </li>
+    </ul>
+    <p class="muted" *ngIf="searchResults && !searchResults.length">No users match "{{ searchQuery }}".</p>
+    <button type="button" class="text" *ngIf="searchResults" (click)="clearSearch()">Clear search</button>
+  </section>
+
+  <!-- Right: current admins -->
+  <section class="current">
+    <p class="eyebrow">Current admins</p>
+    <h2 class="headline">{{ loadingAdmins ? 'Admins' : admins.length + (admins.length === 1 ? ' admin' : ' admins') }}</h2>
+
+    <p class="muted" *ngIf="loadingAdmins">Loading…</p>
+    <p class="muted" *ngIf="!loadingAdmins && !admins.length">No admins.</p>
+
+    <ul class="cards" *ngIf="!loadingAdmins && admins.length">
+      <li class="card" *ngFor="let admin of admins" [class.confirming]="isConfirming(admin, false)">
+        <span class="avatar" aria-hidden="true">{{ initials(admin) }}</span>
+        <div class="who">
+          <span class="name" *ngIf="displayName(admin)">{{ displayName(admin) }}</span>
+          <span class="email" [class.solo]="!displayName(admin)">{{ admin.email }}</span>
+          <span class="meta" *ngIf="admin.registered_on">Joined {{ admin.registered_on | date:'MMM y' }}</span>
+        </div>
+
+        <div class="card-action">
           <ng-container *ngIf="!isConfirming(admin, false); else confirmRevoke">
             <button type="button" class="text-danger" (click)="askToRevoke(admin)">Remove access</button>
           </ng-container>
           <ng-template #confirmRevoke>
-            <span class="confirm">Remove {{ admin.email }} as an admin?</span>
-            <button type="button" class="btn danger" (click)="confirmChange()" [disabled]="saving">
-              {{ saving ? 'Removing…' : 'Remove' }}
-            </button>
-            <button type="button" class="btn secondary" (click)="cancelConfirm()" [disabled]="saving">Cancel</button>
-          </ng-template>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  </div>
-  <button type="button" class="show-all" *ngIf="!showAllAdmins && admins.length > adminLimit"
-          (click)="showAllAdmins = true">Show all {{ admins.length }} admins</button>
-  <p class="muted" *ngIf="!loadingAdmins && !admins.length">No admins.</p>
-</section>
-
-<section class="block">
-  <h2>Add an admin</h2>
-
-  <form class="lookup" (submit)="$event.preventDefault(); searchUser()">
-    <input type="search" [(ngModel)]="searchQuery" name="q" autocomplete="off"
-           placeholder="Email or name" aria-label="Find a user by email or name">
-    <button type="submit" class="btn secondary" [disabled]="searching || !searchQuery.trim()">
-      {{ searching ? 'Searching…' : 'Find user' }}
-    </button>
-    <button type="button" class="text" *ngIf="searchResults" (click)="clearSearch()">Clear</button>
-  </form>
-
-  <table class="table" *ngIf="searchResults?.length">
-    <thead>
-      <tr>
-        <th>Email</th>
-        <th>Registered</th>
-        <th class="col-end"><span class="sr-only">Actions</span></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let user of searchResults">
-        <td>{{ user.email }}</td>
-        <td class="muted">{{ (user.registered_on | date:'d MMM y') || '—' }}</td>
-        <td class="col-end">
-          <span class="muted" *ngIf="user.isAdmin">Already an admin</span>
-          <ng-container *ngIf="!user.isAdmin">
-            <ng-container *ngIf="!isConfirming(user, true); else confirmGrant">
-              <button type="button" class="btn secondary" (click)="askToGrant(user)">Make admin</button>
-            </ng-container>
-            <ng-template #confirmGrant>
-              <span class="confirm">Give {{ user.email }} full admin access?</span>
-              <button type="button" class="btn primary" (click)="confirmChange()" [disabled]="saving">
-                {{ saving ? 'Saving…' : 'Make admin' }}
+            <span class="confirm">Remove admin access?</span>
+            <span>
+              <button type="button" class="btn danger" (click)="confirmChange()" [disabled]="saving">
+                {{ saving ? 'Removing…' : 'Remove' }}
               </button>
               <button type="button" class="btn secondary" (click)="cancelConfirm()" [disabled]="saving">Cancel</button>
-            </ng-template>
-          </ng-container>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <p class="muted" *ngIf="searchResults && !searchResults.length">No users match “{{ searchQuery }}”.</p>
-</section>
+            </span>
+          </ng-template>
+        </div>
+      </li>
+    </ul>
+  </section>
+</div>

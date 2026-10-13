@@ -15,8 +15,6 @@ export class UserManagementComponent implements OnInit {
   searching = false;
   admins: AdminUser[] = [];
   loadingAdmins = false;
-  readonly adminLimit = 10;
-  showAllAdmins = false;
   errorMsg = '';
 
   // The user whose access change is awaiting confirmation, and which change
@@ -67,6 +65,24 @@ export class UserManagementComponent implements OnInit {
   clearSearch(): void {
     this.searchQuery = '';
     this.searchResults = null;
+  }
+
+  // Accounts don't store names yet. Use one if the backend sends it; otherwise
+  // read "first.last@..." emails as a name; null means show the email alone.
+  displayName(u: AdminUser): string {
+    if (u.name) { return u.name; }
+    const local = (u.email || '').split('@')[0];
+    const parts = local.split(/[._-]+/).filter(p => /^[a-z]{2,}$/i.test(p));
+    if (parts.length >= 2) {
+      return parts.map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join(' ');
+    }
+    return null;
+  }
+
+  initials(u: AdminUser): string {
+    const name = this.displayName(u);
+    const source = name ? name.split(' ') : [(u.email || '?').charAt(0)];
+    return source.slice(0, 2).map(s => s.charAt(0).toUpperCase()).join('');
   }
 
   askToGrant(user: AdminUser) {
