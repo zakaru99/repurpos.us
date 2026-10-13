@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -9,7 +10,7 @@ import { AdminApiService, AdminProposal, AdminUser } from '../admin-api.service'
 const submittedTime = (p: { submittedOn?: string }): number =>
   p.submittedOn ? new Date(p.submittedOn).getTime() : 0;
 
-// Admin overview: what needs attention, at a glance. Each panel loads
+// Admin overview: leads with what needs a decision. Each source loads
 // independently so one failing endpoint doesn't blank the page.
 @Component({
   selector: 'app-dashboard',
@@ -23,7 +24,7 @@ export class DashboardComponent implements OnInit {
   admins: AdminUser[] = null;
   windows: MaintenanceWindow[] = null;
 
-  constructor(private api: AdminApiService) { }
+  constructor(private api: AdminApiService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
     forkJoin(
@@ -49,9 +50,12 @@ export class DashboardComponent implements OnInit {
       .sort((a, b) => submittedTime(a) - submittedTime(b));
   }
 
-  daysWaiting(p: AdminProposal): number {
-    if (!p.submittedOn) { return null; }
-    return Math.max(0, Math.floor((Date.now() - new Date(p.submittedOn).getTime()) / 86400000));
+  open(p: AdminProposal) {
+    this.router.navigate(['../proposals'], { relativeTo: this.route, queryParams: { id: p.id } });
+  }
+
+  get adminEmails(): string {
+    return (this.admins || []).map(a => a.email).join(', ');
   }
 
   get nextWindow(): MaintenanceWindow {

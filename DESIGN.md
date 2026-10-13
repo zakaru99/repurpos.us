@@ -44,6 +44,48 @@ AI generator. When in doubt, choose the plainer option.
 - Text that isn't backed by the site's own content. Copy is taken from the
   About pages, the proposal form, or the data itself.
 
+## Looking hand-made, not AI-generated
+
+This rule matters more than any other in this guide. Generated interfaces
+share a recognisable look. The root cause is uniformity: one treatment applied
+to everything, every element given similar weight, and components chosen
+before the job is understood. Start from the job instead. Decide who uses the
+page, what they must get done, and what the one most important thing on it
+is; then give that thing the size and space.
+
+**Tells to avoid**
+
+- Rows of identical stat cards: a big number, a coloured dot and a tiny
+  caption, evenly spaced in a grid. If a number matters, say it in a heading
+  ("3 proposals need a decision"). If it doesn't, put it in a sentence.
+- Every section in the same white card on a grey background, each with a
+  header and a "Manage ›" link. Separate sections with space and a rule; box
+  something only when it really is a separate object.
+- Status as tinted pills with dots. Use coloured text.
+- Eyebrow labels on tools and dashboards. The homepage hero may have one;
+  app screens shouldn't.
+- Decorative subtitles that restate the heading ("People who can manage
+  users"). If a sentence carries no new information, delete it.
+- Uppercase letter-spaced table headers everywhere. Use sentence case in the
+  secondary text colour.
+- Monospace used for texture. Use it for identifiers and code only.
+- Segmented controls and badges stuffed with counts. A plain "Pending 3"
+  reads fine.
+- Empty half-screens ("Select an item to view it"). Give space to content
+  that exists, and open the second pane only when there's something in it.
+- Content capped at a narrow width while the rest of the screen sits empty,
+  on pages that are tables or tools. Use the width.
+- A flat hierarchy where everything is the same size. Use fewer type sizes,
+  with real contrast between them.
+
+**Test before calling it done.** Show a screenshot to someone cold. If they
+would guess it came from a generator, it isn't finished. The admin portal
+(`/internal`) is the reference for the plain-tool end of this spectrum.
+
+Further reading: [Impeccable: the visible tells of AI design](https://impeccable.style/slop),
+[Impeccable anti-patterns](https://www.mintlify.com/pbakaus/impeccable/concepts/anti-patterns),
+[How to de-slopify your designs](https://uxdesign.cc/how-to-de-slopify-your-designs-4c40c57c1dc9).
+
 ## Colour
 
 | Token | Use |
@@ -90,7 +132,7 @@ muted strip → navy footer. Don't put two dark bands next to each other.
 | `button-navy` | Primary action on light backgrounds |
 | `button-quiet-on-dark` | Low-emphasis action on navy |
 | `button-outline-on-dark` | Secondary action on navy (e.g. "Copy citation") |
-| `segmented` | Grey track with a raised white active segment (ontology toolbar) |
+| `segmented` | Grey track with a raised white active segment (ontology toolbar only; don't spread it) |
 | `underline-tabs` | Text tabs with an underline on the active tab (light backgrounds) |
 | `focus-ring` | Keyboard focus outline; every interactive element needs one |
 
@@ -108,16 +150,18 @@ muted strip → navy footer. Don't put two dark bands next to each other.
   panel. It is not a full-width row.
 - **Footer**: navy, with link columns, the REFRAME citation (PNAS 2018, with a
   copy button) and white logos.
-- **Admin portal** (`/internal`): the same slim toolbar, with underline tabs
-  for Overview, Proposals, Users and Maintenance, on a muted background with
-  white panels. Shared admin pieces (status tags, data tables, form fields,
-  compact buttons, notices) are in `src/app/internal/_admin.scss`; admin API
+- **Admin portal** (`/internal`): a plain internal tool. The page is white
+  and uses the full width, with a title and tabs (Overview, Proposals, Admins,
+  Maintenance) on one line. There are no cards. Tables run edge to edge, and
+  the Overview leads with what needs a decision. On the Proposals page the
+  detail pane opens only when a proposal is selected. Shared pieces (tables,
+  status text, fields, buttons) are in `src/app/internal/_admin.scss`; API
   calls are in `admin-api.service.ts`. Any action that changes someone's
   access or a proposal's status asks for confirmation in place, and the
   interface only updates once the server confirms the change.
 - **Status colours**: `$status-pending`, `$status-approved` and
-  `$status-rejected`, each with a `-bg` tint. Show status as a dot plus a
-  label, never as colour alone.
+  `$status-rejected`. In tables, show status as coloured text that spells out
+  the word, never colour alone. The `-bg` tints are for rare emphasis only.
 
 ## Gotchas
 

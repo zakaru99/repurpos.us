@@ -7,6 +7,7 @@ import { InternalLayoutComponent } from './internal-layout/internal-layout.compo
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProposalListComponent } from './proposal-list/proposal-list.component';
 import { ProposalDetailComponent } from './proposal-detail/proposal-detail.component';
+import { ProposalTableComponent } from './proposal-table/proposal-table.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { MaintenanceWindowComponent } from './maintenance-window/maintenance-window.component';
 
@@ -21,6 +22,7 @@ import { MaintenanceWindowComponent } from './maintenance-window/maintenance-win
     DashboardComponent,
     ProposalListComponent,
     ProposalDetailComponent,
+    ProposalTableComponent,
     UserManagementComponent,
     MaintenanceWindowComponent
   ]

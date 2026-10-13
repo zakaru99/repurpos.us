@@ -1,10 +1,7 @@
-<div class="page">
+<div class="layout">
   <!-- Schedule / edit -->
-  <section class="panel form-panel">
-    <header class="panel-head">
-      <h2>{{ editingId ? 'Edit maintenance window' : 'Schedule maintenance' }}</h2>
-      <p class="panel-sub">Visitors see an advance-notice banner before a planned Elasticsearch rebuild or other downtime.</p>
-    </header>
+  <section class="form-col">
+    <h2>{{ editingId ? 'Edit maintenance window' : 'New maintenance window' }}</h2>
 
     <form class="form" (submit)="$event.preventDefault(); save()">
       <div class="row-2">
@@ -13,7 +10,7 @@
           <input id="mw-date" type="date" [(ngModel)]="date" name="date" [min]="minDate" />
         </div>
         <div class="field">
-          <label for="mw-hour">Start time (Pacific)</label>
+          <label for="mw-hour">Start (Pacific)</label>
           <select id="mw-hour" [(ngModel)]="hour" name="hour">
             <option *ngFor="let h of hours" [ngValue]="h.value">{{ h.label }}</option>
           </select>
@@ -21,19 +18,19 @@
       </div>
 
       <div class="field">
-        <label for="mw-message">Banner message <span class="optional">(optional)</span></label>
+        <label for="mw-message">Banner message</label>
         <textarea id="mw-message" [(ngModel)]="message" name="message" rows="3"
-                  placeholder="Leave blank to generate one from the start time"></textarea>
+                  placeholder="Optional. Leave blank to use a standard message."></textarea>
       </div>
 
       <label class="toggle">
         <input type="checkbox" [(ngModel)]="enabled" name="enabled" />
-        <span>Show the banner to site visitors</span>
+        Show the banner on the site ahead of the window
       </label>
 
-      <div class="notice error" *ngIf="formState === 'error'" role="alert">{{ formError }}</div>
+      <p class="error" *ngIf="formState === 'error'" role="alert">{{ formError }}</p>
 
-      <div class="form-actions">
+      <div class="actions">
         <button type="submit" class="btn primary" [disabled]="formState === 'saving'">
           {{ formState === 'saving' ? 'Saving…' : (editingId ? 'Save changes' : 'Schedule') }}
         </button>
@@ -43,54 +40,45 @@
   </section>
 
   <!-- Queue -->
-  <section class="panel">
-    <header class="panel-head">
-      <h2>Queue</h2>
-      <p class="panel-sub">Upcoming windows first, then past ones.</p>
-    </header>
+  <section class="queue-col">
+    <h2>Scheduled</h2>
+    <p class="error" *ngIf="listError" role="alert">{{ listError }}</p>
 
-    <div class="notice error queue-error" *ngIf="listError" role="alert">{{ listError }}</div>
-
-    <div class="table-wrap">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Starts (Pacific)</th>
-            <th>Message</th>
-            <th>Banner</th>
-            <th>Posted</th>
-            <th class="actions-col"><span class="sr-only">Actions</span></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let w of windows" [class.past]="isPast(w)" [class.editing]="editingId === w.id">
-            <td class="when">
-              {{ formatScheduled(w) }}
-              <span class="past-tag" *ngIf="isPast(w)">Past</span>
-            </td>
-            <td class="msg">{{ w.message || 'Auto-generated' }}</td>
-            <td><span class="status-tag" [class.approved]="w.enabled">{{ w.enabled ? 'Shown' : 'Hidden' }}</span></td>
-            <td class="mono posted" [title]="formatPosted(w)">{{ (w.postedAt | date:'d MMM y') || '—' }}</td>
-            <td class="actions-col">
-              <ng-container *ngIf="confirmDeleteId !== w.id; else confirmDel">
-                <button type="button" class="btn secondary" (click)="startEdit(w)">Edit</button>
-                <button type="button" class="btn danger-ghost" (click)="askDelete(w)">Delete</button>
-              </ng-container>
-              <ng-template #confirmDel>
-                <span class="confirm-text">Delete this window?</span>
-                <button type="button" class="btn danger" (click)="deleteWindow(w)">Delete</button>
-                <button type="button" class="btn secondary" (click)="cancelDelete()">Cancel</button>
-              </ng-template>
-            </td>
-          </tr>
-          <tr *ngIf="isLoading">
-            <td colspan="5" class="empty">Loading…</td>
-          </tr>
-          <tr *ngIf="!isLoading && windows.length === 0">
-            <td colspan="5" class="empty">No maintenance windows scheduled.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Starts (Pacific)</th>
+          <th>Message</th>
+          <th>Banner</th>
+          <th>Posted</th>
+          <th class="col-end"><span class="sr-only">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let w of windows" [class.past]="isPast(w)" [class.editing]="editingId === w.id">
+          <td class="when">{{ formatScheduled(w) }}<span class="past-note" *ngIf="isPast(w)"> (past)</span></td>
+          <td class="msg">{{ w.message || 'Standard message' }}</td>
+          <td>{{ w.enabled ? 'Shown' : 'Hidden' }}</td>
+          <td class="nowrap" [title]="formatPosted(w)">{{ (w.postedAt | date:'d MMM y') || '—' }}</td>
+          <td class="col-end">
+            <ng-container *ngIf="confirmDeleteId !== w.id; else confirmDel">
+              <button type="button" class="text" (click)="startEdit(w)">Edit</button>
+              <button type="button" class="text-danger" (click)="askDelete(w)">Delete</button>
+            </ng-container>
+            <ng-template #confirmDel>
+              <span class="confirm">Delete?</span>
+              <button type="button" class="btn danger" (click)="deleteWindow(w)">Delete</button>
+              <button type="button" class="btn secondary" (click)="cancelDelete()">Cancel</button>
+            </ng-template>
+          </td>
+        </tr>
+        <tr *ngIf="isLoading">
+          <td colspan="5" class="muted">Loading…</td>
+        </tr>
+        <tr *ngIf="!isLoading && windows.length === 0">
+          <td colspan="5" class="muted">Nothing scheduled.</td>
+        </tr>
+      </tbody>
+    </table>
   </section>
 </div>

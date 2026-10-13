@@ -6,6 +6,14 @@ import { FormsModule } from '@angular/forms';
 
 import { ProposalListComponent } from './proposal-list.component';
 
+@Component({ selector: 'app-proposal-table', template: '' })
+class ProposalTableStubComponent {
+  @Input() proposals: any;
+  @Input() selectedId: any;
+  @Input() compact: any;
+  @Output() pick = new EventEmitter<any>();
+}
+
 @Component({ selector: 'app-proposal-detail', template: '' })
 class ProposalDetailStubComponent {
   @Input() proposal: any;
@@ -20,7 +28,7 @@ describe('ProposalListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ FormsModule, HttpClientTestingModule, RouterTestingModule ],
-      declarations: [ ProposalListComponent, ProposalDetailStubComponent ]
+      declarations: [ ProposalListComponent, ProposalDetailStubComponent, ProposalTableStubComponent ]
     })
     .compileComponents();
   }));

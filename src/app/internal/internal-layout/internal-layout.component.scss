@@ -1,39 +1,26 @@
-// Admin portal shell: one slim toolbar (tool-page pattern in DESIGN.md), then
-// the section fills the rest of the screen on a muted background.
+// Admin portal shell: a title and section tabs on one line, then the section
+// on a plain white page.
 
 @import '../admin';
 
 :host {
   @include full-bleed-host;
   min-height: calc(100vh - var(--site-header-height, 65px));
-  background: $muted-bg;
+  background: #fff;
 }
 
 .toolbar {
   display: flex;
-  align-items: flex-end;
+  align-items: baseline;
   gap: 40px;
-  padding: 14px 24px 0;
-  background: #fff;
-  border-bottom: 1px solid $rule-soft;
-}
-
-.portal-title {
-  padding-bottom: 12px;
-
-  .eyebrow {
-    display: block;
-    @include eyebrow;
-    font-size: 0.6875rem;
-    margin-bottom: 2px;
-  }
+  padding: 18px $admin-gutter 0;
+  border-bottom: 1px solid $rule;
 
   h1 {
     margin: 0;
     font-family: $sans;
     font-size: 1.125rem;
     font-weight: 600;
-    letter-spacing: -0.01em;
     color: $ink;
     white-space: nowrap;
   }
@@ -50,17 +37,12 @@
   }
 
   a {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0 0 13px;
+    padding: 0 0 14px;
     font-size: 0.9375rem;
-    font-weight: 500;
     white-space: nowrap;
     color: $ink-soft;
     text-decoration: none;
     border-bottom: 2px solid transparent;
-    transition: color 0.15s ease, border-color 0.15s ease;
 
     &:hover {
       color: $ink;
@@ -69,35 +51,18 @@
 
     &.active {
       color: $ink;
-      border-bottom-color: $accent;
+      font-weight: 500;
+      border-bottom-color: $ink;
     }
 
     @include focus-ring($accent, 2px);
   }
 }
 
-.count {
-  min-width: 20px;
-  padding: 0 6px;
-  font-family: $mono;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  line-height: 18px;
-  text-align: center;
-  color: $status-pending;
-  background: $status-pending-bg;
-  border-radius: 6px;
-}
-
 @media (max-width: $bp-phone) {
   .toolbar {
     flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    padding: 12px 16px 0;
-  }
-
-  .portal-title {
-    padding-bottom: 0;
+    gap: 12px;
+    padding: 14px 16px 0;
   }
 }

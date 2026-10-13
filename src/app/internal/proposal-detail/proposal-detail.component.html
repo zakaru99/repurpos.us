@@ -1,98 +1,82 @@
 <article class="detail" *ngIf="proposal">
   <header class="head">
-    <button type="button" class="back" (click)="closed.emit()">Proposals</button>
-    <div class="head-meta">
+    <p class="meta">
       <span class="id">#{{ proposal.id }}</span>
-      <span class="status-tag" [ngClass]="proposal.status | lowercase">{{ proposal.status }}</span>
-    </div>
+      <span *ngIf="proposal.submittedOn"> · Submitted {{ proposal.submittedOn | date:'d MMMM y' }}</span>
+    </p>
+    <button type="button" class="close" (click)="closed.emit()" aria-label="Close proposal">Close</button>
     <h2>{{ proposal.indication || 'Untitled proposal' }}</h2>
-    <button type="button" class="export" (click)="exportJson()" title="Download this proposal as JSON">
-      Export JSON
-    </button>
+    <p class="status" [ngClass]="proposal.status | lowercase">{{ proposal.status }}</p>
   </header>
 
-  <div class="body">
-    <dl class="facts">
-      <div>
-        <dt>Submitted by</dt>
-        <dd>{{ proposal.submittedBy || '—' }}</dd>
-      </div>
-      <div>
-        <dt>Email</dt>
-        <dd>
-          <a *ngIf="proposal.email; else none" [href]="'mailto:' + proposal.email">{{ proposal.email }}</a>
-        </dd>
-      </div>
-      <div>
-        <dt>Institution</dt>
-        <dd>{{ proposal.institution || '—' }}</dd>
-      </div>
-      <div>
-        <dt>Submitted</dt>
-        <dd>{{ (proposal.submittedOn | date:'d MMM y') || '—' }}</dd>
-      </div>
-      <div>
-        <dt>Assay volume</dt>
-        <dd class="mono">{{ proposal.volume ? proposal.volume + ' µL' : '—' }}</dd>
-      </div>
-      <div>
-        <dt>Concentration</dt>
-        <dd class="mono">{{ proposal.concentration ? proposal.concentration + ' µM' : '—' }}</dd>
-      </div>
-    </dl>
+  <dl class="facts">
+    <dt>Submitted by</dt>
+    <dd>{{ proposal.submittedBy || '—' }}</dd>
 
-    <section class="block">
-      <h3>Description</h3>
-      <p>{{ proposal.description || 'No description provided.' }}</p>
-    </section>
+    <dt>Email</dt>
+    <dd><a *ngIf="proposal.email; else none" [href]="'mailto:' + proposal.email">{{ proposal.email }}</a></dd>
 
-    <section class="block" *ngIf="proposal.notes">
-      <h3>Notes</h3>
-      <p>{{ proposal.notes }}</p>
-    </section>
+    <dt>Institution</dt>
+    <dd>{{ proposal.institution || '—' }}</dd>
 
-    <section class="block denial" *ngIf="proposal.status === 'Rejected'">
-      <h3>Reason for rejection</h3>
-      <p>{{ proposal.denialReason || 'No reason recorded.' }}</p>
-    </section>
-  </div>
+    <dt>Assay volume</dt>
+    <dd>{{ proposal.volume ? proposal.volume + ' µL' : '—' }}</dd>
 
-  <!-- Decision bar: pending proposals only -->
-  <footer class="decide" *ngIf="isPending">
-    <div class="notice error" *ngIf="error" role="alert">{{ error }}</div>
+    <dt>Concentration</dt>
+    <dd>{{ proposal.concentration ? proposal.concentration + ' µM' : '—' }}</dd>
+  </dl>
+
+  <h3>Description</h3>
+  <p class="text">{{ proposal.description || 'No description provided.' }}</p>
+
+  <ng-container *ngIf="proposal.notes">
+    <h3>Notes</h3>
+    <p class="text">{{ proposal.notes }}</p>
+  </ng-container>
+
+  <ng-container *ngIf="proposal.status === 'Rejected'">
+    <h3>Reason for rejection</h3>
+    <p class="text">{{ proposal.denialReason || 'No reason recorded.' }}</p>
+  </ng-container>
+
+  <!-- Decision: pending proposals only, after the content it depends on -->
+  <section class="decide" *ngIf="isPending">
+    <p class="error" *ngIf="error" role="alert">{{ error }}</p>
 
     <ng-container [ngSwitch]="mode">
       <div class="actions" *ngSwitchCase="'view'">
-        <button type="button" class="btn approve" (click)="startApprove()">Approve</button>
-        <button type="button" class="btn danger-ghost" (click)="startReject()">Reject</button>
+        <button type="button" class="btn primary" (click)="startApprove()">Approve</button>
+        <button type="button" class="btn danger" (click)="startReject()">Reject</button>
       </div>
 
-      <div class="confirm" *ngSwitchCase="'confirm-approve'">
-        <p>Approve proposal <b>#{{ proposal.id }}</b> from {{ proposal.submittedBy || 'this submitter' }}?</p>
+      <div *ngSwitchCase="'confirm-approve'">
+        <p class="confirm">Approve this proposal from {{ proposal.submittedBy || 'the submitter' }}?</p>
         <div class="actions">
-          <button type="button" class="btn approve" (click)="confirm()" [disabled]="saving">
-            {{ saving ? 'Approving…' : 'Confirm approval' }}
+          <button type="button" class="btn primary" (click)="confirm()" [disabled]="saving">
+            {{ saving ? 'Approving…' : 'Yes, approve' }}
           </button>
           <button type="button" class="btn secondary" (click)="cancel()" [disabled]="saving">Cancel</button>
         </div>
       </div>
 
-      <div class="confirm" *ngSwitchCase="'reject'">
+      <div *ngSwitchCase="'reject'">
         <label class="field">
-          <span class="field-label">Reason for rejection <span class="req">(required, saved with the proposal)</span></span>
-          <textarea #reasonInput rows="4" [(ngModel)]="denialReason" name="denialReason"
-                    placeholder="e.g. Overlaps an ongoing screen for the same pathogen and readout"></textarea>
+          <span class="field-label">Reason for rejection</span>
+          <textarea #reasonInput rows="4" [(ngModel)]="denialReason" name="denialReason"></textarea>
         </label>
+        <p class="hint">Saved with the proposal.</p>
         <div class="actions">
-          <button type="button" class="btn danger" (click)="confirm()"
+          <button type="button" class="btn danger-solid" (click)="confirm()"
                   [disabled]="saving || !denialReason.trim()">
-            {{ saving ? 'Rejecting…' : 'Confirm rejection' }}
+            {{ saving ? 'Rejecting…' : 'Reject proposal' }}
           </button>
           <button type="button" class="btn secondary" (click)="cancel()" [disabled]="saving">Cancel</button>
         </div>
       </div>
     </ng-container>
-  </footer>
+  </section>
+
+  <p class="export"><button type="button" (click)="exportJson()">Download as JSON</button></p>
 </article>
 
 <ng-template #none>—</ng-template>

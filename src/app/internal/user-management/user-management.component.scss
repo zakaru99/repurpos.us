@@ -4,90 +4,56 @@
   @include admin-page;
 }
 
-.page {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-width: 960px;
+.block + .block {
+  margin-top: 48px;
 }
 
-.panel {
-  @include panel;
-  overflow: hidden;
+h2 {
+  @include admin-heading;
+  margin-bottom: 14px;
+  font-size: 1.125rem;
 }
 
-.panel-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 16px 18px;
-  border-bottom: 1px solid $rule-soft;
-
-  h2 {
-    @include panel-title;
-  }
-}
-
-.panel-sub {
-  margin: 4px 0 0 !important;
-  font-size: 0.8125rem;
-  color: $ink-soft;
-}
-
-.total {
-  font-family: $mono;
-  font-size: 1.25rem;
-  color: $ink-soft;
+.n {
+  margin-left: 4px;
+  font-weight: 400;
+  color: $ink-faint;
 }
 
 .table {
   @include data-table;
 
-  .email {
-    font-weight: 500;
-    overflow-wrap: anywhere;
-  }
-
-  .actions-col {
+  .col-end {
     width: 1%;
-    text-align: right;
     white-space: nowrap;
+    text-align: right;
   }
 }
 
-.status-tag {
-  @include status-tag;
-}
-
-.confirm-inline {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.confirm-text {
-  font-size: 0.8125rem;
-  color: $ink-soft;
+.confirm {
+  margin-right: 12px;
+  font-size: 0.875rem;
+  color: $ink;
 }
 
 .lookup {
   display: flex;
-  gap: 8px;
-  padding: 16px 18px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
 
   input {
-    flex: 1 1 auto;
-    min-width: 0;
     box-sizing: border-box;
+    width: 360px;
+    max-width: 100%;
     height: 34px;
-    padding: 0 12px;
+    padding: 0 10px;
     font: inherit;
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     color: $ink;
-    background: #fff;
     border: 1px solid $field-border;
-    border-radius: 7px;
+    border-radius: 4px;
+    -webkit-appearance: none;
 
     &::placeholder {
       color: $ink-faint;
@@ -96,26 +62,27 @@
     &:focus {
       outline: none;
       border-color: $accent;
-      box-shadow: 0 0 0 3px rgba(61, 109, 224, 0.18);
+      box-shadow: 0 0 0 1px $accent;
     }
   }
 }
 
-.empty {
+.muted {
   margin: 0 !important;
-  padding: 16px 18px;
-  font-size: 0.875rem;
   color: $ink-soft;
 }
 
-.notice.error {
-  @include notice(error);
+.error {
+  @include error-text;
+  margin: 0 0 20px !important;
 }
 
-.btn.primary { @include tool-button(primary); }
-.btn.secondary { @include tool-button(secondary); }
-.btn.danger { @include tool-button(danger); }
-.btn.danger-ghost { @include tool-button(danger-ghost); }
+.btn.primary { @include admin-button(primary); }
+.btn.secondary { @include admin-button(secondary); }
+.btn.danger { @include admin-button(danger); }
+.btn + .btn { margin-left: 8px; }
+.text { @include admin-button(text); }
+.text-danger { @include admin-button(text-danger); }
 
 .sr-only {
   position: absolute;
@@ -126,13 +93,17 @@
 }
 
 @media (max-width: $bp-phone) {
-  .confirm-inline {
+  .lookup {
     flex-wrap: wrap;
-    justify-content: flex-end;
+
+    input {
+      width: 100%;
+    }
   }
 
-  .confirm-text {
-    flex: 1 0 100%;
-    text-align: right;
+  .confirm {
+    display: block;
+    margin: 0 0 8px;
+    white-space: normal;
   }
 }

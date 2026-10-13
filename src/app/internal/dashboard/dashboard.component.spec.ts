@@ -3,6 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { DashboardComponent } from './dashboard.component';
+import { ProposalTableComponent } from '../proposal-table/proposal-table.component';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -11,7 +12,7 @@ describe('DashboardComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule, RouterTestingModule ],
-      declarations: [ DashboardComponent ]
+      declarations: [ DashboardComponent, ProposalTableComponent ]
     })
     .compileComponents();
   }));

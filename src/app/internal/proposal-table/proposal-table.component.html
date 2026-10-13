@@ -1,0 +1,28 @@
+<table class="table" [class.compact]="compact">
+  <thead>
+    <tr>
+      <th class="col-date">Submitted</th>
+      <th>Indication</th>
+      <th *ngIf="!compact">Submitted by</th>
+      <th *ngIf="!compact">Institution</th>
+      <th class="col-end">{{ showWaiting ? 'Waiting' : 'Status' }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let p of proposals" [class.selected]="p.id === selectedId" (click)="pick.emit(p)">
+      <td class="col-date muted">{{ (p.submittedOn | date:'d MMM y') || '—' }}</td>
+      <td class="col-title">
+        <button type="button" class="open" (click)="$event.stopPropagation(); pick.emit(p)">
+          {{ p.indication || 'Untitled proposal' }}
+        </button>
+        <span class="id">#{{ p.id }}</span>
+      </td>
+      <td *ngIf="!compact">{{ p.submittedBy || '—' }}</td>
+      <td *ngIf="!compact" class="muted">{{ p.institution || '—' }}</td>
+      <td class="col-end">
+        <span *ngIf="showWaiting" class="waiting" [class.long]="daysWaiting(p) >= 14">{{ waitingLabel(p) }}</span>
+        <span *ngIf="!showWaiting" class="status" [ngClass]="p.status | lowercase">{{ p.status }}</span>
+      </td>
+    </tr>
+  </tbody>
+</table>

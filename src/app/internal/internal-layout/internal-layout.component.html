@@ -1,16 +1,10 @@
 <div class="toolbar">
-  <div class="portal-title">
-    <span class="eyebrow">Calibr</span>
-    <h1>Admin portal</h1>
-  </div>
+  <h1>Calibr admin</h1>
 
   <nav class="tabs" aria-label="Admin sections">
     <a routerLink="dashboard" routerLinkActive="active">Overview</a>
-    <a routerLink="proposals" routerLinkActive="active">
-      Proposals
-      <span class="count" *ngIf="pending > 0" [attr.aria-label]="pending + ' pending'">{{ pending }}</span>
-    </a>
-    <a routerLink="user_management" routerLinkActive="active">Users</a>
+    <a routerLink="proposals" routerLinkActive="active">Proposals<ng-container *ngIf="pending > 0"> ({{ pending }})</ng-container></a>
+    <a routerLink="user_management" routerLinkActive="active">Admins</a>
     <a routerLink="maintenance_window" routerLinkActive="active">Maintenance</a>
   </nav>
 </div>

@@ -4,33 +4,17 @@
   @include admin-page;
 }
 
-.page {
+.layout {
   display: grid;
-  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
-  gap: 20px;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 56px;
   align-items: start;
-  max-width: 1300px;
 }
 
-.panel {
-  @include panel;
-  overflow: hidden;
-}
-
-.panel-head {
-  padding: 16px 18px;
-  border-bottom: 1px solid $rule-soft;
-
-  h2 {
-    @include panel-title;
-  }
-}
-
-.panel-sub {
-  margin: 4px 0 0 !important;
-  font-size: 0.8125rem;
-  line-height: 1.5;
-  color: $ink-soft;
+h2 {
+  @include admin-heading;
+  margin-bottom: 16px;
+  font-size: 1.125rem;
 }
 
 // ---------------------------------------------------------------- form
@@ -39,7 +23,6 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 18px;
 }
 
 .row-2 {
@@ -52,62 +35,50 @@
   @include field;
 }
 
-.optional {
-  font-weight: 400;
-  color: $ink-soft;
-}
-
 .toggle {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-start;
+  gap: 8px;
   margin: 0;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   color: $ink;
   cursor: pointer;
 
   input {
-    width: 16px;
-    height: 16px;
-    accent-color: var(--color-brand-500);
+    margin-top: 4px;
+    accent-color: var(--color-navy);
   }
 }
 
-.form-actions {
+.actions {
   display: flex;
   gap: 10px;
 }
 
 // ---------------------------------------------------------------- queue
 
-.table-wrap {
-  overflow-x: auto;
-}
-
 .table {
   @include data-table;
 
   .when {
     min-width: 170px;
-    font-weight: 500;
-  }
-
-  .posted {
-    white-space: nowrap;
   }
 
   .msg {
-    min-width: 160px;
     color: $ink-soft;
   }
 
-  .actions-col {
-    width: 1%;
-    text-align: right;
+  .nowrap {
     white-space: nowrap;
+  }
 
-    .btn + .btn {
-      margin-left: 6px;
+  .col-end {
+    width: 1%;
+    white-space: nowrap;
+    text-align: right;
+
+    .text + .text-danger {
+      margin-left: 16px;
     }
   }
 
@@ -120,44 +91,30 @@
   }
 }
 
-.past-tag {
-  margin-left: 6px;
-  padding: 1px 6px;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  color: $ink-soft;
-  background: $track;
-  border-radius: 5px;
+.past-note {
+  color: $ink-faint;
 }
 
-.status-tag {
-  @include status-tag;
+.confirm {
+  margin-right: 10px;
+  font-size: 0.875rem;
 }
 
-.confirm-text {
-  margin-right: 8px;
-  font-size: 0.8125rem;
+.muted {
   color: $ink-soft;
 }
 
-.empty {
-  padding: 18px !important;
-  text-align: center;
-  color: $ink-soft !important;
+.error {
+  @include error-text;
+  margin: 0 0 12px !important;
 }
 
-.notice.error {
-  @include notice(error);
-}
-
-.queue-error {
-  margin: 12px 18px 0;
-}
-
-.btn.primary { @include tool-button(primary); }
-.btn.secondary { @include tool-button(secondary); }
-.btn.danger { @include tool-button(danger); }
-.btn.danger-ghost { @include tool-button(danger-ghost); }
+.btn.primary { @include admin-button(primary); }
+.btn.secondary { @include admin-button(secondary); }
+.btn.danger { @include admin-button(danger); }
+.btn + .btn { margin-left: 8px; }
+.text { @include admin-button(text); }
+.text-danger { @include admin-button(text-danger); }
 
 .sr-only {
   position: absolute;
@@ -168,7 +125,12 @@
 }
 
 @media (max-width: $bp-nav) {
-  .page {
+  .layout {
     grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .form-col {
+    max-width: 480px;
   }
 }

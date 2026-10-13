@@ -1,65 +1,62 @@
-// Proposals split view: list pane + detail pane inside one panel.
-
 @import '../admin';
 
 :host {
   @include admin-page;
 }
 
-.split {
-  @include panel;
-  display: grid;
-  grid-template-columns: minmax(320px, 400px) minmax(0, 1fr);
-  height: calc(100vh - var(--site-header-height, 65px) - 140px);
-  min-height: 520px;
-  overflow: hidden;
+.tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
 }
 
-// ---------------------------------------------------------------- list
-
-.list-pane {
+// Status filters as plain text; the active one is set in ink and underlined
+.filters {
   display: flex;
-  flex-direction: column;
-  min-height: 0;
-  border-right: 1px solid $rule-soft;
-}
-
-.list-tools {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 14px;
-  border-bottom: 1px solid $rule-soft;
-}
-
-.segmented {
-  @include segmented;
-  display: flex;
+  gap: 24px;
 
   button {
-    flex: 1 1 auto;
-    padding: 6px 8px;
-  }
-}
+    padding: 0 0 4px;
+    font: inherit;
+    font-size: 0.9375rem;
+    color: $ink-soft;
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
 
-.seg-count {
-  margin-left: 2px;
-  font-family: $mono;
-  font-size: 0.6875rem;
-  color: $ink-faint;
+    &:hover {
+      color: $ink;
+    }
+
+    &.active {
+      color: $ink;
+      font-weight: 500;
+      border-bottom-color: $ink;
+    }
+
+    @include focus-ring($accent, 2px);
+  }
+
+  .n {
+    color: $ink-faint;
+    font-weight: 400;
+  }
 }
 
 .search {
   box-sizing: border-box;
-  width: 100%;
+  width: 260px;
   height: 34px;
-  padding: 0 12px;
+  padding: 0 10px;
   font: inherit;
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   color: $ink;
-  background: $track;
-  border: 1px solid transparent;
-  border-radius: 9px;
+  background: #fff;
+  border: 1px solid $field-border;
+  border-radius: 4px;
   -webkit-appearance: none;
 
   &::placeholder {
@@ -68,149 +65,74 @@
 
   &:focus {
     outline: none;
-    background: #fff;
     border-color: $accent;
-    box-shadow: 0 0 0 3px rgba(61, 109, 224, 0.18);
+    box-shadow: 0 0 0 1px $accent;
   }
 }
 
-.list {
-  flex: 1 1 auto;
+// Table alone at full width; with a proposal open, table left and detail right
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+
+  &.open {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+}
+
+.detail {
+  position: sticky;
+  top: calc(var(--site-header-height, 65px) + 16px);
+  max-height: calc(100vh - var(--site-header-height, 65px) - 32px);
   overflow-y: auto;
-  list-style: none;
-  margin: 0;
-  padding: 6px;
+  padding-left: 40px;
+  border-left: 1px solid $rule;
 }
 
-.prow {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  width: 100%;
-  padding: 10px 12px;
-  font: inherit;
-  text-align: left;
-  color: $ink;
-  background: none;
-  border: 0;
-  border-radius: 7px;
-  cursor: pointer;
-
-  &:hover {
-    background: $hover;
-  }
-
-  &.selected {
-    background: $selected;
-    box-shadow: inset 3px 0 0 $accent;
-  }
-
-  @include focus-ring($accent, -2px);
-}
-
-.row-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.row-title {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 0.9375rem;
-  font-weight: 600;
-}
-
-.row-sub {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 0.8125rem;
+.muted {
+  margin: 0 !important;
   color: $ink-soft;
-}
-
-.row-meta {
-  font-family: $mono;
-  font-size: 0.75rem;
-  color: $ink-faint;
-}
-
-.status-tag {
-  @include status-tag;
-  flex-shrink: 0;
 }
 
 .empty {
-  padding: 32px 16px;
-  font-size: 0.875rem;
-  text-align: center;
-  color: $ink-soft;
+  padding: 20px 0;
 }
 
-.notice.error {
-  @include notice(error);
-  margin: 12px 14px 0;
+.error {
+  @include error-text;
+  margin: 0 0 16px !important;
 }
 
-.link {
-  padding: 0;
-  font: inherit;
-  font-weight: 600;
-  color: inherit;
-  text-decoration: underline;
-  background: none;
-  border: 0;
-  cursor: pointer;
+.retry {
+  @include admin-button(text);
+  margin-left: 8px;
 }
-
-// ---------------------------------------------------------------- detail
-
-.detail-pane {
-  min-width: 0;
-  min-height: 0;
-}
-
-.placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  height: 100%;
-  color: $ink-soft;
-
-  p {
-    margin: 0 !important;
-  }
-
-  .hint {
-    font-size: 0.8125rem;
-    color: $status-pending;
-  }
-}
-
-// ---------------------------------------------------------------- narrow: one pane at a time
 
 @media (max-width: $bp-tablet) {
-  .split {
+  .tools {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search {
+    width: 100%;
+  }
+
+  // One thing at a time: the open proposal replaces the table
+  .layout.open {
     grid-template-columns: 1fr;
-    height: auto;
-    min-height: 0;
+
+    .list {
+      display: none;
+    }
   }
 
-  .list-pane {
-    border-right: 0;
-  }
-
-  .detail-pane {
-    display: none;
-  }
-
-  .split.has-selection {
-    .list-pane { display: none; }
-    .detail-pane { display: block; }
+  .detail {
+    position: static;
+    max-height: none;
+    padding-left: 0;
+    border-left: 0;
   }
 }

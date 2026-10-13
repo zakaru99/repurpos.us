@@ -1,0 +1,69 @@
+@import '../admin';
+
+:host {
+  display: block;
+}
+
+.table {
+  @include data-table;
+
+  tbody tr {
+    cursor: pointer;
+
+    &:hover td {
+      background: $hover;
+    }
+
+    &.selected td {
+      background: $selected;
+    }
+  }
+
+  .col-date {
+    width: 1%;
+    white-space: nowrap;
+  }
+
+  .col-end {
+    width: 1%;
+    white-space: nowrap;
+    text-align: right;
+  }
+}
+
+.open {
+  padding: 0;
+  font: inherit;
+  font-weight: 500;
+  text-align: left;
+  color: $ink;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:hover {
+    color: $accent;
+  }
+
+  @include focus-ring($accent, 2px);
+}
+
+.id {
+  margin-left: 8px;
+  font-family: $mono;
+  font-size: 0.75rem;
+  color: $ink-faint;
+}
+
+.status {
+  @include status-text;
+}
+
+.waiting {
+  color: $ink-soft;
+
+  &.long {
+    font-weight: 500;
+    color: $status-pending;
+  }
+}
