@@ -1,17 +1,15 @@
 // Ontology page: one slim toolbar, then the browser fills the rest of the screen.
 
-$ink: #0f1b2d;
-$ink-soft: #4a5568;
-$rule: #e3e6eb;
-$track: #eef0f4;
-$accent: var(--color-brand-500);
+@import '../../design';
+
+$rule: $rule-soft; // hairlines inside the tool are softer than on pages
 $toolbar-h: 60px;
 
 :host {
   display: block;
   // Cancel the .container-fluid gutter so the browser runs edge to edge
   margin: 0 -15px;
-  font-family: "IBM Plex Sans", "Lato", Arial, sans-serif;
+  font-family: $sans;
   color: $ink;
   -webkit-font-smoothing: antialiased;
 }
@@ -40,40 +38,7 @@ $toolbar-h: 60px;
 
 // Segmented control: grey track, white raised segment for the active option
 .segmented {
-  display: inline-flex;
-  flex-shrink: 0;
-  padding: 3px;
-  background: $track;
-  border-radius: 9px;
-
-  button {
-    padding: 6px 12px;
-    font: inherit;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    white-space: nowrap;
-    color: $ink-soft;
-    background: transparent;
-    border: 0;
-    border-radius: 7px;
-    cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
-
-    &:hover {
-      color: $ink;
-    }
-
-    &.active {
-      color: $ink;
-      background: #fff;
-      box-shadow: 0 1px 2px rgba(15, 27, 45, 0.12), 0 0 0 0.5px rgba(15, 27, 45, 0.06);
-    }
-
-    &:focus-visible {
-      outline: 2px solid $accent;
-      outline-offset: 1px;
-    }
-  }
+  @include segmented;
 }
 
 .sources {
@@ -106,7 +71,7 @@ $toolbar-h: 60px;
     -webkit-appearance: none;
 
     &::placeholder {
-      color: #8a93a3;
+      color: $ink-faint;
     }
 
     &:focus {
@@ -126,7 +91,7 @@ $toolbar-h: 60px;
   font-size: 18px;
   width: 18px;
   height: 18px;
-  color: #8a93a3;
+  color: $ink-faint;
   pointer-events: none;
 }
 
@@ -195,10 +160,10 @@ $toolbar-h: 60px;
   border-radius: 50%;
   border: 2px solid;
 
-  &.category { background: #dbe4f7; border-color: #3d6de0; }
-  &.moa { background: #1f8a5b; border-color: #1f8a5b; }
-  &.compound { background: #fff; border-color: #3d6de0; }
-  &.found { background: #e5484d; border-color: #e5484d; }
+  &.category { background: $category; border-color: $accent; }
+  &.moa { background: $moa; border-color: $moa; }
+  &.compound { background: #fff; border-color: $accent; }
+  &.found { background: $found; border-color: $found; }
 }
 
 .hint {
@@ -207,7 +172,7 @@ $toolbar-h: 60px;
   bottom: 22px;
   margin: 0 !important;
   font-size: 0.8125rem;
-  color: #8a93a3;
+  color: $ink-faint;
   pointer-events: none;
 }
 

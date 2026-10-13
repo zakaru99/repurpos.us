@@ -1,9 +1,11 @@
 // Header quick search: an icon that opens into a field, with the
 // compound/assay scope and suggestions in a panel underneath.
 
+@import '../../../design';
+
 :host {
   display: block;
-  font-family: "IBM Plex Sans", "Lato", Arial, sans-serif;
+  font-family: $sans;
 }
 
 form.search {
@@ -27,7 +29,7 @@ form.search {
     font-size: 20px;
     width: 20px;
     height: 20px;
-    color: #4a5568;
+    color: $ink-soft;
   }
 }
 
@@ -42,7 +44,7 @@ form.search {
   padding: 0 12px 0 36px;
   font: inherit;
   font-size: 0.9375rem;
-  color: #0f1b2d;
+  color: $ink;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 2px;
@@ -54,23 +56,23 @@ form.search {
   }
 
   &:hover {
-    background: #f1f4f8;
+    background: $hover;
   }
 }
 
 .search.expanded input[type="text"] {
   width: 280px;
   background: #fff;
-  border-color: #c5cdd9;
+  border-color: $field-border;
   cursor: text;
   outline: none;
 
   &::placeholder {
-    color: #8a93a3;
+    color: $ink-faint;
   }
 
   &:focus {
-    border-color: var(--color-brand-500);
+    border-color: $accent;
   }
 }
 
@@ -82,7 +84,7 @@ form.search {
   min-width: 280px;
   box-sizing: border-box;
   background: #fff;
-  border: 1px solid #d9dee6;
+  border: 1px solid $rule;
   box-shadow: 0 12px 28px rgba(15, 27, 45, 0.14);
   z-index: 1000;
 }
@@ -91,26 +93,26 @@ form.search {
   display: flex;
   gap: 20px;
   padding: 0 14px;
-  border-bottom: 1px solid #e6e9ef;
+  border-bottom: 1px solid $rule-soft;
 }
 
 .toggle-option {
   padding: 10px 0 8px;
   font-size: 0.8125rem;
   font-weight: 500;
-  color: #4a5568;
+  color: $ink-soft;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
   cursor: pointer;
   transition: color 0.15s ease, border-color 0.15s ease;
 
   &:hover {
-    color: #0f1b2d;
+    color: $ink;
   }
 
   &.active {
-    color: #0f1b2d;
-    border-bottom-color: var(--color-brand-500);
+    color: $ink;
+    border-bottom-color: $accent;
   }
 }
 
@@ -124,11 +126,11 @@ form.search {
   li {
     padding: 8px 14px;
     font-size: 0.875rem;
-    color: #0f1b2d;
+    color: $ink;
     cursor: pointer;
 
     &:hover {
-      background: #eef2fa;
+      background: $selected;
     }
   }
 }
@@ -139,11 +141,11 @@ form.search {
   .search.expanded input[type="text"] {
     width: 100%;
     background: #fff;
-    border-color: #c5cdd9;
+    border-color: $field-border;
     cursor: text;
 
     &::placeholder {
-      color: #8a93a3;
+      color: $ink-faint;
     }
   }
 

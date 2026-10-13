@@ -4,37 +4,17 @@
 // Band rhythm: navy hero -> tinted partnership timeline -> white explore tabs
 // -> dark charts -> muted sources strip -> navy footer.
 
-$ink: #0f1b2d;
-$ink-soft: #4a5568;
-$navy: #0b1d3a;
-$navy-2: #12294f;
-$rule: #d9dee6;
-$rule-dark: rgba(255, 255, 255, 0.14);
-$muted-bg: #f3f5f8;
-$tint-bg: #e9eef8;
-$accent: var(--color-brand-500);
-$accent-text: #2f5bc7; // brand blue darkened for small text on tinted bands (AA)
-$accent-on-dark: #9fb9f4;
-
-$sans: "IBM Plex Sans", "Lato", Arial, sans-serif;
-$mono: "IBM Plex Mono", SFMono-Regular, Consolas, monospace;
+@import '../../design';
 
 // Pointy-top hexagonal lattice, one tile = one ring plus the bond to the next row
 $lattice: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='31.18' height='54' viewBox='0 0 31.18 54'%3E%3Cpath d='M15.59 0L31.18 9V27L15.59 36L0 27V9Z M15.59 36V54' fill='none' stroke='%23ffffff' stroke-width='1'/%3E%3C/svg%3E";
 
 :host {
-  display: block;
-  // Cancel the .container-fluid gutter so bands run edge to edge
-  margin: 0 -15px;
-  font-family: $sans;
-  color: $ink;
-  -webkit-font-smoothing: antialiased;
+  @include full-bleed-host;
 }
 
 .shell {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 32px;
+  @include shell;
 }
 
 h1, h2, h3 {
@@ -48,79 +28,18 @@ p {
 }
 
 .eyebrow {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: $accent-text;
+  @include eyebrow;
   margin-bottom: 12px !important;
 }
 
 // ---------------------------------------------------------------- links/buttons
 
 .arrow-link {
-  display: inline-block;
-  font-weight: 500;
-  color: $accent;
-  text-decoration: none;
-  cursor: pointer;
-
-  &::after {
-    content: '';
-    display: inline-block;
-    vertical-align: 0.12em;
-    margin-left: 8px;
-    width: 7px;
-    height: 7px;
-    border-top: 1.5px solid currentColor;
-    border-right: 1.5px solid currentColor;
-    transform: rotate(45deg);
-    transition: transform 0.15s ease;
-  }
-
-  &:hover {
-    text-decoration: none;
-    color: var(--color-brand-700);
-
-    &::after {
-      transform: translateX(3px) rotate(45deg);
-    }
-  }
+  @include arrow-link;
 }
 
 .btn-solid {
-  display: inline-block;
-  padding: 12px 22px;
-  font: inherit;
-  font-weight: 600;
-  background: #fff;
-  color: $navy;
-  border: 0;
-  border-radius: 2px;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background 0.15s ease;
-
-  &:hover {
-    background: #dfe7f7;
-    color: $navy;
-    text-decoration: none;
-  }
-
-  &.dark {
-    background: $navy;
-    color: #fff;
-
-    &:hover {
-      background: var(--color-brand-500);
-      color: #fff;
-    }
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--color-brand-500);
-    outline-offset: 2px;
-  }
+  @include button-navy;
 }
 
 // ---------------------------------------------------------------- hero
@@ -257,7 +176,7 @@ p {
   text-align: left;
   color: #fff;
   // A step lighter than the hero navy: present, but quieter than the search bar
-  background: #1a3260;
+  background: $navy-quiet;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 2px;
   cursor: pointer;
@@ -272,7 +191,7 @@ p {
   }
 
   &:hover {
-    background: #223d72;
+    background: $navy-quiet-hover;
     border-color: rgba(255, 255, 255, 0.18);
 
     .dl-icon {
@@ -350,7 +269,7 @@ p {
 
 .band-tint {
   background: $tint-bg;
-  border-bottom: 1px solid #d5ddec;
+  border-bottom: 1px solid $rule-on-tint;
   padding: 80px 0;
 }
 
@@ -434,7 +353,7 @@ p {
     left: 40px;
     right: -32px;
     height: 1px;
-    background: #9fb0cf;
+    background: $rule-on-tint;
   }
 
   h3 {
@@ -465,7 +384,7 @@ p {
 
 // Last step (data goes public) gets the brand colour
 .timeline li:last-child .step-marker {
-  background: var(--color-brand-500);
+  background: $accent;
 }
 
 // ---------------------------------------------------------------- charts
@@ -631,7 +550,7 @@ p {
       height: 14px;
       margin: 0 16px;
       vertical-align: -1px;
-      background: #b8c0cc;
+      background: $icon;
     }
   }
 }
@@ -677,7 +596,7 @@ p {
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-brand-500);
+    outline: 2px solid $accent;
     outline-offset: 2px;
   }
 
@@ -691,7 +610,7 @@ p {
 .whats-new-dot {
   width: 6px;
   height: 6px;
-  background: var(--color-brand-500);
+  background: $accent;
   border-radius: 50%;
 }
 
@@ -811,7 +730,7 @@ p {
     grid-template-columns: 56px 1fr;
     gap: 12px;
     padding: 12px 0;
-    border-bottom: 1px solid #eceff3;
+    border-bottom: 1px solid $rule-soft;
     line-height: 1.5;
   }
 
@@ -855,7 +774,6 @@ p {
     }
   }
 }
-
 
 @media (max-width: 1080px) {
   .hero-grid {

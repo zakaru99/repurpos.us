@@ -2,13 +2,12 @@
 // proposal and sign-in actions at the far right. Below 1080px the nav collapses
 // into a panel under the bar, opened from the toggle.
 
-$ink: #0f1b2d;
-$ink-soft: #4a5568;
-$rule: #d9dee6;
+@import '../../design';
+
 $bar-height: 64px;
 
 .site-header {
-  font-family: "IBM Plex Sans", "Lato", Arial, sans-serif;
+  font-family: $sans;
   background: #fff;
   border-bottom: 1px solid $rule;
   color: $ink;
@@ -42,7 +41,7 @@ $bar-height: 64px;
   }
 
   .wordmark {
-    font-family: "Lato", Arial, sans-serif;
+    font-family: $wordmark;
     font-size: 1.375rem;
     line-height: 1;
     letter-spacing: -0.01em;
@@ -106,13 +105,13 @@ $bar-height: 64px;
       right: 0;
       bottom: -1px;
       height: 3px;
-      background: var(--color-brand-500);
+      background: $accent;
       transform: scaleX(0);
       transition: transform 0.18s ease;
     }
 
     &:hover {
-      color: var(--color-brand-500);
+      color: $accent;
       text-decoration: none;
     }
 
@@ -137,11 +136,11 @@ $bar-height: 64px;
   font-size: 0.9375rem;
   font-weight: 500;
   white-space: nowrap;
-  color: var(--color-brand-500);
+  color: $accent;
   cursor: pointer;
 
   &:hover {
-    color: var(--color-brand-700);
+    color: $accent-deep;
     text-decoration: none;
   }
 }
@@ -185,7 +184,7 @@ $bar-height: 64px;
       width: 340px;
       background: #fff;
       border: 1px solid $rule;
-      border-top: 3px solid #0b1d3a;
+      border-top: 3px solid $navy;
       padding: 24px 24px 20px;
       box-shadow: 0 12px 32px rgba(15, 27, 45, 0.16);
       animation: fadeSlideIn 0.18s ease-out forwards;
@@ -206,7 +205,7 @@ $bar-height: 64px;
   cursor: pointer;
 
   &:focus-visible {
-    outline: 2px solid var(--color-brand-500);
+    outline: 2px solid $accent;
   }
 }
 
@@ -287,14 +286,14 @@ $bar-height: 64px;
 
     a {
       padding: 12px 0;
-      border-bottom: 1px solid #eef0f3;
+      border-bottom: 1px solid $rule-soft;
 
       &::after {
         display: none;
       }
 
       &.active {
-        color: var(--color-brand-500);
+        color: $accent;
       }
     }
   }
@@ -331,7 +330,7 @@ $bar-height: 64px;
       width: 100%;
       max-width: 380px;
       background: #fff;
-      border-top: 3px solid #0b1d3a;
+      border-top: 3px solid $navy;
       padding: 20px 24px 24px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
       animation: fadeSlideIn 0.22s ease-out forwards;
@@ -349,7 +348,7 @@ $bar-height: 64px;
       justify-content: center;
       width: 28px;
       height: 28px;
-      background: #f1f4f8;
+      background: $hover;
       border: 0;
       border-radius: 50%;
       font-size: 0.75rem;

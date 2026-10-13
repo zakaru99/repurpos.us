@@ -5,20 +5,14 @@
 // through shrink to 210px, and the oldest fold to zero width behind a strip
 // that peeks them open on hover. Widths animate so folding is visible.
 
-$ink: #0f1b2d;
-$ink-soft: #4a5568;
-$rule: #e3e6eb;
-$hover: #f2f4f7;
-$path: #e8ecf3;
-$accent: var(--color-brand-500);
-$moa: #1f8a5b;
-$mono: "IBM Plex Mono", SFMono-Regular, Consolas, monospace;
+@import '../../../design';
+
+$rule: $rule-soft; // hairlines inside the tool are softer than on pages
 
 $active-w: 300px;
 $ancestor-w: 210px;
 $strip-w: 56px;
 $detail-w: 400px;
-$ease: cubic-bezier(0.22, 0.9, 0.27, 1);
 $dur: 0.28s;
 
 :host {
@@ -83,8 +77,8 @@ $dur: 0.28s;
 .crumb-sep {
   width: 5px;
   height: 5px;
-  border-top: 1.5px solid #a0a8b5;
-  border-right: 1.5px solid #a0a8b5;
+  border-top: 1.5px solid $icon;
+  border-right: 1.5px solid $icon;
   transform: rotate(45deg);
   margin: 0 4px;
   flex-shrink: 0;
@@ -101,7 +95,7 @@ $dur: 0.28s;
   padding: 8px 16px 8px 20px;
   font-size: 0.8125rem;
   color: $ink-soft;
-  background: #fbfcfd;
+  background: $panel;
   border-bottom: 1px solid $rule;
   animation: fadeDown 0.2s $ease;
   white-space: nowrap;
@@ -153,7 +147,7 @@ $dur: 0.28s;
   font-size: 0.75rem;
   font-style: italic;
   color: $ink-soft;
-  border: 1px solid #b8c0cc;
+  border: 1px solid $icon;
   border-radius: 50%;
   cursor: help;
 }
@@ -239,7 +233,7 @@ $dur: 0.28s;
   }
 
   &.selected {
-    background: $path;
+    background: $selected;
   }
 
   &.current {
@@ -277,7 +271,7 @@ $dur: 0.28s;
   flex-shrink: 0;
   width: 8px;
   height: 8px;
-  border: 1.5px solid #9aa6bb;
+  border: 1.5px solid $icon;
   border-radius: 50%;
 
   &.moa {
@@ -289,7 +283,7 @@ $dur: 0.28s;
     width: 6px;
     height: 6px;
     margin: 0 1px;
-    background: #9aa6bb;
+    background: $icon;
     border: 0;
   }
 }
@@ -314,7 +308,7 @@ $dur: 0.28s;
   width: 6px;
   height: 6px;
   margin-left: 2px;
-  color: #a0a8b5;
+  color: $icon;
   border-top: 1.5px solid currentColor;
   border-right: 1.5px solid currentColor;
   transform: rotate(45deg);
@@ -344,7 +338,7 @@ $dur: 0.28s;
   overflow: hidden;
   font: inherit;
   color: $ink-soft;
-  background: #f7f8fa;
+  background: $panel;
   border: 0;
   border-right: 1px solid $rule;
   cursor: pointer;
@@ -421,7 +415,7 @@ $dur: 0.28s;
   min-width: $detail-w;
   overflow-y: auto;
   padding: 24px 24px 32px;
-  background: #fbfcfd;
+  background: $panel;
   border-left: 1px solid $rule;
   animation: slideIn 0.24s $ease;
 
@@ -513,7 +507,7 @@ $dur: 0.28s;
   margin: 0 6px 6px 0;
   padding: 2px 8px;
   font-size: 0.8125rem;
-  background: $path;
+  background: $selected;
   border-radius: 6px;
 }
 
@@ -541,7 +535,7 @@ $dur: 0.28s;
     background: $accent;
 
     &:hover {
-      background: var(--color-brand-600);
+      background: $accent-hover;
       color: #fff;
       text-decoration: none;
     }

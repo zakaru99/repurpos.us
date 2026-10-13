@@ -1,0 +1,275 @@
+// Design system for redesigned pages - read DESIGN.md first.
+//
+// Values live as CSS custom properties in _tokens.scss (one source of truth);
+// this file gives them short Sass names and holds the shared building blocks
+// as mixins. Angular's emulated encapsulation means shared styles have to be
+// mixed into each component, so import this with a relative path, e.g.
+//   @import '../../design';
+// and use the names below instead of writing colours, fonts or radii inline.
+
+// ---------------------------------------------------------------- tokens
+
+$ink: var(--color-ink);
+$ink-soft: var(--color-ink-soft);
+$ink-faint: var(--color-ink-faint);
+
+$navy: var(--color-navy);
+$navy-2: var(--color-navy-2);
+$navy-quiet: var(--color-navy-quiet);
+$navy-quiet-hover: var(--color-navy-quiet-hover);
+$accent-on-dark: var(--color-accent-on-dark);
+$rule-dark: var(--color-rule-on-dark);
+
+$accent: var(--color-brand-500);
+$accent-hover: var(--color-brand-600);
+$accent-deep: var(--color-brand-700);
+$accent-text: var(--color-accent-text);
+
+$muted-bg: var(--color-band-muted);
+$tint-bg: var(--color-band-tint);
+$rule: var(--color-rule);
+$rule-soft: var(--color-rule-soft);
+$field-border: var(--color-field-border);
+$hover: var(--color-hover);
+$selected: var(--color-selected);
+$track: var(--color-track);
+$panel: var(--color-panel);
+$icon: var(--color-icon);
+$rule-on-tint: var(--color-rule-on-tint);
+$error-text: var(--color-error-text);
+
+$moa: var(--color-moa);
+$found: var(--color-found);
+$category: var(--color-category);
+
+$sans: var(--font-ui);
+$mono: var(--font-mono);
+$wordmark: var(--font-wordmark);
+
+$radius-sharp: var(--radius-sharp);
+$radius-soft: var(--radius-soft);
+
+$ease: var(--ease-out);
+
+// Breakpoints (Sass numbers, so they work in media queries)
+$bp-phone: 640px;
+$bp-tablet: 860px;
+$bp-nav: 1080px;
+
+// ---------------------------------------------------------------- layout
+
+// Component host that runs edge to edge inside the app's .container-fluid
+@mixin full-bleed-host {
+  display: block;
+  margin: 0 -15px;
+  font-family: $sans;
+  color: $ink;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Centred content column
+@mixin shell($max: null) {
+  max-width: if($max, $max, var(--shell-max));
+  margin: 0 auto;
+  padding: 0 var(--shell-gutter);
+
+  @media (max-width: $bp-phone) {
+    padding: 0 var(--shell-gutter-sm);
+  }
+}
+
+// ---------------------------------------------------------------- type
+
+// Small uppercase label above a heading
+@mixin eyebrow($on-dark: false) {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: if($on-dark, $accent-on-dark, $accent-text);
+}
+
+// Section heading (h2) on pages
+@mixin section-title {
+  font-family: $sans;
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+
+  @media (max-width: $bp-phone) {
+    font-size: 1.625rem;
+  }
+}
+
+// ---------------------------------------------------------------- interaction
+
+@mixin focus-ring($color: $accent, $offset: 2px) {
+  &:focus-visible {
+    outline: 2px solid $color;
+    outline-offset: $offset;
+  }
+}
+
+// Text link with a small chevron that nudges right on hover
+@mixin arrow-link($color: $accent, $hover-color: $accent-deep) {
+  display: inline-block;
+  font-weight: 500;
+  color: $color;
+  text-decoration: none;
+  cursor: pointer;
+
+  &::after {
+    content: '';
+    display: inline-block;
+    vertical-align: 0.12em;
+    margin-left: 8px;
+    width: 7px;
+    height: 7px;
+    border-top: 1.5px solid currentColor;
+    border-right: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.15s ease;
+  }
+
+  &:hover {
+    color: $hover-color;
+    text-decoration: none;
+
+    &::after {
+      transform: translateX(3px) rotate(45deg);
+    }
+  }
+}
+
+// ---------------------------------------------------------------- buttons
+
+@mixin button-base {
+  display: inline-block;
+  padding: 12px 22px;
+  font: inherit;
+  font-weight: 600;
+  border: 0;
+  border-radius: $radius-sharp;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  @include focus-ring;
+}
+
+// Primary action on light backgrounds
+@mixin button-navy {
+  @include button-base;
+  color: #fff;
+  background: $navy;
+
+  &:hover {
+    color: #fff;
+    background: $accent;
+  }
+}
+
+// Low-emphasis action on navy (white buttons on navy read as too loud)
+@mixin button-quiet-on-dark {
+  @include button-base;
+  color: #fff;
+  background: $navy-quiet;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  &:hover {
+    color: #fff;
+    background: $navy-quiet-hover;
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  @include focus-ring($accent-on-dark);
+}
+
+// Secondary action on navy
+@mixin button-outline-on-dark {
+  @include button-base;
+  color: #fff;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+
+  &:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #fff;
+  }
+
+  @include focus-ring($accent-on-dark);
+}
+
+// ---------------------------------------------------------------- controls
+
+// Segmented control: grey track, raised white segment for the active option.
+// Apply to the container; options are <button>s with .active on the current one.
+@mixin segmented {
+  display: inline-flex;
+  flex-shrink: 0;
+  padding: 3px;
+  background: $track;
+  border-radius: 9px;
+
+  button {
+    padding: 6px 12px;
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    white-space: nowrap;
+    color: $ink-soft;
+    background: transparent;
+    border: 0;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+      color: $ink;
+    }
+
+    &.active {
+      color: $ink;
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(15, 27, 45, 0.12), 0 0 0 0.5px rgba(15, 27, 45, 0.06);
+    }
+
+    @include focus-ring($accent, 1px);
+  }
+}
+
+// Text tabs with an underline for the active one (light backgrounds)
+@mixin underline-tabs {
+  display: flex;
+  gap: 28px;
+
+  button {
+    padding: 0 0 6px;
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: $ink-soft;
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+
+    &:hover,
+    &.active {
+      color: $ink;
+    }
+
+    &.active {
+      border-bottom-color: $accent;
+    }
+
+    @include focus-ring($accent, 4px);
+  }
+}

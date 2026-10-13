@@ -10,20 +10,25 @@ import * as d3 from "d3";
 import *  as  ontology_data from './phase2b_moa_updated.json'
 import { holdsCompounds } from './ontology-export';
 
-// Tree palette - matches the legend in the template and the site's design tokens
+// Tree palette, read from the design tokens in src/_tokens.scss so the d3
+// drawing matches the legend and the rest of the site (fallbacks = token values)
+function token(name: string, fallback: string): string {
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name);
+  return (v && v.trim()) || fallback;
+}
 const COLORS = {
-  categoryFill: '#dbe4f7',
-  categoryStroke: '#3d6de0',
-  moa: '#1f8a5b',          // category whose children are compounds
+  categoryFill: token('--color-category', '#dbe4f7'),
+  categoryStroke: token('--color-brand-500', '#3d6de0'),
+  moa: token('--color-moa', '#1f8a5b'),               // category whose children are compounds
   compoundFill: '#ffffff',
-  compoundStroke: '#3d6de0',
-  found: '#e5484d',        // search / hover path
-  link: '#c9ced6',
-  text: '#0f1b2d',
-  textSoft: '#4a5568'
+  compoundStroke: token('--color-brand-500', '#3d6de0'),
+  found: token('--color-found', '#e5484d'),           // search / hover path
+  link: token('--color-rule', '#d9dee6'),
+  text: token('--color-ink', '#0f1b2d'),
+  textSoft: token('--color-ink-soft', '#4a5568')
 };
-const FONT = '"IBM Plex Sans", "Lato", Arial, sans-serif';
-const MONO = '"IBM Plex Mono", Consolas, monospace';
+const FONT = token('--font-ui', '"IBM Plex Sans", "Lato", Arial, sans-serif');
+const MONO = token('--font-mono', '"IBM Plex Mono", Consolas, monospace');
 
 
 function nodeFill(d: any): string {
