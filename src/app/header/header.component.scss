@@ -1,410 +1,360 @@
-/* ---------------------------
-   -- header --
----------------------------- */
-.blue-fill {
-  background-color: #f5f8fd;
-  padding-top: 6px;
-  // Was padding-bottom: 12px + margin-bottom: 6px. A margin is never
-  // covered by its own element's background - it sits outside the box - so
-  // that 6px was a permanently transparent strip beneath the header,
-  // letting scrolled page content show through it now that the header is
-  // sticky. Folding it into padding keeps the same total space but makes
-  // all of it part of this element's own opaque background.
-  padding-bottom: 18px;
-  border-bottom: 3px solid #7f9feb;
-  align-items: center;
-  justify-content: space-between;
+// Site header: a single white bar. Brand left, search + primary nav centre-right,
+// proposal and sign-in actions at the far right. Below 1080px the nav collapses
+// into a panel under the bar, opened from the toggle.
+
+$ink: #0f1b2d;
+$ink-soft: #4a5568;
+$rule: #d9dee6;
+$bar-height: 64px;
+
+.site-header {
+  font-family: "IBM Plex Sans", "Lato", Arial, sans-serif;
+  background: #fff;
+  border-bottom: 1px solid $rule;
+  color: $ink;
 }
 
-.logo {
-  display: -webkit-inline-box;
-  border-right: 3px white solid;
-
-  img {
-    margin-top: 0;
-    width: 40px;
-    vertical-align: top;
-  }
-}
-
-.navbar-brand {
+.bar {
   display: flex;
   align-items: center;
-  font-size: unset;
+  gap: 32px;
+  min-height: $bar-height;
+  padding: 0 32px;
+}
 
-  .site-name {
-    font-size: 1.4em;
-    margin-left: 12px;
+// ---------------------------------------------------------------- brand
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  color: $ink;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+    color: $ink;
   }
 
-  .site-subtitle {
+  img {
+    display: block;
+  }
+
+  .wordmark {
+    font-family: "Lato", Arial, sans-serif;
+    font-size: 1.375rem;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .tagline {
+    padding-left: 14px;
+    margin-left: 4px;
+    border-left: 1px solid $rule;
+    font-size: 0.8125rem;
+    line-height: 1.25;
+    color: $ink-soft;
+    max-width: 13em;
+  }
+}
+
+// ---------------------------------------------------------------- nav
+
+.nav-body {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  align-self: stretch;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  align-self: stretch;
+  gap: 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
     display: flex;
-    flex-direction: column;
-    font-size: 0.9em;
-    opacity: 0.65;
-    line-height: 1em;
-    margin-left: 12px;
-
-    .wide {
-      letter-spacing: 1px;
-    }
-
-    .narrow {
-      letter-spacing: -0.2px;
-    }
   }
 
-  a:hover {
+  a {
+    display: flex;
+    align-items: center;
+    position: relative;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: $ink;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+
+    // Bar along the bottom edge of the header for hover/current page
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 3px;
+      background: var(--color-brand-500);
+      transform: scaleX(0);
+      transition: transform 0.18s ease;
+    }
+
+    &:hover {
+      color: var(--color-brand-500);
+      text-decoration: none;
+    }
+
+    &:hover::after,
+    &.active::after {
+      transform: scaleX(1);
+    }
+  }
+}
+
+.nav-actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-left: 24px;
+  border-left: 1px solid $rule;
+  height: 32px;
+}
+
+.sign-in {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--color-brand-500);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-brand-700);
     text-decoration: none;
   }
 }
 
-.navbar-nav {
-  align-items: flex-end;
-  padding-top: 0.5em;
+// ---------------------------------------------------------------- sign-in popover
 
-  li {
-    padding-top: 5px;
-  }
-}
-
-/* Search box */
-.search {
-  display: flex;
-}
-
-/* Reveal / dropdown panel */
 .reveal {
   height: 0;
   width: 0;
   overflow: hidden;
-  background: #f5f8fd;
-  border-bottom-left-radius: 15px;
-  transition: height 0.3s linear;
 
-  &.open {
-    height: 200px;
-    width: 100%;
-    z-index: 10;
-    padding-right: 15px;
-  }
-
-  &.sign-in {
-    margin-top: 16px;
-  }
-
-  &.show.logout {
+  // Logged in: the reveal just holds the logout button inline
+  &.logout {
     height: auto;
-    width: 100%;
+    width: auto;
+    overflow: visible;
   }
 }
 
-/* Ensure reveal/sign-in panel sits above floating buttons (like whats-new-trigger) */
-.reveal.open {
-  z-index: 3000;
-}
-
-/* Sign-in link */
-.sign-in {
-  cursor: pointer;
-}
-
-/* Desktop: login-sheet is a transparent passthrough */
-.login-sheet  {}
-.sheet-header { display: none; }
-.sheet-close  { display: none; }
-.sheet-banner { display: none; }
-
-/* ---------------------------
-   Modern top nav hover
----------------------------- */
-.navbar-nav li.menu-item a {
-  text-decoration: none;
-  position: relative;
-  color: #212529;
-  font-weight: 500;
-  padding: 4px 6px;
-  transition: color 0.25s ease, transform 0.25s ease;
-
-  &:hover {
-    color: #3d6de0;
-    transform: translateY(-2px);
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -2px;
-    width: 0;
-    height: 2px;
-    background: #3d6de0;
-    border-radius: 2px;
-    transition: width 0.3s ease;
-  }
-
-  &:hover::after {
-    width: 100%;
-  }
-}
-
-.navbar-nav li.menu-item + li.menu-item::before {
-  content: '';
-  display: inline-block;
-  width: 1px;
-  height: 18px;
-  background: rgba(0,0,0,0.06);
-  margin: 0 12px;
-  vertical-align: middle;
-}
-
-li.sign-in a {
-  font-weight: 600;
-  color: #3d6de0;
-
-  &:hover {
-    color: #335cc0;
-    transform: translateY(-1px);
-  }
-}
-
-/* Hamburger hidden on desktop */
-.hamburger {
+.sheet-header,
+.sheet-close {
   display: none;
 }
 
-/* ---------------------------
-   Desktop breakpoint
----------------------------- */
-@media only screen and (min-width: 992px) {
-  .navbar-collapse {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    height: auto;
-    width: auto;
-  }
-
-  .navbar-nav {
-    align-items: center;
-
-    li {
-      padding-top: 0;
-    }
-  }
-
-  .reveal {
-    &:not(.logout) {
-      position: absolute;
-      top: 62px;
-      right: 0;
-      background: transparent;
-      border-bottom-left-radius: 0;
-    }
-
-    &.open {
-      height: auto;
-      width: auto;
-      overflow: visible;
-      padding-right: 0;
-    }
-
-    &.logout {
-      height: auto;
-      width: auto;
-    }
-  }
-
-  /* Popover card holding the actual sign-in form */
-  .reveal.open:not(.logout) .login-sheet {
-    display: block;
-    width: 300px;
-    background: #fff;
-    border-radius: 12px;
-    padding: 1.1rem 1.25rem 1rem;
-    box-shadow: 0 12px 32px rgba(20, 30, 60, 0.16);
-    animation: fadeSlideIn 0.18s ease-out forwards;
-  }
-
-  /* Small pointer connecting the card back to the "sign in" trigger */
-  .reveal.open:not(.logout)::before {
-    content: '';
-    position: absolute;
-    top: -6px;
-    right: 24px;
-    width: 12px;
-    height: 12px;
-    background: #fff;
-    transform: rotate(45deg);
-    box-shadow: -2px -2px 4px rgba(20, 30, 60, 0.05);
-  }
-}
-
-/* ---------------------------
-   Mobile
----------------------------- */
 @keyframes fadeSlideIn {
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+@media (min-width: 1081px) {
+  .reveal.open:not(.logout) {
+    position: absolute;
+    top: calc(100% + 16px);
+    right: 0;
+    height: auto;
+    width: auto;
+    overflow: visible;
+    z-index: 3000;
 
-  /* Show hamburger, hide subtitle */
-  .hamburger {
-    display: flex;
-    align-items: center;
-    margin-right: 0.5rem;
-  }
-
-  .site-subtitle {
-    display: none !important;
-  }
-
-  /* Stack the whole navbar vertically */
-  .navbar-expand-lg {
-    flex-direction: column;
-    align-items: stretch;
-    padding-bottom: 0;
-  }
-
-  .top-nav {
-    display: flex;
-    width: 100%;
-  }
-
-  /* Search full-width, sits above nav links when expanded */
-  .search {
-    width: 100%;
-    padding: 0.5rem 0.75rem 0.25rem;
-    box-sizing: border-box;
-  }
-
-  /* nav-body takes full width */
-  .nav-body {
-    width: 100%;
-  }
-
-  /* Collapsed nav */
-  .navbar-collapse {
-    display: flex;
-    flex-direction: column;
-    max-height: 0;
-    width: 100%;
-    overflow: hidden;
-    transition: max-height 0.35s ease-in-out;
-  }
-
-  .navbar-collapse.show {
-    max-height: 500px;
-  }
-
-  .login-open .navbar-collapse.show {
-    max-height: 600px;
-  }
-
-  /* Nav list resets */
-  .navbar-nav {
-    flex-direction: column;
-    width: 100%;
-    padding: 0.25rem 0 0.5rem;
-    margin-top: 0.5rem;
-    border-top: 1px solid #d4e0f7;
-    align-items: flex-start;
-
-    li {
-      padding-top: 0;
-      width: 100%;
+    .login-sheet {
+      width: 340px;
+      background: #fff;
+      border: 1px solid $rule;
+      border-top: 3px solid #0b1d3a;
+      padding: 24px 24px 20px;
+      box-shadow: 0 12px 32px rgba(15, 27, 45, 0.16);
+      animation: fadeSlideIn 0.18s ease-out forwards;
     }
   }
+}
 
-  /* Larger touch targets (≥44px) for nav links */
-  .navbar-nav li.menu-item a {
-    display: block;
-    padding: 0.7rem 1rem;
-    font-size: 0.95rem;
-    transform: none !important;
+// ---------------------------------------------------------------- toggle (mobile only)
 
-    &::after {
-      display: none;
-    }
+.nav-toggle {
+  display: none;
+  width: 40px;
+  height: 40px;
+  margin-left: -8px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-brand-500);
+  }
+}
+
+.nav-toggle-lines,
+.nav-toggle-lines::before,
+.nav-toggle-lines::after {
+  display: block;
+  width: 20px;
+  height: 2px;
+  margin: 0 auto;
+  background: $ink;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.nav-toggle-lines {
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
   }
 
-  /* Remove vertical separators between items */
-  .navbar-nav li.menu-item + li.menu-item::before {
+  &::before { top: -6px; }
+  &::after { top: 6px; }
+}
+
+.nav-open .nav-toggle-lines {
+  background: transparent;
+
+  &::before { transform: translateY(6px) rotate(45deg); }
+  &::after { transform: translateY(-6px) rotate(-45deg); }
+}
+
+// ---------------------------------------------------------------- narrower desktop
+
+@media (max-width: 1280px) {
+  .brand .tagline {
     display: none;
   }
+}
 
-  li.sign-in a {
+// ---------------------------------------------------------------- collapsed nav
+
+@media (max-width: 1080px) {
+  .bar {
+    flex-wrap: wrap;
+    gap: 0 12px;
+    padding: 0 20px;
+  }
+
+  .nav-toggle {
     display: block;
-    padding: 0.7rem 1rem;
   }
 
-  /* --- Full-screen login overlay --- */
-
-  /* Disable the height-transition on mobile; the overlay handles animation */
-  .reveal { transition: none; }
-
-  .reveal.open {
-    position: fixed !important;
-    inset: 0;
-    height: 100% !important;
-    width: 100% !important;
-    background: rgba(10, 5, 25, 0.55) !important;
-    display: flex !important;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: visible !important;
-    padding: 1rem !important;
-    border-radius: 0 !important;
-    box-sizing: border-box;
-    z-index: 3100;
-  }
-
-  .reveal.open .login-sheet {
-    background: white;
-    border-radius: 16px;
-    width: 100%;
-    max-width: 380px;
-    padding: 1.25rem 1.5rem 1.5rem;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-    display: flex;
+  .nav-body {
+    display: none;
+    flex: 0 0 100%;
     flex-direction: column;
     align-items: stretch;
-    box-sizing: border-box;
-    animation: fadeSlideIn 0.22s ease-out forwards;
+    gap: 0;
+    padding: 12px 0 20px;
+    border-top: 1px solid $rule;
   }
 
-  .reveal.open .sheet-header {
+  .nav-open .nav-body {
     display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    margin-bottom: 0.5rem;
   }
 
-  .reveal.open .sheet-close {
+  .search {
+    padding-bottom: 8px;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 0;
+
+    a {
+      padding: 12px 0;
+      border-bottom: 1px solid #eef0f3;
+
+      &::after {
+        display: none;
+      }
+
+      &.active {
+        color: var(--color-brand-500);
+      }
+    }
+  }
+
+  .nav-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    height: auto;
+    padding: 16px 0 0;
+    border-left: 0;
+  }
+
+  .sign-in {
+    padding: 4px 0;
+  }
+
+  // Full-screen sign-in sheet
+  .reveal.open:not(.logout) {
+    position: fixed;
+    inset: 0;
+    height: 100%;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
-    background: #edf2fc;
-    border: none;
-    border-radius: 50%;
-    font-size: 0.75rem;
-    color: #3d6de0;
-    cursor: pointer;
-    flex-shrink: 0;
-    -webkit-tap-highlight-color: transparent;
-  }
+    padding: 1rem;
+    box-sizing: border-box;
+    background: rgba(10, 15, 30, 0.55);
+    overflow: visible;
+    z-index: 3100;
 
-  /* Logout button in nav: plain compact item, no card */
-  .reveal.logout {
-    height: auto !important;
-    width: 100% !important;
-    background: none !important;
-    overflow: visible !important;
-    padding: 0 !important;
+    .login-sheet {
+      width: 100%;
+      max-width: 380px;
+      background: #fff;
+      border-top: 3px solid #0b1d3a;
+      padding: 20px 24px 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      animation: fadeSlideIn 0.22s ease-out forwards;
+    }
+
+    .sheet-header {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 0.5rem;
+    }
+
+    .sheet-close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: #f1f4f8;
+      border: 0;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      color: $ink;
+      cursor: pointer;
+    }
   }
 }

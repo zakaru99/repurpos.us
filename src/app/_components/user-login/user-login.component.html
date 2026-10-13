@@ -1,29 +1,36 @@
-<div *ngIf="loggedIn; else lgin"><button (click)="logout()" mat-raised-button color="warn" type="submit" class="logout-button">logout</button></div>
+<div *ngIf="loggedIn; else lgin"><button (click)="logout()" type="button" class="logout-button">Sign out</button></div>
 
 
 <ng-template #lgin>
   <div class="login-card">
-    <span class="login-title">Sign in</span>
+    <div class="login-head">
+      <span class="login-title">Sign in</span>
+      <span class="login-sub">Access assay data, favorites and lists</span>
+    </div>
 
     <!-- ngSubmit not firing so removed and put a click event on button -->
     <form #userForm="ngForm" class="login-form">
-      <mat-form-field color="primary">
-        <input matInput placeholder="Email address" [formControl]="email" required id="email"
-               name="email" aria-label="email" [errorStateMatcher]="errorMatcher">
-      </mat-form-field>
+      <label class="field" [class.invalid]="email.invalid && submitted">
+        <span class="field-label">Email address</span>
+        <input type="email" [formControl]="email" required id="email"
+               name="email" autocomplete="email">
+      </label>
 
-      <mat-form-field color="primary">
-        <input matInput placeholder="Password" id="password" [type]="'password'"
-               aria-label="password" required [formControl]="password" name="password"
-               [errorStateMatcher]="errorMatcher">
-      </mat-form-field>
+      <label class="field" [class.invalid]="password.invalid && submitted">
+        <span class="field-label">Password</span>
+        <input type="password" id="password" required [formControl]="password"
+               name="password" autocomplete="current-password">
+      </label>
 
-      <button class="login-button" mat-raised-button color="primary" type="submit" (click)="onSubmit()" aria-label="login">Login</button>
+      <p class="field-error" *ngIf="submitted && (email.invalid || password.invalid)">
+        Enter a valid email address and password.
+      </p>
+
+      <button class="login-button" type="submit" (click)="onSubmit()">Sign in</button>
     </form>
 
     <div class="login-footer">
       <app-forgot-pass-button class="link"></app-forgot-pass-button>
-      <span class="footer-divider">&middot;</span>
       <app-reg-user-dialog class="link"></app-reg-user-dialog>
     </div>
   </div>

@@ -1,38 +1,62 @@
-import { Component, AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+
+import { HOME_DATA } from './home-data';
+import { HomeDataService } from './home-data.service';
+
+interface Bar { label: string; value: number; }
+
+// Figures, chart data and release notes live in home-data.ts so a data
+// release only means editing that file.
+const DATA: any = HOME_DATA;
 
 @Component({
   selector: 'app-intro-text-modern',
   templateUrl: './intro-text-modern.component.html',
   styleUrls: ['./intro-text-modern.component.scss']
 })
-export class IntroTextModernComponent implements AfterViewInit, OnDestroy {
-  isWhatsNewOpen = false;
-  newCompounds = 159;
-  totalCompounds = 13831;
-  lastUpdated = new Date('2026/07/31');
-  // What's New items with dates
-  whatsNewItems: Array<{ date: Date; text: string }> = [
-    { date: new Date('2026/06/17'), text: 'Mobile optimizations across the site' },
-    { date: new Date('2026/06/17'), text: 'Save compounds to favorites and custom lists' },
-    { date: new Date('2026/06/17'), text: 'New My Account, My Favorites, and My Lists pages' },
-    { date: new Date('2026/03/02'), text: 'Assay description page sortable by status' },
-    { date: new Date('2026/03/02'), text: 'All assay descriptions in the workflow loaded' },
-    { date: new Date('2026/1/28'), text: 'Added user dashboard' },
-    { date: new Date('2026/1/25'), text: 'Added built in assay proposal form' },
-    { date: new Date('2025/12/02'), text: 'Modernized workflow & about UI' },
-    { date: new Date('2025/12/01'), text: 'Modernized ontology tree UI' },
-    { date: new Date('2025/11/25'), text: 'Added "contact us" feature' },
-    { date: new Date('2025/11/19'), text: 'Modernized homepage UI' },
-    { date: new Date('2025/11/05'), text: 'New predictive searching' },
-    { date: new Date('2025/10/04'), text: 'Assay toxicity tag' }
-  ];
-  @ViewChild('bellIcon') bellIcon!: ElementRef;
-  @ViewChild('panel') panelRef!: ElementRef;
+export class IntroTextModernComponent implements OnInit {
+  stats = DATA.stats;
+  lastUpdated = new Date(DATA.stats.lastUpdated);
+  moaCategories: Bar[] = DATA.moaCategories;
+  ontologies: Bar[] = DATA.ontologies;
+  phases: { placeholder: boolean; items: Bar[] } = DATA.phases;
+  assayFormats: Bar[] = DATA.assayFormats;
 
-  get recentCount(): number {
-    const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - 90);
-    return this.whatsNewItems.filter(item => item.date >= cutoff).length;
+  whatsNewItems: Array<{ date: Date; text: string }> =
+    DATA.whatsNew.map((n: [string, string]) => ({ date: new Date(n[0]), text: n[1] }));
+  isWhatsNewOpen = false;
+  @ViewChild('wnTrigger') wnTrigger: ElementRef;
+  @ViewChild('drawerClose') drawerClose: ElementRef;
+
+  readonly downloads = {
+    compounds: { url: 'assets/csv/reframe_smiles_list.csv', file: 'reframe_smiles_list.csv', size: null as number },
+    screening: { url: 'assets/csv/reframe_assay_data.zip', file: 'reframe_assay_data.zip', size: null as number }
+  };
+
+  partnershipSteps = [
+    { title: 'Propose', text: 'Submit a proposal with the indication, assay description, volume and concentration.' },
+    { title: 'Review', text: 'Reviewed case by case for global-health relevance, difference from prior screens, and miniaturization.' },
+    { title: 'Agreement', text: 'Partners sign an MTA that guarantees global access to the resulting data.' },
+    { title: 'Screen', text: 'About 0.5 nmol per compound for the primary screen, up to 4 nmol for hit follow-up.' },
+    { title: 'Publish', text: 'Results are deposited on REFRAMEdb after a 12-month delay.' }
+  ];
+
+  constructor(private data: HomeDataService) { }
+
+  ngOnInit() {
+    for (const key of Object.keys(this.downloads)) {
+      const d = this.downloads[key];
+      this.data.getFileSize(d.url).subscribe(size => d.size = size);
+    }
+  }
+
+  barWidth(value: number, items: Bar[]): number {
+    const max = Math.max(1, ...items.map(i => i.value));
+    return value / max * 100;
+  }
+
+  get phaseTotal(): number {
+    return this.phases.items.reduce((sum, i) => sum + i.value, 0);
   }
 
   get groupedItems(): Array<{ label: string; items: Array<{ date: Date; text: string }> }> {
@@ -46,63 +70,33 @@ export class IntroTextModernComponent implements AfterViewInit, OnDestroy {
     return order.map(label => ({ label, items: groups[label] }));
   }
 
-  private triggerBell(): void {
-    const bell = this.bellIcon && (this.bellIcon.nativeElement as HTMLElement);
-    if (!bell) return;
-    bell.classList.remove('bell-ring');
-    void bell.offsetWidth;
-    bell.classList.add('bell-ring');
-    setTimeout(() => bell.classList.remove('bell-ring'), 1200);
+  openWhatsNew(ev?: MouseEvent) {
+    if (ev) ev.stopPropagation();
+    this.isWhatsNewOpen = true;
+    // Wait for the drawer's visibility transition to start before focusing into it
+    setTimeout(() => this.drawerClose && this.drawerClose.nativeElement.focus(), 50);
   }
 
-  toggleWhatsNew(ev?: MouseEvent) {
-    // prevent the click from bubbling to the document listener
-    if (ev) ev.stopPropagation();
-    this.isWhatsNewOpen = !this.isWhatsNewOpen;
-    if (this.isWhatsNewOpen) {
-      this.triggerBell();
-    }
-  }
-
-  closeWhatsNew(ev?: MouseEvent) {
-    if (ev) ev.stopPropagation();
+  closeWhatsNew() {
+    if (!this.isWhatsNewOpen) { return; }
     this.isWhatsNewOpen = false;
+    if (this.wnTrigger) { this.wnTrigger.nativeElement.focus(); }
   }
 
-  private outsideClickListener = (ev: MouseEvent) => {
-    if (!this.isWhatsNewOpen) return;
-    const panelEl = this.panelRef && (this.panelRef.nativeElement as HTMLElement | null);
-    if (panelEl && !panelEl.contains(ev.target as Node)) {
-      this.isWhatsNewOpen = false;
-    }
-  };
-
-  ngAfterViewInit() {
-    // initial ring on load
-    const bell = this.bellIcon && (this.bellIcon.nativeElement as HTMLElement | undefined);
-    if (bell) {
-      bell.classList.add('bell-ring');
-      bell.addEventListener('animationend', () => bell.classList.remove('bell-ring'), { once: true });
-    }
-
-    document.addEventListener('click', this.outsideClickListener);
+  @HostListener('document:keydown.escape')
+  onEscape() {
+    this.closeWhatsNew();
   }
 
-  ngOnDestroy() {
-    document.removeEventListener('click', this.outsideClickListener);
-  }
-
-  downloadFiles() {
-  const link = document.createElement('a');
-  link.href = '../../assets/csv/reframe_smiles_list.csv';
-  link.download = 'reframe_smiles_list.csv';
-  link.click();
-}
-
-  downloadAssayData() {
+  download(d: { url: string; file: string }) {
     const link = document.createElement('a');
-    link.href = '../../assets/csv/reframe_assay_data.zip';
-    link.download = 'reframe_assay_data.zip';
+    link.href = d.url;
+    link.download = d.file;
     link.click();
+  }
+
+  formatSize(bytes: number): string {
+    if (bytes == null) { return ''; }
+    return bytes >= 1048576 ? (bytes / 1048576).toFixed(1) + ' MB' : Math.round(bytes / 1024) + ' KB';
   }
 }

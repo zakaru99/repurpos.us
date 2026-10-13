@@ -1,68 +1,45 @@
-<header>
-  <nav class="navbar navbar-expand-lg d-flex blue-fill" [class.login-open]="loginBox">
+<header class="site-header" [class.nav-open]="expanded" [class.login-open]="loginBox">
+  <div class="bar">
 
-    <div class="top-nav">
-      <div class="navbar-brand">
-        <div class="hamburger">
-          <button class="navbar-toggler" type="button" (click)="toggleNav()" aria-label="Toggle navigation">
-            <mat-icon color="accent">menu</mat-icon>
-          </button>
-        </div>
-        <!-- logo -->
-        <a href="/" class="d-flex">
-              <img src="../assets/logo-app-sm.png" width="30" height="30" class="d-inline-block align-top" alt="reframe logo">
-              <div class="site-name">
-                <span class="bold">reframe</span><span class="thin">db</span>
-              </div>
-              <div class="site-subtitle">
-                <span class="wide">open & extendable </span><span class="narrow">drug repurposing data</span>
-              </div>
-            </a>
+    <button class="nav-toggle" type="button" (click)="toggleNav()"
+            [attr.aria-expanded]="expanded" aria-controls="primary-nav" aria-label="Toggle navigation">
+      <span class="nav-toggle-lines"></span>
+    </button>
+
+    <a href="/" class="brand">
+      <img src="../assets/logo-app-sm.png" width="28" height="28" alt="">
+      <span class="wordmark"><span class="bold">reframe</span><span class="thin">db</span></span>
+      <span class="tagline">Open &amp; extendable drug repurposing data</span>
+    </a>
+
+    <div class="nav-body" id="primary-nav">
+      <div class="search">
+        <app-quick-search></app-quick-search>
       </div>
-    </div>
 
-    <div class="nav-body d-flex">
-      <div class="collapse navbar-collapse" id="navbarContent" [ngClass]="{'logout-wrap': loggedIn, 'show': expanded}">
-        <div class="search" id="searchContent">
-          <app-quick-search></app-quick-search>
-        </div>
-        <ul class="navbar-nav ml-auto">
-          <li class="menu-item">
-            <a routerLink="/assays" (click)="collapseNav()">assays</a>
-          </li>
-          <li class="menu-item">
-            <a routerLink="/ontology-tree" [queryParams]="{src: '0'}" (click)="collapseNav()">ontology tree</a>
-          </li>
-          <li class="menu-item">
-            <a routerLink="/workflow" (click)="collapseNav()">workflow</a>
-          </li>
-          <li class="menu-item">
-            <a routerLink="/about" (click)="collapseNav()">about</a>
-          </li>
-          <li class="menu-item" *ngIf="loggedIn">
-            <a routerLink="/user_portal/my_account" (click)="collapseNav()">user portal</a>
-          </li>
-          <li class="menu-item" *ngIf="isAdmin">
-            <a routerLink="/internal/proposals" (click)="collapseNav()">calibr admins</a>
-          </li>
-          <li class="menu-item">
-            <a routerLink="/contact-us" (click)="collapseNav()">contact us</a>
-          </li>
-          <li class="menu-item sign-in" [hidden]="loggedIn">
-            <a *ngIf="!loggedIn" (click)="showLogin()" (click)="clickedInside($event)">sign in</a>
-          </li>
+      <ul class="nav-links">
+        <li><a routerLink="/assays" routerLinkActive="active" (click)="collapseNav()">Assays</a></li>
+        <li><a routerLink="/ontology-tree" routerLinkActive="active" [queryParams]="{src: '0'}" (click)="collapseNav()">Ontology tree</a></li>
+        <li><a routerLink="/workflow" routerLinkActive="active" (click)="collapseNav()">Workflow</a></li>
+        <li><a routerLink="/about" routerLinkActive="active" (click)="collapseNav()">About</a></li>
+        <li><a routerLink="/contact-us" routerLinkActive="active" (click)="collapseNav()">Contact</a></li>
+        <li *ngIf="loggedIn"><a routerLink="/user_portal/my_account" routerLinkActive="active" (click)="collapseNav()">User portal</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/internal/proposals" routerLinkActive="active" (click)="collapseNav()">Calibr admins</a></li>
+      </ul>
 
-          <li class="reveal user-login" [ngClass]="{'open': loginBox, 'logout': loggedIn, 'sign-in-box': !loggedIn, 'show': expanded}">
-            <div class="login-sheet" (click)="clickedInside($event)">
-              <div class="sheet-header">
-                <button class="sheet-close" (click)="showLogin()" aria-label="Close">&#x2715;</button>
-              </div>
-              <app-user-login></app-user-login>
+      <div class="nav-actions">
+        <a *ngIf="!loggedIn" class="sign-in" (click)="showLogin()" (click)="clickedInside($event)">Sign in</a>
+
+        <div class="reveal user-login" [ngClass]="{'open': loginBox, 'logout': loggedIn}">
+          <div class="login-sheet" (click)="clickedInside($event)">
+            <div class="sheet-header">
+              <button class="sheet-close" (click)="showLogin()" aria-label="Close">&#x2715;</button>
             </div>
-          </li>
-        </ul>
+            <app-user-login></app-user-login>
+          </div>
+        </div>
       </div>
     </div>
 
-  </nav>
+  </div>
 </header>

@@ -1,0 +1,130 @@
+<div class="explore">
+  <div class="tablist" role="tablist" aria-label="Ways into the data" aria-orientation="vertical">
+    <button *ngFor="let t of tabs; let i = index" type="button" role="tab"
+            class="tab" [class.active]="active === t.id"
+            [id]="'explore-tab-' + t.id"
+            [attr.aria-selected]="active === t.id"
+            [attr.aria-controls]="'explore-panel'"
+            [attr.tabindex]="active === t.id ? 0 : -1"
+            (click)="select(t.id)" (keydown)="onTabKey($event, i)">
+      <span class="tab-no">0{{ i + 1 }}</span>
+      <span class="tab-text">
+        <span class="tab-title">{{ t.title }}</span>
+        <span class="tab-blurb">{{ t.blurb }}</span>
+      </span>
+    </button>
+  </div>
+
+  <div class="frame" id="explore-panel" role="tabpanel" [attr.aria-labelledby]="'explore-tab-' + active">
+
+    <!-- Compound profile -->
+    <ng-container *ngIf="active === 'compound'">
+      <div class="frame-bar"><span class="path">reframedb.org/compound_data/{{ example.id }}</span></div>
+      <div class="frame-body" *ngIf="compound$ | async as c; else loadingTpl">
+        <div class="cmpd">
+          <div class="cmpd-structure">
+            <img *ngIf="structure$ | async as s" [src]="s" [alt]="'2D structure of ' + c.name">
+          </div>
+          <div class="cmpd-info">
+            <h3 class="cmpd-name">{{ c.name }}</h3>
+            <p class="cmpd-aliases" *ngIf="c.aliases.length">Also: {{ c.aliases.join(', ') }}</p>
+            <dl class="kv">
+              <div><dt>Highest phase</dt><dd>{{ c.phase || '—' }}</dd></div>
+              <div><dt>Screens with data</dt><dd>{{ c.assays.length }}</dd></div>
+            </dl>
+          </div>
+        </div>
+        <h4 class="sub">Screens</h4>
+        <ul class="rows">
+          <li *ngFor="let a of c.assays.slice(0, 4)">
+            <span class="row-main">{{ a[0] }}</span>
+            <span class="row-meta">{{ a[2] }}</span>
+            <span class="row-id mono">{{ a[1] }}</span>
+          </li>
+        </ul>
+      </div>
+      <div class="frame-foot">
+        <a class="arrow-link" [routerLink]="['/compound_data', example.id]" [queryParams]="{ qid: example.qid }">Open the imatinib profile</a>
+      </div>
+    </ng-container>
+
+    <!-- Screens -->
+    <ng-container *ngIf="active === 'screens'">
+      <div class="frame-bar"><span class="path">reframedb.org/assays</span></div>
+      <div class="frame-body" *ngIf="latestAssays$ | async as assays; else loadingTpl">
+        <h4 class="sub first">Most recently published</h4>
+        <ul class="rows" *ngIf="assays.length; else noAssays">
+          <li *ngFor="let a of assays">
+            <a class="row-main" [routerLink]="['/assays', a.id]">{{ a.title }}</a>
+            <span class="row-meta">{{ a.indication }}</span>
+            <span class="row-id mono">{{ a.published | date:'d MMM y' }}</span>
+          </li>
+        </ul>
+        <ng-template #noAssays><p class="muted">The assay list couldn't be loaded right now.</p></ng-template>
+        <p class="note">Activity data and dose-response curves are shown after signing in.</p>
+      </div>
+      <div class="frame-foot">
+        <a class="arrow-link" routerLink="/assays">Browse all published screens</a>
+      </div>
+    </ng-container>
+
+    <!-- Structure search -->
+    <ng-container *ngIf="active === 'structure'">
+      <div class="frame-bar"><span class="path">reframedb.org/search?type=structure&amp;mode=similarity</span></div>
+      <div class="frame-body" *ngIf="compound$ | async as c; else loadingTpl">
+        <div class="sim">
+          <div class="sim-query">
+            <span class="sub-inline">Query</span>
+            <img *ngIf="structure$ | async as s" [src]="s" alt="Query structure: imatinib">
+            <span class="sim-query-name">{{ c.name }}</span>
+          </div>
+          <div class="sim-results">
+            <span class="sub-inline">Closest analogues · Tanimoto similarity</span>
+            <ul class="bars">
+              <li *ngFor="let s of c.similar.slice(0, 6)" [title]="s.main_label + ': ' + (s.score | number:'1.2-2')">
+                <a class="bar-label" [routerLink]="['/compound_data', s.compound_id]" [queryParams]="s.qid ? { qid: s.qid } : {}">{{ s.main_label }}</a>
+                <span class="bar-track"><span class="bar" [style.width.%]="s.score * 100"></span></span>
+                <span class="bar-value mono">{{ s.score | number:'1.2-2' }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="frame-foot">
+        <a class="arrow-link" [routerLink]="'/search'" [queryParams]="{ type: 'structure' }">Open structure search</a>
+      </div>
+    </ng-container>
+
+    <!-- Mechanism -->
+    <ng-container *ngIf="active === 'mechanism'">
+      <div class="frame-bar"><span class="path">reframedb.org/ontology-tree</span></div>
+      <div class="frame-body">
+        <h4 class="sub first">Compounds by pharmacological role</h4>
+        <ul class="bars">
+          <li *ngFor="let m of moaCategories" [title]="m.label + ': ' + (m.value | number) + ' compounds'">
+            <span class="bar-label">{{ m.label }}</span>
+            <span class="bar-track"><span class="bar" [style.width.%]="m.value / maxMoa * 100"></span></span>
+            <span class="bar-value mono">{{ m.value | number }}</span>
+          </li>
+        </ul>
+        <p class="note">
+          Also browsable by
+          <ng-container *ngFor="let o of ontologies.slice(1); let last = last">
+            {{ o.label | lowercase }}<ng-container *ngIf="!last">, </ng-container>
+          </ng-container>.
+        </p>
+      </div>
+      <div class="frame-foot">
+        <a class="arrow-link" routerLink="/ontology-tree" [queryParams]="{ src: '0' }">Open the ontology tree</a>
+      </div>
+    </ng-container>
+
+    <ng-template #loadingTpl>
+      <div class="frame-body loading" aria-busy="true">
+        <span class="skeleton w60"></span>
+        <span class="skeleton w80"></span>
+        <span class="skeleton w40"></span>
+      </div>
+    </ng-template>
+  </div>
+</div>

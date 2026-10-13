@@ -1,56 +1,59 @@
-<form 
-  class="search" 
-  method="post" 
-  [ngClass]="{ 'expanded': inputFocused }" 
-  (focusin)="onFocusIn()" 
-  (focusout)="onFocusOut($event)" 
+<form
+  class="search"
+  method="post"
+  [ngClass]="{ 'expanded': inputFocused }"
+  (focusin)="onFocusIn()"
+  (focusout)="onFocusOut($event)"
   action=""
 >
   <label for="search-box-add" (click)="focusInput(inputEl)">
     <mat-icon>search</mat-icon>
   </label>
 
-  <!-- 💡 Container for input + toggle -->
   <div class="input-toggle-wrapper">
     <input
       #inputEl
       id="search-box-add"
       type="text"
-      class="quick-search form-control"
+      class="quick-search"
       name="quick_search"
       aria-label="quick search"
+      autocomplete="off"
       [placeholder]="getPlaceholder()"
       [(ngModel)]="query"
       (keydown.enter)="onEnter()"
       (keyup)="onKeyUp($event)"
     />
 
-    <ul class="suggestions-dropdown" *ngIf="suggestions.length > 0 && inputFocused">
-      <li
-        *ngFor="let suggestion of suggestions"
-        (mousedown)="onSuggestionClick(suggestion.value)"
-      >
-        {{ suggestion.value }}
-      </li>
-    </ul>
+    <!-- Dropdown panel: scope toggle + suggestions, shown only while focused -->
+    <div *ngIf="inputFocused" class="qs-panel">
+      <div class="search-toggle" role="tablist">
+        <div
+          class="toggle-option"
+          role="tab"
+          [class.active]="selected === 'compound'"
+          tabindex="0"
+          (click)="select('compound')">
+          Compounds
+        </div>
+        <div
+          class="toggle-option"
+          role="tab"
+          [class.active]="selected === 'assay'"
+          tabindex="0"
+          (click)="select('assay')">
+          Assays
+        </div>
+      </div>
 
-    <!-- Show only when focused -->
-    <div *ngIf="inputFocused" class="search-toggle">
-      <div 
-        class="toggle-option" 
-        [class.active]="selected === 'compound'" 
-        tabindex="0"
-        (click)="select('compound')">
-        Compound Searching
-      </div>
-      <div 
-        class="toggle-option" 
-        [class.active]="selected === 'assay'" 
-        tabindex="0"
-        (click)="select('assay')">
-        Assay Searching
-      </div>
-      <div class="slider" [style.left.%]="selected === 'compound' ? 0 : 50"></div>
+      <ul class="suggestions-dropdown" *ngIf="suggestions.length > 0">
+        <li
+          *ngFor="let suggestion of suggestions"
+          (mousedown)="onSuggestionClick(suggestion.value)"
+        >
+          {{ suggestion.value }}
+        </li>
+      </ul>
     </div>
   </div>
 </form>

@@ -6,6 +6,9 @@ import { MatDialog } from '@angular/material';
 
 import { LoaderStateService } from '../_services/loader-state.service';
 
+// Set on a request to keep the full-page loading overlay hidden while it runs
+export const SKIP_LOADER_HEADER = 'X-Skip-Loader';
+
 @Injectable()
 export class LoaderInterceptorService implements HttpInterceptor {
   dialogRef: any;
@@ -19,7 +22,12 @@ export class LoaderInterceptorService implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // if (req.url.search('molfile') < 0) {
-      const shouldSkip = this.excludedUrls.some(url => req.url.includes(url));
+      // Background requests (e.g. homepage previews) opt out with this header
+      const quiet = req.headers.has(SKIP_LOADER_HEADER);
+      if (quiet) {
+        req = req.clone({ headers: req.headers.delete(SKIP_LOADER_HEADER) });
+      }
+      const shouldSkip = quiet || this.excludedUrls.some(url => req.url.includes(url));
 
       if (!shouldSkip) {
         this.showLoader();

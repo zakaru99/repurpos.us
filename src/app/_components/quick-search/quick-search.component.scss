@@ -1,139 +1,157 @@
-form.search {
-  display: flex;
-  flex-direction: column; /* stack input + dropdown vertically */
-  margin-top: 5px;
-  margin-right: 10px;
-  position: relative; /* crucial for dropdown positioning */
+// Header quick search: an icon that opens into a field, with the
+// compound/assay scope and suggestions in a panel underneath.
+
+:host {
+  display: block;
+  font-family: "IBM Plex Sans", "Lato", Arial, sans-serif;
 }
 
-.search label,
-.search mat-icon {
+form.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.search label {
   position: absolute;
-  margin: 1px 0px;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  line-height: 0;
+  cursor: pointer;
+  z-index: 1;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #4a5568;
+  }
+}
+
+.input-toggle-wrapper {
+  position: relative;
 }
 
 .search input[type="text"] {
-  font-family: "Lato", sans-serif;
-  font-weight: 300;
-  text-indent: 10px;
-  padding-left: 22px;
-  width: 0;
-  height: 30px;
-  background: none;
-  border: none;
-
+  box-sizing: border-box;
+  width: 36px;
+  height: 36px;
+  padding: 0 12px 0 36px;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: #0f1b2d;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 2px;
   cursor: pointer;
-  flex-shrink: 1;
-   transition: width 0.3s ease, background 0.3s ease;
+  transition: width 0.25s ease, background 0.2s ease, border-color 0.2s ease;
+
+  &::placeholder {
+    color: transparent;
+  }
+
+  &:hover {
+    background: #f1f4f8;
+  }
 }
 
 .search.expanded input[type="text"] {
-  width: 300px;
-  background: white;
-  outline: none;
+  width: 280px;
+  background: #fff;
+  border-color: #c5cdd9;
   cursor: text;
-}
+  outline: none;
 
-@media only screen and (max-width: 760px) {
-  .search.expanded input[type="text"] {
-    width: 75vw;
+  &::placeholder {
+    color: #8a93a3;
+  }
+
+  &:focus {
+    border-color: var(--color-brand-500);
   }
 }
 
-/* button fade in/out */
-#assay-search-btn {
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-size: 14px;
-  height: 30px;
-  cursor: pointer;
-  margin-left: 10px;
-
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-
-  transition: background-color 0.3s ease, opacity 0.5s ease;
-}
-
-.search.expanded #assay-search-btn {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-
-#assay-search-btn mat-icon {
-  font-size: 18px;
-}
-
-@media only screen and (max-width: 760px) {
-  .search.expanded input[type="text"] {
-    width: 75vw;
-  }
+.qs-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  min-width: 280px;
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid #d9dee6;
+  box-shadow: 0 12px 28px rgba(15, 27, 45, 0.14);
+  z-index: 1000;
 }
 
 .search-toggle {
-  position: relative;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 8px;
-  border-bottom: 2px solid #ccc;
-  width: 100%;
+  gap: 20px;
+  padding: 0 14px;
+  border-bottom: 1px solid #e6e9ef;
 }
 
 .toggle-option {
-  flex: 1;
-  text-align: center;
-  padding: 8px 0;
-  color: #666;
+  padding: 10px 0 8px;
+  font-size: 0.8125rem;
   font-weight: 500;
+  color: #4a5568;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
   cursor: pointer;
-  transition: color 0.3s;
-}
+  transition: color 0.15s ease, border-color 0.15s ease;
 
-.toggle-option.active {
-  color: #1976d2; // Primary color
-}
+  &:hover {
+    color: #0f1b2d;
+  }
 
-.slider {
-  position: absolute;
-  bottom: -2px;
-  width: 50%;
-  height: 2px;
-  background-color: #1976d2;
-  transition: left 0.3s ease;
+  &.active {
+    color: #0f1b2d;
+    border-bottom-color: var(--color-brand-500);
+  }
 }
 
 .suggestions-dropdown {
-  position: absolute; /* dropdown floats under input */
-  top: 100%;          /* directly below input */
-  left: 0;
-  width: 100%;        /* match input width */
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-top: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   list-style: none;
-  padding: 0;
-  z-index: 1000;
-  max-height: 240px;  /* optional scroll if too many suggestions */
+  margin: 0;
+  padding: 4px 0;
+  max-height: 260px;
   overflow-y: auto;
+
+  li {
+    padding: 8px 14px;
+    font-size: 0.875rem;
+    color: #0f1b2d;
+    cursor: pointer;
+
+    &:hover {
+      background: #eef2fa;
+    }
+  }
 }
 
-.suggestions-dropdown li {
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #333;
-  transition: background 0.2s;
-}
+@media (max-width: 1080px) {
+  // Mobile nav: the field is always open and full width
+  .search input[type="text"],
+  .search.expanded input[type="text"] {
+    width: 100%;
+    background: #fff;
+    border-color: #c5cdd9;
+    cursor: text;
 
-.suggestions-dropdown li:hover {
-  background-color: #f2f2f2;
+    &::placeholder {
+      color: #8a93a3;
+    }
+  }
+
+  .input-toggle-wrapper {
+    width: 100%;
+  }
+
+  form.search {
+    width: 100%;
+  }
 }

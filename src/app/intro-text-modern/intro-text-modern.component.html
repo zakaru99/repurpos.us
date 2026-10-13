@@ -1,122 +1,210 @@
-<div class="intro">
-  <div class="whats-new-trigger" #trigger [class.hidden]="isWhatsNewOpen" (click)="toggleWhatsNew($event)">
-    <i #bellIcon class="bell-icon"></i>
-    <div class="label-container">
-      <span class="label">What's New</span>
-      <span class="update-date">{{ whatsNewItems.length ? (whatsNewItems[0].date | date:'MMM d, y') : (lastUpdated | date:'MMM d, y') }}</span>
-    </div>
-  </div>
+<!-- Hero -->
+<section class="hero">
+  <div class="shell hero-grid">
+    <div class="hero-main">
+      <p class="eyebrow">REFRAMEdb &middot; Calibr-Skaggs at Scripps Research</p>
+      <h1>The world's largest open-access drug repurposing library</h1>
+      <p class="lede">
+        {{ stats.totalCompounds | number }} clinical-stage compounds, each linked to its structure,
+        development history and results from partner screens.
+      </p>
 
-  <div #panel class="whats-new-panel" [class.open]="isWhatsNewOpen" role="dialog" [attr.aria-hidden]="!isWhatsNewOpen" (click)="$event.stopPropagation()">
-    <div class="panel-header">
-      <h2>What's New</h2>
-      <button class="close-btn" aria-label="Close" (click)="closeWhatsNew($event)">✕</button>
+      <app-hero-search></app-hero-search>
+
+      <ul class="hero-links">
+        <li><a [routerLink]="'/search'" [queryParams]="{ type: 'structure' }">Structure search</a></li>
+        <li><a routerLink="/assays">Browse assays</a></li>
+        <li><a [routerLink]="['/about']" fragment="tutorial">Watch the tutorial</a></li>
+      </ul>
+
+      <div class="hero-dl">
+        <button type="button" class="dl-btn" (click)="download(downloads.compounds)">
+          <span class="dl-icon" aria-hidden="true"></span>
+          <span class="dl-text">
+            <span class="dl-title">Download all compounds</span>
+            <span class="dl-meta">{{ stats.totalCompounds | number }} structures, SMILES &amp; status · CSV<ng-container *ngIf="downloads.compounds.size"> · {{ formatSize(downloads.compounds.size) }}</ng-container></span>
+          </span>
+        </button>
+        <button type="button" class="dl-btn" (click)="download(downloads.screening)">
+          <span class="dl-icon" aria-hidden="true"></span>
+          <span class="dl-text">
+            <span class="dl-title">Download screening data</span>
+            <span class="dl-meta">{{ stats.publishedScreens | number }} screens, primary &amp; dose-response · ZIP<ng-container *ngIf="downloads.screening.size"> · {{ formatSize(downloads.screening.size) }}</ng-container></span>
+          </span>
+        </button>
+      </div>
     </div>
-    <div class="panel-body">
-      <div *ngFor="let group of groupedItems" class="month-group">
-        <div class="month-label">{{ group.label }}</div>
-        <ul>
-          <li *ngFor="let item of group.items">
-            <span class="item-dot"></span>
-            <span class="item-text">{{ item.text }}</span>
-            <span class="item-date">{{ item.date | date:'MMM d' }}</span>
+
+    <aside class="hero-figures" aria-label="Library at a glance">
+      <dl>
+        <div class="fig">
+          <dt>Compounds in collection</dt>
+          <dd>{{ stats.totalCompounds | number }}</dd>
+        </div>
+        <div class="fig">
+          <dt>Added this release</dt>
+          <dd>{{ stats.newCompounds | number }}</dd>
+        </div>
+        <div class="fig">
+          <dt>Published screens</dt>
+          <dd>{{ stats.publishedScreens | number }}</dd>
+        </div>
+        <div class="fig">
+          <dt>Dosed in pediatric patients</dt>
+          <dd>{{ stats.pediatricCompounds | number }}</dd>
+        </div>
+        <div class="fig">
+          <dt>With pharmacokinetic data</dt>
+          <dd>{{ stats.pkCompounds | number }}</dd>
+        </div>
+      </dl>
+      <p class="fig-note">Data as of {{ lastUpdated | date:'d MMMM y' }}</p>
+
+    </aside>
+  </div>
+</section>
+
+<!-- Screening partnerships -->
+<section class="band band-tint">
+  <div class="shell">
+    <div class="partner-head">
+      <div>
+        <p class="eyebrow">Screening partnerships</p>
+        <h2>Screen the REFRAME collection in your assay</h2>
+      </div>
+      <div class="partner-actions">
+        <a class="btn-solid dark" routerLink="/assay_proposal">Submit an assay proposal</a>
+        <a class="arrow-link" [routerLink]="['/about']" fragment="access">Requirements</a>
+      </div>
+    </div>
+
+    <ol class="timeline">
+      <li *ngFor="let step of partnershipSteps; let i = index">
+        <span class="step-marker"><span>{{ i + 1 }}</span></span>
+        <h3>{{ step.title }}</h3>
+        <p>{{ step.text }}</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- Explore -->
+<section class="band">
+  <div class="shell">
+    <header class="section-head split">
+      <div>
+        <p class="eyebrow">Using REFRAMEdb</p>
+        <h2>Explore the data</h2>
+      </div>
+      <p class="section-intro">
+        Previews below use live data from the database. Activity data and curves are available after signing in.
+      </p>
+    </header>
+
+    <app-explore-tabs [moaCategories]="moaCategories" [ontologies]="ontologies"></app-explore-tabs>
+  </div>
+</section>
+
+<!-- At a glance -->
+<section class="band band-dark">
+  <div class="shell">
+    <header class="section-head">
+      <p class="eyebrow">The collection</p>
+      <h2>What's in the library</h2>
+    </header>
+
+    <div class="charts">
+      <figure class="chart">
+        <figcaption>
+          <h3>Compounds by highest development phase</h3>
+          <span class="chart-sub">Share of {{ phaseTotal | number }} compounds</span>
+          <span class="placeholder-tag" *ngIf="phases.placeholder">Placeholder figures, not real counts</span>
+        </figcaption>
+        <ul class="hbars">
+          <li *ngFor="let p of phases.items" tabindex="0"
+              [attr.aria-label]="p.label + ': ' + (p.value | number) + ' compounds'">
+            <span class="hbar-label">{{ p.label }}</span>
+            <span class="hbar-track"><span class="hbar" [style.width.%]="barWidth(p.value, phases.items)"></span></span>
+            <span class="hbar-value">{{ p.value / phaseTotal | percent:'1.0-0' }}</span>
+            <span class="hbar-tip" role="tooltip">{{ p.value | number }} compounds</span>
           </li>
         </ul>
+      </figure>
+
+      <figure class="chart">
+        <figcaption>
+          <h3>Published screens by assay format</h3>
+          <span class="chart-sub">{{ stats.publishedScreens | number }} published screens</span>
+        </figcaption>
+        <ul class="hbars">
+          <li *ngFor="let f of assayFormats" tabindex="0"
+              [attr.aria-label]="f.label + ': ' + f.value + ' screens'">
+            <span class="hbar-label">{{ f.label }}</span>
+            <span class="hbar-track"><span class="hbar" [style.width.%]="barWidth(f.value, assayFormats)"></span></span>
+            <span class="hbar-value">{{ f.value }}</span>
+            <span class="hbar-tip" role="tooltip">{{ f.value / stats.publishedScreens | percent:'1.0-0' }} of screens</span>
+          </li>
+        </ul>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- Sources -->
+<section class="sources">
+  <div class="shell sources-grid">
+    <div class="sources-group">
+      <p class="sources-label">Assembled from</p>
+      <ul class="source-names">
+        <li>Clarivate Integrity</li>
+        <li>GVK Excelra GOSTAR</li>
+        <li>Citeline Pharmaprojects</li>
+        <li>Wikidata</li>
+      </ul>
+    </div>
+    <div class="sources-group">
+      <p class="sources-label">Built and maintained at</p>
+      <div class="source-logos">
+        <a href="https://www.calibr.org/" target="_blank" rel="noopener noreferrer">
+          <img src="assets/Calibr-Skaggs-Primary-Logo.png" alt="Calibr-Skaggs Institute for Innovative Medicines" height="40">
+        </a>
+        <a href="https://www.scripps.edu/" target="_blank" rel="noopener noreferrer">
+          <img src="assets/scripps-logo.svg" alt="Scripps Research" height="40">
+        </a>
       </div>
     </div>
   </div>
+</section>
 
-  <div class="homepage">
-    <section class="hero">
-      <h1>Welcome to <span class="highlight">REFRAMEdb</span><span class="subheading">the world's largest open-access drug repurposing library</span></h1>
-          
+<!-- What's new trigger + panel -->
+<button #wnTrigger type="button" class="whats-new" [class.hidden]="isWhatsNewOpen" (click)="openWhatsNew($event)"
+        aria-haspopup="dialog">
+  <span class="whats-new-dot" aria-hidden="true"></span>
+  <span class="whats-new-label">What's new</span>
+  <span class="whats-new-date">{{ whatsNewItems[0].date | date:'d MMM' }}</span>
+</button>
 
-      <!-- Full stats on regular screens; collapses to .hero-stats-compact
-           below (one toggle point instead of two) once space is tight. -->
-      <div class="stats-full">
-        <p class="update-info">
-          <strong>{{ newCompounds | number }}</strong> new compound profiles added for a total of
-          <strong>{{ totalCompounds | number }}</strong> clinical-stage drugs in collection as of {{ lastUpdated | date:'longDate' }}
-        </p>
-        <p class="stats-line">
-          compounds dosed in pediatric patients <strong>482</strong>
-          <span class="divider">|</span>
-          compounds with PK data <strong>3,761</strong>
-        </p>
-      </div>
-      <p class="hero-stats-compact">
-        <strong>{{ totalCompounds | number }}</strong> drugs &middot; Updated {{ lastUpdated | date:'MMM yyyy' }}
-      </p>
-      <app-hero-search></app-hero-search>
-    </section>
-
-    <section class="how-to">
-      <button class="menu-toggle" onclick="this.classList.toggle('active')">☰ How to Use REFRAMEdb</button>
-      <button class="menu-toggle" style="margin-left: 10px;" [routerLink]="'/assay_proposal'">Request a Copy of the Library</button>
-
-      <div class="menu-content">
-        <ul>
-          <li><a [routerLink]="['about']" fragment="tutorial">Watch the tutorial video</a></li>
-          <li>Explore pharmaceutical properties of compounds like <a [routerLink]="['/search/']" [queryParams]="{ query: 'imatinib', type: 'string' }">imatinib</a></li>
-          <li>View screening data for all compounds which responded in a <a routerLink="/assays">specific assay</a> like <a routerLink="/assays/A00093">Crypto-C. parvum proliferation assay</a> (requires sign-in)</li>
-          <li>Search for <a [routerLink]="['/search/']" [queryParams]="{ query: 'C(C1C2=C(N(C)N=1)C1=C(C=NC(=N1)NC1=CC=C(N3CCN(C)CC3)C=C1)CC2)(=O)N', type: 'structure', mode: 'similarity', tanimoto: '0.35' }">similar structures</a> to view annotations and responses</li>
-          <li>View the <a [routerLink]="['/about']" fragment="diversity">chemical diversity comparison</a> across our libraries</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="downloads">
-      <h2>Data Download Guide</h2>
-      <div class="download-row">
-        <div class="card">
-          <h3>All reframe Compounds</h3>
-          <p>Structure info, status, and compound page links</p>
-          <button class="button" type="button" (click)="downloadFiles()">Download</button>
-        </div>
-          <div class="card">
-          <h3>All Primary and Dose Response Data</h3>
-          <p>Comprehensive screening dataset</p>
-          <button class="button" type="button" (click)="downloadAssayData()">Download</button>
-        </div>
-        <div class="card">
-          <h3>Compound QC Data</h3>
-          <p>LCMS/NMR QC data if available</p>
-          <button [routerLink]="['/compound_data', 'KTUFNOKKBVMGRW']" [queryParams]="{ qid: 'Q82870894' }">Compound Page</button>
-        </div>
-        <div class="card">
-          <h3>Dose Response Data</h3>
-          <p>ac50, efficacy, r² from assay screens</p>
-          <button routerLink="/assays/A00496">Assay Page</button>
-        </div>
-        <div class="card">
-          <h3>Search Results</h3>
-          <p>Search output including SMILES, availability, profile link</p>
-          <button
-          [routerLink]="'/search'"
-          [queryParams]="{
-            query: 'CNC(=O)Oc1cccc2ccccc12',
-            type: 'structure',
-            mode: 'similarity',
-            category: 'all',
-            tanimoto: 0.9
-          }">Search Results</button>
-        </div>
-        <div class="card">
-          <h3>Primary Screening Data</h3>
-          <p>Indicates whether compounds are primary hits or not</p>
-          <button [routerLink]="['/compound_data', 'KTUFNOKKBVMGRW']" [queryParams]="{ qid: 'Q82870894' }">Compound Page</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="crest">
-      <p>
-        visit 
-        <a href="https://crestdb.org" target="_blank" rel="noopener noreferrer" class="crest-link">
-          CRESTdb.org
-        </a>
-        to learn about an open access collection of unique compounds available for screening
-      </p>
+<div class="drawer-backdrop" [class.open]="isWhatsNewOpen" (click)="closeWhatsNew()"></div>
+<aside class="drawer" [class.open]="isWhatsNewOpen" role="dialog" aria-modal="true" aria-labelledby="whats-new-title"
+       [attr.aria-hidden]="!isWhatsNewOpen">
+  <header class="drawer-head">
+    <div>
+      <p class="eyebrow">Release notes</p>
+      <h2 id="whats-new-title">What's new</h2>
+    </div>
+    <button #drawerClose type="button" class="drawer-close" (click)="closeWhatsNew()" aria-label="Close">
+      <span aria-hidden="true">&#x2715;</span>
+    </button>
+  </header>
+  <div class="drawer-body">
+    <section *ngFor="let group of groupedItems" class="month">
+      <h3>{{ group.label }}</h3>
+      <ul>
+        <li *ngFor="let item of group.items">
+          <time [attr.datetime]="item.date | date:'yyyy-MM-dd'">{{ item.date | date:'d MMM' }}</time>
+          <span>{{ item.text }}</span>
+        </li>
+      </ul>
     </section>
   </div>
-</div>
+</aside>

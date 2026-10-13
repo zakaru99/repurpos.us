@@ -1,114 +1,209 @@
-/* ---------------------------
-   -- footer --
----------------------------- */
-footer {
-  border-top: 4px solid #7f9feb;
-  // Was 50px — redundant with .main-container's flex:1 stretch
-  // (app.component.scss), which already pushes the footer to the bottom of
-  // the viewport on short pages. Stacking a large fixed margin on top of
-  // that stretch was adding extra height beyond what's needed, tipping
-  // short pages (e.g. the homepage) past one viewport's worth of scroll.
-  margin-top: 20px;
-  padding: 1em 2em;
-  font-size: 1em;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #f5f8fd;
-  transition: background-color 0.3s ease;
+// Site footer: navy, matching the homepage hero. Brand + citation on the left,
+// three link columns on the right, institutional logos along the bottom.
+
+$navy: #0b1d3a;
+$rule-dark: rgba(255, 255, 255, 0.14);
+$text-soft: rgba(255, 255, 255, 0.7);
+
+.site-footer {
+  margin-top: 0;
+  font-family: "IBM Plex Sans", "Lato", Arial, sans-serif;
+  color: #fff;
+  background: $navy;
+  -webkit-font-smoothing: antialiased;
+
+  a {
+    color: $text-soft;
+    text-decoration: none;
+
+    &:hover {
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
 }
 
-footer:hover {
-  background-color: #e9effc; /* subtle highlight on hover */
+.shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.top {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 72px;
+  padding-top: 64px;
+  padding-bottom: 48px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff !important;
+  text-decoration: none !important;
+
+  .wordmark {
+    font-family: "Lato", Arial, sans-serif;
+    font-size: 1.375rem;
+    line-height: 1;
+  }
+}
+
+.about {
+  margin: 16px 0 0 !important;
+  max-width: 28em;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: $text-soft;
+}
+
+.col-title {
+  display: block;
+  margin-bottom: 14px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9fb9f4;
+}
+
+.cite {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid $rule-dark;
+}
+
+.cite-text {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: $text-soft;
+
+  a {
+    color: #fff;
+    overflow-wrap: anywhere;
+  }
+}
+
+.copy {
+  margin-top: 14px;
+  padding: 7px 14px;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #fff;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #fff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #9fb9f4;
+    outline-offset: 2px;
+  }
+}
+
+.links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    display: block;
+    padding: 0;
+    margin-bottom: 10px;
+    opacity: 1;
+    font-size: 0.9375rem;
+  }
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 24px;
+  padding-bottom: 28px;
+  border-top: 1px solid $rule-dark;
+}
+
+.copyright {
+  font-size: 0.8125rem;
+  color: $text-soft;
 }
 
 .logos {
   display: flex;
-  flex-direction: row;
   align-items: center;
+  gap: 32px;
 
   a {
-    padding: 0 1em;
-    display: inline-flex;
-    align-items: center;
-    transition: transform 0.3s ease;
+    display: block;
+    opacity: 0.85;
+    transition: opacity 0.15s ease;
 
     &:hover {
-      transform: translateY(-2px);
-    }
-  }
-}
-
-.logo {
-  margin-top: 4px;
-  height: 50px;
-  vertical-align: middle;
-  transition: all 0.3s ease;
-
-  rect {
-    fill: #000;
-    transition: fill 0.5s ease;
-  }
-
-  &.scripps-logo {
-    .st0 {
-      transition: fill 0.5s ease;
-      fill: #FDB927;
-    }
-
-    &:hover {
-      .st0 {
-        // optionally: fill: darken(#FDB927, 10%);
-      }
+      opacity: 1;
     }
   }
 
-  &.calibr-logo {
-    content: url("/assets/Calibr-Skaggs-Primary-Logo.png");
-    background-size: 256px 50px;
+  img {
+    display: block;
+    height: 34px;
+    width: auto;
+  }
 
-    &:hover {
-      content: url("/assets/Calibr-Skaggs-Primary-Logo-Hover.png");
-      background-size: 256px 50px;
-      transform: translateY(-2px);
-    }
+  // Full-colour PNG; render it as a white mark on navy
+  .calibr {
+    filter: brightness(0) invert(1);
   }
 }
 
-.gh {
-  height: 20px;
-  margin-top: -5px;
-  margin-right: 6px;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: translateY(-1px);
+@media (max-width: 960px) {
+  .top {
+    grid-template-columns: 1fr;
+    gap: 48px;
   }
 }
 
-.left-spacer {
-  padding-left: 6px;
-}
+@media (max-width: 640px) {
+  .shell {
+    padding: 0 20px;
+  }
 
-/* ---------------------------
-   Footer media queries
----------------------------- */
-@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
-  footer {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 1em;
+  .top {
+    padding-top: 48px;
+  }
+
+  .links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 24px;
+  }
+
+  .bottom {
+    flex-direction: column-reverse;
+    align-items: flex-start;
   }
 
   .logos {
-    flex-direction: column;
-    padding: 1em 0;
-    align-items: center;
+    gap: 24px;
 
-    a {
-      padding: 0.5em 0;
+    img {
+      height: 28px;
     }
   }
 }
