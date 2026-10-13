@@ -102,6 +102,14 @@
   --color-found: #e5484d; // search / hover path
   --color-category: #dbe4f7; // category node fill
 
+  // Workflow status (admin portal). Text colours pass AA on their tints.
+  --color-status-pending: #a15c07;
+  --color-status-pending-bg: #fdf3e2;
+  --color-status-approved: #1a7a50;
+  --color-status-approved-bg: #e7f4ee;
+  --color-status-rejected: #b42d23;
+  --color-status-rejected-bg: #fbeaea;
+
   // Type
   --font-ui: "IBM Plex Sans", "Lato", Arial, sans-serif;
   --font-mono: "IBM Plex Mono", SFMono-Regular, Consolas, monospace;

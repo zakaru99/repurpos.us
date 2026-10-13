@@ -1,60 +1,53 @@
-<div class="container-fluid proposals-page">
-  <div class="card-block">
-    <h5 class="section-title">Proposals</h5>
+<div class="split" [class.has-selection]="selected">
 
-<!-- Status Filter Pills -->
-<div class="status-filter">
-  <button 
-    class="pill" 
-    [ngClass]="{ active: selectedStatus === '' }" 
-    (click)="filterByStatus('')">All</button>
-  
-  <button 
-    class="pill" 
-    [ngClass]="{ active: selectedStatus === 'Pending' }" 
-    (click)="filterByStatus('Pending')">Pending</button>
-  
-  <button 
-    class="pill" 
-    [ngClass]="{ active: selectedStatus === 'Approved' }" 
-    (click)="filterByStatus('Approved')">Approved</button>
-  
-  <button 
-    class="pill" 
-    [ngClass]="{ active: selectedStatus === 'Rejected' }" 
-    (click)="filterByStatus('Rejected')">Rejected</button>
-</div>
-
-
-    <div class="table-responsive">
-      <table class="proposals-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Indication</th>
-            <th>Submitted By</th>
-            <th>Status</th>
-            <th>Submitted On</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let proposal of filteredProposals">
-            <td>{{ proposal.id }}</td>
-            <td>{{ proposal.indication }}</td>
-            <td>{{ proposal.submittedBy }}</td>
-            <td>
-              <span class="status-badge" [ngClass]="proposal.status | lowercase">
-                {{ proposal.status }}
-              </span>
-            </td>
-            <td>{{ proposal.submittedOn | date:'mediumDate' }}</td>
-            <td>
-              <button mat-button color="primary" (click)="viewProposal(proposal)">View</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <!-- List -->
+  <section class="list-pane" aria-label="Proposals">
+    <div class="list-tools">
+      <div class="segmented" role="tablist" aria-label="Filter by status">
+        <button *ngFor="let f of filters" type="button" role="tab"
+                [class.active]="selectedStatus === f.value" [attr.aria-selected]="selectedStatus === f.value"
+                (click)="filterByStatus(f.value)">
+          {{ f.label }} <span class="seg-count">{{ count(f.value) }}</span>
+        </button>
+      </div>
+      <input type="search" class="search" [(ngModel)]="query" name="q" autocomplete="off"
+             placeholder="Search indication, submitter, institution" aria-label="Search proposals">
     </div>
-  </div>
+
+    <div class="notice error" *ngIf="errorMessage" role="alert">
+      {{ errorMessage }} <button type="button" class="link" (click)="fetchProposals()">Retry</button>
+    </div>
+
+    <ul class="list" *ngIf="!isLoading; else loading">
+      <li *ngFor="let p of filteredProposals">
+        <button type="button" class="prow" [class.selected]="p.id === selectedId" (click)="select(p)">
+          <span class="row-top">
+            <span class="row-title">{{ p.indication || 'Untitled proposal' }}</span>
+            <span class="status-tag" [ngClass]="p.status | lowercase">{{ p.status }}</span>
+          </span>
+          <span class="row-sub">{{ p.submittedBy || 'Unknown' }}<ng-container *ngIf="p.institution"> · {{ p.institution }}</ng-container></span>
+          <span class="row-meta">#{{ p.id }} · {{ (p.submittedOn | date:'d MMM y') || 'no date' }}</span>
+        </button>
+      </li>
+      <li class="empty" *ngIf="!filteredProposals.length && !errorMessage">
+        {{ proposals.length ? 'No proposals match.' : 'No proposals yet.' }}
+      </li>
+    </ul>
+
+    <ng-template #loading>
+      <div class="empty">Loading proposals…</div>
+    </ng-template>
+  </section>
+
+  <!-- Detail -->
+  <section class="detail-pane">
+    <app-proposal-detail *ngIf="selected; else nothingSelected" [proposal]="selected"
+                         (statusChanged)="onStatusChanged($event)" (closed)="clearSelection()"></app-proposal-detail>
+    <ng-template #nothingSelected>
+      <div class="placeholder">
+        <p>Select a proposal to review it.</p>
+        <p class="hint" *ngIf="count('Pending')">{{ count('Pending') }} waiting for a decision.</p>
+      </div>
+    </ng-template>
+  </section>
 </div>

@@ -1,0 +1,174 @@
+@import '../admin';
+
+:host {
+  @include admin-page;
+}
+
+.page {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+  max-width: 1300px;
+}
+
+.panel {
+  @include panel;
+  overflow: hidden;
+}
+
+.panel-head {
+  padding: 16px 18px;
+  border-bottom: 1px solid $rule-soft;
+
+  h2 {
+    @include panel-title;
+  }
+}
+
+.panel-sub {
+  margin: 4px 0 0 !important;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: $ink-soft;
+}
+
+// ---------------------------------------------------------------- form
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px;
+}
+
+.row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field {
+  @include field;
+}
+
+.optional {
+  font-weight: 400;
+  color: $ink-soft;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 0.875rem;
+  color: $ink;
+  cursor: pointer;
+
+  input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-brand-500);
+  }
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+// ---------------------------------------------------------------- queue
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.table {
+  @include data-table;
+
+  .when {
+    min-width: 170px;
+    font-weight: 500;
+  }
+
+  .posted {
+    white-space: nowrap;
+  }
+
+  .msg {
+    min-width: 160px;
+    color: $ink-soft;
+  }
+
+  .actions-col {
+    width: 1%;
+    text-align: right;
+    white-space: nowrap;
+
+    .btn + .btn {
+      margin-left: 6px;
+    }
+  }
+
+  tr.past td {
+    color: $ink-faint;
+  }
+
+  tr.editing td {
+    background: $selected;
+  }
+}
+
+.past-tag {
+  margin-left: 6px;
+  padding: 1px 6px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: $ink-soft;
+  background: $track;
+  border-radius: 5px;
+}
+
+.status-tag {
+  @include status-tag;
+}
+
+.confirm-text {
+  margin-right: 8px;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+}
+
+.empty {
+  padding: 18px !important;
+  text-align: center;
+  color: $ink-soft !important;
+}
+
+.notice.error {
+  @include notice(error);
+}
+
+.queue-error {
+  margin: 12px 18px 0;
+}
+
+.btn.primary { @include tool-button(primary); }
+.btn.secondary { @include tool-button(secondary); }
+.btn.danger { @include tool-button(danger); }
+.btn.danger-ghost { @include tool-button(danger-ghost); }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+@media (max-width: $bp-nav) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+}

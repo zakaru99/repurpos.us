@@ -42,6 +42,13 @@ $moa: var(--color-moa);
 $found: var(--color-found);
 $category: var(--color-category);
 
+$status-pending: var(--color-status-pending);
+$status-pending-bg: var(--color-status-pending-bg);
+$status-approved: var(--color-status-approved);
+$status-approved-bg: var(--color-status-approved-bg);
+$status-rejected: var(--color-status-rejected);
+$status-rejected-bg: var(--color-status-rejected-bg);
+
 $sans: var(--font-ui);
 $mono: var(--font-mono);
 $wordmark: var(--font-wordmark);
@@ -63,6 +70,8 @@ $bp-nav: 1080px;
   display: block;
   margin: 0 -15px;
   font-family: $sans;
+  // body defaults to Lato 300; Plex reads best at its regular weight
+  font-weight: 400;
   color: $ink;
   -webkit-font-smoothing: antialiased;
 }

@@ -1,125 +1,113 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
-interface User {
-  id: number;
-  email: string;
-  isAdmin: boolean;
-  registered_on?: string;
-}
+import { AdminApiService, AdminUser } from '../admin-api.service';
 
+// Admins and user lookup. Granting or revoking admin access asks for
+// confirmation in place, and errors are shown on the page.
 @Component({
   selector: 'app-user-management',
   templateUrl: './user-management.component.html',
-  styleUrls: ['./user-management.component.css']
+  styleUrls: ['./user-management.component.scss']
 })
 export class UserManagementComponent implements OnInit {
-  searchQuery: string = '';
-  searchResults: User[] = [];
-  admins: User[] = [];
-  errorMsg: string = '';
+  searchQuery = '';
+  searchResults: AdminUser[] = null;   // null = no search run yet
+  searching = false;
+  admins: AdminUser[] = [];
+  loadingAdmins = false;
+  errorMsg = '';
 
-  constructor(private http: HttpClient) { }
+  // The user whose access change is awaiting confirmation, and which change
+  confirmUser: AdminUser = null;
+  confirmGrant = false;
+  saving = false;
+
+  constructor(private api: AdminApiService) { }
 
   ngOnInit(): void {
     this.loadAdmins();
   }
 
   loadAdmins(): void {
-    const params = new HttpParams().set('admins', 'true');
-    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
-    this.http.get<{ success: boolean; data: User[] }>('/api/users', { params, headers })
-      .subscribe({
-        next: (res) => {
-          if (res.success) {
-            this.admins = res.data;
-          } else {
-            console.error('Failed to load admins:', res);
-            this.errorMsg = 'Failed to load admins';
-          }
-        },
-        error: (err) => {
-          console.error('Error loading admins:', err);
-          this.errorMsg = 'Error loading admins';
-        }
-      });
+    this.loadingAdmins = true;
+    this.api.getAdmins().subscribe({
+      next: list => {
+        this.admins = list;
+        this.loadingAdmins = false;
+      },
+      error: () => {
+        this.errorMsg = 'Could not load the admin list.';
+        this.loadingAdmins = false;
+      }
+    });
   }
 
   searchUser(): void {
     const term = this.searchQuery.trim();
     if (!term) {
-      this.searchResults = [];
+      this.searchResults = null;
       return;
     }
-
-    const params = new HttpParams().set('search', term);
-    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
-    this.http.get<{ success: boolean; data: User[] }>('/api/users', { params, headers })
-      .subscribe({
-        next: (res) => {
-          if (res.success) {
-            this.searchResults = res.data;
-          } else {
-            console.error('Search failed:', res);
-            this.errorMsg = 'Search failed';
-          }
-        },
-        error: (err) => {
-          console.error('Error during search:', err);
-          this.errorMsg = 'Error during search';
-        }
-      });
-  }
-
-  makeAdmin(user: User): void {
-    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
-    this.http.post<{ success: boolean; message: string }>('/api/users', {
-      user_id: user.id,
-      make_admin: true
-    }, { headers }).subscribe({
-      next: (res) => {
-        if (res.success) {
-          user.isAdmin = true;
-          this.loadAdmins(); // refresh admin table
-          this.searchResults = []; // clear search results
-          this.searchQuery = '';   // optional: clear search input
-        } else {
-          console.error('Failed to make admin:', res);
-          this.errorMsg = 'Failed to make admin';
-        }
+    this.searching = true;
+    this.errorMsg = '';
+    this.api.searchUsers(term).subscribe({
+      next: list => {
+        this.searchResults = list;
+        this.searching = false;
       },
-      error: (err) => {
-        console.error('Error making admin:', err);
-        this.errorMsg = 'Error making admin';
+      error: () => {
+        this.errorMsg = 'Search failed. Please try again.';
+        this.searching = false;
       }
     });
   }
 
+  clearSearch(): void {
+    this.searchQuery = '';
+    this.searchResults = null;
+  }
 
-  revokeAdmin(user: User): void {
-    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
-    this.http.post<{ success: boolean; message: string }>('/api/users', {
-      user_id: user.id,
-      make_admin: false  // <-- revoke
-    }, { headers }).subscribe({
-      next: (res) => {
-        if (res.success) {
-          // Remove from admin list
+  askToGrant(user: AdminUser) {
+    this.confirmUser = user;
+    this.confirmGrant = true;
+  }
+
+  askToRevoke(user: AdminUser) {
+    this.confirmUser = user;
+    this.confirmGrant = false;
+  }
+
+  cancelConfirm() {
+    this.confirmUser = null;
+  }
+
+  isConfirming(user: AdminUser, grant: boolean): boolean {
+    return !!this.confirmUser && this.confirmUser.id === user.id && this.confirmGrant === grant;
+  }
+
+  confirmChange(): void {
+    const user = this.confirmUser;
+    const grant = this.confirmGrant;
+    if (!user) { return; }
+    this.saving = true;
+    this.errorMsg = '';
+    this.api.setAdmin(user.id, grant).subscribe({
+      next: () => {
+        this.saving = false;
+        this.confirmUser = null;
+        user.isAdmin = grant;
+        if (grant) {
+          this.loadAdmins();
+        } else {
           this.admins = this.admins.filter(u => u.id !== user.id);
-
-          // Update searchResults if needed
-          const found = this.searchResults.find(u => u.id === user.id);
-          if (found) found.isAdmin = false;
-        } else {
-          console.error('Failed to revoke admin:', res);
-          this.errorMsg = 'Failed to revoke admin';
         }
+        const found = (this.searchResults || []).find(u => u.id === user.id);
+        if (found) { found.isAdmin = grant; }
       },
-      error: (err) => {
-        console.error('Error revoking admin:', err);
-        this.errorMsg = 'Error revoking admin';
+      error: () => {
+        this.saving = false;
+        this.errorMsg = grant ? 'Could not grant admin access.' : 'Could not revoke admin access.';
       }
     });
   }
-
 }

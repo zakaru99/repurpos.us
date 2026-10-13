@@ -1,104 +1,108 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
-import { ProposalDetailDialogComponent } from '../proposal-detail-dialog/proposal-detail-dialog.component';
-import { reject } from 'lodash';
+import { ActivatedRoute, Router } from '@angular/router';
 
-interface Proposal {
-  id: number;
-  indication?: string;
-  name?: string;
-  email?: string;
-  institution?: string;
-  status?: string;
-  submittedOn?: string;
-  description?: string;
-  notes?: string;
-  volume?: number;
-  concentration?: number;
-  denialReason?: string;
-}
+import { AdminApiService, AdminProposal, ProposalStatus } from '../admin-api.service';
 
+type StatusFilter = '' | ProposalStatus;
 
+const submittedTime = (p: { submittedOn?: string }): number =>
+  p.submittedOn ? new Date(p.submittedOn).getTime() : 0;
 
+// Proposals: list on the left, the selected proposal on the right. The
+// selection is kept in the URL (?id=) so the overview can link to one.
 @Component({
   selector: 'app-proposal-list',
   templateUrl: './proposal-list.component.html',
-  styleUrls: ['./proposal-list.component.css']
+  styleUrls: ['./proposal-list.component.scss']
 })
 export class ProposalListComponent implements OnInit {
-
-  proposals: Proposal[] = [];
+  proposals: AdminProposal[] = [];
   isLoading = false;
   errorMessage = '';
-  selectedStatus: string = '';
 
+  selectedStatus: StatusFilter = '';
+  query = '';
+  selectedId: number = null;
 
-  constructor(private http: HttpClient, private dialog: MatDialog) {}
+  readonly filters: Array<{ value: StatusFilter; label: string }> = [
+    { value: '', label: 'All' },
+    { value: 'Pending', label: 'Pending' },
+    { value: 'Approved', label: 'Approved' },
+    { value: 'Rejected', label: 'Rejected' }
+  ];
 
-  get filteredProposals() {
-    if (!this.selectedStatus) return this.proposals;
-    return this.proposals.filter(p => p.status === this.selectedStatus);
-  }
+  constructor(private api: AdminApiService, private route: ActivatedRoute, private router: Router) { }
 
-  filterByStatus(status: string) {
-    this.selectedStatus = status;
+  ngOnInit(): void {
+    const params = this.route.snapshot.queryParamMap;
+    const id = parseInt(params.get('id'), 10);
+    if (!isNaN(id)) { this.selectedId = id; }
+    const status = params.get('status') as StatusFilter;
+    if (status && this.filters.some(f => f.value === status)) { this.selectedStatus = status; }
+    this.fetchProposals();
   }
 
   fetchProposals(): void {
     this.isLoading = true;
-
-    this.http.get<{ success: boolean; data: Proposal[] }>('/api/assay_proposal')
-      .subscribe({
-        next: (response) => {
-          if (response.success) {
-            console.log(response.data);
-            this.proposals = response.data.map(p => ({
-              id: p.id,
-              indication: p.indication || '',
-              submittedBy: p.name,
-              email: p.email,
-              institution: p.institution,
-              status: p.status,
-              submittedOn: p.submittedOn,
-              description: p.description || '',
-              notes: p.notes || '',
-              volume: p.volume,
-              concentration: p.concentration,
-              denialReason: p.denialReason || ''
-            }));
-
-
-
-          }
-          this.isLoading = false;
-        },
-        // error: (err) => {
-        //   this.errorMessage = err.error?.message || 'Failed to fetch proposals.';
-        //   this.isLoading = false;
-        // }
-      });
+    this.errorMessage = '';
+    this.api.getProposals().subscribe({
+      next: list => {
+        // Newest first
+        this.proposals = list.slice().sort((a, b) =>
+          submittedTime(b) - submittedTime(a));
+        this.isLoading = false;
+      },
+      error: () => {
+        this.errorMessage = 'Could not load proposals.';
+        this.isLoading = false;
+      }
+    });
   }
 
-viewProposal(proposal: Proposal): void {
-  const dialogRef = this.dialog.open(ProposalDetailDialogComponent, {
-    data: proposal,
-    width: '600px',
-    panelClass: 'proposal-dialog'
-  });
+  count(status: StatusFilter): number {
+    return status ? this.proposals.filter(p => p.status === status).length : this.proposals.length;
+  }
 
-  dialogRef.afterClosed().subscribe(result => {
-    if (result && result.updated) {
-      // Find the proposal in the list and update the status
-      const index = this.proposals.findIndex(p => p.id === proposal.id);
-      if (index !== -1) {
-        this.proposals[index].status = result.status;
-      }
+  get filteredProposals(): AdminProposal[] {
+    const q = this.query.trim().toLowerCase();
+    return this.proposals.filter(p =>
+      (!this.selectedStatus || p.status === this.selectedStatus) &&
+      (!q || [p.indication, p.submittedBy, p.institution, p.email, String(p.id)]
+        .some(v => (v || '').toLowerCase().includes(q))));
+  }
+
+  get selected(): AdminProposal {
+    return this.proposals.find(p => p.id === this.selectedId) || null;
+  }
+
+  filterByStatus(status: StatusFilter) {
+    this.selectedStatus = status;
+    this.syncUrl();
+  }
+
+  select(p: AdminProposal) {
+    this.selectedId = p.id;
+    this.syncUrl();
+  }
+
+  clearSelection() {
+    this.selectedId = null;
+    this.syncUrl();
+  }
+
+  onStatusChanged(change: { id: number; status: ProposalStatus; reason?: string }) {
+    const p = this.proposals.find(x => x.id === change.id);
+    if (p) {
+      p.status = change.status;
+      if (change.reason) { p.denialReason = change.reason; }
     }
-  });
-}
+  }
 
-  ngOnInit(): void {
-    this.fetchProposals();
+  private syncUrl() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { id: this.selectedId, status: this.selectedStatus || null },
+      replaceUrl: true
+    });
   }
 }

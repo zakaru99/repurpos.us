@@ -1,8 +1,17 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MatDialog } from '@angular/material/dialog';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { ProposalListComponent } from './proposal-list.component';
+
+@Component({ selector: 'app-proposal-detail', template: '' })
+class ProposalDetailStubComponent {
+  @Input() proposal: any;
+  @Output() statusChanged = new EventEmitter<any>();
+  @Output() closed = new EventEmitter<void>();
+}
 
 describe('ProposalListComponent', () => {
   let component: ProposalListComponent;
@@ -10,11 +19,8 @@ describe('ProposalListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule ],
-      declarations: [ ProposalListComponent ],
-      providers: [
-        { provide: MatDialog, useValue: jasmine.createSpyObj('MatDialog', ['open']) }
-      ]
+      imports: [ FormsModule, HttpClientTestingModule, RouterTestingModule ],
+      declarations: [ ProposalListComponent, ProposalDetailStubComponent ]
     })
     .compileComponents();
   }));
@@ -27,5 +33,17 @@ describe('ProposalListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should filter by status and search text', () => {
+    component.proposals = [
+      { id: 1, indication: 'Malaria', submittedBy: 'A', status: 'Pending', description: '', notes: '', denialReason: '' },
+      { id: 2, indication: 'Tuberculosis', submittedBy: 'B', status: 'Approved', description: '', notes: '', denialReason: '' }
+    ];
+    component.selectedStatus = 'Pending';
+    expect(component.filteredProposals.map(p => p.id)).toEqual([1]);
+    component.selectedStatus = '';
+    component.query = 'tuber';
+    expect(component.filteredProposals.map(p => p.id)).toEqual([2]);
   });
 });

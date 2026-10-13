@@ -1,0 +1,237 @@
+@import '../admin';
+
+:host {
+  @include admin-page;
+}
+
+.page {
+  max-width: 1200px;
+}
+
+// ---------------------------------------------------------------- stat tiles
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat {
+  @include panel;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  color: $ink;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    color: $ink;
+    text-decoration: none;
+    border-color: $field-border;
+  }
+
+  @include focus-ring($accent, 2px);
+}
+
+.stat-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: $ink-soft;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+
+  &.pending { background: $status-pending; }
+  &.approved { background: $status-approved; }
+  &.rejected { background: $status-rejected; }
+  &.admin { background: $accent; }
+}
+
+.stat-value {
+  font-family: $mono;
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-note {
+  font-size: 0.75rem;
+  color: $ink-faint;
+}
+
+// ---------------------------------------------------------------- panels
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel {
+  @include panel;
+}
+
+.panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid $rule-soft;
+
+  h2 {
+    @include panel-title;
+  }
+}
+
+.arrow-link {
+  @include arrow-link;
+  font-size: 0.8125rem;
+}
+
+.empty {
+  margin: 0 !important;
+  padding: 18px;
+  font-size: 0.875rem;
+  color: $ink-soft;
+
+  &.error {
+    color: $status-rejected;
+  }
+}
+
+.more {
+  margin: 0 !important;
+  padding: 10px 18px 14px;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+}
+
+// waiting list
+.queue {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 12px;
+    color: $ink;
+    text-decoration: none;
+    border-radius: 7px;
+
+    &:hover {
+      background: $hover;
+      text-decoration: none;
+    }
+  }
+}
+
+.q-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.q-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.q-sub {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+}
+
+// How long it has waited; two weeks or more is flagged
+.q-age {
+  flex-shrink: 0;
+  font-family: $mono;
+  font-size: 0.75rem;
+  color: $ink-soft;
+
+  &.old {
+    color: $status-pending;
+  }
+}
+
+// maintenance
+.maint {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+}
+
+.maint-when {
+  font-size: 1rem;
+  font-weight: 600;
+  color: $ink;
+}
+
+.maint-flag {
+  font-size: 0.8125rem;
+  color: $ink-soft;
+
+  &.on {
+    color: $status-approved;
+  }
+}
+
+.maint-msg {
+  margin: 4px 0 0 !important;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: $ink-soft;
+}
+
+// admins
+.people {
+  list-style: none;
+  margin: 0;
+  padding: 8px 18px;
+
+  li {
+    padding: 6px 0;
+    font-size: 0.875rem;
+    color: $ink;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: $bp-tablet) {
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

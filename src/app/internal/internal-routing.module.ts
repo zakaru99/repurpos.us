@@ -10,6 +10,7 @@ const routes: Routes = [
     path: '',
     component: InternalLayoutComponent,
     children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'proposals', component: ProposalListComponent },
       { path: 'dashboard', component: DashboardComponent},
       { path: 'user_management', component: UserManagementComponent},

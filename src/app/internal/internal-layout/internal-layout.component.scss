@@ -1,35 +1,103 @@
-.internal-toolbar {
+// Admin portal shell: one slim toolbar (tool-page pattern in DESIGN.md), then
+// the section fills the rest of the screen on a muted background.
+
+@import '../admin';
+
+:host {
+  @include full-bleed-host;
+  min-height: calc(100vh - var(--site-header-height, 65px));
+  background: $muted-bg;
+}
+
+.toolbar {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: rgba(61, 109, 224, 0.08);
-  padding: 0.5rem 1.5rem;
-  color: #3d6de0;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  align-items: flex-end;
+  gap: 40px;
+  padding: 14px 24px 0;
+  background: #fff;
+  border-bottom: 1px solid $rule-soft;
+}
+
+.portal-title {
+  padding-bottom: 12px;
+
+  .eyebrow {
+    display: block;
+    @include eyebrow;
+    font-size: 0.6875rem;
+    margin-bottom: 2px;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: $sans;
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: $ink;
+    white-space: nowrap;
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 28px;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 0 13px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    white-space: nowrap;
+    color: $ink-soft;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+      color: $ink;
+      text-decoration: none;
+    }
+
+    &.active {
+      color: $ink;
+      border-bottom-color: $accent;
+    }
+
+    @include focus-ring($accent, 2px);
+  }
+}
+
+.count {
+  min-width: 20px;
+  padding: 0 6px;
+  font-family: $mono;
+  font-size: 0.6875rem;
   font-weight: 500;
-  font-size: 1rem;
+  line-height: 18px;
+  text-align: center;
+  color: $status-pending;
+  background: $status-pending-bg;
+  border-radius: 6px;
 }
 
-.internal-toolbar .logo {
-  font-weight: 600;
-  font-size: 1.2rem;
-}
+@media (max-width: $bp-phone) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 12px 16px 0;
+  }
 
-.internal-toolbar .nav-links a {
-  text-decoration: none;
-  margin-left: 1.25rem;
-  padding: 0.3rem 0.6rem;
-  border-radius: 12px;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.internal-toolbar .nav-links a:hover {
-  background-color: rgba(61, 109, 224, 0.15);
-}
-
-.internal-toolbar .nav-links a.active-link {
-  color: white;
-  background-color:  #3D6DE0;
+  .portal-title {
+    padding-bottom: 0;
+  }
 }

@@ -1,5 +1,86 @@
-<div class="container-fluid dashboard-page">
-<p>
-  dashboard works!
-</p>
+<div class="page">
+  <!-- Proposal counts -->
+  <section class="stats" aria-label="Proposals by status">
+    <a class="stat" routerLink="../proposals" [queryParams]="{ status: 'Pending' }">
+      <span class="stat-label"><span class="dot pending"></span>Pending</span>
+      <span class="stat-value">{{ loading ? '–' : (proposals ? count('Pending') : '?') }}</span>
+      <span class="stat-note">waiting for a decision</span>
+    </a>
+    <a class="stat" routerLink="../proposals" [queryParams]="{ status: 'Approved' }">
+      <span class="stat-label"><span class="dot approved"></span>Approved</span>
+      <span class="stat-value">{{ loading ? '–' : (proposals ? count('Approved') : '?') }}</span>
+      <span class="stat-note">all time</span>
+    </a>
+    <a class="stat" routerLink="../proposals" [queryParams]="{ status: 'Rejected' }">
+      <span class="stat-label"><span class="dot rejected"></span>Rejected</span>
+      <span class="stat-value">{{ loading ? '–' : (proposals ? count('Rejected') : '?') }}</span>
+      <span class="stat-note">all time</span>
+    </a>
+    <a class="stat" routerLink="../user_management">
+      <span class="stat-label"><span class="dot admin"></span>Admins</span>
+      <span class="stat-value">{{ loading ? '–' : (admins ? admins.length : '?') }}</span>
+      <span class="stat-note">with portal access</span>
+    </a>
+  </section>
+
+  <div class="grid">
+    <!-- Waiting for a decision -->
+    <section class="panel">
+      <header class="panel-head">
+        <h2>Waiting for a decision</h2>
+        <a class="arrow-link" routerLink="../proposals" [queryParams]="{ status: 'Pending' }">All proposals</a>
+      </header>
+
+      <p class="empty" *ngIf="loading">Loading…</p>
+      <p class="empty error" *ngIf="!loading && !proposals">Could not load proposals.</p>
+      <p class="empty" *ngIf="!loading && proposals && !waiting.length">Nothing waiting. All proposals have a decision.</p>
+
+      <ul class="queue" *ngIf="!loading && waiting.length">
+        <li *ngFor="let p of waiting.slice(0, 6)">
+          <a routerLink="../proposals" [queryParams]="{ id: p.id }">
+            <span class="q-main">
+              <span class="q-title">{{ p.indication || 'Untitled proposal' }}</span>
+              <span class="q-sub">{{ p.submittedBy || 'Unknown' }}<ng-container *ngIf="p.institution"> · {{ p.institution }}</ng-container></span>
+            </span>
+            <span class="q-age" *ngIf="daysWaiting(p) !== null" [class.old]="daysWaiting(p) >= 14">
+              {{ daysWaiting(p) === 0 ? 'today' : daysWaiting(p) + (daysWaiting(p) === 1 ? ' day' : ' days') }}
+            </span>
+          </a>
+        </li>
+      </ul>
+      <p class="more" *ngIf="waiting.length > 6">and {{ waiting.length - 6 }} more</p>
+    </section>
+
+    <div class="side">
+      <!-- Next maintenance -->
+      <section class="panel">
+        <header class="panel-head">
+          <h2>Next maintenance</h2>
+          <a class="arrow-link" routerLink="../maintenance_window">Manage</a>
+        </header>
+        <p class="empty" *ngIf="loading">Loading…</p>
+        <p class="empty error" *ngIf="!loading && !windows">Could not load the maintenance queue.</p>
+        <p class="empty" *ngIf="!loading && windows && !nextWindow">Nothing scheduled.</p>
+        <div class="maint" *ngIf="!loading && nextWindow as w">
+          <span class="maint-when">{{ formatPacific(w.scheduledStart) }}</span>
+          <span class="maint-flag" [class.on]="w.enabled">{{ w.enabled ? 'Banner shown to visitors' : 'Banner hidden' }}</span>
+          <p class="maint-msg" *ngIf="w.message">{{ w.message }}</p>
+        </div>
+      </section>
+
+      <!-- Admins -->
+      <section class="panel">
+        <header class="panel-head">
+          <h2>Admin team</h2>
+          <a class="arrow-link" routerLink="../user_management">Manage</a>
+        </header>
+        <p class="empty" *ngIf="loading">Loading…</p>
+        <p class="empty error" *ngIf="!loading && !admins">Could not load admins.</p>
+        <ul class="people" *ngIf="!loading && admins?.length">
+          <li *ngFor="let a of admins.slice(0, 5)">{{ a.email }}</li>
+        </ul>
+        <p class="more" *ngIf="admins?.length > 5">and {{ admins.length - 5 }} more</p>
+      </section>
+    </div>
+  </div>
 </div>

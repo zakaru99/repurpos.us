@@ -1,0 +1,220 @@
+@import '../admin';
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.head {
+  position: relative;
+  padding: 22px 28px 18px;
+  border-bottom: 1px solid $rule-soft;
+
+  h2 {
+    margin: 8px 0 0;
+    padding-right: 120px;
+    font-family: $sans;
+    font-size: 1.375rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: $ink;
+  }
+}
+
+// "Proposals" back link: only on narrow screens where the list is hidden
+.back {
+  display: none;
+  margin: 0 0 12px;
+  padding: 0;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: $accent;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 6px;
+    border-left: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    vertical-align: 0.1em;
+  }
+}
+
+.head-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.id {
+  font-family: $mono;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+}
+
+.status-tag {
+  @include status-tag;
+}
+
+.export {
+  position: absolute;
+  top: 22px;
+  right: 28px;
+  @include tool-button(secondary);
+}
+
+.body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 8px 28px 28px;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 32px;
+  margin: 0 0 8px;
+
+  div {
+    padding: 12px 0;
+    border-bottom: 1px solid $rule-soft;
+  }
+
+  dt {
+    margin-bottom: 3px;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: $ink-soft;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: $ink;
+    overflow-wrap: anywhere;
+  }
+
+  .mono {
+    font-family: $mono;
+    font-size: 0.875rem;
+  }
+
+  a {
+    color: $accent;
+  }
+}
+
+.block {
+  margin-top: 22px;
+
+  h3 {
+    margin: 0 0 6px;
+    font-family: $sans;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $ink-soft;
+  }
+
+  p {
+    margin: 0 !important;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: $ink;
+    white-space: pre-line;
+  }
+
+  &.denial p {
+    padding: 10px 12px;
+    background: $status-rejected-bg;
+    border-radius: 6px;
+  }
+}
+
+// ---------------------------------------------------------------- decision bar
+
+.decide {
+  flex-shrink: 0;
+  padding: 16px 28px 20px;
+  background: $panel;
+  border-top: 1px solid $rule-soft;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  p {
+    margin: 0 !important;
+    font-size: 0.875rem;
+    color: $ink;
+  }
+}
+
+.field {
+  @include field;
+  margin: 0;
+}
+
+.req {
+  font-weight: 400;
+  color: $ink-soft;
+}
+
+.notice.error {
+  @include notice(error);
+  margin-bottom: 12px;
+}
+
+.btn.approve { @include tool-button(approve); }
+.btn.danger { @include tool-button(danger); }
+.btn.danger-ghost { @include tool-button(danger-ghost); }
+.btn.secondary { @include tool-button(secondary); }
+
+@media (max-width: $bp-tablet) {
+  .back {
+    display: inline-block;
+  }
+
+  .head,
+  .body,
+  .decide {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .head h2 {
+    padding-right: 0;
+  }
+
+  .export {
+    position: static;
+    margin-top: 12px;
+  }
+
+  .facts {
+    grid-template-columns: 1fr;
+  }
+}

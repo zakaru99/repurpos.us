@@ -1,15 +1,67 @@
 import { Component, OnInit } from '@angular/core';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
+import { MaintenanceWindow } from '../../_models';
+import { formatPacificDisplay } from '../../_services';
+import { AdminApiService, AdminProposal, AdminUser } from '../admin-api.service';
+
+const submittedTime = (p: { submittedOn?: string }): number =>
+  p.submittedOn ? new Date(p.submittedOn).getTime() : 0;
+
+// Admin overview: what needs attention, at a glance. Each panel loads
+// independently so one failing endpoint doesn't blank the page.
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+  loading = true;
 
-  constructor() { }
+  proposals: AdminProposal[] = null;
+  admins: AdminUser[] = null;
+  windows: MaintenanceWindow[] = null;
+
+  constructor(private api: AdminApiService) { }
 
   ngOnInit() {
+    forkJoin(
+      this.api.getProposals().pipe(catchError(() => of(null))),
+      this.api.getAdmins().pipe(catchError(() => of(null))),
+      this.api.getMaintenanceWindows().pipe(catchError(() => of(null)))
+    ).subscribe(([proposals, admins, windows]) => {
+      this.proposals = proposals;
+      this.admins = admins;
+      this.windows = windows;
+      this.loading = false;
+    });
   }
 
+  count(status: string): number {
+    return (this.proposals || []).filter(p => p.status === status).length;
+  }
+
+  // Oldest first: the ones that have waited longest come first
+  get waiting(): AdminProposal[] {
+    return (this.proposals || [])
+      .filter(p => p.status === 'Pending')
+      .sort((a, b) => submittedTime(a) - submittedTime(b));
+  }
+
+  daysWaiting(p: AdminProposal): number {
+    if (!p.submittedOn) { return null; }
+    return Math.max(0, Math.floor((Date.now() - new Date(p.submittedOn).getTime()) / 86400000));
+  }
+
+  get nextWindow(): MaintenanceWindow {
+    const now = Date.now();
+    return (this.windows || [])
+      .filter(w => w.scheduledStart && new Date(w.scheduledStart).getTime() >= now)
+      .sort((a, b) => new Date(a.scheduledStart).getTime() - new Date(b.scheduledStart).getTime())[0] || null;
+  }
+
+  formatPacific(iso: string): string {
+    return iso ? formatPacificDisplay(iso) : '—';
+  }
 }

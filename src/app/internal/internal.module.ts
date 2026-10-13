@@ -1,35 +1,28 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { InternalRoutingModule } from './internal-routing.module';
 import { InternalLayoutComponent } from './internal-layout/internal-layout.component';
-import { ProposalListComponent } from './proposal-list/proposal-list.component';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { ProposalDetailDialogComponent } from './proposal-detail-dialog/proposal-detail-dialog.component';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material';
-import { FormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ProposalListComponent } from './proposal-list/proposal-list.component';
+import { ProposalDetailComponent } from './proposal-detail/proposal-detail.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { MaintenanceWindowComponent } from './maintenance-window/maintenance-window.component';
 
 @NgModule({
   imports: [
     CommonModule,
-    InternalRoutingModule,
-    MatToolbarModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    FormsModule
+    FormsModule,
+    InternalRoutingModule
   ],
   declarations: [
-    InternalLayoutComponent, ProposalListComponent, ProposalDetailDialogComponent, DashboardComponent,
-    UserManagementComponent, MaintenanceWindowComponent
-  ],
-  entryComponents: [
-    ProposalDetailDialogComponent
-  ],
+    InternalLayoutComponent,
+    DashboardComponent,
+    ProposalListComponent,
+    ProposalDetailComponent,
+    UserManagementComponent,
+    MaintenanceWindowComponent
+  ]
 })
 export class InternalModule { }

@@ -108,13 +108,27 @@ muted strip → navy footer. Don't put two dark bands next to each other.
   panel. It is not a full-width row.
 - **Footer**: navy, with link columns, the REFRAME citation (PNAS 2018, with a
   copy button) and white logos.
+- **Admin portal** (`/internal`): the same slim toolbar, with underline tabs
+  for Overview, Proposals, Users and Maintenance, on a muted background with
+  white panels. Shared admin pieces (status tags, data tables, form fields,
+  compact buttons, notices) are in `src/app/internal/_admin.scss`; admin API
+  calls are in `admin-api.service.ts`. Any action that changes someone's
+  access or a proposal's status asks for confirmation in place, and the
+  interface only updates once the server confirms the change.
+- **Status colours**: `$status-pending`, `$status-approved` and
+  `$status-rejected`, each with a `-bg` tint. Show status as a dot plus a
+  label, never as colour alone.
 
 ## Gotchas
 
 - A global rule `body, header { color: … }` in `styles.scss` recolours any
   `<header>` element. Set `color: inherit` on it, or use a `<div>`.
-- A global `.wrap { word-break: break-all }` exists, and Bootstrap owns `.row`.
-  Don't reuse either class name in a component.
+- Global and Bootstrap class names leak into components: `.wrap` (forces
+  `word-break: break-all`), `.title` (uppercase grey), and Bootstrap's `.row`
+  (negative margins, flex-wrap). Don't use these names in a component.
+- The page body defaults to Lato at weight 300. `@include full-bleed-host`
+  resets it to Plex at 400; components that don't use the mixin need to set
+  `font-weight: 400` themselves.
 - d3 and other drawing code can't use Sass. Read tokens at runtime with
   `getComputedStyle(document.documentElement).getPropertyValue('--color-…')`,
   as `ontology-tree.component.ts` does.

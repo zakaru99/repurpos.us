@@ -1,48 +1,100 @@
-<div class="user-management-page">
-  <div class="card-block">
-    <h5 class="section-title">User Lookup</h5>
-    <div class="user-search">
-      <input type="text" placeholder="Enter user email or name" [(ngModel)]="searchQuery" (keydown.enter)="searchUser()"/>
-      <button (click)="searchUser()">Search</button>
-    </div>
+<div class="page">
+  <div class="notice error" *ngIf="errorMsg" role="alert">{{ errorMsg }}</div>
 
-    <div *ngIf="searchResults?.length > 0" class="user-details">
-      <div *ngFor="let user of searchResults" class="user-card">
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Registered On:</strong> {{ user.registered_on | date }}</p>
-        <p>
-          <strong>Role:</strong>
-          <span class="status-badge" [ngClass]="{ 'admin': user.isAdmin }">
-            {{ user.isAdmin ? 'Admin' : 'User' }}
-          </span>
-        </p>
-        <button *ngIf="!user.isAdmin" (click)="makeAdmin(user)">Make Admin</button>
+  <!-- Admins -->
+  <section class="panel">
+    <header class="panel-head">
+      <div>
+        <h2>Admins</h2>
+        <p class="panel-sub">People who can review proposals, manage users and schedule maintenance.</p>
       </div>
-    </div>
-    <p *ngIf="searchResults?.length === 0 && searchQuery">No users found.</p>
-  </div>
+      <span class="total" *ngIf="!loadingAdmins">{{ admins.length }}</span>
+    </header>
 
-  <div class="card-block">
-    <h5 class="section-title">Current CALIBR Admins</h5>
-    <div class="table-responsive">
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let admin of admins">
-            <td>{{ admin.email }}</td>
-            <td><span class="status-badge admin">Admin</span></td>
-            <td>
-              <button (click)="revokeAdmin(admin)">Revoke</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+    <p class="empty" *ngIf="loadingAdmins">Loading…</p>
+    <table class="table" *ngIf="!loadingAdmins && admins.length">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Access</th>
+          <th class="actions-col"><span class="sr-only">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let admin of admins">
+          <td class="email">{{ admin.email }}</td>
+          <td><span class="status-tag admin">Admin</span></td>
+          <td class="actions-col">
+            <ng-container *ngIf="!isConfirming(admin, false); else confirmRevoke">
+              <button type="button" class="btn danger-ghost" (click)="askToRevoke(admin)">Revoke</button>
+            </ng-container>
+            <ng-template #confirmRevoke>
+              <span class="confirm-inline">
+                <span class="confirm-text">Remove admin access?</span>
+                <button type="button" class="btn danger" (click)="confirmChange()" [disabled]="saving">
+                  {{ saving ? 'Revoking…' : 'Revoke' }}
+                </button>
+                <button type="button" class="btn secondary" (click)="cancelConfirm()" [disabled]="saving">Cancel</button>
+              </span>
+            </ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="empty" *ngIf="!loadingAdmins && !admins.length">No admins found.</p>
+  </section>
+
+  <!-- Lookup -->
+  <section class="panel">
+    <header class="panel-head">
+      <div>
+        <h2>Find a user</h2>
+        <p class="panel-sub">Search by email or name to check an account or grant admin access.</p>
+      </div>
+    </header>
+
+    <form class="lookup" (submit)="$event.preventDefault(); searchUser()">
+      <input type="search" [(ngModel)]="searchQuery" name="q" autocomplete="off"
+             placeholder="Email or name" aria-label="Email or name">
+      <button type="submit" class="btn primary" [disabled]="searching || !searchQuery.trim()">
+        {{ searching ? 'Searching…' : 'Search' }}
+      </button>
+      <button type="button" class="btn secondary" *ngIf="searchResults" (click)="clearSearch()">Clear</button>
+    </form>
+
+    <table class="table" *ngIf="searchResults?.length">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Registered</th>
+          <th>Access</th>
+          <th class="actions-col"><span class="sr-only">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of searchResults">
+          <td class="email">{{ user.email }}</td>
+          <td class="mono">{{ (user.registered_on | date:'d MMM y') || '—' }}</td>
+          <td><span class="status-tag" [class.admin]="user.isAdmin">{{ user.isAdmin ? 'Admin' : 'User' }}</span></td>
+          <td class="actions-col">
+            <ng-container *ngIf="!user.isAdmin">
+              <ng-container *ngIf="!isConfirming(user, true); else confirmGrantTpl">
+                <button type="button" class="btn secondary" (click)="askToGrant(user)">Make admin</button>
+              </ng-container>
+              <ng-template #confirmGrantTpl>
+                <span class="confirm-inline">
+                  <span class="confirm-text">Give full admin access?</span>
+                  <button type="button" class="btn primary" (click)="confirmChange()" [disabled]="saving">
+                    {{ saving ? 'Saving…' : 'Make admin' }}
+                  </button>
+                  <button type="button" class="btn secondary" (click)="cancelConfirm()" [disabled]="saving">Cancel</button>
+                </span>
+              </ng-template>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="empty" *ngIf="searchResults && !searchResults.length">No users match “{{ searchQuery }}”.</p>
+  </section>
 </div>
