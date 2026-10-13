@@ -23,12 +23,17 @@ export class OntologyColumnsComponent implements OnChanges, AfterViewInit {
   path: any[] = [];          // selected node per column, root's child first
   structure$: Observable<SafeUrl>;
 
-  // Layout: on wide screens show only the most recent columns that fit beside
-  // the detail pane; earlier levels fold into a strip on the left
-  private readonly COLUMN_W = 300;
-  private readonly DETAIL_W = 360;
+  // Layout (wide screens): the active (deepest) column is full width, the
+  // columns you've passed through shrink, and when even that doesn't fit the
+  // oldest levels fold into a strip that can be peeked open on hover.
+  private readonly ACTIVE_W = 300;
+  private readonly ANCESTOR_W = 210;
+  private readonly DETAIL_W = 400;
   private readonly STRIP_W = 56;
   private width = 1200;
+
+  peekOpen = false;     // hidden levels shown as an overlay
+  peekPinned = false;   // opened by click/tap rather than hover
 
   private counts = new Map<any, number>();
   private parents = new Map<any, any>();
@@ -52,22 +57,50 @@ export class OntologyColumnsComponent implements OnChanges, AfterViewInit {
   get firstVisible(): number {
     const total = this.columns.length;
     if (this.compact) { return 0; }
-    const room = this.width - (this.selected ? this.DETAIL_W : 0);
-    let fit = Math.max(1, Math.floor(room / this.COLUMN_W));
-    if (fit < total) {
-      // the strip takes some room once anything is folded
-      fit = Math.max(1, Math.floor((room - this.STRIP_W) / this.COLUMN_W));
-    }
-    return Math.max(0, total - fit);
+    const room = this.width - (this.selectedCompound ? this.DETAIL_W : 0);
+    const fits = (k: number, strip: boolean) =>
+      this.ACTIVE_W + (k - 1) * this.ANCESTOR_W + (strip ? this.STRIP_W : 0) <= room;
+    if (fits(total, false)) { return 0; }
+    let k = total - 1;
+    while (k > 1 && !fits(k, true)) { k--; }
+    return total - Math.max(1, k);
   }
 
-  get visibleColumns(): Array<{ items: any[]; index: number }> {
-    const start = this.firstVisible;
-    return this.columns.slice(start).map((items, i) => ({ items, index: start + i }));
+  get foldedColumns(): Array<{ items: any[]; index: number }> {
+    return this.columns.slice(0, this.firstVisible).map((items, index) => ({ items, index }));
+  }
+
+  // Names of the folded levels, oldest first, for the strip's vertical label
+  get foldedLabel(): string {
+    return this.path.slice(0, this.firstVisible).map(n => n.preferred_name).join('  ›  ');
+  }
+
+  get allColumns(): Array<{ items: any[]; index: number }> {
+    return this.columns.map((items, index) => ({ items, index }));
   }
 
   trackCol(_: number, col: { index: number }) {
     return col.index;
+  }
+
+  openPeek() {
+    if (this.firstVisible > 0) { this.peekOpen = true; }
+  }
+
+  closePeek() {
+    if (!this.peekPinned) { this.peekOpen = false; }
+  }
+
+  togglePeek() {
+    this.peekPinned = !this.peekOpen || !this.peekPinned;
+    this.peekOpen = this.peekPinned;
+  }
+
+  // Selecting inside the peek overlay jumps there and tucks the overlay away
+  selectFromPeek(node: any, col: number) {
+    this.peekPinned = false;
+    this.peekOpen = false;
+    this.select(node, col);
   }
 
   // Step back one level (from the folded strip)
@@ -146,6 +179,7 @@ export class OntologyColumnsComponent implements OnChanges, AfterViewInit {
   // ---------------------------------------------------------------- interaction
 
   select(node: any, col: number) {
+    this.peekOpen = this.peekPinned && this.peekOpen;
     this.path = this.path.slice(0, col).concat(node);
     this.structure$ = !this.isCategory(node) && node.smiles
       ? this.data.getStructure(String(node.smiles).split(';')[0].trim())
@@ -241,12 +275,12 @@ export class OntologyColumnsComponent implements OnChanges, AfterViewInit {
     setTimeout(() => {
       const el = this.scroller && this.scroller.nativeElement;
       if (!el) { return; }
-      el.querySelectorAll('.column').forEach((col: HTMLElement) => {
-        const row = col.querySelector('.item.selected') as HTMLElement;
+      el.querySelectorAll('.column:not(.folded) .items').forEach((list: HTMLElement) => {
+        const row = list.querySelector('.item.selected') as HTMLElement;
         if (!row) { return; }
-        const top = row.offsetTop - col.offsetTop;
-        if (top < col.scrollTop || top + row.offsetHeight > col.scrollTop + col.clientHeight) {
-          col.scrollTop = top - col.clientHeight / 2 + row.offsetHeight / 2;
+        const top = row.getBoundingClientRect().top - list.getBoundingClientRect().top + list.scrollTop;
+        if (top < list.scrollTop || top + row.offsetHeight > list.scrollTop + list.clientHeight) {
+          list.scrollTop = top - list.clientHeight / 2 + row.offsetHeight / 2;
         }
       });
     });

@@ -9,75 +9,68 @@
     </ng-container>
   </nav>
 
-  <div class="columns" #scroller>
-    <button type="button" class="fold" *ngIf="firstVisible > 0" (click)="back()"
-            [attr.aria-label]="'Back one level (' + firstVisible + ' hidden)'">
-      <span class="fold-chev" aria-hidden="true"></span>
-      <span class="fold-label">{{ firstVisible }} {{ firstVisible === 1 ? 'level' : 'levels' }}</span>
+  <!-- Category summary: a slim bar instead of a side pane, so columns keep the room -->
+  <div class="summary" *ngIf="selected && !selectedCompound">
+    <span class="mark" [class.moa]="holdsCompounds(selected)" aria-hidden="true"></span>
+    <span class="summary-kicker">{{ holdsCompounds(selected) ? 'Mechanism' : 'Category' }}</span>
+    <span class="summary-name">{{ selected.preferred_name }}</span>
+    <span class="summary-stat"><b>{{ count(selected) | number }}</b> compounds</span>
+    <span class="summary-stat" *ngIf="!holdsCompounds(selected)"><b>{{ selected.children.length | number }}</b> subcategories</span>
+    <span class="summary-ref" *ngIf="selected.xref?.length">{{ selected.xref.join(', ') }}</span>
+    <span class="summary-info" *ngIf="selected.comment" [title]="selected.comment" tabindex="0"
+          [attr.aria-label]="'About: ' + selected.comment">i</span>
+    <button *ngIf="holdsCompounds(selected)" type="button" class="action primary small summary-action" (click)="download(selected)">
+      Download {{ selected.children.length | number }} compounds (CSV)
     </button>
+  </div>
 
-    <section class="column" *ngFor="let col of visibleColumns; let c = index; trackBy: trackCol">
-      <ul class="items" role="listbox" [attr.aria-label]="col.index === 0 ? root?.preferred_name : path[col.index - 1]?.preferred_name">
-        <li *ngFor="let n of col.items" role="option" class="item"
-            [class.selected]="isInPath(n, col.index)"
-            [class.current]="isInPath(n, col.index) && col.index === path.length - 1"
-            [attr.aria-selected]="isInPath(n, col.index)"
-            (click)="select(n, col.index)">
-          <span class="mark" [class.moa]="holdsCompounds(n)" [class.compound]="!isCategory(n)" aria-hidden="true"></span>
-          <span class="name" [title]="n.preferred_name">{{ n.preferred_name }}</span>
-          <span class="count" *ngIf="isCategory(n)">{{ count(n) | number }}</span>
-          <span class="chev" *ngIf="isCategory(n)" aria-hidden="true"></span>
-        </li>
-      </ul>
+  <div class="columns" #scroller>
+
+    <!-- Folded levels: hover (or tap) to peek -->
+    <div class="fold-wrap" [class.shown]="firstVisible > 0" (mouseenter)="openPeek()" (mouseleave)="closePeek()">
+      <button type="button" class="fold" (click)="togglePeek()" [attr.aria-expanded]="peekOpen"
+              [attr.aria-label]="'Show ' + firstVisible + ' hidden levels'" [tabindex]="firstVisible > 0 ? 0 : -1">
+        <span class="fold-chev" aria-hidden="true"></span>
+        <span class="fold-label">{{ foldedLabel }}</span>
+      </button>
+
+      <div class="peek" *ngIf="peekOpen && foldedColumns.length">
+        <section class="column ancestor" *ngFor="let col of foldedColumns; trackBy: trackCol">
+          <ng-container *ngTemplateOutlet="columnTpl; context: { col: col, peek: true }"></ng-container>
+        </section>
+      </div>
+    </div>
+
+    <section class="column" *ngFor="let col of allColumns; trackBy: trackCol"
+             [class.folded]="col.index < firstVisible"
+             [class.ancestor]="col.index < allColumns.length - 1"
+             [class.active]="col.index === allColumns.length - 1"
+             [attr.aria-hidden]="col.index < firstVisible">
+      <ng-container *ngTemplateOutlet="columnTpl; context: { col: col, peek: false }"></ng-container>
     </section>
 
-    <!-- Detail pane -->
-    <aside class="detail" *ngIf="selected as s">
-      <ng-container *ngIf="selectedCompound; else categoryTpl">
-        <div class="structure">
-          <img *ngIf="structure$ | async as img" [src]="img" [alt]="'2D structure of ' + s.preferred_name">
+    <!-- Compound detail -->
+    <aside class="detail" *ngIf="selectedCompound as s">
+      <div class="structure">
+        <img *ngIf="structure$ | async as img" [src]="img" [alt]="'2D structure of ' + s.preferred_name">
+      </div>
+      <div class="title-row">
+        <div class="title-text">
+          <p class="kicker">Compound</p>
+          <h2>{{ s.preferred_name }}</h2>
         </div>
-        <div class="title-row">
-          <div class="title-text">
-            <p class="kicker">Compound</p>
-            <h2>{{ s.preferred_name }}</h2>
-          </div>
-          <a class="action primary small" [routerLink]="compoundLink(s)">Open compound profile</a>
+        <a class="action primary small" [routerLink]="compoundLink(s)">Open compound profile</a>
+      </div>
+      <dl class="facts">
+        <div *ngIf="s.moa?.length">
+          <dt>Mechanism</dt>
+          <dd><span class="tag" *ngFor="let m of s.moa">{{ m }}</span></dd>
         </div>
-        <dl class="facts">
-          <div *ngIf="s.moa?.length">
-            <dt>Mechanism</dt>
-            <dd><span class="tag" *ngFor="let m of s.moa">{{ m }}</span></dd>
-          </div>
-          <div>
-            <dt>InChIKey</dt>
-            <dd class="mono">{{ s.inchikey }}</dd>
-          </div>
-        </dl>
-      </ng-container>
-
-      <ng-template #categoryTpl>
-        <p class="kicker">{{ holdsCompounds(s) ? 'Mechanism' : 'Category' }}</p>
-        <h2>{{ s.preferred_name }}</h2>
-        <p class="comment" *ngIf="s.comment">{{ s.comment }}</p>
-        <dl class="facts">
-          <div>
-            <dt>Compounds</dt>
-            <dd class="big">{{ count(s) | number }}</dd>
-          </div>
-          <div *ngIf="!holdsCompounds(s)">
-            <dt>Subcategories</dt>
-            <dd class="big">{{ s.children.length | number }}</dd>
-          </div>
-          <div *ngIf="s.xref?.length">
-            <dt>Reference</dt>
-            <dd class="mono">{{ s.xref.join(', ') }}</dd>
-          </div>
-        </dl>
-        <button *ngIf="holdsCompounds(s)" type="button" class="action primary" (click)="download(s)">
-          Download {{ s.children.length | number }} compounds (CSV)
-        </button>
-      </ng-template>
+        <div>
+          <dt>InChIKey</dt>
+          <dd class="mono">{{ s.inchikey }}</dd>
+        </div>
+      </dl>
     </aside>
 
     <div class="empty" *ngIf="!path.length">
@@ -86,3 +79,20 @@
     </div>
   </div>
 </div>
+
+<!-- One column's list; shared by the main strip and the peek overlay -->
+<ng-template #columnTpl let-col="col" let-peek="peek">
+  <ul class="items" role="listbox"
+      [attr.aria-label]="col.index === 0 ? root?.preferred_name : path[col.index - 1]?.preferred_name">
+    <li *ngFor="let n of col.items" role="option" class="item"
+        [class.selected]="isInPath(n, col.index)"
+        [class.current]="isInPath(n, col.index) && col.index === path.length - 1"
+        [attr.aria-selected]="isInPath(n, col.index)"
+        (click)="peek ? selectFromPeek(n, col.index) : select(n, col.index)">
+      <span class="mark" [class.moa]="holdsCompounds(n)" [class.compound]="!isCategory(n)" aria-hidden="true"></span>
+      <span class="name" [title]="n.preferred_name">{{ n.preferred_name }}</span>
+      <span class="count" *ngIf="isCategory(n)">{{ count(n) | number }}</span>
+      <span class="chev" *ngIf="isCategory(n)" aria-hidden="true"></span>
+    </li>
+  </ul>
+</ng-template>
