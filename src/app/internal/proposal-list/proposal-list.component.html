@@ -19,7 +19,7 @@
 <div class="layout" [class.open]="selected" *ngIf="!isLoading && !errorMessage">
   <div class="list">
     <app-proposal-table [proposals]="filteredProposals" [selectedId]="selectedId" [compact]="!!selected"
-                        [maxHeight]="tableHeight"
+                        [scroll]="true"
                         (pick)="select($event)"></app-proposal-table>
 
     <p class="muted empty" *ngIf="!filteredProposals.length">

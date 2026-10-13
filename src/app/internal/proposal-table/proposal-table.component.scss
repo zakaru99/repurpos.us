@@ -6,7 +6,7 @@
 
 // Scrolls inside its own area when the parent sets a max height
 .scroll.limited {
-  @include table-scroll(none);
+  @include table-scroll(var(--table-max, 420px));
 }
 
 .table {

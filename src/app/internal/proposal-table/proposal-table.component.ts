@@ -15,8 +15,10 @@ export class ProposalTableComponent {
   @Input() selectedId: number = null;
   @Input() compact = false;
   @Input() showWaiting = false;
-  // CSS max-height for the scrolling region, e.g. '420px'; null = no limit
-  @Input() maxHeight: string = null;
+  // Scroll inside a fixed-height area. The height comes from the CSS variable
+  // --table-max set by the parent page (a bound style would be stripped by
+  // Angular's sanitizer when it contains var()).
+  @Input() scroll = false;
   @Output() pick = new EventEmitter<AdminProposal>();
 
   daysWaiting(p: AdminProposal): number {

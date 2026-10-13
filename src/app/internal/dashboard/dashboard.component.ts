@@ -5,7 +5,7 @@ import { catchError } from 'rxjs/operators';
 
 import { MaintenanceWindow } from '../../_models';
 import { formatPacificDisplay } from '../../_services';
-import { AdminApiService, AdminProposal, AdminUser } from '../admin-api.service';
+import { AdminApiService, AdminProposal } from '../admin-api.service';
 
 const submittedTime = (p: { submittedOn?: string }): number =>
   p.submittedOn ? new Date(p.submittedOn).getTime() : 0;
@@ -21,7 +21,6 @@ export class DashboardComponent implements OnInit {
   loading = true;
 
   proposals: AdminProposal[] = null;
-  admins: AdminUser[] = null;
   windows: MaintenanceWindow[] = null;
 
   constructor(private api: AdminApiService, private router: Router, private route: ActivatedRoute) { }
@@ -29,11 +28,9 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     forkJoin(
       this.api.getProposals().pipe(catchError(() => of(null))),
-      this.api.getAdmins().pipe(catchError(() => of(null))),
       this.api.getMaintenanceWindows().pipe(catchError(() => of(null)))
-    ).subscribe(([proposals, admins, windows]) => {
+    ).subscribe(([proposals, windows]) => {
       this.proposals = proposals;
-      this.admins = admins;
       this.windows = windows;
       this.loading = false;
     });
@@ -61,9 +58,6 @@ export class DashboardComponent implements OnInit {
       .slice(0, 5);
   }
 
-  get adminEmails(): string {
-    return (this.admins || []).slice(0, 6).map(a => a.email).join(', ');
-  }
 
   get nextWindow(): MaintenanceWindow {
     const now = Date.now();

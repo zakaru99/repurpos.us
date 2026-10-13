@@ -12,7 +12,7 @@
       <p class="byline">Oldest first. {{ count('Approved') }} approved and {{ count('Rejected') }} rejected so far.</p>
 
       <app-proposal-table *ngIf="waiting.length" class="table" [proposals]="waiting" [compact]="true"
-                          [showWaiting]="true" maxHeight="360px" (pick)="open($event)"></app-proposal-table>
+                          [showWaiting]="true" [scroll]="true" (pick)="open($event)"></app-proposal-table>
 
       <a class="arrow-link more" routerLink="../proposals" [queryParams]="waiting.length ? { status: 'Pending' } : {}">
         {{ waiting.length ? 'Review in Proposals' : 'All proposals' }}
@@ -24,7 +24,7 @@
     </ng-template>
   </section>
 
-  <!-- Right half: everything else -->
+  <!-- Right half: maintenance and recent activity -->
   <aside class="side">
     <section>
       <p class="eyebrow">Maintenance</p>
@@ -47,15 +47,6 @@
           <span class="latest-meta">{{ p.submittedOn | date:'d MMM' }} · <span class="status" [ngClass]="p.status | lowercase">{{ p.status }}</span></span>
         </li>
       </ul>
-    </section>
-
-    <section>
-      <p class="eyebrow">Admins</p>
-      <p class="error" *ngIf="!admins">Could not load admins.</p>
-      <p class="note" *ngIf="admins">
-        {{ adminEmails || 'None.' }}<ng-container *ngIf="admins.length > 6"> and {{ admins.length - 6 }} more</ng-container>
-      </p>
-      <a class="arrow-link" routerLink="../user_management">Manage admins</a>
     </section>
   </aside>
 </div>

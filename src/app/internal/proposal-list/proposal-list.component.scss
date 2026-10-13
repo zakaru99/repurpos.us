@@ -70,6 +70,13 @@
   }
 }
 
+// The table scrolls inside the space left under the headers, so the page
+// itself never grows taller than the screen
+.list {
+  --table-max: calc(100vh - var(--site-header-height, 65px) - 230px);
+  min-width: 0;
+}
+
 // Table alone at full width; with a proposal open, table left and detail right
 .layout {
   display: grid;

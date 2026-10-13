@@ -11,7 +11,7 @@ class ProposalTableStubComponent {
   @Input() proposals: any;
   @Input() selectedId: any;
   @Input() compact: any;
-  @Input() maxHeight: any;
+  @Input() scroll: any;
   @Output() pick = new EventEmitter<any>();
 }
 
