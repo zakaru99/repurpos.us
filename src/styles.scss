@@ -35,6 +35,12 @@ html {
   scroll-behavior: smooth;
 }
 
+// Bootstrap's reboot outlines a button after it's clicked with the mouse.
+// Keep the outline only when focus came from the keyboard.
+button:focus:not(:focus-visible) {
+  outline: none;
+}
+
 // Keep Material dialogs/menus/tooltips above the http-loader overlay
 // (loader.component.scss, z-index 3000), as they were when both sat at 1000.
 .cdk-overlay-container {
