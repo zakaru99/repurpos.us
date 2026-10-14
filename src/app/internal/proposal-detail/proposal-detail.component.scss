@@ -4,13 +4,55 @@
   display: block;
 }
 
+// Pinned to the top of the scrolling pane so the title and the decision
+// buttons are always in view
 .head {
-  position: relative;
-  padding-bottom: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-bottom: 12px;
+  margin-bottom: 4px;
+  background: #fff;
+}
+
+.meta-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.meta {
+  margin: 0 !important;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+}
+
+.id {
+  font-family: $mono;
+  font-size: 0.75rem;
+}
+
+.close {
+  @include admin-button(text);
+  font-size: 0.8125rem;
+  color: $ink-soft;
+}
+
+.status {
+  @include status-text;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 4px;
 
   h2 {
-    margin: 6px 0 0;
-    padding-right: 60px;
+    min-width: 0;
+    margin: 0;
     font-family: $sans;
     font-size: 1.25rem;
     font-weight: 500;
@@ -18,31 +60,6 @@
     letter-spacing: -0.01em;
     color: $ink;
   }
-}
-
-.meta {
-  margin: 0 !important;
-  font-size: 0.875rem;
-  color: $ink-soft;
-}
-
-.id {
-  font-family: $mono;
-  font-size: 0.8125rem;
-}
-
-.close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  @include admin-button(text);
-  color: $ink-soft;
-}
-
-.status {
-  @include status-text;
-  margin: 6px 0 0 !important;
-  font-size: 0.875rem;
 }
 
 // Label / value pairs in two columns, no boxes
@@ -92,58 +109,86 @@ h3 {
   white-space: pre-line;
 }
 
+// Decision buttons on the title row. Fixed widths so the label can change to
+// "Confirm …" without anything moving: the second click lands where the first did.
 .decide {
-  margin-top: 28px;
-  padding-top: 20px;
-  border-top: 1px solid $rule;
-}
-
-.actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
 }
 
-.confirm {
-  margin: 0 0 12px !important;
-  font-size: 0.875rem;
-  color: $ink;
+// Solid green / red. Armed (waiting for the confirming click): darker shade
+// plus a ring in the same colour, so "click again" reads at a glance.
+.btn.approve,
+.btn.reject {
+  @include admin-button(primary);
+  min-width: 132px;
+  font-weight: 600;
+  color: #fff;
+  transition: background 0.12s ease, box-shadow 0.12s ease;
+}
+
+.btn.approve {
+  background: $approve;
+
+  &:hover:not(:disabled) {
+    background: $approve-strong;
+  }
+
+  &.armed {
+    background: $approve-strong;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px $approve;
+  }
+}
+
+.btn.reject {
+  background: $reject;
+
+  &:hover:not(:disabled) {
+    background: $reject-strong;
+  }
+
+  &.armed {
+    background: $reject-strong;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px $reject;
+  }
+}
+
+.cancel {
+  @include admin-button(text);
+  font-size: 0.8125rem;
+  color: $ink-soft;
 }
 
 .field {
   @include field;
-  margin: 0;
-  max-width: 68ch;
+  margin: 10px 0 0;
 }
 
 .hint {
-  margin: 6px 0 12px !important;
-  font-size: 0.8125rem;
+  font-weight: 400;
   color: $ink-soft;
 }
 
 .error {
   @include error-text;
-  margin: 0 0 12px !important;
-}
-
-.btn.primary { @include admin-button(primary); }
-.btn.secondary { @include admin-button(secondary); }
-.btn.danger { @include admin-button(danger); }
-
-.btn.danger-solid {
-  @include admin-button(danger);
-  color: #fff;
-  background: $status-rejected;
-  border-color: $status-rejected;
+  margin: 8px 0 0 !important;
 }
 
 .export {
-  margin: 28px 0 0 !important;
+  margin: 24px 0 0 !important;
 
   button {
     @include admin-button(text);
     font-size: 0.8125rem;
     color: $ink-soft;
+  }
+}
+
+// Narrow screens: buttons drop below the title
+@media (max-width: $bp-tablet) {
+  .title-row {
+    flex-wrap: wrap;
   }
 }

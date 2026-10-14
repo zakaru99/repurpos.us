@@ -28,6 +28,12 @@ describe('ProposalDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should arm Approve on the first click without saving', () => {
+    component.onApprove();
+    expect(component.mode).toBe('confirm-approve');
+    expect(component.saving).toBe(false);
+  });
+
   it('should not reject without a reason', () => {
     component.startReject();
     component.denialReason = '   ';

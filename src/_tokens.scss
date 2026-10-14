@@ -110,6 +110,13 @@
   --color-status-rejected: #b42d23;
   --color-status-rejected-bg: #fbeaea;
 
+  // Decision buttons (approve / reject). Saturated so the two actions stand
+  // out; white text passes AA on both base colours.
+  --color-approve: #15803d;
+  --color-approve-strong: #0f6630; // hover and armed ("Confirm") state
+  --color-reject: #d42a20;
+  --color-reject-strong: #a8201a;
+
   // Type
   --font-ui: "IBM Plex Sans", "Lato", Arial, sans-serif;
   --font-mono: "IBM Plex Mono", SFMono-Regular, Consolas, monospace;
