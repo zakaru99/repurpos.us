@@ -144,6 +144,10 @@ muted strip → navy footer. Don't put two dark bands next to each other.
 - **Tool pages** (like the ontology browser): one slim toolbar holding the
   title, a segmented switch, search and a view toggle, with the tool filling
   the rest of the screen below. No large page header.
+- **Sub-headers are always sticky**: any bar under the site header (section
+  tabs, tool toolbars such as the admin band or the ontology toolbar) uses
+  `@include sticky-subheader`, so it stays pinned directly beneath the site
+  header while the page scrolls.
 - **Navbar**: white bar with links and Sign in. No call-to-action buttons in
   the navbar; the proposal call-to-action lives on the homepage.
 - **"What's new"**: a small, light floating chip that opens a slide-out

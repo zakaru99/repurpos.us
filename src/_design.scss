@@ -107,6 +107,16 @@ $hex-lattice: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' widt
   }
 }
 
+// Page sub-header (section tabs, tool toolbars): sticks directly under the
+// sticky site header. --site-header-height is published by header.component.
+// z-index sits below the site header (2500, app.component.scss) and above
+// page content.
+@mixin sticky-subheader {
+  position: sticky;
+  top: var(--site-header-height, 65px);
+  z-index: 2400;
+}
+
 // ---------------------------------------------------------------- type
 
 // Small uppercase label above a heading

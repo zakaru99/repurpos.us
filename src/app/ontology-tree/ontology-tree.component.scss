@@ -17,6 +17,7 @@ $toolbar-h: 60px;
 // ---------------------------------------------------------------- toolbar
 
 .toolbar {
+  @include sticky-subheader;
   display: flex;
   align-items: center;
   gap: 20px;

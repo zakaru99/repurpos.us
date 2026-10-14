@@ -12,6 +12,7 @@
 
 .band {
   @include hex-lattice;
+  @include sticky-subheader;
   background: $navy;
   color: #fff;
 }
