@@ -20,6 +20,8 @@ export class PageHeaderComponent implements OnChanges {
   @Input() title: string;
   @Input() lede: string;
   @Input() sections: PageSection[] = [];
+  // Tighter band for tool pages (e.g. Assays) where the content is the job
+  @Input() compact = false;
 
   active: string = null;
 

@@ -1,172 +1,83 @@
-
-
-
-  <div class="container-fluid" id="content">
-
-  <div class="top-tiles-wrapper">
-
-    <div class="top-tiles">
-
-      <div class="left-tile">
-        <h1>Assay Descriptions</h1>
-        <div class="summary" id="main_summary">
-          Experimental data and methodology for each high throughput screen
-        </div>
-
-        <app-dropdown [types]="getDistinctTypes()" (typeSelected)="onTypeSelected($event)"></app-dropdown>
-        <div class="flex-container">
-          <label for="statusSelect">Status:</label>
-          <select style="width: 50%;" id="statusSelect" class="custom-select" (change)="setStatusView($event.target.value)">
-          <option value="All">
-            See All ({{ statusCounts['All'] || 0 }})
-          </option>
-
-          <option *ngFor="let s of flatStatuses" [value]="s.status">
-            {{ s.group }}: {{ s.status }}
-            ({{ statusCounts[s.status] || 0 }})
-          </option>
-          </select>
-        </div>
-
-        <div class="flex-container search-bar">
-          <label for="typeSelect">Search:</label>
-          <input class="form-control" [(ngModel)]="queryString" type="text"
-                 (keydown.enter)="onEnter()"
-                 placeholder="search by assay ID, title, summary, purpose, or indication">
-          <button mat-raised-button *ngIf="showClearButton" (click)="clearSearch()">Clear Search</button>
-        </div>
-
-        <p id="assaysFound" *ngIf="assaysFound > 0">Total assays found: ({{ assaysFound }})</p>
-        <p id="noResMessage" *ngIf="assaysFound === 0">No assays found for your search</p>
-      </div>
-
-      <!-- Right Tile -->
-      <div class="right-tile">
-        <ul class="stat-list">
-          <li class="stat-item stat-item-clickable" role="button" tabindex="0"
-              (click)="showDetails('all')"
-              (keydown.enter)="showDetails('all')"
-              (keydown.space)="showDetails('all'); $event.preventDefault()">
-            <span class="stat-label">Total Assays in the Workflow</span>
-            <span class="stat-value">{{ totalAssays.length }}</span>
-          </li>
-          <li class="stat-item stat-item-clickable" role="button" tabindex="0"
-              (click)="showDetails('primary')"
-              (keydown.enter)="showDetails('primary')"
-              (keydown.space)="showDetails('primary'); $event.preventDefault()">
-            <span class="stat-label">Published Primary Data</span>
-            <span class="stat-value">{{publishedPdataNum.length}}</span>
-          </li>
-          <li class="stat-item">
-            <span class="stat-label">Dose Response Data</span>
-            <span class="stat-sub">
-              Published:
-              <span class="stat-value clickable" role="button" tabindex="0"
-                    (click)="showDetails('published')"
-                    (keydown.enter)="showDetails('published')"
-                    (keydown.space)="showDetails('published'); $event.preventDefault()">
-                {{ publishshedDrNum.length }}
-              </span>
-
-              &nbsp;|&nbsp;
-
-              Pending:
-              <span class="stat-value clickable" role="button" tabindex="0"
-                    (click)="showDetails('pending')"
-                    (keydown.enter)="showDetails('pending')"
-                    (keydown.space)="showDetails('pending'); $event.preventDefault()">
-                {{ pendingAssayNum.length }}
-              </span>
-            </span>
-          </li>
-          <li class="stat-item stat-item-clickable" role="button" tabindex="0"
-              (click)="showDetails('unavailable')"
-              (keydown.enter)="showDetails('unavailable')"
-              (keydown.space)="showDetails('unavailable'); $event.preventDefault()">
-            <span class="stat-label">Unavailable Primary Data<br><i>data not shared with ReFRAME team</i></span>
-            <span class="stat-value">{{unavailablePrimaryNum.length}}</span>
-          </li>
-        </ul>
-      </div>
-
+<app-page-header eyebrow="Screening data" title="Assays" [compact]="true"
+                 lede="Methods and results for every screen run on the REFRAME library, from proposal to published data.">
+  <!-- The homepage hero's figure list; each row filters the cards to what it counts -->
+  <dl header-aside class="figures" *ngIf="figures.length" aria-label="Assays at a glance">
+    <div class="fig" *ngFor="let f of figures" [class.active]="data === f.data && (f.data || !data)">
+      <dt>
+        <button type="button" (click)="toggleData(f.data)" [attr.aria-pressed]="data === f.data"
+                [title]="f.data ? 'Show only these assays' : 'Show all assays'">{{ f.label }}</button>
+      </dt>
+      <dd>{{ f.n | number }}</dd>
     </div>
+  </dl>
+</app-page-header>
+
+<!-- Search and filters: stays under the site header while the list scrolls -->
+<div class="toolbar">
+  <div class="toolbar-inner">
+    <input type="search" class="search" [ngModel]="query" (ngModelChange)="onQueryInput($event)"
+           placeholder="Search by ID, title, summary or indication" aria-label="Search assays" autocomplete="off">
+
+    <label class="filter">
+      <span class="sr-only">Assay type</span>
+      <select [ngModel]="type" (ngModelChange)="setType($event)" [class.set]="type">
+        <option value="">All types</option>
+        <option *ngFor="let o of typeOptions" [value]="o.value">{{ o.value }} ({{ o.n }})</option>
+      </select>
+    </label>
+
+
+    <label class="filter">
+      <span class="sr-only">Stage</span>
+      <select [ngModel]="stage" (ngModelChange)="setStage($event)" [class.set]="stage">
+        <option value="">All stages</option>
+        <option *ngFor="let o of stageOptions" [value]="o.value">{{ o.value }} ({{ o.n }})</option>
+      </select>
+    </label>
+
+    <button type="button" class="reset" (click)="clearAll()" [disabled]="!filtered">Reset filters</button>
   </div>
-<hr class="section-separator">
-  <div class="row flex-row">
-
-    <div *ngFor="let assay of selAssays" class="col-xl-3 col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch assay-type">
-
-      <div class='card'>
-
-<div class="card-header text-center">
-
-  <div class="header-top">
-    <div class="id">
-      {{ assay.assay_id }}
-    </div>
-
-    <div class="status">
-      <span
-        class="status-indicator"
-        [ngStyle]="{'background-color': getStatusColor(assay.status)}"
-      >
-        {{ assay.status }}
-      </span>
-    </div>
-  </div>
-
-  <div class="card-title">
-    <a [routerLink]="['/assays/', assay.assay_id]">
-      <span [outerHTML]="assay.title | sciItalicize"></span>
-    </a>
-  </div>
-
 </div>
 
+<div class="page">
+  <p class="count" *ngIf="!loading">
+    <strong>{{ shown.length | number }}</strong>&nbsp;of {{ rows.length | number }} assays
+  </p>
+  <p class="muted" *ngIf="loading">Loading assays…</p>
 
-
-        <div class="card-text mb-2">
-          <a [routerLink]="['/assays/', assay.assay_id]">
-            <span [outerHTML]="assay.summary | sciItalicize">
-            </span>
-          </a>
-        </div>
-
-        <div class="flexP">
-          <div class="flexC indication-group">
-            <mat-chip-list class="">
-              <mat-chip class="indication mr-auto" (click)="filterIndic(assay.indication)" [ngStyle]="{'background-color': colorSvc.getIndicColor(assay.indication)['bg1'], 'color': colorSvc.getIndicColor(assay.indication)['font1']}">
-                <span [outerHTML]="assay.indication | sciItalicize">
-                </span>
-              </mat-chip>
-            </mat-chip-list>
-          </div>
-
-          <div class="flexC">
-            <mat-chip-list class="text-right">
-              <mat-chip class="type text-right" *ngFor="let type of assay.type_arr" (click)="onTypeSelected(type)" [ngStyle]="{'background-color': getTypeColor(type)[0], 'border': '1px solid ' + getTypeColor(type)[1], 'color': getTypeColor(type)[1]}">
-                {{ type | standardizeAssayType }}
-              </mat-chip>
-            </mat-chip-list>
-          </div>
-        </div>
-
-        <div class="screening-banner" *ngIf="showScreeningBanner(assay)">
-          <span class="banner-label">compounds screened:</span>
-          <ng-container *ngIf="parsePrimaryScreened(assay.primary_screened) > 0">
-            <span class="banner-val">{{ assay.primary_screened | number }} primary</span>
-          </ng-container>
-          <ng-container *ngIf="assay.primary_screened === 'secondary'">
-            <span class="banner-val">secondary assay</span>
-          </ng-container>
-          <ng-container *ngIf="assay.dr_screened > 0">
-            <span class="banner-divider" *ngIf="parsePrimaryScreened(assay.primary_screened) > 0 || assay.primary_screened === 'secondary'"> | </span>
-            <span class="banner-val">{{ assay.dr_screened | number }} dose response</span>
-          </ng-container>
-        </div>
-
+  <ul class="cards" *ngIf="!loading && shown.length">
+    <li class="card" *ngFor="let r of shown; trackBy: trackRow">
+      <!-- Where the screen stands, first: ID and stage, tinted by stage (full status on hover) -->
+      <div class="card-top" [ngClass]="stageClass(r.stage)">
+        <span class="id">{{ r.assay.assay_id }}</span>
+        <span class="stage" [ngClass]="stageClass(r.stage)" [title]="r.status">{{ r.stage }}</span>
       </div>
-    </div>
-  </div>
 
+      <div class="card-body">
+
+        <p class="indication"><span class="clamp" [title]="r.assay.indication" [innerHTML]="r.assay.indication | sciItalicize"></span></p>
+
+        <a class="assay-title" [routerLink]="['/assays', r.assay.assay_id]" [title]="r.title" [innerHTML]="r.title | sciItalicize"></a>
+        <p class="summary" *ngIf="r.assay.summary" [innerHTML]="r.assay.summary | sciItalicize"></p>
+      </div>
+
+      <!-- How it was run: assay format, then compounds screened (or the status) -->
+      <div class="card-foot">
+        <p class="types" *ngIf="r.types.length">
+          <button type="button" class="type" *ngFor="let t of r.types" (click)="setType(t)"
+                  [title]="'Show ' + t + ' assays'">{{ t }}</button>
+        </p>
+        <dl class="data" *ngIf="r.primary > 0 || r.dose > 0 || r.assay.primary_screened === 'secondary'; else noData">
+          <div *ngIf="r.primary > 0"><dd>{{ r.primary | number }}</dd><dt>primary</dt></div>
+          <div *ngIf="r.assay.primary_screened === 'secondary'"><dd class="word">Secondary</dd><dt>assay</dt></div>
+          <div *ngIf="r.dose > 0"><dd>{{ r.dose | number }}</dd><dt>dose response</dt></div>
+        </dl>
+        <ng-template #noData><p class="no-data">{{ r.status }}</p></ng-template>
+      </div>
+    </li>
+  </ul>
+
+  <p class="muted empty" *ngIf="!loading && !shown.length">
+    No assays match these filters. <button type="button" class="clear" (click)="clearAll()">Clear filters</button>
+  </p>
 </div>

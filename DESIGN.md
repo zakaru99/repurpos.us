@@ -174,6 +174,14 @@ muted strip → navy footer. Don't put two dark bands next to each other.
   (`$table-head`) so it reads apart from the rows; a selected row is tinted
   with an accent edge on the left so it never looks like a second header.
   Prefer tables to cards for anything that is mostly text to compare.
+- **Assays page** (`/assays`): cards, because each assay is read as a unit.
+  A stage-tinted top strip (ID and stage), then indication, title and
+  summary, then a grey footer with the assay format and compounds screened.
+  Filters are search, type and stage, plus the header figures (each one
+  filters to the assays it counts); all of them live in the URL.
+- **Chips** are allowed only for a small, fixed set of clickable values, such
+  as assay format: square corners, a hairline border, no colour per value.
+  Never for status (use coloured text) or decoration.
 - **Status colours**: `$status-pending`, `$status-approved` and
   `$status-rejected`. In tables, show status as coloured text that spells out
   the word, never colour alone. The `-bg` tints are for rare emphasis only.

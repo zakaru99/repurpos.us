@@ -7,6 +7,7 @@ import { AssaysRoutingModule } from './assays-routing.module';
 // --- common helper modules ---
 import { PipesModule } from '../_pipes/pipes.module';
 import { MaterialModule } from '../material.module';
+import { PageHeaderModule } from '../_components/page-header/page-header.module';
 
 // --- pipes ---
 import { StandardizeAssayTypePipe } from '../_pipes/standardize-assay-type.pipe';
@@ -23,7 +24,8 @@ import { DropdownComponent } from './dropdown/dropdown.component';
     AssaysRoutingModule,
     MaterialModule,
     PipesModule,
-    FormsModule
+    FormsModule,
+    PageHeaderModule
   ],
   declarations: [
     AssaysComponent,

@@ -1,373 +1,449 @@
-@import '../../_cards';
+// Assays: page header, a sticky search/filter bar, then every screen as a
+// card. Cards follow DESIGN.md: hairline border, no shadow or pills.
 
-.top-tiles-wrapper {
-  padding: 25px;
-  background: #f9f9fb;
-  border-radius: var(--radius-container);
-  box-shadow: var(--shadow-raised);
-  margin-bottom: 40px;
+@import '../../design';
+
+:host {
+  @include full-bleed-host;
+  display: block;
 }
 
-.top-tiles {
-  display: flex;
-  gap: 20px;
-  flex-wrap: nowrap;
-}
+// ---------------------------------------------------------------- toolbar
 
-.left-tile {
-  flex: 7;
-  min-width: 300px;
+.toolbar {
+  @include sticky-subheader;
   background: #fff;
-  border-radius: 16px;
-  padding: 25px;
-  box-shadow: 0 4px 12px rgba(61, 109, 224, 0.25); /* replaced purple shadow */
+  border-bottom: 1px solid $rule;
 }
 
-.right-tile {
-  flex: 3;
-  min-width: 250px;
-  background: #fff;
-  border-radius: 16px;
-  padding: 25px;
-  box-shadow: 0 4px 12px rgba(61, 109, 224, 0.25); /* replaced purple shadow */
-}
-
-.left-tile h1 {
-  color: #1d3b76; /* replaced purple header */
-  margin-bottom: 10px;
-}
-
-.left-tile .summary {
-  font-size: 1.1rem;
-  margin-bottom: 20px;
-  line-height: 1.4em;
-}
-
-/* Search Bar */
-.left-tile .search-bar {
+.toolbar-inner {
+  @include shell;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
-  margin-top: 15px;
+  gap: 8px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
-.left-tile .search-bar input {
-  flex: 1;
-  padding: 0.65rem 1rem;
-  border-radius: 999px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
+.search,
+.filter select {
+  box-sizing: border-box;
+  height: 34px;
+  font: inherit;
+  font-size: 0.875rem;
+  color: $ink;
+  background: #fff;
+  border: 1px solid $field-border;
+  border-radius: $radius-sharp;
+
+  &:focus {
+    outline: none;
+    border-color: $accent;
+    box-shadow: 0 0 0 1px $accent;
+  }
 }
 
-.left-tile .search-bar button {
-  border-radius: var(--radius-pill);
-  background: var(--color-brand-500);
-  color: white;
-  padding: 0.6rem 1.5rem;
+.search {
+  flex: 1 1 280px;
+  min-width: 0;
+  padding: 0 12px;
+  -webkit-appearance: none;
+
+  &::placeholder {
+    color: $ink-faint;
+  }
+}
+
+.filter {
+  margin: 0;
+
+  select {
+    width: 170px;
+    padding: 0 8px;
+    cursor: pointer;
+
+    // A set filter reads as set
+    &.set {
+      border-color: $accent;
+      color: $accent-deep;
+      font-weight: 500;
+    }
+  }
+
+}
+
+// Outlined, the same height as the fields; greyed out until a filter is set
+.reset {
+  height: 34px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  color: $ink;
+  background: #fff;
+  border: 1px solid $field-border;
+  border-radius: $radius-sharp;
   cursor: pointer;
-  transition: background 0.2s ease;
+
+  &:hover:not(:disabled) {
+    color: $accent-deep;
+    border-color: $accent;
+  }
+
+  &:disabled {
+    color: $ink-faint;
+    border-color: $rule;
+    cursor: default;
+  }
+
+  @include focus-ring($accent, 2px);
 }
 
-.left-tile .search-bar button:hover {
-  background: var(--color-brand-600);
+// ---------------------------------------------------------------- results
+
+.page {
+  @include shell;
+  padding-top: 14px;
+  padding-bottom: 40px;
 }
 
-.right-tile .stat-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.count {
+  margin: 0 0 12px !important;
+  font-size: 0.875rem;
+  color: $ink-soft;
+
+  strong {
+    font-weight: 600;
+    color: $ink;
+  }
+}
+
+.clear {
+  margin-left: 12px;
+  padding: 0;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $accent;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  @include focus-ring($accent, 2px);
+}
+
+.muted {
+  margin: 0 !important;
+  color: $ink-soft;
+}
+
+.empty {
+  padding: 24px 0;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.right-tile .stat-item {
-  background: #e9f0ff; /* light blue */
-  padding: 15px 12px;
-  border-radius: 12px;
-  font-weight: 500;
-  color: #1d3b76; /* deep blue */
+// Read top to bottom: reference line, indication, title, summary, then the
+// data in its own tinted footer
+.card {
   display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid $rule;
+  border-radius: $radius-sharp;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: $ink-faint;
+  }
+}
+
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 12px 16px 16px;
+}
+
+// Top strip tinted by stage, so the grid can be scanned by where screens stand
+.card-top {
+  display: flex;
+  align-items: baseline;
   justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
+  gap: 12px;
+  padding: 7px 16px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  background: $muted-bg;
+  border-bottom: 1px solid $rule-soft;
+
+  &.prescreen { background: $status-pending-bg; }
+  &.screening { background: $stage-screening-bg; }
+  &.completed { background: $status-approved-bg; }
 }
 
-.right-tile .stat-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+.id {
+  font-family: $mono;
+  color: $ink-soft;
 }
 
-// Only tiles that are clickable as a whole get the pointer cursor + focus
-// ring — previously this was an inline style repeated on 3 elements (and
-// missing on the 2 clickable numbers inside "Dose Response Data" entirely).
-.stat-item-clickable {
-  cursor: pointer;
-}
-
-.stat-item-clickable:focus-visible,
-.stat-value.clickable:focus-visible {
-  outline: 2px solid var(--color-brand-500);
-  outline-offset: 2px;
-}
-
-// The two clickable numbers inside "Dose Response Data" previously looked
-// identical to plain (non-clickable) stat values until hovered — coloring
-// them at rest signals they're actionable before the user touches them.
-.stat-value.clickable {
-  color: var(--color-brand-500);
+// The disease is what people scan for, so it carries the accent colour
+.indication {
+  margin: 0 0 4px !important;
+  font-size: 0.8125rem;
   font-weight: 600;
+  line-height: 1.35;
+  color: $accent-text;
+
+  // Some indications are a full sentence; two lines is enough to recognise it
+  .clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-height: 2.7em;   // cap the height too, in case the clamp isn't honoured
+  }
 }
 
-#assaysFound, #noResMessage {
-  margin-top: 15px;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-size: 1rem;
+.assay-title {
+  // Long titles stop at three lines so rows of cards stay even
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: 3.9em;   // three lines; the clamp alone isn't honoured here
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  color: $ink;
+
+  &:hover {
+    color: $accent;
+  }
 }
 
-#assaysFound {
-  background: #f1f3f5;
-  color: #212529;
-  border: 1px solid #dee2e6;
+.summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: 4.65em;   // three lines, for browsers without line-clamp
+  margin: 8px 0 0 !important;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: $ink-soft;
 }
 
-#noResMessage {
-  background: #f8f9fa;
-  color: #6c757d;
-  border-left: 4px solid #adb5bd;
-  font-style: italic;
+.card-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 52px;
+  box-sizing: border-box;
+  padding: 10px 16px;
+  background: $muted-bg;
+  border-top: 1px solid $rule-soft;
 }
 
-@media (max-width: 768px) {
-  .top-tiles {
+// Figures: the number on top, what it counts beneath
+.data {
+  display: flex;
+  gap: 20px;
+  margin: 0;
+
+  div {
+    display: flex;
     flex-direction: column;
   }
-  .left-tile, .right-tile {
-    width: 100%;
-    margin-bottom: 20px;
+
+  dd {
+    order: 0;
+    margin: 0;
+    font-family: $mono;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.2;
+    color: $ink;
+    font-variant-numeric: tabular-nums;
+
+    &.word {
+      font-family: $sans;
+    }
   }
 
-  .left-tile .search-bar input {
-    width: 100%;
+  dt {
+    order: 1;
+    white-space: nowrap;
+    font-size: 0.6875rem;
+    font-weight: 400;
+    color: $ink-soft;
   }
 }
 
-.assay-type {
+// Assay format as quiet chips: a small fixed vocabulary that filters the
+// grid when clicked. Square, hairline, no colour per type (colour means stage).
+.types {
   display: flex;
-  flex-direction: column;
-}
-
-.card-inner {
-  border-radius: var(--radius-container);
-  overflow: hidden;
-}
-
-.assay-type {
-  display: flex;
-  flex-direction: column;
-}
-
-.assay-type .card {
-  @include app-card;
-  border: 1px solid #d4e1fb; /* replaced purple border */
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  margin-bottom: 25px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  padding: 0;
-}
-
-.assay-type .card:hover {
-  @include app-card-hover;
-  /* cursor: pointer; */
-  transform: translateY(-5px);
-}
-
-.card-header {
-  background-color: #f5f8fd; /* CREST light blue */
-  border-bottom: 1px solid #e0e0e0;
-  text-align: center;
-  border-radius: 16px 16px 0 0;
-  padding: 16px 12px;
-}
-
-
-.card-header .card-title {
-  font-size: 1.05rem;
-  font-weight: 600;
-  margin: 0;
-  line-height: 1.3;
-}
-
-.card-header .card-title a {
-  color: #333;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.card-header .card-title a:hover {
-  color: #3d6de0; /* blue hover */
-}
-
-.card-text {
-  padding: 16px;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #333;
-  text-align: left;
-}
-
-.flexP {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 0 16px 16px;
-  gap: 12px;
-  margin-top: auto;
-}
-
-.flexC {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-mat-chip {
-  font-size: 0.8rem;
-  font-weight: 500;
-  border-radius: 12px;
-  margin: 2px;
-}
-
-.section-separator {
-  border: none;
-  height: 1px;
-  background: #c9d8fb; /* soft blue */
-  margin: 40px 0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-
-.card-header {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-}
-
-/* NEW flex row */
-.header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 8px;
-  flex-wrap: wrap; /* allows wrapping on small screens */
-}
-
-.card-header .id {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #3d6de0;
-  letter-spacing: 0.5px;
-}
-
-.card-title {
-  margin-top: 0.5rem;
-  font-weight: 600;
-}
-
-.status-indicator {
-  font-size: 0.7rem;
-  padding: 4px 8px;
-  border-radius: 999px;
-  white-space: nowrap;
-  text-transform: uppercase;
-}
-
-.flex-container {
-  display: flex;
-  align-items: center; /* Aligns items vertically */
-}
-
-.flex-container label {
-  margin-right: 20px; /* Space between label and select */
-  white-space: nowrap; /* Prevents the label from wrapping */
-}
-
-.custom-select {
-  display: inline-block; /* Ensure it doesn't take the full width */
-  position: relative; /* Needed for positioning the pseudo-elements */
-  border-radius: 999px;
-  margin-top: 15px;
-}
-
-.custom-select select {
-  appearance: none;
-  width: 40% !important; /* Set a specific width */
-  font-size: 1.15rem;
-  padding: 0.675em 1em; /* Adjust padding as needed */
-  background-color: #fff;
-  border: 1px solid #caced1;
-  border-radius: 0.25rem;
-  color: #000;
-  cursor: pointer;
-}
-
-.custom-select::before,
-.custom-select::after {
-  --size: 0.3rem;
-  position: absolute;
-  content: "";
-  right: 1rem;
-  pointer-events: none;
-}
-
-.custom-select::before {
-  border-left: var(--size) solid transparent;
-  border-right: var(--size) solid transparent;
-  border-bottom: var(--size) solid black;
-  top: 40%;
-}
-
-.custom-select::after {
-  border-left: var(--size) solid transparent;
-  border-right: var(--size) solid transparent;
-  border-top: var(--size) solid black;
-  top: 55%;
-}
-
-.clickable {
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.clickable:hover {
-  text-decoration: underline;
-}
-
-.screening-banner {
-  border-top: 2px solid #c9d8fb;
-  background: #e9f0ff;
-  border-radius: 0 0 16px 16px;
-  padding: 8px 14px;
-  font-size: 0.82rem;
-  color: #1d3b76;
-  display: flex;
-  align-items: center;
   flex-wrap: wrap;
   gap: 4px;
+  margin: 0 !important;
 }
 
-.screening-banner .banner-label {
-  font-weight: 700;
-  margin-right: 4px;
+.card-foot .type {
+  padding: 1px 7px;
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  line-height: 1.5;
+  color: $ink-soft;
+  background: #fff;
+  border: 1px solid $rule;
+  border-radius: $radius-sharp;
+
+  &:hover {
+    color: $accent-deep;
+    border-color: $accent;
+  }
+
+  @include focus-ring($accent, 2px);
 }
 
-.screening-banner .banner-val {
-  color: #1d3b76;
+.no-data {
+  margin: 0 !important;
+  font-size: 0.75rem;
+  color: $ink-soft;
+}
+
+.stage {
+  flex-shrink: 0;
+  font-size: 0.75rem;
   font-weight: 600;
+  cursor: default;
+  white-space: nowrap;
+
+  &.prescreen { color: $status-pending; }
+  &.screening { color: $accent-text; }
+  &.completed { color: $status-approved; }
+  &.closed,
+  &.other { color: $ink-soft; }
 }
 
-.screening-banner .banner-divider {
-  color: #7f9feb;
+// ---------------------------------------------------------------- header figures
+// Same list as the homepage hero
+
+.figures {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 250px);
+  column-gap: 32px;
+  margin: 0;
+
+  .fig {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 5px 0;
+    border-bottom: 1px solid $rule-dark;
+  }
+
+  // Total first, on its own line across both columns
+  .fig:first-child {
+    grid-column: 1 / -1;
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+  }
+
+  dt {
+    font-weight: 400;
+  }
+
+  button {
+    padding: 0;
+    font: inherit;
+    font-size: 0.875rem;
+    text-align: left;
+    color: rgba(255, 255, 255, 0.72);
+    background: none;
+    border: 0;
+    cursor: pointer;
+
+    &:hover {
+      color: #fff;
+      text-decoration: underline;
+      text-decoration-color: rgba(255, 255, 255, 0.4);
+      text-underline-offset: 3px;
+    }
+
+    @include focus-ring($accent-on-dark, 2px);
+  }
+
+  // The figure whose filter is on: white label with a short accent rule beneath
+  .fig.active {
+    border-bottom-color: $accent-on-dark;
+
+    button {
+      color: #fff;
+      font-weight: 500;
+    }
+  }
+
+  dd {
+    margin: 0;
+    font-family: $mono;
+    font-size: 1rem;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (max-width: $bp-nav) {
+  .figures {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: $bp-phone) {
+  // Three rows of filters is too much to keep pinned on a phone
+  .toolbar {
+    position: static;
+  }
+
+  // The shell mixin resets padding on phones; restore the vertical part
+  .toolbar-inner {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .page {
+    padding-top: 14px;
+    padding-bottom: 32px;
+  }
+
+  .filter,
+  .filter select,
+  .reset {
+    flex: 1 1 140px;
+    width: 100%;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
 }

@@ -17,11 +17,27 @@
   color: #fff;
 }
 
+// Set the type here as well as on the host: with display: contents the body's
+// Lato 300 was still reaching the lede
+.band,
+.sections {
+  font-family: $sans;
+  font-weight: 400;
+}
+
 .inner {
   @include shell;
   position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 64px;
   padding-top: 40px;
   padding-bottom: 36px;
+}
+
+.text {
+  min-width: 0;
 }
 
 .eyebrow {
@@ -45,6 +61,24 @@ h1 {
   font-size: 1.0625rem;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.78);
+}
+
+// Compact band: less padding, smaller title and lede, content centred
+.compact {
+  .inner {
+    align-items: center;
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  .lede {
+    margin-top: 6px !important;
+    font-size: 0.9375rem;
+  }
 }
 
 // In-page section nav: navy strip with the hero search's white underline tabs
@@ -88,6 +122,14 @@ h1 {
     }
 
     @include focus-ring($accent-on-dark, -2px);
+  }
+}
+
+@media (max-width: $bp-nav) {
+  .inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 28px;
   }
 }
 

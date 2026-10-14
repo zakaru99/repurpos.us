@@ -1,8 +1,12 @@
-<header class="band">
+<header class="band" [class.compact]="compact">
   <div class="inner">
-    <p class="eyebrow" *ngIf="eyebrow">{{ eyebrow }}</p>
-    <h1>{{ title }}</h1>
-    <p class="lede" *ngIf="lede">{{ lede }}</p>
+    <div class="text">
+      <p class="eyebrow" *ngIf="eyebrow">{{ eyebrow }}</p>
+      <h1>{{ title }}</h1>
+      <p class="lede" *ngIf="lede">{{ lede }}</p>
+    </div>
+    <!-- Optional right-hand content, e.g. a page's figures: <div header-aside> -->
+    <ng-content select="[header-aside]"></ng-content>
   </div>
 </header>
 
