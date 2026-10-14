@@ -1,0 +1,179 @@
+// Shared pieces for the user portal pages, on top of the admin portal's
+// mixins (../internal/_admin.scss) so both portals look the same.
+// Import from a page with: @import '../user-portal';
+
+@import '../internal/admin';
+
+// Page body in the site's shell column, lined up with the band's tabs
+@mixin portal-page {
+  display: block;
+  max-width: var(--shell-max);
+  margin: 0 auto;
+  padding: 24px var(--shell-gutter) 48px;
+
+  @media (max-width: $bp-phone) {
+    padding: 20px var(--shell-gutter-sm) 40px;
+  }
+}
+
+// Emits the classes every portal page uses: heading row, status filters,
+// table, status text and messages.
+@mixin portal-page-common {
+  // Eyebrow + title on the left, the page's main action on the right
+  .head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 20px;
+  }
+
+  .eyebrow {
+    @include admin-eyebrow;
+  }
+
+  .title-text {
+    @include admin-title;
+    overflow-wrap: anywhere;
+  }
+
+  .btn {
+    @include admin-button(primary);
+    text-decoration: none;
+
+    &:hover {
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+
+  // Status filters as plain text; the active one in ink with an underline
+  .filters {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 14px;
+
+    button {
+      padding: 0 0 4px;
+      font: inherit;
+      font-size: 0.875rem;
+      color: $ink-soft;
+      background: none;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+
+      &:hover {
+        color: $ink;
+      }
+
+      &.active {
+        color: $ink;
+        font-weight: 500;
+        border-bottom-color: $accent;
+      }
+
+      @include focus-ring($accent, 2px);
+    }
+
+    .n {
+      color: $ink-faint;
+      font-weight: 400;
+    }
+  }
+
+  .table {
+    @include data-table;
+
+    .col-date {
+      width: 1%;
+      white-space: nowrap;
+    }
+
+    .col-end {
+      width: 1%;
+      white-space: nowrap;
+      text-align: right;
+    }
+  }
+
+  .id {
+    margin-left: 8px;
+    font-family: $mono;
+    font-size: 0.75rem;
+    color: $ink-faint;
+  }
+
+  .status {
+    @include status-text;
+  }
+
+  // Compound rows (favorites, lists): name links to the compound page
+  .name {
+    font-weight: 500;
+    color: $ink;
+
+    &:hover {
+      color: $accent;
+    }
+  }
+
+  .mono {
+    font-family: $mono;
+    font-size: 0.8125rem;
+  }
+
+  .remove {
+    @include admin-button(text-danger);
+    font-size: 0.8125rem;
+    opacity: 0.75;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .muted {
+    margin: 0 !important;
+    color: $ink-soft;
+  }
+
+  // Row count above a table, as on the admin Proposals page
+  .count {
+    margin: 0 0 6px !important;
+    font-size: 0.8125rem;
+    color: $ink-soft;
+  }
+
+  .empty {
+    padding: 16px 0;
+  }
+
+  .arrow-link {
+    @include arrow-link;
+    margin-left: 12px;
+  }
+
+  .error {
+    @include error-text;
+    margin: 0 0 16px !important;
+  }
+
+  .retry {
+    @include admin-button(text);
+    margin-left: 6px;
+  }
+
+  @media (max-width: $bp-phone) {
+    // The compound ID is in the link already; drop the column so rows fit
+    .col-id {
+      display: none;
+    }
+
+    .head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+  }
+}

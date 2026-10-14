@@ -1,24 +1,40 @@
-<div class="my-favorites-page">
-  <div class="card-block">
-    <h5 class="section-title">My Favorites</h5>
-
-    <div *ngIf="favorites.length === 0" class="empty-state">
-      <div class="empty-icon">&#9825;</div>
-      <p class="empty-title">No saved compounds yet</p>
-      <p class="empty-sub">Bookmark a compound from any search result or compound page.</p>
-    </div>
-
-    <div *ngIf="favorites.length > 0" class="favorites-grid">
-      <div class="fav-card" *ngFor="let fav of favorites">
-        <div class="fav-card-body">
-          <a class="fav-name" [routerLink]="['/compound_data', fav.compound_id]">{{ fav.label || fav.compound_id }}</a>
-          <span class="fav-ikey">{{ fav.compound_id }}</span>
-        </div>
-        <div class="fav-footer">
-          <span class="fav-date">Saved {{ fav.saved_on | date:'MMM d, y' }}</span>
-          <button class="fav-remove" (click)="remove(fav.compound_id)" title="Remove from favorites">&#10005;</button>
-        </div>
-      </div>
-    </div>
+<div class="head">
+  <div>
+    <p class="eyebrow">Saved compounds</p>
+    <h1 class="title-text">Favorites</h1>
   </div>
 </div>
+
+<p class="muted empty" *ngIf="!favorites.length">
+  Nothing saved yet. Use Save on a compound's page to add it here.
+  <a class="arrow-link" routerLink="/search">Search compounds</a>
+</p>
+
+<ng-container *ngIf="favorites.length">
+  <input type="search" class="search" *ngIf="favorites.length > 8" [(ngModel)]="query" name="q"
+         autocomplete="off" placeholder="Filter favorites" aria-label="Filter favorites">
+
+  <p class="count">{{ shown.length }} {{ shown.length === 1 ? 'compound' : 'compounds' }}</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Compound</th>
+        <th class="col-id">ID</th>
+        <th class="col-date">Saved</th>
+        <th class="col-end"><span class="sr-only">Remove</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let fav of shown">
+        <td><a class="name" [routerLink]="['/compound_data', fav.compound_id]">{{ fav.label || fav.compound_id }}</a></td>
+        <td class="col-id mono muted">{{ fav.compound_id }}</td>
+        <td class="col-date muted">{{ fav.saved_on | date:'d MMM y' }}</td>
+        <td class="col-end">
+          <button type="button" class="remove" (click)="remove(fav.compound_id)"
+                  [attr.aria-label]="'Remove ' + (fav.label || fav.compound_id) + ' from favorites'">Remove</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="muted empty" *ngIf="!shown.length">No favorites match “{{ query }}”.</p>
+</ng-container>

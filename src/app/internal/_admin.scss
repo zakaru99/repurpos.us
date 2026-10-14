@@ -11,6 +11,99 @@
 $admin-gutter: 32px;
 $admin-max: 1920px; // effectively full width; only caps very wide monitors
 
+// Portal shell: thin sticky navy band (compact homepage hero: hex lattice,
+// eyebrow, white underline tabs) used by the admin and user portals.
+// Markup: header.band > .inner > p.portal-name(span.eyebrow) + nav.tabs > a(.n)
+@mixin portal-shell {
+  .band {
+    @include hex-lattice;
+    @include sticky-subheader;
+    background: $navy;
+    color: #fff;
+  }
+
+  .inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    max-width: $admin-max;
+    height: 46px;
+    margin: 0 auto;
+    padding: 0 $admin-gutter;
+  }
+
+  // "CALIBR Admin" on one line, the label in the hero's eyebrow style
+  .portal-name {
+    margin: 0 !important;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .eyebrow {
+    @include eyebrow(true);
+    margin-right: 6px;
+    font-size: 0.6875rem;
+  }
+
+  // Same treatment as the hero search's Compounds / Assays tabs
+  .tabs {
+    display: flex;
+    gap: 28px;
+    align-self: stretch;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    a {
+      display: flex;
+      align-items: center;
+      font-size: 0.875rem;
+      font-weight: 500;
+      white-space: nowrap;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s ease, border-color 0.15s ease;
+
+      &:hover {
+        color: #fff;
+        text-decoration: none;
+      }
+
+      &.active {
+        color: #fff;
+        border-bottom-color: #fff;
+      }
+
+      @include focus-ring($accent-on-dark, 2px);
+    }
+  }
+
+  .n {
+    margin-left: 8px;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: $accent-on-dark;
+  }
+
+  @media (max-width: $bp-phone) {
+    .inner {
+      gap: 20px;
+      padding: 0 20px;
+    }
+
+    .portal-name {
+      display: none;
+    }
+  }
+}
+
 // Page body under the portal header, in the site's centred column
 @mixin admin-page {
   display: block;
@@ -57,8 +150,6 @@ $admin-max: 1920px; // effectively full width; only caps very wide monitors
     position: sticky;
     top: 0;
     z-index: 1;
-    padding-top: 2px;
-    background: #fff;
     box-shadow: inset 0 -1px 0 $rule;
   }
 
@@ -104,8 +195,8 @@ $admin-max: 1920px; // effectively full width; only caps very wide monitors
   &.rejected { color: $status-rejected; }
 }
 
-// Full-width table. First and last cells sit on the page gutter, so the table
-// lines up with headings above it.
+// Full-width table. The header row has its own fill so it reads apart from
+// the rows; first and last cells keep a small inset to sit inside that fill.
 @mixin data-table {
   width: 100%;
   border-collapse: collapse;
@@ -113,11 +204,12 @@ $admin-max: 1920px; // effectively full width; only caps very wide monitors
   font-variant-numeric: tabular-nums;
 
   th {
-    padding: 0 10px 6px;
+    padding: 7px 10px;
     font-size: 0.75rem;
     font-weight: 500;
     text-align: left;
-    color: $ink-soft;
+    color: $ink;
+    background: $table-head;
     border-bottom: 1px solid $rule;
     white-space: nowrap;
   }
@@ -131,12 +223,12 @@ $admin-max: 1920px; // effectively full width; only caps very wide monitors
 
   th:first-child,
   td:first-child {
-    padding-left: 0;
+    padding-left: 12px;
   }
 
   th:last-child,
   td:last-child {
-    padding-right: 0;
+    padding-right: 12px;
   }
 
   .muted {

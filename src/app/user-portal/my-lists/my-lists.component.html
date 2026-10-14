@@ -1,58 +1,73 @@
-<div class="my-lists-page">
+<div class="head">
+  <div>
+    <p class="eyebrow">Compound lists</p>
+    <h1 class="title-text">Lists</h1>
+  </div>
+  <button type="button" class="btn" *ngIf="!showNewInput" (click)="openNew()">New list</button>
+</div>
 
-  <div class="card-block">
-    <div class="lists-header">
-      <h5 class="section-title">My Lists</h5>
-      <button class="btn-new" (click)="showNewInput = !showNewInput">+ New List</button>
-    </div>
+<form class="new-list" *ngIf="showNewInput" (ngSubmit)="createList()">
+  <input #newInput type="text" name="name" [(ngModel)]="newListName" placeholder="List name"
+         aria-label="New list name" autocomplete="off" (keyup.escape)="cancelNew()">
+  <button type="submit" class="btn" [disabled]="!newListName.trim()">Create</button>
+  <button type="button" class="cancel" (click)="cancelNew()">Cancel</button>
+</form>
 
-    <div class="new-list-form" *ngIf="showNewInput">
-      <input
-        class="new-list-input"
-        type="text"
-        placeholder="List name…"
-        [(ngModel)]="newListName"
-        (keyup.enter)="createList()"
-      />
-      <button class="btn-create" (click)="createList()" [disabled]="!newListName.trim()">Create</button>
-      <button class="btn-cancel" (click)="showNewInput = false; newListName = ''">Cancel</button>
-    </div>
+<p class="muted empty" *ngIf="!lists.length">
+  No lists yet. Create one here, or use Add to list on a compound's page.
+</p>
 
-    <div *ngIf="lists.length === 0 && !showNewInput" class="empty-state">
-      <div class="empty-icon">&#9776;</div>
-      <p class="empty-title">No lists yet</p>
-      <p class="empty-sub">Create a list to organize compounds across sessions.</p>
-    </div>
+<div class="layout" *ngIf="lists.length">
+  <!-- All lists -->
+  <ul class="lists" aria-label="Your lists">
+    <li *ngFor="let list of lists" [class.selected]="list.id === selectedId">
+      <button type="button" class="pick" (click)="select(list.id)" [attr.aria-current]="list.id === selectedId">
+        <span class="list-name">{{ list.name }}</span>
+        <span class="list-meta">{{ list.item_count }} {{ list.item_count === 1 ? 'compound' : 'compounds' }}</span>
+      </button>
+    </li>
+  </ul>
 
-    <div class="lists-rows" *ngIf="lists.length > 0">
-      <div class="list-row" *ngFor="let list of lists">
-
-        <div class="list-row-header" (click)="toggleExpand(list.id)">
-          <div class="list-row-info">
-            <span class="list-name">{{ list.name }}</span>
-            <span class="list-meta">{{ list.item_count }} compound{{ list.item_count !== 1 ? 's' : '' }} &nbsp;·&nbsp; Created {{ list.created_on | date:'MMM d, y' }}</span>
-          </div>
-          <div class="list-row-actions">
-            <span class="list-chevron">{{ expandedListId === list.id ? '&#9650;' : '&#9660;' }}</span>
-            <button class="btn-delete-list" (click)="deleteList(list.id); $event.stopPropagation()" title="Delete list">&#10005;</button>
-          </div>
-        </div>
-
-        <div class="list-items" *ngIf="expandedListId === list.id">
-          <div *ngIf="expandedItems.length === 0" class="items-empty">No compounds in this list.</div>
-          <div class="list-item-row" *ngFor="let item of expandedItems">
-            <div class="item-info">
-              <a class="item-label" [routerLink]="['/compound_data', item.compound_id]">
-                {{ item.label || item.compound_id }}
-              </a>
-              <span class="item-id">{{ item.compound_id }}</span>
-            </div>
-            <button class="btn-remove-item" (click)="removeItem(item.compound_id)" title="Remove from list">&#10005;</button>
-          </div>
-        </div>
-
+  <!-- Selected list -->
+  <section class="detail" *ngIf="selected as list">
+    <div class="detail-head">
+      <div>
+        <h2 class="list-title">{{ list.name }}</h2>
+        <p class="muted small">Created {{ list.created_on | date:'d MMM y' }}</p>
+      </div>
+      <div class="delete" *ngIf="!confirmDelete">
+        <button type="button" class="text-danger" (click)="confirmDelete = true">Delete list</button>
+      </div>
+      <div class="delete confirm" *ngIf="confirmDelete" role="alert">
+        <span>Delete this list?</span>
+        <button type="button" class="danger" (click)="deleteList(list.id)">Delete</button>
+        <button type="button" class="cancel" (click)="confirmDelete = false">Cancel</button>
       </div>
     </div>
 
-  </div>
+    <p class="muted" *ngIf="loadingItems">Loading…</p>
+    <p class="muted empty" *ngIf="!loadingItems && !items.length">No compounds in this list yet.</p>
+
+    <table class="table" *ngIf="!loadingItems && items.length">
+      <thead>
+        <tr>
+          <th>Compound</th>
+          <th class="col-id">ID</th>
+          <th class="col-date">Added</th>
+          <th class="col-end"><span class="sr-only">Remove</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of items">
+          <td><a class="name" [routerLink]="['/compound_data', item.compound_id]">{{ item.label || item.compound_id }}</a></td>
+          <td class="col-id mono muted">{{ item.compound_id }}</td>
+          <td class="col-date muted">{{ item.added_on | date:'d MMM y' }}</td>
+          <td class="col-end">
+            <button type="button" class="remove" (click)="removeItem(item.compound_id)"
+                    [attr.aria-label]="'Remove ' + (item.label || item.compound_id) + ' from ' + list.name">Remove</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 </div>

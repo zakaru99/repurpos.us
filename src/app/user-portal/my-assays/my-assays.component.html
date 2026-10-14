@@ -1,31 +1,65 @@
-<div class="my-assays-page">
-  <div class="card-block">
-    <h5 class="section-title">My Assay Proposals</h5>
-
-    <!-- Status Filter Pills -->
-    <div class="status-filter">
-      <button class="pill" [ngClass]="{ active: selectedStatus === '' }" (click)="filterByStatus('')">All</button>
-      <button class="pill" [ngClass]="{ active: selectedStatus === 'Pending' }" (click)="filterByStatus('Pending')">Pending</button>
-      <button class="pill" [ngClass]="{ active: selectedStatus === 'Approved' }" (click)="filterByStatus('Approved')">Approved</button>
-      <button class="pill" [ngClass]="{ active: selectedStatus === 'Rejected' }" (click)="filterByStatus('Rejected')">Rejected</button>
-    </div>
-
-    <!-- Assay cards -->
-    <div *ngIf="assays?.length > 0" class="assays-list">
-      <div *ngFor="let assay of assays" class="assay-card">
-        <div class="assay-header">
-          <h6>{{ assay.name }}</h6>
-          <span class="status-badge" [ngClass]="assay.status | lowercase">{{ assay.status }}</span>
-        </div>
-        <p><strong>Indication:</strong> {{ assay.indication }}</p>
-        <p><strong>Submitted On:</strong> {{ assay.submittedOn | date:'mediumDate' }}</p>
-        <div class="assay-actions">
-          <button (click)="viewAssay(assay)">View</button>
-          <button *ngIf="assay.status === 'Pending'" (click)="editAssay(assay)">Edit</button>
-        </div>
-      </div>
-    </div>
-
-    <p *ngIf="assays?.length === 0">You have not submitted any assay proposals yet.</p>
+<div class="head">
+  <div>
+    <p class="eyebrow">Screening</p>
+    <h1 class="title-text">Your assay proposals</h1>
   </div>
+  <a class="btn" routerLink="/assay_proposal">Submit a proposal</a>
 </div>
+
+<div class="tools" *ngIf="assays.length">
+  <nav class="filters" aria-label="Filter by status">
+    <button *ngFor="let f of filters" type="button"
+            [class.active]="selectedStatus === f.value" [attr.aria-pressed]="selectedStatus === f.value"
+            (click)="filterByStatus(f.value)">{{ f.label }} <span class="n">{{ count(f.value) }}</span></button>
+  </nav>
+</div>
+
+<p class="error" *ngIf="failed" role="alert">
+  Could not load your proposals. <button type="button" class="retry" (click)="reload()">Try again</button>
+</p>
+<p class="muted" *ngIf="loading">Loading…</p>
+
+<p class="muted empty" *ngIf="!loading && !failed && !assays.length">
+  You haven't submitted a proposal yet. <a class="arrow-link" routerLink="/workflow">How screening works</a>
+</p>
+
+<table class="table" *ngIf="!loading && assays.length">
+  <thead>
+    <tr>
+      <th class="col-date">Submitted</th>
+      <th>Indication</th>
+      <th class="col-end">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let a of filtered">
+      <tr [class.selected]="a.id === openId" (click)="toggle(a)">
+        <td class="col-date muted">{{ (a.submittedOn | date:'d MMM y') || '—' }}</td>
+        <td>
+          <button type="button" class="open" [attr.aria-expanded]="a.id === openId"
+                  (click)="$event.stopPropagation(); toggle(a)">{{ a.indication || 'Untitled proposal' }}</button>
+          <span class="id">#{{ a.id }}</span>
+        </td>
+        <td class="col-end"><span class="status" [ngClass]="a.status | lowercase">{{ a.status }}</span></td>
+      </tr>
+      <!-- What was submitted, and the decision -->
+      <tr class="detail-row" *ngIf="a.id === openId">
+        <td></td>
+        <td colspan="2">
+          <p class="reason" *ngIf="a.status === 'Rejected' && a.denialReason">
+            <span class="label">Reason</span>{{ a.denialReason }}
+          </p>
+          <p class="note" *ngIf="a.status === 'Pending'">Waiting for review.</p>
+          <dl class="facts">
+            <div *ngIf="a.institution"><dt>Institution</dt><dd>{{ a.institution }}</dd></div>
+            <div *ngIf="a.volume"><dt>Assay volume</dt><dd>{{ a.volume }} µL</dd></div>
+            <div *ngIf="a.concentration"><dt>Concentration</dt><dd>{{ a.concentration }} µM</dd></div>
+          </dl>
+          <p class="desc" *ngIf="a.description">{{ a.description }}</p>
+          <p class="desc muted" *ngIf="a.notes"><span class="label">Notes</span>{{ a.notes }}</p>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</table>
+<p class="muted empty" *ngIf="!loading && assays.length && !filtered.length">No {{ selectedStatus | lowercase }} proposals.</p>

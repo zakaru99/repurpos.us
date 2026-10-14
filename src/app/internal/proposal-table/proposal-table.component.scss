@@ -22,6 +22,11 @@
     &.selected td {
       background: $selected;
     }
+
+    // Accent edge so the open row doesn't read as a second header
+    &.selected td:first-child {
+      box-shadow: inset 2px 0 0 $accent;
+    }
   }
 
   .col-date {

@@ -167,6 +167,13 @@ muted strip → navy footer. Don't put two dark bands next to each other.
   Any action that changes someone's access or a proposal's status asks for
   confirmation in place, and the interface only updates once the server
   confirms the change.
+- **User portal** (`/user_portal`): the same band (`portal-shell` mixin) with
+  Proposals, Favorites, Lists and Account tabs, but in the site's shell
+  column. Shared page pieces are in `src/app/user-portal/_user-portal.scss`.
+- **Tables** (`data-table` mixin): the header row has its own fill
+  (`$table-head`) so it reads apart from the rows; a selected row is tinted
+  with an accent edge on the left so it never looks like a second header.
+  Prefer tables to cards for anything that is mostly text to compare.
 - **Status colours**: `$status-pending`, `$status-approved` and
   `$status-rejected`. In tables, show status as coloured text that spells out
   the word, never colour alone. The `-bg` tints are for rare emphasis only.

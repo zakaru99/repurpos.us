@@ -23,7 +23,7 @@
         <li><a routerLink="/workflow" routerLinkActive="active" (click)="collapseNav()">Workflow</a></li>
         <li><a routerLink="/about" routerLinkActive="active" (click)="collapseNav()">About</a></li>
         <li><a routerLink="/contact-us" routerLinkActive="active" (click)="collapseNav()">Contact</a></li>
-        <li *ngIf="loggedIn"><a routerLink="/user_portal/my_account" routerLinkActive="active" (click)="collapseNav()">User portal</a></li>
+        <li *ngIf="loggedIn"><a routerLink="/user_portal" routerLinkActive="active" (click)="collapseNav()">User portal</a></li>
         <li *ngIf="isAdmin"><a routerLink="/internal/proposals" routerLinkActive="active" (click)="collapseNav()">Calibr admins</a></li>
       </ul>
 
