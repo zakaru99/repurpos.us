@@ -8,7 +8,7 @@
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 64px;
+  gap: 48px;
   align-items: start;
 }
 
@@ -21,8 +21,8 @@
 }
 
 .byline {
-  margin: 6px 0 0 !important;
-  font-size: 0.9375rem;
+  margin: 4px 0 0 !important;
+  font-size: 0.875rem;
   color: $ink-soft;
 }
 
@@ -30,8 +30,8 @@
 .mix {
   display: flex;
   gap: 2px;
-  height: 10px;
-  margin-top: 16px;
+  height: 8px;
+  margin-top: 12px;
 
   .seg {
     flex: 1 1 0;
@@ -51,8 +51,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 4px 18px;
-  margin: 10px 0 0 !important;
-  font-size: 0.875rem;
+  margin: 8px 0 0 !important;
+  font-size: 0.8125rem;
   color: $ink;
 
   .key {
@@ -77,43 +77,44 @@
 }
 
 .table-label {
-  margin: 28px 0 0 !important;
-  font-size: 0.875rem;
+  margin: 18px 0 0 !important;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: $ink-soft;
 }
 
+// Fills the rest of the screen height so as many rows show as fit
 .table {
   display: block;
-  margin-top: 8px;
-  --table-max: 380px;
+  margin-top: 6px;
+  --table-max: calc(100vh - var(--site-header-height, 65px) - 300px);
 }
 
 .arrow-link {
   @include arrow-link;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
 }
 
 .more {
-  margin-top: 16px;
+  margin-top: 12px;
 }
 
 // Right column on the homepage's tint band, for a touch of colour
 .side {
-  padding: 28px 32px;
+  padding: 20px 24px;
   background: $tint-bg;
   border-radius: $radius-sharp;
 
   section + section {
-    margin-top: 24px;
-    padding-top: 24px;
+    margin-top: 18px;
+    padding-top: 18px;
     border-top: 1px solid $rule-on-tint;
   }
 }
 
 .note {
-  margin: 0 0 8px !important;
-  font-size: 0.9375rem;
+  margin: 0 0 6px !important;
+  font-size: 0.875rem;
   line-height: 1.6;
   color: $ink;
   overflow-wrap: anywhere;
@@ -128,8 +129,8 @@
     display: flex;
     justify-content: space-between;
     gap: 16px;
-    padding: 5px 0;
-    font-size: 0.9375rem;
+    padding: 4px 0;
+    font-size: 0.875rem;
   }
 
   a {
@@ -147,7 +148,7 @@
 
 .latest-meta {
   flex-shrink: 0;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: $ink-soft;
 }
 

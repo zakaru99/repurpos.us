@@ -17,7 +17,7 @@
 
 .headline {
   @include admin-title;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
 // ---------------------------------------------------------------- add (left)
@@ -37,7 +37,7 @@
     flex: 1 1 auto;
     min-width: 0;
     box-sizing: border-box;
-    height: 34px;
+    height: 30px;
     padding: 0 10px;
     font: inherit;
     font-size: 0.9375rem;
@@ -102,8 +102,8 @@
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -112,9 +112,9 @@
 // Same treatment as the homepage's download blocks: hairline box, navy top rule
 .card {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr);
-  gap: 4px 14px;
-  padding: 18px;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 2px 12px;
+  padding: 14px;
   background: #fff;
   border: 1px solid $rule;
   border-top: 3px solid $navy;
@@ -129,9 +129,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  font-size: 0.9375rem;
+  width: 36px;
+  height: 36px;
+  font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0.02em;
   color: #fff;
@@ -147,7 +147,7 @@
 }
 
 .name {
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: $ink;
 }
@@ -175,8 +175,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-top: 12px;
-  padding-top: 12px;
+  margin-top: 10px;
+  padding-top: 8px;
   border-top: 1px solid $rule-soft;
 }
 

@@ -22,7 +22,7 @@
   align-items: center;
   gap: 40px;
   max-width: $admin-max;
-  height: 52px;
+  height: 46px;
   margin: 0 auto;
   padding: 0 $admin-gutter;
 }
@@ -57,7 +57,7 @@
   a {
     display: flex;
     align-items: center;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 500;
     white-space: nowrap;
     color: rgba(255, 255, 255, 0.6);

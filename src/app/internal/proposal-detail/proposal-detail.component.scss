@@ -12,7 +12,7 @@
     margin: 6px 0 0;
     padding-right: 60px;
     font-family: $sans;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 500;
     line-height: 1.25;
     letter-spacing: -0.01em;
@@ -42,7 +42,7 @@
 .status {
   @include status-text;
   margin: 6px 0 0 !important;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
 }
 
 // Label / value pairs in two columns, no boxes
@@ -56,8 +56,8 @@
 
   dt,
   dd {
-    padding: 7px 0;
-    font-size: 0.9375rem;
+    padding: 5px 0;
+    font-size: 0.875rem;
   }
 
   dt {
@@ -79,14 +79,14 @@
 h3 {
   @include admin-heading;
   margin: 22px 0 6px;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 600;
 }
 
 .text {
   margin: 0 !important;
   max-width: 68ch;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   line-height: 1.6;
   color: $ink;
   white-space: pre-line;
@@ -106,7 +106,7 @@ h3 {
 
 .confirm {
   margin: 0 0 12px !important;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   color: $ink;
 }
 

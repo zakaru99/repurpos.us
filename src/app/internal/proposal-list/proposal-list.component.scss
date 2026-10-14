@@ -9,7 +9,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
 // Status filters as plain text; the active one is set in ink and underlined
@@ -20,7 +20,7 @@
   button {
     padding: 0 0 4px;
     font: inherit;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     color: $ink-soft;
     background: none;
     border: 0;
@@ -49,10 +49,10 @@
 .search {
   box-sizing: border-box;
   width: 260px;
-  height: 34px;
+  height: 30px;
   padding: 0 10px;
   font: inherit;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   color: $ink;
   background: #fff;
   border: 1px solid $field-border;
@@ -73,7 +73,7 @@
 // The table scrolls inside the space left under the headers, so the page
 // itself never grows taller than the screen
 .list {
-  --table-max: calc(100vh - var(--site-header-height, 65px) - 230px);
+  --table-max: calc(100vh - var(--site-header-height, 65px) - 190px);
   min-width: 0;
 }
 
@@ -96,7 +96,7 @@
 
 // Same height as the table beside it; scrolls on its own
 .detail {
-  max-height: calc(100vh - var(--site-header-height, 65px) - 200px);
+  max-height: calc(100vh - var(--site-header-height, 65px) - 170px);
   overflow-y: auto;
   padding-left: 40px;
   border-left: 1px solid $rule;
@@ -117,8 +117,8 @@
 }
 
 .count {
-  margin: 0 0 10px !important;
-  font-size: 0.875rem;
+  margin: 0 0 6px !important;
+  font-size: 0.8125rem;
   color: $ink-soft;
 }
 

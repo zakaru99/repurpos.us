@@ -119,11 +119,24 @@
   --radius-sharp: 2px;
   --radius-soft: 8px;
 
-  // Layout
+  // Layout (the column widens on large screens; see the media queries below)
   --shell-max: 1200px;
   --shell-gutter: 32px;
   --shell-gutter-sm: 20px;
 
   // Motion
   --ease-out: cubic-bezier(0.22, 0.9, 0.27, 1);
+}
+
+// Use more of large screens instead of growing the empty margins
+@media (min-width: 1600px) {
+  :root {
+    --shell-max: 1440px;
+  }
+}
+
+@media (min-width: 2000px) {
+  :root {
+    --shell-max: 1600px;
+  }
 }

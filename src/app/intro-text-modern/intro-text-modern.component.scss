@@ -731,6 +731,34 @@ p {
 
 // ---------------------------------------------------------------- responsive
 
+// Large screens: the column widens (see --shell-max in _tokens.scss), so the
+// hero's text and search grow with it rather than leaving a gap in the middle
+@media (min-width: 1600px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr) 400px;
+    gap: 96px;
+  }
+
+  .hero h1 {
+    font-size: 3.25rem;
+    max-width: 18em;
+  }
+
+  .lede {
+    max-width: 42em;
+    font-size: 1.25rem;
+  }
+
+  .hero app-hero-search,
+  .hero-dl {
+    max-width: 820px;
+  }
+
+  .hero-figures dd {
+    font-size: 1.625rem;
+  }
+}
+
 // Keep the whole hero within one screen on short desktop viewports
 @media (min-width: 1081px) and (max-height: 820px) {
   .hero {
