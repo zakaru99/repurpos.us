@@ -116,6 +116,13 @@ export class SearchBoxComponent implements OnInit {
     this.searchResultService.announceNewSearchResult(new SearchResult(err));
   }
 
+  // Tab buttons: switch only when it's a different tab
+  selectTab(index: number) {
+    if (index === this.selectedTab) { return; }
+    this.selectedTab = index;
+    this.resetInput({ index });
+  }
+
   // when changing between tabs, reset (delete) the search parameters
   resetInput(event) {
     this.structSvc.announceMode('exact');

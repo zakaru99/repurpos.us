@@ -1,15 +1,42 @@
-.search {
-	width: 100%;
+// Search page: a compact navy band with the search, then the results.
+
+@import '../../design';
+
+:host {
+  @include full-bleed-host;
+  display: block;
 }
 
-search-result {
-	width: 98vw;
+.band {
+  @include hex-lattice;
+  // Above the sticky results bar (2400) so the search suggestions open over
+  // it; below the site header (2500)
+  z-index: 2450;
+  background: $navy;
+  color: #fff;
 }
 
-@media 
-only screen and (max-width: 760px),
-(min-device-width: 768px) and (max-device-width: 1024px) {
-	search-result {
-		width: unset;
-	}
+.inner {
+  @include shell(var(--shell-wide));
+  position: relative;
+  padding-top: 26px;
+  padding-bottom: 26px;
+}
+
+.eyebrow {
+  @include eyebrow(true);
+  margin: 0 0 12px !important;
+}
+
+.ie {
+  margin: 0 0 12px !important;
+  font-size: 0.875rem;
+  color: #ffd3a0;
+}
+
+@media (max-width: $bp-phone) {
+  .inner {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
 }

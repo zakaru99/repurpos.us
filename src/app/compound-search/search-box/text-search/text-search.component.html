@@ -1,36 +1,29 @@
-<div class="search row">
-  <!-- Search bar -->
-  <div class="col-md-4 d-flex align-items-start">
-    <div class="input-container" [class.dropdown-open]="dropdownVisible">
-      <input #searchInput type="text" class="search form-control" placeholder="search" autofocus
-             [(ngModel)]="searchQuery"
-             aria-label="search input"
-             (keydown)="onKeyDown($event)"
-             (ngModelChange)="onQueryChange($event)">
+<div class="bar" [class.dropdown-open]="dropdownVisible">
+  <div class="input-container">
+    <input #searchInput type="text" [(ngModel)]="searchQuery" autofocus autocomplete="off"
+           placeholder="Drug name, synonym, InChIKey, class, target or disease"
+           aria-label="Search compounds"
+           (keydown)="onKeyDown($event)"
+           (ngModelChange)="onQueryChange($event)">
 
-      <ul class="predictive-dropdown" *ngIf="dropdownVisible" [ngStyle]="dropdownStyle">
-        <li *ngFor="let item of suggestions; let i = index"
-            [class.highlighted]="i === highlightedIndex"
-            (mouseenter)="setHighlight(i)"
-            (click)="selectSuggestion(item.value)"
-            class="suggestion-item">
-          <span class="suggestion-value">{{ item.value }}</span>
-          <span class="suggestion-pill">{{ item.type }}</span>
-        </li>
-      </ul>
-    </div>
-
-    <button mat-icon-button class='search-btn' (click)="onSubmit()" aria-label="submit search">
-      <mat-icon aria-label="search" color="accent">search</mat-icon>
-    </button>
+    <ul class="predictive-dropdown" *ngIf="dropdownVisible">
+      <li *ngFor="let item of suggestions; let i = index"
+          [class.highlighted]="i === highlightedIndex"
+          (mouseenter)="setHighlight(i)"
+          (click)="selectSuggestion(item.value)">
+        <span class="suggestion-value">{{ item.value }}</span>
+        <span class="suggestion-type">{{ item.type }}</span>
+      </li>
+    </ul>
   </div>
-
-  <!-- Example searches -->
-  <div class="examples col-md-4">
-    <h6>example queries</h6>
-    <div class="ex-query" *ngFor="let example of examples">
-      <a [routerLink]="['/search/']" [queryParams]="{ query: example.query, type: example.type }">
-        <span class="ex-type">{{example.label}}</span>: {{example.description}}</a>
-    </div>
-  </div>
+  <button type="button" class="submit" (click)="onSubmit()">Search</button>
 </div>
+
+<!-- One line of examples, one per kind of search -->
+<p class="examples">
+  <span class="ex-label">Try</span>
+  <ng-container *ngFor="let example of examples; let last = last">
+    <a [routerLink]="['/search']" [queryParams]="{ query: example.query, type: example.type }"
+       [title]="example.label">{{ example.description }}</a><span class="sep" *ngIf="!last" aria-hidden="true">·</span>
+  </ng-container>
+</p>

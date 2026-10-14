@@ -1,396 +1,600 @@
-.container-fluid {
-  padding: 30px;
-  // background-color: #f4f4f4;
-}
+// Search results: a sticky bar (count, filters, sort, downloads) over a list
+// of compound rows, in the data-page column ("Page width" in DESIGN.md).
 
+@import '../../../design';
 
-#header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  background-color: #f5f8fd;
-  padding: 15px;
-  border-radius: 5px;
-}
-
-
-#header-container h4 {
-  font-size: 1.25rem;
-  color: #4a3c6c;
-  font-weight: 500;
-  margin: 0;
-}
-
-
-.download-options {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
-}
-
-.download-options span {
-  font-weight: 500;
-  color: #4a3c6c;
-}
-
-.download-options .dwnld-btn {
-  background-color: var(--color-brand-500);
-  color: white;
-  border: none;
-  padding: var(--space-2) 14px;
-  font-size: 0.9rem;
-  border-radius: var(--radius-control);
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.download-options .dwnld-btn:hover {
-  background-color: var(--color-brand-600);
-}
-
-.dwnld-link {
-  text-decoration: none;
-  color: white;
-}
-
-.search-result-container {
-  display: flex;
-  flex-direction: column;
-  min-width: 300px;
-  max-width: 1800px;
-  width: 100%;
-  position: relative;
-}
-
-.mat-table {
-  font-family: "Lato", Arial, sans-serif;
-}
-
-mat-row {
-  border-bottom: 1px solid #7e8b98;
-  align-items: stretch;
-}
-
-mat-row:first-of-type {
-  border-top: 1px solid #7e8b98;
-}
-
-.mat-header-row {
-  border: none;
-  top: 0;
-  position: sticky;
-  z-index: 1;
-  border-bottom: #9ba4ae 4px solid;
-  background-color: inherit;
-  margin-bottom: -1px;
-}
-
-.mat-header {
-  color: #a9b1ba;
-  font-size: 16px;
-  text-transform: uppercase;
-  text-align: center;
+:host {
+  display: block;
+  font-family: $sans;
   font-weight: 400;
-  border: none;
 }
 
-
-.search-result-table {
-  overflow: auto;
-  min-height: 300px;
+.results {
+  @include shell(var(--shell-wide));
+  padding-top: 8px;
+  padding-bottom: 48px;
+  scroll-margin-top: calc(var(--site-header-height, 65px) + 8px);
 }
 
-.search-result-loading-shade {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 56px;
-  right: 0;
-  background: rgba(0, 0, 0, 0.15);
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+.message {
+  padding: 28px 0;
+  font-size: 0.9375rem;
+  color: $ink-soft;
 
-.sort-icon {
-  padding-left: 3px;
-}
-
-.mat-cell {
-  padding: 0 10px;
-}
-
-.search-result-rate-limit-reached {
-  color: #980000;
-  max-width: 360px;
-  text-align: center;
-}
-
-.mat-column-number,
-.mat-column-state {
-  max-width: 64px;
-}
-
-.mat-column-assays {
-  flex: 0 0 300px;
-  justify-content: center;
-}
-
-.mat-column-struct {
-  flex: 0 0 25%;
-}
-
-.mat-column-similar {
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.mat-column-assay_titles {
-  flex: 0 0 auto;
-}
-
-.mat-column-tanimoto {
-  flex: 0 0 110px;
-}
-
-.mat-column-created {
-  max-width: 124px;
-}
-
-mat-cell.mat-cell.cdk-column-tanimoto.mat-column-tanimoto.ng-star-inserted {
-  display: flex !important;
-  justify-content: center !important;
-}
-
-#tanimoto_score {
-  width: 100%;
-  max-width: 80px;
-}
-
-.tm-icon {
-  border-radius: 3px;
-  text-align: center;
-  padding: 7px 25px;
-  max-width: 100px !important;
-}
-
-.exact-match {
-  background: #1f8170;
-}
-
-.label {
-  color: #4e5861;
-  text-transform: uppercase;
-  font-family: "Lato", sans-serif;
-  font-weight: 300;
-}
-
-.table.cmpd-info {
-  margin-bottom: 0;
-}
-
-.table.cmpd-info td,
-.table.cmpd-info th {
-  padding: 0.25rem;
-  vertical-align: top;
-  border-top: 1px dashed #dee2e6;
-}
-/* Assay & Alias lists */
-ul.alias-list,
-ul.assay-list {
-  list-style-type: none;
-  padding-left: 0;
-  margin-bottom: 0.25rem;
-}
-
-li.alias {
-  display: inline-block;
-}
-
-li.assay-title {
-  display: inline-block;
-  line-height: 1;
-  font-size: 0.9em;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.assay-inline {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.assay-scroll {
-  max-height: 200px;
-  overflow-y: auto;
-  width: 100%;
-}
-
-.assay-title a {
-  color: #212529;
-}
-
-.assay-title a:hover {
-  color: #3d6de0;
-}
-
-a#more {
-  color: #a9b1ba;
-  cursor: pointer;
-  font-size: 0.9em;
-}
-
-.cmpd-avail {
-  background: #fd5457;
-  padding: 5px 10px;
-  border-radius: 30px;
-  color: white;
-  margin-bottom: 10px;
-}
-
-.skeleton-match {
-  background: #f99920;
-  padding: 5px 10px;
-  border-radius: 30px;
-  color: white;
-  margin-bottom: 10px;
-}
-
-.no-assay,
-.no-cmpd {
-  background-color: none;
-}
-
-/* Responsive adjustments */
-@media only screen and (max-width: 900px), (min-device-width: 768px) and (max-device-width: 1024px) {
-  .search-result-container {
-    margin-left: 0;
-    min-width: unset;
-    width: auto;
+  p {
+    margin: 0 0 6px !important;
   }
 
-  mat-header-cell:not(.mat-column-main_label) {
+  a {
+    color: $accent;
+  }
+}
+
+.message-title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: $ink;
+}
+
+// ---------------------------------------------------------------- bar
+
+.bar {
+  @include sticky-subheader;
+  padding: 14px 0 10px;
+  background: #fff;
+  border-bottom: 1px solid $rule;
+}
+
+.bar-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.count {
+  margin: 0 !important;
+  font-size: 1rem;
+  color: $ink;
+
+  strong {
+    font-weight: 600;
+  }
+
+  .for {
+    margin-left: 4px;
+    color: $ink-soft;
+  }
+}
+
+.downloads {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+
+  button {
+    padding: 3px 9px;
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: $accent-deep;
+    background: #fff;
+    border: 1px solid $field-border;
+    border-radius: $radius-sharp;
+    cursor: pointer;
+
+    &:hover {
+      color: #fff;
+      background: $navy;
+      border-color: $navy;
+    }
+
+    @include focus-ring($accent, 2px);
+  }
+}
+
+.dl-label {
+  margin-right: 4px;
+  color: $ink-soft;
+}
+
+.bar-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 36px;
+  margin-top: 10px;
+}
+
+.filter-label {
+  margin-right: 4px;
+  font-size: 0.75rem;
+  color: $ink-soft;
+}
+
+// Text filters: the active one in ink with an accent underline
+.filters {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+
+  button {
+    padding: 0 0 3px;
+    font: inherit;
+    font-size: 0.875rem;
+    color: $ink-soft;
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+
+    &:hover {
+      color: $ink;
+    }
+
+    &.active {
+      color: $ink;
+      font-weight: 500;
+      border-bottom-color: $accent;
+    }
+
+    @include focus-ring($accent, 2px);
+  }
+
+  .n {
+    color: $ink-faint;
+    font-weight: 400;
+  }
+}
+
+.sort {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 0 auto;
+
+  select {
+    height: 30px;
+    padding: 0 8px;
+    font: inherit;
+    font-size: 0.875rem;
+    color: $ink;
+    background: #fff;
+    border: 1px solid $field-border;
+    border-radius: $radius-sharp;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: $accent;
+      box-shadow: 0 0 0 1px $accent;
+    }
+  }
+}
+
+// ---------------------------------------------------------------- rows
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.result {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr) minmax(300px, 440px);
+  gap: 24px;
+  align-items: start;
+  padding: 18px 0;
+  border-bottom: 1px solid $rule-soft;
+}
+
+// Structure: the main way chemists recognise a compound, so it's large,
+// and it enlarges on hover / focus to read the atom labels
+.struct {
+  position: relative;
+  z-index: 1;
+  display: block;
+  height: 200px;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid $rule;
+  border-radius: $radius-sharp;
+
+  ::ng-deep .svg-wrapper {
+    width: 100%;
+    height: 184px;
+    object-fit: contain;
+    background: #fff;
+    transform-origin: left top;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  &:hover,
+  &:focus-visible {
+    z-index: 5;
+    border-color: $accent;
+    outline: none;
+
+    ::ng-deep .svg-wrapper {
+      transform: scale(1.9);
+      box-shadow: 0 0 0 1px $rule, 0 12px 32px rgba(15, 27, 45, 0.18);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    ::ng-deep .svg-wrapper {
+      transition: none;
+    }
+  }
+}
+
+.ident {
+  min-width: 0;
+
+  p {
+    margin: 0 !important;
+  }
+}
+
+// Name | Highest phase ............................... availability
+.title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 0;
+}
+
+// Phase (and similarity) after a thin rule that separates them from the name
+.phase {
+  margin-left: 12px;
+  padding-left: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $ink;
+  border-left: 1px solid $rule;
+
+  &.mono {
+    font-family: $mono;
+    font-size: 0.8125rem;
+  }
+}
+
+.meta-label {
+  margin-right: 4px;
+  font-family: $sans;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: $ink-soft;
+}
+
+// Availability, pushed to the right end of the line
+.stock {
+  margin-left: auto;
+  padding-left: 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $ink-soft;
+  white-space: nowrap;
+
+  // Sample at Calibr: the thing most people are checking for
+  &.sample {
+    color: $status-approved;
+  }
+}
+
+.name {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: $ink;
+  overflow-wrap: anywhere;
+
+  &:hover {
+    color: $accent;
+  }
+}
+
+.aliases {
+  margin-top: 4px !important;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: $ink-soft;
+  overflow-wrap: anywhere;
+}
+
+.key {
+  margin-top: 4px !important;
+  font-family: $mono;
+  font-size: 0.75rem;
+  color: $ink-faint;
+}
+
+// Under the name, in the space beside the tall structure
+.similar {
+  margin-top: 12px;
+  padding-top: 10px;
+  font-size: 0.875rem;
+  border-top: 1px solid $rule-soft;
+
+  // A grid, so several similar compounds take one or two lines, not a list
+  ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 4px 20px;
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  a {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .score {
+    flex-shrink: 0;
+  }
+
+  a {
+    font-weight: 500;
+    color: $accent;
+  }
+}
+
+// "Similar compounds (2) >": closed by default
+.similar-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: $ink;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 0.15s ease;
+  }
+
+  &.open::after {
+    transform: rotate(45deg);
+  }
+
+  .n {
+    font-weight: 400;
+    color: $ink-soft;
+  }
+
+  &:hover {
+    color: $accent;
+  }
+
+  @include focus-ring($accent, 2px);
+}
+
+// An InChIKey standing in for a name
+.similar .mono {
+  font-family: $mono;
+  font-size: 0.75rem;
+}
+
+.score {
+  font-family: $mono;
+  font-size: 0.75rem;
+  color: $ink-soft;
+}
+
+.muted {
+  color: $ink-soft;
+}
+
+.more {
+  margin-left: 6px;
+  padding: 0;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: $accent;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  @include focus-ring($accent, 2px);
+}
+
+.mono {
+  font-family: $mono;
+}
+
+.hits {
+  min-width: 0;
+  font-size: 0.875rem;
+
+  ul {
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    padding: 3px 0;
+    line-height: 1.35;
+  }
+
+  a {
+    color: $ink;
+
+    &:hover {
+      color: $accent;
+    }
+  }
+
+  .more {
+    margin: 4px 0 0;
+  }
+}
+
+.hits-title {
+  margin: 0 !important;
+  font-size: 0.75rem;
+  color: $ink-soft;
+}
+
+// The count first, in the same place on every row
+.hits-n {
+  margin: 1px 0 0 !important;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $ink;
+
+  &.none {
+    font-weight: 400;
+    color: $ink-faint;
+  }
+}
+
+.indication {
+  display: block;
+  overflow: hidden;
+  font-size: 0.75rem;
+  color: $ink-soft;
+  white-space: nowrap;
+  text-overflow: ellipsis;   // some indications are a paragraph; full text on hover
+}
+
+// ---------------------------------------------------------------- pager
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 18px;
+  font-size: 0.875rem;
+  color: $ink-soft;
+}
+
+.range {
+  margin-right: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.step {
+  min-width: 30px;
+  height: 30px;
+  font: inherit;
+  font-size: 1.125rem;
+  color: $ink;
+  background: #fff;
+  border: 1px solid $field-border;
+  border-radius: $radius-sharp;
+  cursor: pointer;
+
+  &:disabled {
+    color: $ink-faint;
+    border-color: $rule;
+    cursor: default;
+  }
+
+  @include focus-ring($accent, 2px);
+}
+
+.per-page {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 0 16px;
+
+  select {
+    height: 30px;
+    padding: 0 6px;
+    font: inherit;
+    font-size: 0.875rem;
+    border: 1px solid $field-border;
+    border-radius: $radius-sharp;
+  }
+}
+
+// ---------------------------------------------------------------- narrow
+
+@media (max-width: $bp-nav) {
+  .result {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .hits {
+    grid-column: 2 / -1;
+  }
+}
+
+@media (max-width: $bp-phone) {
+  .bar {
+    position: static;
+  }
+
+  .bar-top {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .sort {
+    margin-left: 0;
+  }
+
+  .result {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  // Phones: the structure gets the full width
+  .struct {
+    height: 200px;
+
+    ::ng-deep .svg-wrapper {
+      height: 184px;
+    }
+
+    &:hover ::ng-deep .svg-wrapper,
+    &:focus-visible ::ng-deep .svg-wrapper {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  .hits {
+    grid-column: 1;
+  }
+
+  // Phones: availability drops under the name instead of the far right
+  .stock {
+    flex-basis: 100%;
+    margin-left: 0;
+    padding-left: 0;
+  }
+
+  .per-page {
     display: none;
   }
-
-  td.aliases {
-    border: none !important;
-  }
-
-  mat-row {
-    flex-direction: column;
-  }
-
-  .mat-icon {
-    transition: transform 0.5s ease-in-out;
-  }
-
-  .sim-cmpds {
-    width: 80%;
-  }
-
-  #assay_hits,
-  #assay_label,
-  #reframe_cmpd,
-  #reframe_label,
-  #tanimoto_label,
-  #tanimoto_score {
-    flex: 0 0 50% !important;
-    max-width: 100%;
-    align-self: center;
-  }
-
-  mat-cell {
-    padding: 6px 15px !important;
-    margin: 0;
-    justify-content: space-between;
-
-    &.mat-column-main_label {
-      flex-direction: row;
-      order: -1;
-      background: #f5f6f7;
-    }
-
-    &.mat-column-struct {
-      order: 99;
-    }
-
-    &.mat-column-tanimoto {
-      width: 100%;
-    }
-
-    &:not(.mat-column-main_label) {
-      flex: 0;
-      position: relative;
-      justify-content: flex-end;
-      flex-direction: column;
-      max-height: 0;
-      min-height: unset;
-      overflow: hidden;
-      border-top: 1px dashed transparent;
-      transition: max-height 0.5s ease-in-out, border-top-color 0.5s ease-in-out;
-
-      * {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.5s ease-in-out;
-      }
-
-      &:before {
-        font-weight: 600;
-        max-height: 0;
-        transition: max-height 0.5s ease-in-out;
-        overflow: hidden;
-      }
-
-      &.expanded {
-        max-height: 350px;
-        border-top-color: #7e8b98;
-
-        * {
-          max-height: 350px;
-        }
-
-        &:before {
-          max-height: 100px;
-        }
-      }
-    }
-
-    ul {
-      text-align: right;
-    }
-
-    &.mat-column-similar {
-      padding: 0 15px;
-    }
-  }
-
-  mat-footer-row::after,
-  mat-header-row::after,
-  mat-row::after {
-    min-height: unset;
-  }
-}
-
-.smscreen-name {
-  margin-right: 15px;
-}
-
-/deep/ .mat-expansion-panel:not([class*=mat-elevation-z]) {
-  box-shadow: none;
-}
-
-.mat-expansion-panel-header-title {
-  flex-wrap: wrap;
-}
-
-/deep/ .mat-expansion-panel-body,
-/deep/ .mat-expansion-panel-header {
-  padding: 1px;
 }

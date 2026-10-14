@@ -128,7 +128,7 @@ large screens.
 
 - **Two columns.** Content pages (homepage, About, Workflow, Contact, user
   portal) use the reading column, `--shell-max` (1200 → 1440 → 1600px as the
-  screen grows). Data pages (Assays list, an assay page) and the admin
+  screen grows). Data pages (Assays list, an assay page, search results) and the admin
   portal use `--shell-wide` (1600px). The user portal's tables and forms are
   capped at 1100px inside the reading column.
 - **Things that repeat may use the width; things read as one object may not.**
