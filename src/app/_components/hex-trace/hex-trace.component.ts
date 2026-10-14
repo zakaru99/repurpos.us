@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy } from '@angular/core';
 
 // Points of light that travel right to left along the hero's
-// hexagon lattice (hex-lattice in _design.scss) once on page load, each bright at
-// first and dimming as they go. Each route is a random walk over the lattice's
+// hexagon lattice (hex-lattice in _design.scss) once on page load, each soft from
+// the start and dimming as they go. Each route is a random walk over the lattice's
 // real edges, so the light stays on the lines.
 //
 // Lattice tile (31.18 x 54, origin at the host's top-left): a pointy-top
@@ -77,11 +77,11 @@ export class HexTraceComponent implements AfterViewInit, OnDestroy {
 
     // Tail layers (long and faint to short and bright), then the glowing head
     const layers = [
-      { dash: 180, width: 1, opacity: 0.18 },
-      { dash: 90, width: 1.25, opacity: 0.35 },
-      { dash: 32, width: 1.5, opacity: 0.7 },
-      { dash: 0.01, width: 10, opacity: 0.45, glow: true },
-      { dash: 0.01, width: 4, opacity: 1 }
+      { dash: 180, width: 1, opacity: 0.12 },
+      { dash: 90, width: 1.25, opacity: 0.22 },
+      { dash: 32, width: 1.5, opacity: 0.45 },
+      { dash: 0.01, width: 10, opacity: 0.25, glow: true },
+      { dash: 0.01, width: 3.5, opacity: 0.75 }
     ];
     const paths = layers.map(l => {
       const p = document.createElementNS(SVG_NS, 'path');
@@ -108,9 +108,9 @@ export class HexTraceComponent implements AfterViewInit, OnDestroy {
       );
     });
 
-    // Bright at the start, dimming quickly, gone well before the end of the path
+    // Soft from the start, dimming quickly, gone well before the end of the path
     const fade = (group as any).animate(
-      [{ opacity: 0 }, { opacity: 1, offset: 0.05 }, { opacity: 0.45, offset: 0.4 }, { opacity: 0.1, offset: 0.7 }, { opacity: 0 }],
+      [{ opacity: 0 }, { opacity: 0.6, offset: 0.06 }, { opacity: 0.3, offset: 0.4 }, { opacity: 0.08, offset: 0.7 }, { opacity: 0 }],
       Object.assign({ easing: 'linear' }, timing)
     );
     fade.onfinish = done;
