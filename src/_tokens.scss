@@ -130,6 +130,7 @@
 
   // Layout (the column widens on large screens; see the media queries below)
   --shell-max: 1200px;
+  --shell-wide: 1600px; // data pages (Assays, an assay); see "Page width" in DESIGN.md
   --shell-gutter: 32px;
   --shell-gutter-sm: 20px;
 

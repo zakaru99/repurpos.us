@@ -15,11 +15,13 @@ import {
   CmpdTooltipComponent, AssayDwnldComponent, AssayTypeBtnComponent
 } from '../assay-data/index';
 import { PsdDwnldComponent } from './psd-dwnld/psd-dwnld.component';
+import { PageHeaderModule } from '../_components/page-header/page-header.module';
 
 @NgModule({
   imports: [
     CommonModule,
     AssayDataRoutingModule,
+    PageHeaderModule,
     PipesModule,
     CitationModule,
     Struct2dModule,

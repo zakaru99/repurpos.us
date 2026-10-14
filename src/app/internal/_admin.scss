@@ -9,7 +9,7 @@
 @import '../../design';
 
 $admin-gutter: 32px;
-$admin-max: 1920px; // effectively full width; only caps very wide monitors
+$admin-max: var(--shell-wide); // the data-page column; see "Page width" in DESIGN.md
 
 // Portal shell: thin sticky navy band (compact homepage hero: hex lattice,
 // eyebrow, white underline tabs) used by the admin and user portals.

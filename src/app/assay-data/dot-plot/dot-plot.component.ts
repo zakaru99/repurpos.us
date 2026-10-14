@@ -1,12 +1,31 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import * as d3 from 'd3';
-import * as d3Chromatic from 'd3-scale-chromatic';
 import { CmpdTooltipComponent } from './cmpd-tooltip/cmpd-tooltip.component';
 
 import { Subscription } from 'rxjs/Subscription';
 
 import { AssayDataService } from '../../_services/index';
 
+
+// Potency colours for the dots and the scale bar (see DESIGN.md: one hue for magnitude)
+const POTENCY_LIGHT = '#c4d4f6';
+const POTENCY_DARK = '#13295e';
+
+// Decades (as molar values) inside the plotted domain [max, min]
+function decadesIn(domain: number[]): number[] {
+  if (!domain || domain.length < 2) { return []; }
+  const hi = Math.floor(Math.log10(domain[0]));
+  const lo = Math.ceil(Math.log10(domain[1]));
+  return d3.range(lo, hi + 1).map(e => Math.pow(10, e));
+}
+
+// 1e-8 -> "10 nM", 1e-6 -> "1 µM"
+function decadeLabel(v: number): string {
+  const e = Math.round(Math.log10(v));
+  const units: Array<[number, string]> = [[-12, 'pM'], [-9, 'nM'], [-6, 'µM'], [-3, 'mM']];
+  const u = units.filter(x => e >= x[0]).pop() || units[0];
+  return Math.pow(10, e - u[0]) + ' ' + u[1];
+}
 
 @Component({
   selector: 'app-dot-plot',
@@ -31,7 +50,7 @@ export class DotPlotComponent implements OnInit {
   // --- Plot sizing ---
   private element: any;
   private element_dims: any;
-  private margin: any = { top: 70, bottom: 0, left: 300, right: 40, colorbar: 20, xaxis: 15, pages: 40 };
+  private margin: any = { top: 58, bottom: 8, left: 300, right: 40, colorbar: 16, xaxis: 15, pages: 40 };
   private width: number;
   private height: number;
   private min_height: number = 400;
@@ -53,6 +72,7 @@ export class DotPlotComponent implements OnInit {
 
   // --- Plot contants ---
   private dot_size: number = 5;
+  private row_height: number = 24;   // fixed height per compound row
   private struct_height: number = 320; // empirically determined height of entire structure container, based on structure height of 150 px (since includes table as well)
   private struct_width = 200; // width of structure, based on image.
 
@@ -123,10 +143,13 @@ export class DotPlotComponent implements OnInit {
     this.y = d3.scaleBand()
       .rangeRound([0, this.height])
       .paddingInner(0.05)
-      .paddingOuter(0.35);
+      .paddingOuter(0.25);
 
     this.xAxis = d3.axisTop(this.x)
-      .tickValues(d3.range(-10, -4, 0.25).map(d => Math.pow(10, d)).filter(d => d <= this.assay_domain[0] && d >= this.assay_domain[1]));
+      .tickValues(decadesIn(this.assay_domain))
+      .tickFormat(decadeLabel)
+      .tickSizeOuter(0)
+      .tickSizeInner(-(this.height + this.margin.xaxis));
 
     // update chart group and x-axis position when margin.left changes
     d3.select('#dotplot')
@@ -203,14 +226,16 @@ export class DotPlotComponent implements OnInit {
     this.y = d3.scaleBand()
       .rangeRound([0, this.height])
       .paddingInner(0.05)
-      .paddingOuter(0.35);
+      .paddingOuter(0.25);
 
+    // One hue, light (less potent) to navy (more potent)
     this.colorScale = d3
-      .scaleSequential(d3Chromatic.interpolateGnBu);
+      .scaleSequential(d3.interpolateRgb(POTENCY_LIGHT, POTENCY_DARK));
 
 
     this.xAxis = d3.axisTop(this.x)
-      .tickFormat(d3.format(".0e"));
+      .tickFormat(decadeLabel)
+      .tickSizeOuter(0);
 
 
     // create initial x & y axis
@@ -234,8 +259,8 @@ export class DotPlotComponent implements OnInit {
       .attr("y2", "0%");
 
 
-    // Append multiple color stops by using D3's data/enter step
-    const colorRange = d3Chromatic.schemeGnBu[9];
+    // Same colours as the dots: light to navy
+    const colorRange = d3.range(0, 1.0001, 0.125).map(t => d3.interpolateRgb(POTENCY_LIGHT, POTENCY_DARK)(t));
 
     linearGradient.selectAll("stop")
       .data(colorRange)
@@ -251,7 +276,8 @@ export class DotPlotComponent implements OnInit {
     scalebar.append("rect")
       .attr("id", "scalebar")
       .attr("width", this.width)
-      .attr("height", 10)
+      .attr("height", 6)
+      .attr("rx", 3)
       .attr("transform", "translate(0, -" + (this.margin.top) + ")")
       .style("fill", "url(#linear-gradient)");
 
@@ -273,14 +299,20 @@ export class DotPlotComponent implements OnInit {
       var t = d3.transition()
         .duration(1000);
 
+      // Rows are a fixed height, so the plot is only as tall as its compounds
+      this.height = this.data.length * this.row_height;
+      d3.select('.svg_dotplot')
+        .attr('height', this.height + this.margin.top + this.margin.bottom);
+      this.y.rangeRound([0, this.height]);
+
       // update domains when data changes
       this.x.domain(this.assay_domain);
       this.y.domain(this.data.map(d => d.key));
 
+      // Whole decades, with gridlines running down the plot
       this.xAxis
-        .tickValues(d3.range(-10, -4, 0.25)
-          .map(d => Math.pow(10, d))
-          .filter(d => d <= this.assay_domain[0] && d >= this.assay_domain[1]));
+        .tickValues(decadesIn(this.assay_domain))
+        .tickSizeInner(-(this.height + this.margin.xaxis));
 
       // update color domain
       // Code if using d3.scaleSequential
@@ -474,7 +506,7 @@ export class DotPlotComponent implements OnInit {
         .append("text")
         .attr("class", "imprecise")
         .attr("dx", 10)
-        .style("fill","#fd5457")
+        .style("fill", "#5b6574")
         .style("font-weight","400")
         .style("dominant-baseline", "central");
 
@@ -530,7 +562,9 @@ export class DotPlotComponent implements OnInit {
     // calculate position for the structure
     // NOTE: this *should* go in the compound rollover component for better modularity
     // tell structure to turn on with new info.
-    this.tooltipData = { 'on': true, 'data': filtered_data, 'x': this.width - this.struct_width, 'y': 0 };
+    // Card sits just under the hovered row, over the (dimmed) names column
+    const rowTop = this.margin.top + (this.y(cmpd_id) || 0);
+    this.tooltipData = { 'on': true, 'data': filtered_data, 'x': 8, 'y': rowTop + 14 };
   }
 
   hideTooltip(event) {

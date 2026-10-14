@@ -1,4 +1,4 @@
-<app-page-header eyebrow="Screening data" title="Assays" [compact]="true"
+<app-page-header eyebrow="Screening data" title="Assays" [compact]="true" [wide]="true"
                  lede="Methods and results for every screen run on the REFRAME library, from proposal to published data.">
   <!-- The homepage hero's figure list; each row filters the cards to what it counts -->
   <dl header-aside class="figures" *ngIf="figures.length" aria-label="Assays at a glance">
@@ -69,10 +69,18 @@
         </p>
         <dl class="data" *ngIf="r.primary > 0 || r.dose > 0 || r.assay.primary_screened === 'secondary'; else noData">
           <div *ngIf="r.primary > 0"><dd>{{ r.primary | number }}</dd><dt>primary</dt></div>
-          <div *ngIf="r.assay.primary_screened === 'secondary'"><dd class="word">Secondary</dd><dt>assay</dt></div>
+          <div *ngIf="r.assay.primary_screened === 'secondary'">
+            <dd class="word">Secondary</dd>
+            <dt *ngIf="!r.followsUp">assay</dt>
+            <dt *ngIf="r.followsUp">for <a class="follows" [routerLink]="['/assays', r.followsUp]">{{ r.followsUp }}</a></dt>
+          </div>
           <div *ngIf="r.dose > 0"><dd>{{ r.dose | number }}</dd><dt>dose response</dt></div>
         </dl>
-        <ng-template #noData><p class="no-data">{{ r.status }}</p></ng-template>
+        <ng-template #noData>
+          <p class="no-data" *ngIf="r.followsUp">Secondary assay for
+            <a class="follows" [routerLink]="['/assays', r.followsUp]">{{ r.followsUp }}</a></p>
+          <p class="no-data" *ngIf="!r.followsUp">{{ r.status }}</p>
+        </ng-template>
       </div>
     </li>
   </ul>

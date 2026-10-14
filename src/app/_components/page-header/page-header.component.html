@@ -1,18 +1,20 @@
-<header class="band" [class.compact]="compact">
+<header class="band" [class.compact]="compact" [class.wide]="wide">
   <div class="inner">
     <div class="text">
       <p class="eyebrow" *ngIf="eyebrow">{{ eyebrow }}</p>
       <h1>{{ title }}</h1>
       <p class="lede" *ngIf="lede">{{ lede }}</p>
+      <p class="byline" *ngIf="byline">{{ byline }}</p>
     </div>
     <!-- Optional right-hand content, e.g. a page's figures: <div header-aside> -->
     <ng-content select="[header-aside]"></ng-content>
   </div>
 </header>
 
-<nav class="sections" *ngIf="sections?.length" aria-label="On this page">
+<nav class="sections" *ngIf="sections?.length" [class.wide]="wide" aria-label="On this page">
   <div class="sections-inner">
-    <a *ngFor="let s of sections" [href]="'#' + s.id" [class.active]="active === s.id"
-       [attr.aria-current]="active === s.id ? 'location' : null" (click)="go(s, $event)">{{ s.label }}</a>
+    <button type="button" *ngFor="let s of sections" [class.active]="active === s.id"
+            [attr.aria-current]="active === s.id ? 'location' : null" (click)="go(s)">{{ s.label }}</button>
+    <a class="back" *ngIf="backLink" [routerLink]="backLink">{{ backLabel }}</a>
   </div>
 </nav>

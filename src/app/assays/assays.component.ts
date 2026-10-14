@@ -6,8 +6,8 @@ import { Subscription } from 'rxjs';
 import { AssayDetails } from '../_models/index';
 import { ColorPaletteService } from '../_services/index';
 import { StandardizeAssayTypePipe } from '../_pipes/standardize-assay-type.pipe';
+import { Stage, STAGE_ORDER, stageOf, statusLabel, stageClass, primaryAssayFor } from '../_models/assay-stage';
 
-type Stage = 'Pre-screen' | 'Screening' | 'Completed' | 'Closed' | 'Other';
 // What data an assay has: the header figures count and filter by these
 type DataKind = 'primary' | 'dose' | 'pending' | 'secondary' | 'unavailable';
 const DATA_KINDS: string[] = ['primary', 'dose', 'pending', 'secondary', 'unavailable'];
@@ -20,29 +20,10 @@ interface Row {
   status: string;      // status without the "ReFRAME" prefix
   primary: number;     // compounds in the primary screen (0 if none / secondary)
   dose: number;        // compounds in dose response
+  followsUp: string;   // secondary assays: the primary assay named in the text, if any
   text: string;        // lower-cased text the search box matches against
 }
 
-// Which stage each workflow status belongs to. Anything not listed is "Other".
-const STAGES: { [status: string]: Stage } = {
-  'reframe waiting for mta': 'Pre-screen',
-  'reframe mta signed': 'Pre-screen',
-  'reframe lopac': 'Pre-screen',
-  'hts queue': 'Pre-screen',
-  'reframe primary screen sent': 'Screening',
-  'reframe dose response sent': 'Screening',
-  'reframe dose response data received': 'Screening',
-  'hts active assay ready plates': 'Screening',
-  'reframe screen completed': 'Completed',
-  'reframe completed but need milestones': 'Completed',
-  'reframe awaiting milestones': 'Completed',
-  'hts success': 'Completed',
-  'crest screen completed': 'Completed',
-  'reframe screen terminated and closed': 'Closed',
-  'reframe project closed': 'Closed'
-};
-
-const STAGE_ORDER: Stage[] = ['Pre-screen', 'Screening', 'Completed', 'Closed', 'Other'];
 
 // Every screen run on the library as a grid of cards, filtered by stage and
 // type, a search, and the header figures (what data an assay has). Filters
@@ -142,7 +123,7 @@ export class AssaysComponent implements OnInit, OnDestroy {
   }
 
   stageClass(stage: Stage): string {
-    return stage.toLowerCase().replace(/[^a-z]/g, '');
+    return stageClass(stage);
   }
 
   trackRow(_: number, r: Row) {
@@ -173,7 +154,6 @@ export class AssaysComponent implements OnInit, OnDestroy {
   private toRow(a: AssayDetails): Row {
     const anyA = a as any;
     const title = anyA.title || a.assay_title || a.title_short || a.assay_id;
-    const status = (a.status || '').trim();
     const primary = Number(a.primary_screened);
     const types = Array.from(new Set((a.assay_type || '')
       .split(',')
@@ -183,10 +163,11 @@ export class AssaysComponent implements OnInit, OnDestroy {
       assay: a,
       title,
       types,
-      stage: STAGES[status.toLowerCase()] || 'Other',
-      status: status.replace(/^reframe\s+/i, ''),
+      stage: stageOf(a.status),
+      status: statusLabel(a.status),
       primary: isNaN(primary) ? 0 : primary,
       dose: Number(a.dr_screened) || 0,
+      followsUp: primaryAssayFor(a),
       text: [a.assay_id, title, a.title_short, a.summary, a.purpose, a.indication]
         .filter(Boolean).join(' ').toLowerCase()
     };

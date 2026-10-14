@@ -35,6 +35,11 @@ h2 {
 
 // Steps: number | who | what
 .steps {
+  // Step text keeps a readable line length on wide screens
+  > li > div {
+    max-width: 75ch;
+  }
+
   list-style: none;
   counter-reset: step;
   margin: 0;

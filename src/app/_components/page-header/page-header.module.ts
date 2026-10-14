@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 import { PageHeaderComponent } from './page-header.component';
 
 // Shared so lazy-loaded modules (About) and the root module can both use it
 @NgModule({
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   declarations: [PageHeaderComponent],
   exports: [PageHeaderComponent]
 })

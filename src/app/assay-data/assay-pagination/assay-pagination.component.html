@@ -1,5 +1,10 @@
-<ul class="nav nav-tabs justify-content-end float-right" role="tablist">
-  <li class="page" *ngFor="let page of pages">
-    <a class="page-link" [id]="page" [ngClass]="{'page-selected': page == current_page}" (click)="switchPage($event)">{{ page + 1}}</a>
-  </li>
-</ul>
+<!-- Which compounds are on screen, and the pages: "1–12 of 32  ‹ 1 2 3 ›" -->
+<nav class="pager" *ngIf="pages.length" aria-label="Pages of compounds">
+  <span class="range">{{ from | number }}–{{ to | number }} of {{ total | number }}</span>
+  <button type="button" class="step" (click)="go(current_page - 1)" [disabled]="current_page === 0" aria-label="Previous page">‹</button>
+  <ng-container *ngIf="pages.length > 1">
+    <button type="button" *ngFor="let page of pages" class="num" [class.on]="page === current_page"
+            [attr.aria-current]="page === current_page ? 'page' : null" (click)="go(page)">{{ page + 1 }}</button>
+  </ng-container>
+  <button type="button" class="step" (click)="go(current_page + 1)" [disabled]="current_page >= pages.length - 1" aria-label="Next page">›</button>
+</nav>

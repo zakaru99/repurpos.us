@@ -1,164 +1,166 @@
-<!-- Check if assay details are available from the backend -->
-<ng-template #no_assay>
-  <h3>Assay {{aid}}</h3>
-  <p>
-    Details unavailable. Please contact <a href="mailto:reframescreens@scripps.edu?subject=Missing details for assay {{aid}}">reframescreens@scripps.edu</a>
+<!-- Assay not found -->
+<div class="page missing" *ngIf="notFound">
+  <p class="eyebrow">Assay {{ aid }}</p>
+  <h1 class="missing-title">Details unavailable</h1>
+  <p class="muted">
+    We couldn't load this assay. Email
+    <a href="mailto:reframescreens@scripps.edu?subject=Missing details for assay {{ aid }}">reframescreens@scripps.edu</a>
+    and we'll look into it, or <a routerLink="/assays">browse all assays</a>.
   </p>
-</ng-template>
+</div>
 
-<div class="container" *ngIf="assayDetails; else no_assay">
-  <div class="row d-flex">
-    <div class="col">
-      <h1 class="assay-title">
-        <span [outerHTML]="assayDetails.title_short | sciItalicize">
-        </span>
-      </h1>
-    </div>
-    <div class="col-xs-auto col-sm-auto col-md-auto col-lg-auto col-xl-auto align-self-end">
-      <p class="text-right assay-id"> {{ assayDetails.assay_id }} </p>
-      <p class="text-right home-link"><a routerLink="/assays">return to all assays</a></p>
-    </div>
+<p class="page muted loading" *ngIf="!assayDetails && !notFound">Loading assay…</p>
+
+<ng-container *ngIf="assayDetails as d">
+  <app-page-header [eyebrow]="'Assay ' + d.assay_id" [title]="d.title_short || d.assay_title" [lede]="lede"
+                   [byline]="byline" [sections]="sections" [compact]="true" [wide]="true"
+                   backLabel="All assays" backLink="/assays">
+    <dl header-aside class="figures" aria-label="This assay at a glance">
+      <div class="fig">
+        <dt>Stage</dt>
+        <dd class="stage-dd" [ngClass]="stageCss" [title]="status">{{ stage }}</dd>
+      </div>
+      <div class="fig">
+        <dt>Compounds screened</dt>
+        <dd>{{ primaryCount ? (primaryCount | number) : '—' }}</dd>
+      </div>
+      <div class="fig">
+        <dt>Dose-response compounds</dt>
+        <dd>{{ doseCount ? (doseCount | number) : '—' }}</dd>
+      </div>
+    </dl>
+  </app-page-header>
+
+  <div class="page">
+
+    <!-- BACKGROUND: why it was run, beside the key facts -->
+    <section id="background" class="section">
+      <h2>Background</h2>
+      <div class="background">
+        <div class="bg-text">
+          <p class="prose" [innerHTML]="d.purpose | sciItalicize"></p>
+          <p class="prose muted" *ngIf="d.summary" [innerHTML]="d.summary | sciItalicize"></p>
+        </div>
+
+        <div class="side-facts">
+          <table class="facts">
+            <tbody>
+              <tr *ngFor="let f of detailsList">
+                <th scope="row">{{ f.label }}</th>
+                <td [innerHTML]="f.value | sciItalicize"></td>
+              </tr>
+              <tr>
+                <th scope="row">Primary screen</th>
+                <td>
+                  <ng-container *ngIf="primaryCount">{{ primaryCount | number }} compounds</ng-container>
+                  <ng-container *ngIf="!primaryCount">{{ primaryNote }}<ng-container *ngIf="primaryAssay"> for
+                    <a [routerLink]="['/assays', primaryAssay]">{{ primaryAssay }}</a></ng-container></ng-container>
+                </td>
+              </tr>
+              <tr *ngIf="status">
+                <th scope="row">Status</th>
+                <td>{{ status }}</td>
+              </tr>
+              <tr *ngIf="contact">
+                <th scope="row">Contact</th>
+                <td><a [href]="'mailto:' + contact">{{ contact }}</a></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="publication" *ngIf="d.citations?.length">
+            <p class="pub-label">Publication</p>
+            <p class="cite" *ngFor="let c of d.citations">
+              <a [href]="'https://doi.org/' + c.DOI" target="_blank" rel="noopener noreferrer" [innerHTML]="c.title"></a>
+              <span class="cite-links">
+                <a *ngIf="c.PMID" [href]="'https://pubmed.ncbi.nlm.nih.gov/' + c.PMID" target="_blank" rel="noopener noreferrer">PubMed</a>
+                <a *ngIf="c.DOI" [href]="'https://doi.org/' + c.DOI" target="_blank" rel="noopener noreferrer">DOI</a>
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="results" class="section">
+      <!-- Chart capped at a readable width; downloads beside it on wide
+           screens, under the heading otherwise (see "Page width" in DESIGN.md) -->
+      <div class="results-layout">
+        <div class="r-head">
+          <h2>Results</h2>
+          <p class="hint">
+            Each row is a compound at the concentration giving a half-maximal response (IC<sub>50</sub> / EC<sub>50</sub>);
+            further right is more potent. Hollow dots are replicates, the filled dot their mean. Hover for the structure and fits.
+          </p>
+        </div>
+
+        <aside class="r-aside" *ngIf="loggedIn && (doseRows.length || primaryRows.length)" aria-label="Download this assay's data">
+          <p class="dl-title">Download</p>
+          <div class="dl-row" *ngIf="doseRows.length">
+            <span class="dl-label">Dose response</span>
+            <span class="dl-buttons">
+              <button type="button" (click)="downloadDose('csv')">CSV</button>
+              <button type="button" (click)="downloadDose('tsv')">TSV</button>
+              <button type="button" (click)="downloadDose('json')">JSON</button>
+            </span>
+          </div>
+          <div class="dl-row" *ngIf="primaryRows.length">
+            <span class="dl-label">Primary screen hits</span>
+            <span class="dl-buttons"><button type="button" (click)="downloadPrimary()">CSV</button></span>
+          </div>
+        </aside>
+
+        <div class="r-main">
+          <!-- Results that can't be fitted: confirmation data as a file -->
+          <div class="notice" *ngIf="oneOff">
+            <p>IC<sub>50</sub>/EC<sub>50</sub> values couldn't be quantified for this assay. The confirmation data is available as a file.</p>
+            <a class="btn" [href]="oneOff" download>Download confirmation data</a>
+          </div>
+
+          <ng-container *ngIf="!oneOff">
+            <app-assay-plots *ngIf="loggedIn" [aid]="aid" [assay_title]="d.title_short"></app-assay-plots>
+
+            <!-- Signed out: say what signing in shows -->
+            <div class="notice sign-in" *ngIf="!loggedIn">
+              <div>
+                <p class="notice-title">Sign in to see the results</p>
+                <p>
+                  Dose-response results<ng-container *ngIf="doseCount"> for {{ doseCount | number }} compounds</ng-container>,
+                  ranked by potency with efficacy and fit quality, plus the primary screen hits and downloads. Accounts are free.
+                </p>
+              </div>
+              <button type="button" class="btn" (click)="signIn()">Sign in</button>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROTOCOL -->
+    <section id="protocol" class="section">
+      <h2>Protocol</h2>
+      <div class="protocol">
+        <div class="step">
+          <h3>Drug incubation</h3>
+          <p class="prose" *ngIf="d.protocol" [innerHTML]="d.protocol | sciItalicize"></p>
+          <dl class="kv">
+            <div *ngIf="d.components"><dt>Components</dt><dd [innerHTML]="d.components | sciItalicize"></dd></div>
+            <div *ngIf="concentration"><dt>Drug concentration</dt><dd>{{ concentration }}</dd></div>
+          </dl>
+        </div>
+        <div class="step">
+          <h3>Detection</h3>
+          <p class="prose" *ngIf="d.readout" [innerHTML]="d.readout | sciItalicize"></p>
+          <dl class="kv">
+            <div *ngIf="d.detection_method"><dt>Method</dt><dd>{{ d.detection_method }}</dd></div>
+            <div *ngIf="d.detection_reagents"><dt>Reagents</dt><dd>{{ d.detection_reagents }}</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
   </div>
 
-
-  <!-- SUMMARY -->
-  <div class="row summary-box">
-    <div class="row author" *ngIf="assayDetails.authors">
-      by {{ assayDetails.authors }}
-      <div class="citation-container" *ngIf="assayDetails.citations">
-        <div *ngFor="let citation of assayDetails.citations">
-          <span id="pmid" *ngIf="citation.PMID">PubMed ID: <a [href]="'https://www.ncbi.nlm.nih.gov/pubmed/?term=' + citation.PMID" target="_blank" rel="noreferrer">{{citation.PMID}}</a></span>
-          <span class="data-separator"></span>
-          <span id="doi" *ngIf="citation.DOI">DOI: <a [href]="'https://doi.org/' + citation.DOI" target="_blank" rel="noreferrer">{{ citation.DOI }}</a></span>
-        </div>
-        </div>
-    </div>
-
-    <div class='row summary-content'>
-
-      <div class="col-md-9">
-        <div class="summary">
-          <span [outerHTML]="assayDetails.purpose | sciItalicize"></span>
-        </div>
-        <!-- <div class="summary">
-          <span [outerHTML]="assayDetails.summary | sciItalicize"></span>
-        </div> -->
-
-
-        <div class="citation-group">
-          <app-citation [citations]="assayDetails.citations" class="citation"></app-citation>
-        </div>
-
-        <div id="viewmore" class="view-more">
-          <button (click)="onAnchorClick('protocol')" aria-label="view protocol">
-            View Detailed Protocol
-          </button>
-        </div>
-
-        <br>
-
-        <app-psd-dwnld></app-psd-dwnld>
-        
-
-        <div>
-        </div>
-
-
-      </div>
-
-      <div class="col-md-3 overview">
-        <ul>
-          <li><span id="label">indication: </span>
-            <span [outerHTML]="assayDetails.indication | sciItalicize"></span></li>
-          <li><span id="label">assay type: </span> {{ assayDetails.assay_type }}</li>
-          <li><span id="label">components: </span>
-            <span [outerHTML]="assayDetails.components | sciItalicize"></span></li>
-
-
-            <!-- Display primary screened compounds if primary_screened is a valid number -->
-            <li *ngIf="parsePrimaryScreened(assayDetails.primary_screened) > 0; else secondaryAssay">
-              <span id="label">Compounds screened in primary: </span> {{ assayDetails.primary_screened }}
-            </li>
-
-            <!-- Secondary Assay logic -->
-            <ng-template #secondaryAssay>
-              <li *ngIf="assayDetails.primary_screened === 'secondary'; else notAvailable">
-                <span id="label">Secondary Assay</span> No primary data will be available.
-              </li>
-            </ng-template>
-
-            <!-- NA Assay logic -->
-            <ng-template #notAvailable>
-              <li *ngIf="assayDetails.primary_screened === 'not available'; else notReady">
-                No primary data will be available for this assay.
-              </li>
-            </ng-template>
-
-            <!-- Not ready message -->
-            <ng-template #notReady>
-              <li><span id="label">Primary screening data curation in progress</span></li>
-            </ng-template>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <!-- end summary -->
-
-  <!-- VIS -->
-  <app-assay-plots [aid]="aid" [assay_title]="assayDetails.title_short" *ngIf="assayDetails"></app-assay-plots>
-  <!--  end vis -->
-
-  <!-- DETAILS -->
-  <div class='row' id="protocol">
-    <h3><span [outerHTML]="assayDetails.title_short | sciItalicize"></span> protocol</h3>
-
-    <!-- <div class="description">
-      <span [outerHTML]="assayDetails.purpose | sciItalicize"></span>
-    </div> -->
-
-    <div class="row">
-      <div class="col-md-6" id="drug-condits">
-        <div class="row subtitle">Drug incubation conditions</div>
-        <div class="row">
-          <div class="col-md-7 condits">
-            <span [outerHTML]="assayDetails.protocol | sciItalicize"></span>
-          </div>
-
-          <div class="col-md-5 overview">
-            <ul>
-              <li><span id="label">assay type: </span> {{ assayDetails.assay_type }}</li>
-              <li><span id="label">components: </span>
-                <span [outerHTML]="assayDetails.components | sciItalicize"></span>
-              </li>
-              <li><span id="label">drug concentration: </span> {{ assayDetails.drug_conc }} </li>
-            </ul>
-          </div>
-
-        </div>
-
-      </div>
-
-      <div class="col-md-6" id="detect-condits">
-        <div class="row subtitle">Detection conditions</div>
-        <div class="row">
-          <div class="col-md-7 condits">
-            <span [outerHTML]="assayDetails.readout | sciItalicize"></span>
-          </div>
-
-          <div class="col-md-5 overview">
-            <ul>
-              <li><span id="label">detection method: </span> {{ assayDetails.detection_method }}</li>
-              <li *ngIf="assayDetails.detection_reagents">
-                <span id="label">detection reagents: </span> {{ assayDetails.detection_reagents }}</li>
-
-            </ul>
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-
-    <span *embedDatasetMetadata="assayDetails"></span>
-
-  </div>
+  <span *embedDatasetMetadata="assayDetails"></span>
+</ng-container>

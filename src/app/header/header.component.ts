@@ -84,6 +84,20 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loginBox = !this.loginBox;
   }
 
+  // Other pages ask for the sign-in box with
+  // window.dispatchEvent(new CustomEvent('reframe-sign-in'))
+  @HostListener('window:reframe-sign-in')
+  openLogin() {
+    if (this.loggedIn) { return; }
+    // Wait for the click that asked to finish bubbling, or the document
+    // click handler below closes the box straight away
+    setTimeout(() => {
+      this.loginBox = true;
+      if (this.isMobile) { this.expanded = true; }
+      window.scrollTo(0, 0);
+    });
+  }
+
   clickedInside($event: Event) {
     $event.preventDefault();
     $event.stopPropagation();

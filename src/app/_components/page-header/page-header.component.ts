@@ -19,9 +19,15 @@ export class PageHeaderComponent implements OnChanges {
   @Input() eyebrow: string;
   @Input() title: string;
   @Input() lede: string;
+  @Input() byline: string;
+  // Optional link at the right end of the section bar, e.g. back to a list
+  @Input() backLabel: string;
+  @Input() backLink: string;   // small line under the lede, e.g. who ran an assay
   @Input() sections: PageSection[] = [];
   // Tighter band for tool pages (e.g. Assays) where the content is the job
   @Input() compact = false;
+  // Use the wide column (data pages) instead of the reading column
+  @Input() wide = false;
 
   active: string = null;
 
@@ -29,15 +35,15 @@ export class PageHeaderComponent implements OnChanges {
     this.active = this.sections && this.sections.length ? this.sections[0].id : null;
   }
 
-  go(section: PageSection, event: Event) {
-    event.preventDefault();
+  // Scroll to a section; the URL stays as it is
+  go(section: PageSection) {
     const el = document.getElementById(section.id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      history.replaceState(null, '', '#' + section.id);
       this.active = section.id;
     }
   }
+
 
   // The last section whose top has passed the sticky headers is "current"
   @HostListener('window:scroll')

@@ -120,6 +120,33 @@ muted strip → navy footer. Don't put two dark bands next to each other.
   rounded rows. Don't mix the two styles within one view.
 - Spacing comes from the existing 4px scale in `_tokens.scss`.
 
+## Page width (applies site wide)
+
+Width should follow the content, not be one rule for every page. Neither
+"everything in a narrow column" nor "everything edge to edge" is right on
+large screens.
+
+- **Two columns.** Content pages (homepage, About, Workflow, Contact, user
+  portal) use the reading column, `--shell-max` (1200 → 1440 → 1600px as the
+  screen grows). Data pages (Assays list, an assay page) and the admin
+  portal use `--shell-wide` (1600px). The user portal's tables and forms are
+  capped at 1100px inside the reading column.
+- **Things that repeat may use the width; things read as one object may not.**
+  A card grid adds columns as the screen widens (cards stay ~260–300px). A
+  chart, a form, a record or a header is one object: cap it so related parts
+  stay close. Rule of thumb: if a label and its value end up more than about
+  1000px apart, the layout is too wide.
+- **Caps in use:** prose ~75ch (two text columns on wide screens rather than
+  longer lines, see the assay page Background; workflow step text 75ch); dot
+  plot 1200px including the compound names (`.results-layout` on the assay
+  page); search inputs 560px, with their filters right beside them; short
+  tables (user portal) 1100px.
+- **Leftover width goes to related secondary content**, placed next to the
+  thing it belongs to (e.g. the assay page's downloads beside the chart at
+  ≥1500px), never to stretching the primary element.
+- On large screens keep modest outer margins; they frame the page. Check
+  every page at 1440 and 1920 before calling it done.
+
 ## Building blocks (mixins in `_design.scss`)
 
 | Mixin | What it is |
@@ -156,7 +183,7 @@ muted strip → navy footer. Don't put two dark bands next to each other.
   copy button) and white logos.
 - **Admin portal** (`/internal`): continues the homepage. A thin navy band
   (hex lattice, "CALIBR Admin" in eyebrow style, white underline tabs like the
-  hero search) sits above white pages in a centred 1320px column. Pages use
+  hero search) sits above white pages in the data-page column (`--shell-wide`). Pages use
   eyebrow labels, weight-500 headings, square navy buttons and arrow links,
   with no cards. Tables scroll inside a fixed-height area with a sticky header
   (`table-scroll` mixin) rather than growing the page. The Overview is two
@@ -208,6 +235,8 @@ muted strip → navy footer. Don't put two dark bands next to each other.
 
 ## Checking your work
 
-Before calling a page done, screenshot it at 1440 and 390 wide (and at 1100 for
-tool pages). Look for overflow, clipped text, and anything that breaks the
+Before calling a page done, screenshot it at 1440, 1920 and 390 wide (and at
+1100 for tool pages). At 1920, check "Page width" above: nothing stretched,
+related things still close together. Headless Chrome won't go below ~500px
+wide; emulate a phone with the DevTools protocol to check 390. Look for overflow, clipped text, and anything that breaks the
 rules above.

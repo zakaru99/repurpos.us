@@ -1,201 +1,34 @@
-body {
-  font-family: 'Lato', sans-serif;
-  font-weight: 300;
+// Results chart: the IC50/EC50/Inactive switch on the left and the pages on
+// the right, above the dot plot.
+
+@import '../../../design';
+
+:host {
+  display: block;
 }
 
-a, a.dwnld-link:hover {
-  color: #3D6DE0;
-}
-
-.accent-color {
-  color: #fd5457;
-}
-
-
-.title {
-  width: 85%;
-}
-
-.subtitle {
-  font-size: 20px;
-}
-
-.assay-id, .home-link {
-  margin-top: 6px;
-  margin-bottom: 0;
-}
-
-.assay-id {
-    color: #c3c4c5;
-}
-
-.home-link {
-    color: #3D6DE0;
-}
-
-#viewmore {
-  padding: 10px;
-}
-
-.overview {
-}
-
-.overview > ul {
-  list-style: none;
-  padding: 6px 10px 6px 10px;
-  background: #edf1fc;
-}
-
-.summary-box {
-  border-bottom: 1px solid #212529;
-  border-top: 1px solid #212529;
-  margin-top: 15px;
-  margin-bottom: 20px;
-  padding-top: 15px;
-  padding-bottom: 15px;
-}
-
-.summary {
-  font-size: 20px;
-}
-
-#label{
-  font-weight: 400;
-}
-
-.condits{
-  color: #818182;
-  padding-top: 6px;
-}
-
-
-#content{
-  margin: 15px;
-}
-
-h3#data-title {
-  margin-bottom: 0;
-  margin-top: 0;
-}
-
-/* nav elements:  tab panes, pagination */
-
-
-/* IC/EC tab buttons */
-.nav-pills {
-  margin-top: -0.5rem;
-}
-
-.nav-pills .nav-link {
-  background-color: #eff1f2;
-  border-radius: 3px;
-  margin-left: 4px;
-  border: 0px #e4e7e9 solid;
-  border-bottom-width: 4px;
-  color: #c2c8ce;
-  -webkit-text-fill-color: #c2c8ce;
-}
-
-.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-  background-color: #dfe2e5;
-  border-color: #b7bec5;
-  -webkit-text-fill-color: #8d98a3;
-  color: #8d98a3;
-}
-
-.nav-pills .nav-link:hover {
-  background-color: #e4ebfb;
-  -webkit-text-fill-color: #3d6de0;
-  color: #3d6de0;
-  border-color: #cad7f6;
-}
-
-.nav-link {
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  margin-top: 4px;
+.chart-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 8px;
+  border-bottom: 1px solid $rule;
 }
 
-#vis {
-  margin-bottom: 70px;
+.muted {
+  margin: 0 !important;
+  color: $ink-soft;
 }
 
-#oneoff button {
-  background-color: #f4f4f4;
-  border-radius: 3px;
-  border: 1px #c5cbd0 solid;
-  -webkit-text-fill-color: #9ba4ae; // text
-  color: #b7bec5; // arrow
-  font-size: 0.75em;
-  font-weight: 300;
-  font-family: 'Lato', sans-serif;
+.error {
+  margin: 0 !important;
+  color: $status-rejected;
 }
 
-
-#oneoff button {
-  background-color: #f4f4f4; /* Light background for the button */
-  border-radius: 3px; /* Slightly rounded corners */
-  border: 1px solid #c5cbd0; /* Light border color */
-  color: #b7bec5; /* Text color similar to Bootstrap's primary button */
-  font-size: 0.875em; /* Slightly larger text size for better readability */
-  font-weight: 400; /* Regular font weight */
-  font-family: 'Lato', sans-serif; /* Custom font family */
-  padding: 8px 16px; /* Padding similar to Bootstrap's default padding */
-  cursor: pointer; /* Pointer cursor on hover */
-  text-align: center; /* Center text alignment */
-  vertical-align: middle; /* Align vertically */
-  display: inline-block; /* Ensure the button behaves like a block element */
-  transition: all 0.3s ease; /* Smooth transition for hover effects */
-}
-
-/* Adding hover effect */
-#oneoff button:hover {
-  background-color: #e1e4e7; /* Light background change on hover */
-  color: black; /* Darker text color on hover, similar to the default link color */
-}
-
-.no-data-banner {
-  margin: 40px 0;
-  padding: 28px;
-  border-radius: 18px;
-  background: #f5f7fb;
-  border: 1px solid #e1e6f0;
-  text-align: center;
-  font-size: 16px;
-  font-weight: 500;
-  color: #6c757d;
-}
-
-@media (max-width: 640px) {
-  .subtitle {
-    font-size: 1.2rem;
-  }
-
-  .summary {
-    font-size: 0.95rem;
-  }
-
-  .nav-link {
-    padding: 6px 10px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-  }
-
-  #vis {
-    margin-bottom: 40px;
-  }
-
-  #content {
-    margin: 8px;
-  }
-
-  .no-data-banner {
-    margin: 20px 0;
-    padding: 18px;
-    border-radius: 12px;
+@media (max-width: $bp-phone) {
+  .chart-head {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

@@ -2,9 +2,7 @@ import { Component, OnDestroy, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
 
-import { LoginState } from '../../_models/index';
 import { LoginStateService, AssayDataService } from '../../_services/index';
-import { AssayPaginationComponent } from '../assay-pagination/assay-pagination.component'
 
 @Component({
   selector: 'app-assay-plots',
@@ -19,7 +17,9 @@ export class AssayPlotsComponent implements OnDestroy {
 
   private loginSubscription: Subscription;
   public hasDoseResponseData = true;
+  public state = 'idle';
   private dataSubscription: Subscription;
+  private stateSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -38,23 +38,14 @@ export class AssayPlotsComponent implements OnDestroy {
       this.dataSubscription = this.dataSvc.flatAssayDataSource.subscribe(data => {
         this.hasDoseResponseData = !!data && data.length > 0;
       });
-  }
 
-  getDownloadUrl(){
-    if (this.aid === 'A00635') {
-      return "../../../assets/assay_one_offs/A00635_TP Reframe Dose response.xlsx";
-    } else if (this.aid === 'A00434') {
-      return "../../../assets/assay_one_offs/A00434.zip";
-    } else if (this.aid === 'A00236') {
-      return "../../../assets/assay_one_offs/A00236-ReframeDeconvolution-Combined.xlsx";
-    }
-    // Add more conditions as needed
-    return ""; // Default or empty if no match
+      this.stateSubscription = this.dataSvc.loadState$.subscribe(s => this.state = s);
   }
 
   ngOnDestroy() {
     this.loginSubscription.unsubscribe();
     this.dataSubscription.unsubscribe();
+    this.stateSubscription.unsubscribe();
   }
 
 }

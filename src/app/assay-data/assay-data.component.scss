@@ -1,191 +1,413 @@
-body {
-  font-family: 'Lato', sans-serif;
-  font-weight: 300;
+// Assay page: compact navy header (figures, byline, sticky section nav), then
+// background beside the facts table, results (chart capped at 1200px with
+// downloads beside it on wide screens) and protocol. Wide column; see
+// "Page width" in DESIGN.md.
+
+@import '../../design';
+
+:host {
+  @include full-bleed-host;
+  display: block;
 }
 
-.view-more,
-.screening-data,
-a,
-a.dwnld-link:hover {
-  color: #3D6DE0;
-  cursor: pointer;
+.page {
+  @include shell(var(--shell-wide));
+  padding-bottom: 48px;
 }
 
-.assay-id,
-.home-link {
-  margin-top: 6px;
-  margin-bottom: 0;
+.section {
+  @include content-section;
+  padding: 28px 0;
+
+  &#background {
+    border-top: 0;
+  }
+
+  h2 {
+    margin: 0 0 14px !important;
+    font-family: $sans;
+    font-size: 1.375rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: $ink;
+  }
 }
 
-.assay-id {
-  color: #c3c4c5;
+// Results: the chart is one object, so it stops at 1200px (names
+// included); on wide screens the downloads use the space beside it
+.results-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1200px);
+  grid-template-areas: "head" "aside" "main";
+  column-gap: 48px;
 }
 
-.home-link {
-  color: #3D6DE0;
-}
+.r-head { grid-area: head; }
+.r-main { grid-area: main; min-width: 0; }
 
-
-#viewmore button {
-  background-color: #3D6DE0;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
-  margin-left: 20px;
-  font-size: 0.85em;
-  font-weight: 500;
-  font-family: 'Lato', sans-serif;
-  cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-#viewmore button:hover {
-  background-color: #2f5ccf; /* Slightly darker shade for hover */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-
-#viewmore {
-  padding-top: 10px;
-}
-
-#screeningdata button {
-  background-color: #f4f4f4;
-  border-radius: 3px;
-  margin-left: 20px;
-  border: 1px #c5cbd0 solid;
-  -webkit-text-fill-color: #9ba4ae; // text
-  color: #b7bec5; // arrow
-  font-size: 0.75em;
-  font-weight: 300;
-  font-family: 'Lato', sans-serif;
-}
-
-#screeningdata {
-  padding-top: 10px;
-}
-
-#screeningdata button:hover {
-  background-color: #e1e4e7;
-}
-
-
-
-
-
-.overview {}
-
-.overview > ul {
-  list-style: none;
-  padding: 6px 10px;
-  background: #edf1fc;
-  border-radius: 3px;
-}
-
-.summary-box {
-  border-bottom: 1px solid #212529;
-  border-top: 1px solid #212529;
-  margin-top: 15px;
-  margin-bottom: 20px;
-  // padding-top: 15px;
-  padding-bottom: 15px;
-}
-
-.summary {
-  font-size: 20px;
-}
-
-#label {
-  font-weight: 400;
-}
-
-.condits {
-  color: #818182;
-  padding-top: 6px;
-}
-
-.subtitle {
-  font-size: 20px;
-  color: #212529;
-  padding-bottom: 3px;
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.description {
-  margin-bottom: 15px;
-}
-/* text */
-#protocol {
-  margin-top: 32px;
-  border-top: 1px solid #212529;
-}
-
-#protocol h3 {
-  margin-top: 0.5rem;
-  margin-top: 15px;
-  padding-top: 12px;
-}
-
-.summary-content {
-  margin-top: 15px;
-}
-
-.author {
-  width: 100%;
-  margin-top: 0;
-  border-top: none;
-  font-size: 0.8em;
-  color: #9ba4ae;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  margin-left: 1px;
-  padding-left: 10px;
-  border-bottom: #717e8c 1px dashed;
-}
-
-.citation-container {
+.r-aside {
+  grid-area: aside;
   display: flex;
-  font-size: 0.9em;
-  flex: 1;
-  justify-content: flex-end;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  margin-bottom: 16px;
 }
 
-.citation-group {
-  margin-top: 5px;
+@media (min-width: 1500px) {
+  .results-layout {
+    grid-template-columns: minmax(0, 1200px) minmax(220px, 280px);
+    grid-template-areas: "head aside" "main aside";
+  }
+
+  // Beside the chart: a short list, level with the heading
+  .r-aside {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin: 4px 0 0;
+    border-top: 1px solid $rule;
+  }
+
+  .r-aside .dl-title {
+    display: block;
+  }
+
+  .r-aside .dl-row {
+    justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid $rule-soft;
+  }
 }
 
-@media (max-width: 640px) {
-  .subtitle {
-    font-size: 1.2rem;
+.dl-title {
+  display: none;
+  margin: 8px 0 4px !important;
+  font-size: 0.75rem;
+  color: $ink-soft;
+}
+
+.dl-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+}
+
+.dl-label {
+  color: $ink-soft;
+}
+
+.dl-buttons {
+  display: flex;
+  gap: 4px;
+
+  button {
+    padding: 3px 9px;
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: $accent-deep;
+    background: #fff;
+    border: 1px solid $field-border;
+    border-radius: $radius-sharp;
+    cursor: pointer;
+
+    &:hover {
+      color: #fff;
+      background: $navy;
+      border-color: $navy;
+    }
+
+    @include focus-ring($accent, 2px);
+  }
+}
+
+.hint {
+  max-width: 80ch;
+  margin: -6px 0 16px !important;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: $ink-soft;
+}
+
+.prose {
+  @include prose;
+  max-width: 75ch;
+  margin: 0 0 12px !important;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: $ink;
+}
+
+.muted {
+  color: $ink-soft;
+}
+
+// Signed-out prompt and one-off notice: a tint panel with one action
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 20px;
+  background: $tint-bg;
+  border-radius: $radius-sharp;
+
+  p {
+    max-width: 60ch;
+    margin: 0 !important;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: $ink;
+  }
+}
+
+.notice-title {
+  margin-bottom: 4px !important;
+  font-weight: 600;
+}
+
+.btn {
+  @include button-navy;
+  flex-shrink: 0;
+  font-size: 0.9375rem;
+}
+
+// ---------------------------------------------------------------- protocol
+
+.protocol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+
+  h3 {
+    margin: 0 0 8px !important;
+    font-family: $sans;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $ink;
+  }
+}
+
+.kv {
+  margin: 4px 0 0;
+  border-top: 1px solid $rule-soft;
+
+  div {
+    display: grid;
+    grid-template-columns: 130px minmax(0, 1fr);
+    gap: 12px;
+    padding: 7px 0;
+    font-size: 0.875rem;
+    border-bottom: 1px solid $rule-soft;
   }
 
-  .summary {
-    font-size: 0.95rem;
+  dt {
+    font-weight: 400;
+    color: $ink-soft;
   }
 
-  .condits {
-    font-size: 0.9rem;
+  dd {
+    margin: 0;
+    color: $ink;
+  }
+}
+
+// ---------------------------------------------------------------- background
+
+.background {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 56px;
+  align-items: start;
+}
+
+// On wide screens the text flows into two columns rather than stretching
+// its lines (or leaving a gap before the facts table)
+.bg-text {
+  columns: 2 34em;
+  column-gap: 48px;
+
+  .prose {
+    max-width: none;
+    break-inside: avoid-column;
+  }
+}
+
+// Key facts as a two-column table beside the background text
+.facts {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  border-top: 1px solid $rule;
+
+  th,
+  td {
+    padding: 7px 0;
+    vertical-align: top;
+    border-bottom: 1px solid $rule-soft;
   }
 
-  .summary-box {
-    padding: 10px 0;
-    margin-top: 10px;
-    margin-bottom: 12px;
+  th {
+    width: 120px;
+    padding-right: 16px;
+    font-weight: 400;
+    color: $ink-soft;
+    white-space: nowrap;
   }
 
-  #viewmore button,
-  #screeningdata button {
-    min-height: 44px;
+  td {
+    color: $ink;
+    overflow-wrap: anywhere;
+  }
+
+  a {
+    color: $accent;
+  }
+}
+
+.publication {
+  margin-top: 20px;
+  font-size: 0.875rem;
+}
+
+.pub-label {
+  margin: 0 0 6px !important;
+  font-size: 0.75rem;
+  color: $ink-soft;
+}
+
+.cite {
+  margin: 0 0 10px !important;
+  line-height: 1.45;
+
+  a {
+    color: $ink;
+
+    &:hover {
+      color: $accent;
+    }
+  }
+}
+
+.cite-links {
+  display: flex;
+  gap: 12px;
+  margin-top: 2px;
+
+  a {
+    font-size: 0.8125rem;
+    color: $accent;
+  }
+}
+
+// ---------------------------------------------------------------- stage colours
+
+
+.stage-dd {
+  font-weight: 600;
+
+  &.prescreen { color: $status-pending; }
+  &.screening { color: $accent-text; }
+  &.completed { color: $status-approved; }
+  &.closed,
+  &.other { color: $ink-soft; }
+}
+
+// ---------------------------------------------------------------- header figures
+
+.figures {
+  flex-shrink: 0;
+  width: 300px;
+  margin: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+
+  .fig {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 5px 0;
+    border-bottom: 1px solid $rule-dark;
+  }
+
+  dt {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  dd {
+    margin: 0;
+    font-family: $mono;
+    font-size: 1rem;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+
+  // On navy the stage colours need their lighter forms
+  .stage-dd {
+    font-family: $sans;
+    font-size: 0.9375rem;
+
+    &.completed { color: #7fd6a7; }
+    &.screening { color: $accent-on-dark; }
+    &.prescreen { color: #f2c27b; }
+    &.closed,
+    &.other { color: rgba(255, 255, 255, 0.72); }
+  }
+}
+
+// ---------------------------------------------------------------- states
+
+.missing,
+.loading {
+  display: block;
+  padding-top: 40px;
+}
+
+.missing {
+  .eyebrow {
+    @include eyebrow;
+    margin: 0 0 6px !important;
+  }
+
+  a {
+    color: $accent;
+  }
+}
+
+.missing-title {
+  margin: 0 0 8px !important;
+  font-family: $sans;
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: $ink;
+}
+
+@media (max-width: $bp-nav) {
+  .figures {
+    align-self: stretch;
     width: 100%;
-    margin-left: 0;
-    margin-top: 6px;
-    border-radius: 8px;
   }
 
-  #viewmore,
-  #screeningdata {
-    padding-top: 6px;
+
+  .background {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+}
+
+@media (max-width: $bp-tablet) {
+  .protocol {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .notice {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

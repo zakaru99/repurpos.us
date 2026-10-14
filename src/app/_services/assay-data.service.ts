@@ -14,7 +14,7 @@ import * as d3 from "d3";
 })
 
 export class AssayDataService {
-  pixels_per_cmpd: number = 40;
+  pixels_per_cmpd: number = 25;   // 500 / 25 = 20 compounds per page
   nestedData: NestedAssayData[];
   assayData: any = [];
 
@@ -34,6 +34,10 @@ export class AssayDataService {
 
   totalPageSource = new BehaviorSubject<any>(null)
   totalPageSubject$ = this.totalPageSource.asObservable();
+
+  // Request state for the assay page: 'idle' | 'loading' | 'done' | 'error'
+  loadStateSource = new BehaviorSubject<string>('idle');
+  loadState$ = this.loadStateSource.asObservable();
 
 
   // Observable streams
@@ -57,7 +61,7 @@ export class AssayDataService {
   }
 
   retrieveAssayData(aid: string): void {
-    // if (this.loggedIn) {
+    this.loadStateSource.next('loading');
     this.http2.get('/api/data', {
       observe: 'response',
       headers: new HttpHeaders()
@@ -66,10 +70,17 @@ export class AssayDataService {
       params: new HttpParams()
         .set('assay', aid)
     }).subscribe((r) => {
-      this.assayData = <AssayData[]>r.body;
+      this.assayData = <AssayData[]>r.body || [];
+      this.loadStateSource.next('done');
+      if (!this.assayData.length) {
+        this.flatAssayDataSource.next([]);
+        return;
+      }
 
       // Pull out the limits for the *entire* dataset
-      let assayValues = this.assayData.map(function(d: any) { return d.ac50; });
+      // Only real concentrations: a log scale can't include 0, and Math.min
+      // treats a missing (null) value as 0
+      let assayValues = this.assayData.map((d: any) => Number(d.ac50)).filter(v => v > 0 && isFinite(v));
       let assayDomain = [Math.max(...assayValues), Math.min(...assayValues)];
       this.assayDomainSource.next(assayDomain);
 
@@ -84,6 +95,7 @@ export class AssayDataService {
       // this.filterData(this.currentPage, this.numPerPage, this.currentAssay);
     },
       error => {
+        this.loadStateSource.next('error');
         console.log('error in call to get assay data', error)
       }
     );
@@ -199,6 +211,7 @@ export class AssayDataService {
   }
 
   clearAssayData() {
+    this.loadStateSource.next('idle');
     this.flatAssayDataSource.next([]);
     this.assayDataSource.next([]);
     this.filteredDataSource.next([]);
