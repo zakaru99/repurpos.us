@@ -324,3 +324,50 @@ $hex-lattice: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' widt
     @include focus-ring($accent, 4px);
   }
 }
+
+// ---------------------------------------------------------------- content pages
+// About, Workflow, Contact: page header (app-page-header) then sections in the
+// centred column, separated by hairlines.
+
+// A section that the page header's nav can scroll to; the scroll offset
+// clears the sticky site header and the sticky section nav (46px)
+@mixin content-section {
+  display: block;
+  scroll-margin-top: calc(var(--site-header-height, 65px) + 62px);
+  padding: 48px 0;
+  border-top: 1px solid $rule;
+}
+
+@mixin content-heading {
+  margin: 0 0 16px;
+  font-family: $sans;
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: $ink;
+
+  @media (max-width: $bp-phone) {
+    font-size: 1.5rem;
+  }
+}
+
+// Readable running text
+@mixin prose {
+  p,
+  li {
+    max-width: 68ch;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: $ink;
+  }
+
+  p {
+    margin: 0 0 14px !important;
+  }
+
+  a {
+    color: $accent;
+  }
+}
+

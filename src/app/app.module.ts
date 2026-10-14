@@ -32,6 +32,7 @@ import { ExploreTabsComponent } from './intro-text-modern/explore-tabs/explore-t
 import { FooterComponent } from './footer/footer.component';
 import { IntroTextComponent } from './intro-text/intro-text.component';
 import { IntroTextModernComponent } from './intro-text-modern/intro-text-modern.component';
+import { HexTraceComponent } from './_components/hex-trace/hex-trace.component';
 import { ContactUsComponent } from './contact-us/contact-us.component';
 import { AssayProposalComponent } from './assay-proposal/assay-proposal.component';
 
@@ -76,6 +77,7 @@ import {IndicationsGraphComponent} from "./compound-data/indications-graph/indic
 import {ShowMoreButtonComponent, ShowMorePane} from "./compound-data";
 import { WorkflowComponent } from './workflow/workflow.component';
 import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
+import { PageHeaderModule } from './_components/page-header/page-header.module';
 import { OntologyColumnsComponent } from './ontology-tree/ontology-columns/ontology-columns.component';
 
 // import { SearchResultHeaderComponent } from './compound-search/search-result-header/search-result-header.component';
@@ -115,6 +117,7 @@ import { OntologyColumnsComponent } from './ontology-tree/ontology-columns/ontol
     KetcherComponent,
     IntroTextComponent,
     IntroTextModernComponent,
+    HexTraceComponent,
     HeroSearchComponent,
     ExploreTabsComponent,
     AssayIndicationComponent,
@@ -136,6 +139,7 @@ import { OntologyColumnsComponent } from './ontology-tree/ontology-columns/ontol
     // SearchResultHeaderComponent, ReframeFilterComponent, AssaysFilterComponent
   ],
   imports: [
+    PageHeaderModule,
     MatInputModule,
     MatAutocompleteModule,
     MatFormFieldModule,

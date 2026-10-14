@@ -56,6 +56,7 @@ p {
 
 .hero-grid {
   position: relative;
+  z-index: 1; // above the hex-trace light
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
   gap: 72px;

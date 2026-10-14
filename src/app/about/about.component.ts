@@ -17,14 +17,15 @@ export class AboutComponent implements OnInit {
     { property: 'og:url', content: 'https://reframedb.org/about' }
   ];
 
-  sections: Object[] = [
-    { label: "overview", link: "overview" },
-    { label: "tutorial", link: "tutorial" },
-    { label: "library access", link: "access" },
-    { label: "chemical diversity comparison", link: "diversity" },
-    // { label: "citing", link: "citation" },
-    { label: "sources", link: "sources" },
-    { label: "terms", link: "terms" }
+  // In-page sections, shown in the sticky nav of the page header
+  sections = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'tutorial', label: 'Tutorial' },
+    { id: 'access', label: 'Library access' },
+    { id: 'diversity', label: 'Chemical diversity' },
+    { id: 'sources', label: 'Data sources' },
+    { id: 'cite', label: 'How to cite' },
+    { id: 'terms', label: 'Terms of use' }
   ];
   private fragment: string;
 

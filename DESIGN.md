@@ -177,7 +177,11 @@ muted strip → navy footer. Don't put two dark bands next to each other.
   `<header>` element. Set `color: inherit` on it, or use a `<div>`.
 - Global and Bootstrap class names leak into components: `.wrap` (forces
   `word-break: break-all`), `.title` (uppercase grey), and Bootstrap's `.row`
-  (negative margins, flex-wrap). Don't use these names in a component.
+  (negative margins, flex-wrap), `.media` (flex) and `.figure` (inline-block).
+  Don't use these names in a component.
+- `position: sticky` only sticks within its parent. A component that renders
+  a sticky bar for the whole page (page-header) sets `display: contents` on
+  its host so the page, not the host, is that parent.
 - The page body defaults to Lato at weight 300. `@include full-bleed-host`
   resets it to Plex at 400; components that don't use the mixin need to set
   `font-weight: 400` themselves.

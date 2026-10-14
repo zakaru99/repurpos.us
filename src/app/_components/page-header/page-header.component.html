@@ -1,0 +1,14 @@
+<header class="band">
+  <div class="inner">
+    <p class="eyebrow" *ngIf="eyebrow">{{ eyebrow }}</p>
+    <h1>{{ title }}</h1>
+    <p class="lede" *ngIf="lede">{{ lede }}</p>
+  </div>
+</header>
+
+<nav class="sections" *ngIf="sections?.length" aria-label="On this page">
+  <div class="sections-inner">
+    <a *ngFor="let s of sections" [href]="'#' + s.id" [class.active]="active === s.id"
+       [attr.aria-current]="active === s.id ? 'location' : null" (click)="go(s, $event)">{{ s.label }}</a>
+  </div>
+</nav>

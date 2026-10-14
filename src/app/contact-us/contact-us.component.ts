@@ -28,26 +28,32 @@ export class ContactUsComponent {
     this.recaptchaToken = token;
   }
 
+  private done() {
+    this.isSubmitting = false;
+    this.recaptchaToken = null;
+    try { grecaptcha.reset(); } catch (e) { /* captcha not loaded */ }
+  }
+
   onSubmit(form: any) {
     if (!form.valid || !this.recaptchaToken) return;
 
     this.isSubmitting = true;
 
+    this.toastMessage = '';
+    this.toastType = '';
     this.http.post('/api/contact', { ...this.formData, recaptcha_token: this.recaptchaToken }).subscribe({
       next: () => {
-        this.toastMessage = "Message sent successfully!";
-        this.toastType = "success";
+        // The confirmation stays on the page until the person sends another
+        this.toastMessage = 'Message sent.';
+        this.toastType = 'success';
         form.resetForm();
+        this.done();
       },
+      // `complete` doesn't run after an error, so tidy up here too
       error: () => {
-        this.toastMessage = "Failed to send message.";
-        this.toastType = "error";
-      },
-      complete: () => {
-        this.isSubmitting = false;
-        this.recaptchaToken = null;
-        grecaptcha.reset();
-        setTimeout(() => (this.toastMessage = ''), 3000);
+        this.toastMessage = 'Failed to send message.';
+        this.toastType = 'error';
+        this.done();
       }
     });
   }

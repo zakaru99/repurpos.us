@@ -1,70 +1,82 @@
-  .workflow-card.about-card {
-    background: #f9fbff;
-    border-left: 5px solid #3d6de0;
-    border-radius: 12px;
-    padding: 1.5rem 1.5rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-    backdrop-filter: blur(4px);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+@import '../../../design';
 
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    }
-
+.eyebrow {
+  @include eyebrow;
+  margin: 0 0 8px !important;
 }
 
-.about-card h4 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 2rem;
-  color: #222;
+h2 {
+  @include content-heading;
 }
 
-.about-section p {
+.prose {
+  @include prose;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+  margin-top: 24px;
+}
+
+.btn {
+  @include button-navy;
+}
+
+.arrow-link {
+  @include arrow-link;
+}
+
+// Numbered criteria, the same treatment as the homepage partnership section
+.criteria {
+  list-style: none;
+  counter-reset: crit;
   margin: 0;
-  line-height: 1.6;
-  color: #333;
-}
-
-.about-section a {
-  color: #3d6de0;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.about-section a:hover {
-  text-decoration: underline;
-}
-
-.about-section ul {
-  margin: 0.75rem 0 0 1.25rem;
   padding: 0;
-  list-style-type: disc;
+  border-top: 1px solid $rule;
+
+  > li {
+    counter-increment: crit;
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    padding: 14px 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: $ink;
+    border-bottom: 1px solid $rule;
+
+    &::before {
+      content: counter(crit, decimal-leading-zero);
+      font-family: $mono;
+      font-size: 0.8125rem;
+      color: $accent-text;
+      padding-top: 2px;
+    }
+  }
+
+  ul {
+    margin: 6px 0 0;
+    padding-left: 18px;
+    color: $ink-soft;
+  }
+
+  a {
+    color: $accent;
+  }
 }
 
-.about-section ul ul {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  margin-left: 1.25rem;
-  list-style-type: circle;
-}
-
-.about-section li {
-  margin-bottom: 0.5rem;
-}
-
-.divider {
-  height: 1px;
-  background: #e7ecf6;
-  margin: 1.5rem 0;
-}
-
-.bold {
-  font-weight: 700;
-}
-
-.thin {
-  font-weight: 300;
+@media (max-width: $bp-tablet) {
+  .split {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
 }

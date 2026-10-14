@@ -1,116 +1,79 @@
-<section  class="contact-form">
-  <h2>Contact Us</h2>
-  <p class="subtitle">
-    Have questions, feedback, or need assistance? Send us a message below.
-  </p>
+<app-page-header eyebrow="Contact" title="Contact the REFRAME team"
+                 lede="Questions, feedback or need help with the data? Send us a message and we'll get back to you."></app-page-header>
 
-  <form #contactForm="ngForm" (ngSubmit)="onSubmit(contactForm)" novalidate>
-    
-    <!-- Section Header -->
-    <div class="form-section-header">Your Information</div>
+<div class="page">
+  <!-- Form -->
+  <section class="form-col">
+    <p class="eyebrow">Send a message</p>
 
-    <!-- Name -->
-    <div
-      class="form-row"
-      [ngClass]="{ 'has-error': name.invalid && (name.touched || contactForm.submitted) }"
-    >
-      <label for="name">Full Name</label>
-      <input
-        id="name"
-        type="text"
-        name="name"
-        [(ngModel)]="formData.name"
-        required
-        #name="ngModel"
-      />
-      <div class="error-message" *ngIf="name.invalid && (name.touched || contactForm.submitted)">
-        Name is required.
-      </div>
+    <div class="sent" *ngIf="toastType === 'success'" role="status">
+      <strong>Message sent.</strong> Thanks, we'll reply to the email address you gave.
+      <button type="button" class="link" (click)="toastType = ''; toastMessage = ''">Send another</button>
     </div>
 
-    <!-- Email -->
-    <div
-      class="form-row"
-      [ngClass]="{ 'has-error': email.invalid && (email.touched || contactForm.submitted) }"
-    >
-      <label for="email">Email Address</label>
-      <input
-        id="email"
-        type="email"
-        name="email"
-        [(ngModel)]="formData.email"
-        required
-        email
-        #email="ngModel"
-      />
-      <div
-        class="error-message"
-        *ngIf="email.errors?.required && (email.touched || contactForm.submitted)"
-      >
-        Email is required.
-      </div>
-      <div
-        class="error-message"
-        *ngIf="email.errors?.email && (email.touched || contactForm.submitted)"
-      >
-        Please enter a valid email address.
-      </div>
-    </div>
+    <form #contactForm="ngForm" (ngSubmit)="onSubmit(contactForm)" novalidate [hidden]="toastType === 'success'">
+      <div class="row-2">
+        <div class="field" [class.has-error]="name.invalid && (name.touched || contactForm.submitted)">
+          <label for="name">Name</label>
+          <input id="name" type="text" name="name" [(ngModel)]="formData.name" required #name="ngModel" autocomplete="name" />
+          <span class="error-message" *ngIf="name.invalid && (name.touched || contactForm.submitted)">Name is required.</span>
+        </div>
 
-    <!-- Subject -->
-    <div
-      class="form-row"
-      [ngClass]="{ 'has-error': subject.invalid && (subject.touched || contactForm.submitted) }"
-    >
-      <label for="subject">Subject</label>
-      <input
-        id="subject"
-        type="text"
-        name="subject"
-        [(ngModel)]="formData.subject"
-        required
-        #subject="ngModel"
-      />
-      <div class="error-message" *ngIf="subject.invalid && (subject.touched || contactForm.submitted)">
-        Subject is required.
+        <div class="field" [class.has-error]="email.invalid && (email.touched || contactForm.submitted)">
+          <label for="email">Email</label>
+          <input id="email" type="email" name="email" [(ngModel)]="formData.email" required email #email="ngModel" autocomplete="email" />
+          <span class="error-message" *ngIf="email.errors?.required && (email.touched || contactForm.submitted)">Email is required.</span>
+          <span class="error-message" *ngIf="email.errors?.email && (email.touched || contactForm.submitted)">Please enter a valid email address.</span>
+        </div>
       </div>
-    </div>
 
-    <!-- Message -->
-    <div
-      class="form-row"
-      [ngClass]="{ 'has-error': message.invalid && (message.touched || contactForm.submitted) }"
-    >
-      <label for="message">Message</label>
-      <textarea
-        id="message"
-        name="message"
-        rows="5"
-        placeholder="How can we help you?"
-        [(ngModel)]="formData.message"
-        required
-        #message="ngModel"
-      ></textarea>
-      <div class="error-message" *ngIf="message.invalid && (message.touched || contactForm.submitted)">
-        A message is required.
+      <div class="field" [class.has-error]="subject.invalid && (subject.touched || contactForm.submitted)">
+        <label for="subject">Subject</label>
+        <input id="subject" type="text" name="subject" [(ngModel)]="formData.subject" required #subject="ngModel" />
+        <span class="error-message" *ngIf="subject.invalid && (subject.touched || contactForm.submitted)">Subject is required.</span>
       </div>
-    </div>
 
-    <!-- Captcha -->
-    <div class="captcha-row">
-      <re-captcha (resolved)="onCaptchaResolved($event)" siteKey="6LcFYqYrAAAAAIHNVzxAutwuxAyHiSNuvi97tfj-"></re-captcha>
-    </div>
+      <div class="field" [class.has-error]="message.invalid && (message.touched || contactForm.submitted)">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="7" [(ngModel)]="formData.message" required #message="ngModel"></textarea>
+        <span class="error-message" *ngIf="message.invalid && (message.touched || contactForm.submitted)">A message is required.</span>
+      </div>
 
-    <!-- Submit -->
-    <div class="form-actions">
-      <button type="submit" [disabled]="!contactForm.valid || !recaptchaToken || isSubmitting">
-        {{ isSubmitting ? 'Sending...' : 'Send Message' }}
+      <div class="captcha-row">
+        <re-captcha (resolved)="onCaptchaResolved($event)" siteKey="6LcFYqYrAAAAAIHNVzxAutwuxAyHiSNuvi97tfj-"></re-captcha>
+      </div>
+
+      <p class="failed" *ngIf="toastType === 'error'" role="alert">{{ toastMessage }} Please try again, or email us directly.</p>
+
+      <button type="submit" class="btn" [disabled]="!contactForm.valid || !recaptchaToken || isSubmitting">
+        {{ isSubmitting ? 'Sending…' : 'Send message' }}
       </button>
-    </div>
+    </form>
+  </section>
 
-  </form>
+  <!-- Other ways to reach the team -->
+  <aside class="side">
+    <section>
+      <p class="eyebrow">Email</p>
+      <p><a href="mailto:reframescreens@scripps.edu">reframescreens@scripps.edu</a></p>
+    </section>
 
-  <div class="toast" *ngIf="toastMessage" [ngClass]="toastType">
-    {{ toastMessage }}
-  </div>
-</section>
+    <section>
+      <p class="eyebrow">Screening partnerships</p>
+      <p>To screen the REFRAME collection in your assay, start with a proposal.</p>
+      <p class="links">
+        <a class="arrow-link" routerLink="/assay_proposal">Submit an assay proposal</a>
+        <a class="arrow-link" routerLink="/workflow">How screening works</a>
+      </p>
+    </section>
+
+    <section>
+      <p class="eyebrow">About the data</p>
+      <p class="links">
+        <a class="arrow-link" routerLink="/about" fragment="sources">Data sources</a>
+        <a class="arrow-link" routerLink="/about" fragment="terms">Terms of use</a>
+        <a class="arrow-link" routerLink="/about" fragment="cite">How to cite REFRAME</a>
+      </p>
+    </section>
+  </aside>
+</div>

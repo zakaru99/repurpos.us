@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 // --- modules ---
 import { CitationModule } from '../citation/citation.module';
 import { TermsModule } from '../terms/terms.module';
+import { PageHeaderModule } from '../_components/page-header/page-header.module';
 
 // --- components ---
 import { AboutComponent } from './about.component';
@@ -18,7 +19,8 @@ import { AccessLibraryComponent } from './access-library/access-library.componen
     CommonModule,
     AboutRoutingModule,
     CitationModule,
-    TermsModule
+    TermsModule,
+    PageHeaderModule
   ],
   declarations: [
     AboutComponent,

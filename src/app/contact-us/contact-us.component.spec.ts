@@ -3,7 +3,10 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
+import { RouterTestingModule } from '@angular/router/testing';
+
 import { ContactUsComponent } from './contact-us.component';
+import { PageHeaderModule } from '../_components/page-header/page-header.module';
 
 @Component({ selector: 're-captcha', template: '' })
 class ReCaptchaStubComponent {
@@ -17,7 +20,7 @@ describe('ContactUsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ FormsModule, HttpClientTestingModule ],
+      imports: [ FormsModule, HttpClientTestingModule, RouterTestingModule, PageHeaderModule ],
       declarations: [ ContactUsComponent, ReCaptchaStubComponent ]
     })
     .compileComponents();

@@ -1,57 +1,135 @@
-<div class="workflow-section">
-  <h2><span class="bold">ReFRAME workflow</span></h2>
+<app-page-header eyebrow="Screening partnerships" title="Screening workflow" [lede]="lede"
+                 [sections]="sections"></app-page-header>
 
-  <div class="workflow-card">
-    <p>
-      To ensure a successful and efficient screen, please review the entire process. 
-      Standardized, linear-staged workflows and automation allow us to work with many partners at once. 
-      While we can sometimes accommodate alternative workflows, it is important to finalize everything before screening begins.
-    </p>
+<div class="page">
+  <div class="steps-col">
+
+    <section id="before" class="section">
+      <p class="eyebrow">Stage 1</p>
+      <h2>Before screening begins</h2>
+      <ol class="steps">
+        <li>
+          <span class="who partner">Partner</span>
+          <div>Fill out the <a routerLink="/assay_proposal">Assay Proposal</a> form</div>
+        </li>
+        <li>
+          <span class="who both">Both</span>
+          <div>MTA template provided by Calibr for signature at both institutions</div>
+        </li>
+        <li>
+          <span class="who partner">Partner</span>
+          <div>
+            Final <a href="assets/workflow/1_AssayRegistration.Description new 1.docx" download>Assay Description</a> form
+            delivered to Calibr (<a href="mailto:reframescreens@scripps.edu">reframescreens@scripps.edu</a>);
+            pre-screen meeting scheduled
+          </div>
+        </li>
+        <li>
+          <span class="who partner">Partner</span>
+          <div>
+            By default, partner agrees to a standard primary screen (singlicate) and two dose response sets for initial follow-up on.
+            <p class="note">
+              Dose sets are provided as replicate plates. Plates are prepared as 8-point 1:3 serial dilutions, starting at 10 μM unless otherwise discussed.
+              Exceptions must be approved by the ReFRAME committee. For these, the partner must complete the
+              <a href="assets/workflow/supplemental_QuantityException.docx" download>Quantity Exception</a> form.
+              More information on standard usage can be found <a href="assets/workflow/0_Can_I_use_Reframe.docx" download>here</a>.
+            </p>
+          </div>
+        </li>
+        <li>
+          <span class="who partner">Partner</span>
+          <div>
+            <span class="optional">Optional:</span> Partner sends Calibr controls dissolved in DMSO. Active concentration adjusted to match volume of the
+            screening compounds whenever possible. On average, 100 µL of 10 mM stock is sufficient.
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section id="round-1" class="section">
+      <p class="eyebrow">Stage 2</p>
+      <h2>Screening round 1</h2>
+      <ol class="steps">
+        <li>
+          <span class="who calibr">Calibr</span>
+          <div>Calibr sends partner <a href="assets/workflow/1_Regarding Pre-spotted Plates.docx" download>pre-spotted plates</a> and compound keys (as blinded CBR IDs) for primary screen.</div>
+        </li>
+        <li>
+          <span class="who partner">Partner</span>
+          <div>Partner performs screen and selects hits (up to 1% of the library)</div>
+        </li>
+        <li>
+          <span class="who partner">Partner</span>
+          <div>Partner sends hitlist as CBR IDs using the <a href="assets/workflow/2_PrimaryDataTemplate 3.xlsx" download>Primary Data</a> form</div>
+        </li>
+        <li>
+          <span class="who calibr">Calibr</span>
+          <div>Calibr sends partner two sets of pre-spotted dose response plates. One set can be used for a counter screen upon submission of an additional assay description form for the counter screen.</div>
+        </li>
+        <li>
+          <span class="who partner">Partner</span>
+          <div>Collaborator sends Calibr dose response data via <a href="assets/workflow/3_DoseResponseData.xlsx" download>Dose Response Data</a> form</div>
+        </li>
+        <li>
+          <span class="who calibr">Calibr</span>
+          <div>Calibr sends collaborator structure and identities of confirmed hits</div>
+        </li>
+      </ol>
+    </section>
+
+    <section id="counter" class="section">
+      <p class="eyebrow">Stage 3 · On ReFRAME committee approval</p>
+      <h2>Additional counter screens</h2>
+      <ol class="steps">
+        <li>
+          <span class="who calibr">Calibr</span>
+          <div>
+            In some cases, additional material for counter screen assays can be provided by Calibr.
+            <p class="note">
+              Requests for additional material or other resources will be reviewed by the ReFRAME committee.
+              Partners are asked to complete Screening Round 1 before additional requests for compounds.
+            </p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section id="after" class="section">
+      <p class="eyebrow">Stage 4</p>
+      <h2>After screening</h2>
+      <ol class="steps">
+        <li>
+          <span class="who calibr">Calibr</span>
+          <div>
+            Dose response data uploaded to ReFRAMEdb.org by Calibr 1 year after partner receives structure identities.
+            <p class="note">Partner can contact Calibr to request a delay under some circumstances.</p>
+          </div>
+        </li>
+        <li>
+          <span class="who partner">Partner</span>
+          <div>
+            Public success is the best way for our partners to support the ReFRAME project.
+            <p class="note">
+              Please notify Calibr of any publications, grants or studies that resulted from the ReFRAME screen using the
+              <a href="assets/workflow/3_Milestone_Check_In.docx" download>Milestone</a> document.
+            </p>
+          </div>
+        </li>
+      </ol>
+    </section>
   </div>
 
-  <h4>Before Screening Begins</h4>
-  <div class="workflow-card">
-    <ol>
-      <li>Fill out the <a routerLink="/assay_proposal">Assay Proposal</a> form</li>
-      <li>MTA template provided by Calibr for signature at both institutions</li>
-      <li>Final <a href="../../assets/workflow/1_AssayRegistration.Description new 1.docx" download>Assay Description</a> form delivered to Calibr <a href="mailto:reframescreens@scripps.edu">reframescreens@scripps.edu</a> pre-screen meeting scheduled</li>
-      <li>By default, partner agrees to a standard primary screen (singlicate) and two dose response sets for initial follow-up on.  
-        <br><small>Dose sets are provided as replicate plates. Plates are prepared as 8-point 1:3 serial dilutions, starting at 10 μM unless otherwise discussed. Exceptions must be approved by the ReFRAME committee. For these, the partner must complete the <a href="../../assets/workflow/supplemental_QuantityException.docx" download>Quantity Exception</a> form. More information on standard usage can be found <a href="../../assets/workflow/0_Can_I_use_Reframe.docx" download>here</a>.</small>
+  <!-- Forms: beside the steps (sticky) on wide screens, at the end on narrow -->
+  <aside id="forms" class="forms">
+    <p class="eyebrow">Forms and templates</p>
+    <ul>
+      <li *ngFor="let f of forms">
+        <a *ngIf="f.link" [routerLink]="f.link">{{ f.label }}</a>
+        <a *ngIf="f.href" [href]="f.href" download>{{ f.label }}</a>
+        <span class="kind">{{ f.note }}</span>
       </li>
-      <li>Optional: Partner sends Calibr controls dissolved in DMSO. Active concentration adjusted to match volume of the screening compounds whenever possible. On average, 100uL of 10mM stock is sufficient.</li>
-    </ol>
-  </div>
-
-  <h4>Screening Round 1</h4>
-  <div class="workflow-card">
-    <ol>
-      <li>Calibr sends partner <a href="../../assets/workflow/1_Regarding Pre-spotted Plates.docx" download>pre-spotted plates</a> and compound keys (as blinded CBR IDs) for primary screen.</li>
-      <li>Partner performs screen and selects hits (up to 1% of the library)</li>
-      <li>Partner sends hitlist as CBR IDs using the <a href="../../assets/workflow/2_PrimaryDataTemplate 3.xlsx" download>Primary Data</a> form</li>
-      <li>Calibr sends partner two sets of pre-spotted dose response plates. One set can be used for a counter screen upon submission of an additional assay description form for the counter screen.</li>
-      <li>Collaborator sends Calibr dose response data via <a href="../../assets/workflow/3_DoseResponseData.xlsx" download>Dose Response Data</a> form</li>
-      <li>Calibr sends collaborator structure and identities of confirmed hits</li>
-    </ol>
-  </div>
-
-  <h4>Additional Counter Screens (On ReFRAME committee approval)</h4>
-  <div class="workflow-card">
-    <ol>
-      <li>In some cases, additional material for counter screen assays can be provided by Calibr.  
-        <br><small>Requests for additional material or other resources will be reviewed by the ReFRAME committee. Partners are asked to complete Screening Round 1 before additional requests for compounds.</small>
-      </li>
-    </ol>
-  </div>
-
-  <h4>Post Screening Begins</h4>
-  <div class="workflow-card">
-    <ol>
-      <li>Dose response data uploaded to ReFRAMEdb.org by Calibr 1 year after partner receives structure identities.  
-        <br><small>Partner can contact Calibr to request a delay under some circumstances.</small>
-      </li>
-      <li>Public success is the best way for our partners to support the ReFRAME project.  
-        <br><small>Please notify Calibr of any publications, grants or studies that resulted from the ReFRAME screen using the <a href="../../assets/workflow/3_Milestone_Check_In.docx" download>Milestone</a> document.</small>
-      </li>
-    </ol>
-  </div>
+    </ul>
+    <p class="contact">Questions: <a href="mailto:reframescreens@scripps.edu">reframescreens@scripps.edu</a></p>
+    <a class="btn" routerLink="/assay_proposal">Submit an assay proposal</a>
+  </aside>
 </div>

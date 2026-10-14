@@ -8,6 +8,9 @@ import { IntroTextModernComponent } from './intro-text-modern.component';
 @Component({ selector: 'app-hero-search', template: '' })
 class HeroSearchStubComponent {}
 
+@Component({ selector: 'app-hex-trace', template: '' })
+class HexTraceStubComponent {}
+
 @Component({ selector: 'app-explore-tabs', template: '' })
 class ExploreTabsStubComponent {
   @Input() moaCategories: any;
@@ -24,7 +27,8 @@ describe('IntroTextModernComponent', () => {
       declarations: [
         IntroTextModernComponent,
         HeroSearchStubComponent,
-        ExploreTabsStubComponent
+        ExploreTabsStubComponent,
+        HexTraceStubComponent
       ]
     })
     .compileComponents();

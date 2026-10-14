@@ -1,0 +1,111 @@
+// Content-page header: compact hero band + sticky in-page section nav.
+
+@import '../../../design';
+
+// display: contents lets the sticky section nav stick for the whole page
+// instead of only within this element. The host page cancels the
+// .container-fluid gutter (full-bleed-host), so no negative margin here.
+:host {
+  display: contents;
+  font-family: $sans;
+  font-weight: 400;
+}
+
+.band {
+  @include hex-lattice;
+  background: $navy;
+  color: #fff;
+}
+
+.inner {
+  @include shell;
+  position: relative;
+  padding-top: 40px;
+  padding-bottom: 36px;
+}
+
+.eyebrow {
+  @include eyebrow(true);
+  margin: 0 0 8px !important;
+}
+
+h1 {
+  margin: 0;
+  font-family: $sans;
+  font-size: 2.25rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: #fff;
+}
+
+.lede {
+  max-width: 44em;
+  margin: 12px 0 0 !important;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+// In-page section nav: navy strip with the hero search's white underline tabs
+.sections {
+  @include sticky-subheader;
+  background: $navy;
+  border-top: 1px solid $rule-dark;
+}
+
+.sections-inner {
+  @include shell;
+  display: flex;
+  gap: 28px;
+  height: 46px;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    &.active {
+      color: #fff;
+      border-bottom-color: #fff;
+    }
+
+    @include focus-ring($accent-on-dark, -2px);
+  }
+}
+
+@media (max-width: $bp-phone) {
+  .inner {
+    padding-top: 28px;
+    padding-bottom: 24px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  .lede {
+    font-size: 1rem;
+  }
+
+  .sections-inner {
+    gap: 20px;
+  }
+}

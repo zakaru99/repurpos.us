@@ -1,71 +1,173 @@
-.workflow-section {
-  font-family: "Inter", sans-serif;
-  color: #333;
-  line-height: 1.6;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+// Screening workflow: stages of numbered steps (each labelled with who does
+// it) on the left, the forms list on the right.
+
+@import '../../design';
+
+:host {
+  @include full-bleed-host;
 }
 
-.workflow-section h2 {
-  text-align: center;
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 2rem;
-  color: #222;
+.page {
+  @include shell;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 64px;
+  align-items: start;
+  padding-bottom: 32px;
 }
 
-.workflow-section h4 {
-    margin: 2rem 0 1rem;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #222;
-    margin-bottom: 2rem;
-  }
-    .bold {
-      font-weight: 700;
-    }
-
-    .thin {
-      font-weight: 300;
-    }
-  
-
-/* Modern Card */
-.workflow-card {
-  background: #f9fbff;
-  border-left: 5px solid #3d6de0;
-  border-radius: 12px;
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.section {
+  @include content-section;
 }
 
-.workflow-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+.steps-col .section:first-child {
+  border-top: 0;
 }
 
-.workflow-card p {
-  margin-bottom: 1rem;
+.eyebrow {
+  @include eyebrow;
+  margin: 0 0 8px !important;
 }
 
-.workflow-card ol {
+h2 {
+  @include content-heading;
+}
+
+// Steps: number | who | what
+.steps {
+  list-style: none;
+  counter-reset: step;
   margin: 0;
-  padding-left: 1.25rem;
+  padding: 0;
+  border-top: 1px solid $rule;
+
+  > li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 32px 76px minmax(0, 1fr);
+    gap: 0 12px;
+    padding: 14px 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: $ink;
+    border-bottom: 1px solid $rule-soft;
+
+    &::before {
+      content: counter(step, decimal-leading-zero);
+      font-family: $mono;
+      font-size: 0.8125rem;
+      color: $ink-faint;
+      padding-top: 2px;
+    }
+  }
+
+  a {
+    color: $accent;
+  }
 }
 
-.workflow-card li {
-  margin-bottom: 0.75rem;
+// Who does the step
+.who {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding-top: 3px;
+
+  &.calibr { color: $navy; }
+  &.partner { color: $accent-text; }
+  &.both { color: $ink-soft; }
 }
 
-.workflow-card a {
-  color: #3d6de0;
-  font-weight: 500;
-  text-decoration: none;
+.note {
+  margin: 6px 0 0 !important;
+  max-width: 72ch;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: $ink-soft;
 }
 
-.workflow-card a:hover {
-  text-decoration: underline;
+.optional {
+  font-weight: 600;
+}
+
+// ---------------------------------------------------------------- forms aside
+
+.forms {
+  position: sticky;
+  top: calc(var(--site-header-height, 65px) + 46px + 24px);
+  scroll-margin-top: calc(var(--site-header-height, 65px) + 62px);
+  margin-top: 48px;
+  padding: 20px 22px 22px;
+  background: $tint-bg;
+  border-radius: $radius-sharp;
+
+  ul {
+    list-style: none;
+    margin: 0 0 16px;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 7px 0;
+    font-size: 0.9375rem;
+    border-bottom: 1px solid $rule-on-tint;
+
+    a {
+      color: $accent;
+    }
+  }
+
+  .kind {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    color: $ink-soft;
+  }
+
+  .contact {
+    margin: 0 0 16px !important;
+    font-size: 0.875rem;
+    color: $ink-soft;
+
+    a {
+      color: $accent;
+      overflow-wrap: anywhere;
+    }
+  }
+}
+
+.btn {
+  @include button-navy;
+  font-size: 0.9375rem;
+}
+
+@media (max-width: $bp-nav) {
+  .page {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .forms {
+    position: static;
+    margin: 0 0 32px;
+  }
+}
+
+@media (max-width: $bp-phone) {
+  .steps > li {
+    grid-template-columns: 28px minmax(0, 1fr);
+
+    .who {
+      grid-column: 2;
+      padding-top: 0;
+    }
+
+    > div {
+      grid-column: 2;
+    }
+  }
 }
