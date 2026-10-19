@@ -1,0 +1,152 @@
+// Account pages reached from email links (confirm email, reset password).
+// One task each, so no page banner: a narrow column in the upper part of the
+// page with the heading, one sentence and the action, in the sign-in box's
+// type, field and button styles. The site header and footer stay.
+// Import with: @import '../account'; @include account-page;
+
+@import '../design';
+
+@mixin account-page {
+  :host {
+    @include full-bleed-host;
+    display: block;
+  }
+
+  .page {
+    @include shell;
+    // Keeps the footer from riding up under a two-line page
+    min-height: calc(100vh - var(--site-header-height, 65px) - 280px);
+    padding-top: 72px;
+    padding-bottom: 96px;
+  }
+
+  // Not .col: Bootstrap's global .col adds side padding
+  .column {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    margin: 0 0 10px !important;
+    font-family: $sans;
+    font-size: 1.625rem;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: $ink;
+  }
+
+  .text {
+    margin: 0 0 24px !important;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: $ink-soft;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 0;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+
+    input {
+      box-sizing: border-box;
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      font: inherit;
+      font-size: 16px; // keeps iOS from zooming on focus
+      color: $ink;
+      background: #fff;
+      border: 1px solid $field-border;
+      border-radius: $radius-sharp;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+      &:hover {
+        border-color: $icon;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: $accent;
+        box-shadow: 0 0 0 1px $accent;
+      }
+    }
+
+    &.invalid input {
+      border-color: $status-rejected;
+    }
+  }
+
+  .field-label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: $ink;
+  }
+
+  .field-hint,
+  .field-error {
+    margin: 0 !important;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+
+  .field-hint {
+    color: $ink-soft;
+  }
+
+  .field-error {
+    color: $status-rejected;
+  }
+
+  .btn {
+    @include button-navy;
+    width: 100%;
+    padding-top: 11px;
+    padding-bottom: 11px;
+    font-size: 0.9375rem;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+  }
+
+  // Secondary way out, under the action
+  .aside {
+    margin: 20px 0 0 !important;
+    padding-top: 16px;
+    font-size: 0.875rem;
+    color: $ink-soft;
+    border-top: 1px solid $rule;
+
+    a,
+    .link {
+      padding: 0;
+      font: inherit;
+      font-weight: 500;
+      color: $accent;
+      background: none;
+      border: 0;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  @media (max-width: $bp-phone) {
+    .page {
+      padding-top: 40px;
+      padding-bottom: 64px;
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, HostListener } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
@@ -67,6 +67,14 @@ export class UserLoginComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (!this.open) { this.show('signin'); }
+  }
+
+  // Other pages can open the box on a given view:
+  // window.dispatchEvent(new CustomEvent('reframe-sign-in', { detail: { mode: 'forgot' } }))
+  @HostListener('window:reframe-sign-in', ['$event'])
+  onSignInRequest(event: CustomEvent) {
+    const mode = event && event.detail && event.detail.mode;
+    if (mode === 'register' || mode === 'forgot' || mode === 'signin') { this.show(mode); }
   }
 
   // Switch views, carrying a typed email across and clearing old messages

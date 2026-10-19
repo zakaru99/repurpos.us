@@ -222,7 +222,7 @@ large screens.
   `<header>` element. Set `color: inherit` on it, or use a `<div>`.
 - Global and Bootstrap class names leak into components: `.wrap` (forces
   `word-break: break-all`), `.title` (uppercase grey), and Bootstrap's `.row`
-  (negative margins, flex-wrap), `.media` (flex) and `.figure` (inline-block).
+  (negative margins, flex-wrap), `.col` (side padding), `.media` (flex) and `.figure` (inline-block).
   Don't use these names in a component.
 - `position: sticky` only sticks within its parent. A component that renders
   a sticky bar for the whole page (page-header) sets `display: contents` on
