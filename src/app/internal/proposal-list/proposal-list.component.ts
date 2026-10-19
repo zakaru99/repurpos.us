@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { ProposalDetailDialogComponent } from '../proposal-detail-dialog/proposal-detail-dialog.component';
 import { reject } from 'lodash';
@@ -48,7 +48,8 @@ export class ProposalListComponent implements OnInit {
   fetchProposals(): void {
     this.isLoading = true;
 
-    this.http.get<{ success: boolean; data: Proposal[] }>('/api/assay_proposal')
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
+    this.http.get<{ success: boolean; data: Proposal[] }>('/api/assay_proposal', { headers })
       .subscribe({
         next: (response) => {
           if (response.success) {

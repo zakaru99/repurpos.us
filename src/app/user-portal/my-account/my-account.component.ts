@@ -83,7 +83,8 @@ export class MyAccountComponent implements OnInit {
   }
 
   private loadAssaySummary(email: string): void {
-    this.http.get<{ success: boolean; data: any[] }>(`/api/assay_proposal?email=${email}`)
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
+    this.http.get<{ success: boolean; data: any[] }>(`/api/assay_proposal?email=${email}`, { headers })
       .subscribe({
         next: (res) => {
           if (res.success) {
