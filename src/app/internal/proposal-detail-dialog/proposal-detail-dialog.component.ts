@@ -1,7 +1,7 @@
 import { Component, Inject, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Proposal } from '../../_models';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-proposal-detail-dialog',
@@ -85,7 +85,8 @@ export class ProposalDetailDialogComponent implements AfterViewChecked {
 
     this.dialogRef.close({ updated: true, status, reason });
 
-    this.http.post('/api/update_proposal_status', payload).subscribe({
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
+    this.http.post('/api/update_proposal_status', payload, { headers }).subscribe({
       next: (res: any) => {
         console.log('Proposal updated', res);
       },
