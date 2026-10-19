@@ -201,6 +201,9 @@ large screens.
   (`$table-head`) so it reads apart from the rows; a selected row is tinted
   with an accent edge on the left so it never looks like a second header.
   Prefer tables to cards for anything that is mostly text to compare.
+  Any table that can run longer than the screen gets a sticky header row
+  (`sticky-table-head` mixin), which sticks under the site header and the
+  section nav.
 - **Assays page** (`/assays`): cards, because each assay is read as a unit.
   A stage-tinted top strip (ID and stage), then indication, title and
   summary, then a grey footer with the assay format and compounds screened.
@@ -223,7 +226,10 @@ large screens.
   Don't use these names in a component.
 - `position: sticky` only sticks within its parent. A component that renders
   a sticky bar for the whole page (page-header) sets `display: contents` on
-  its host so the page, not the host, is that parent.
+  its host so the page, not the host, is that parent. The same goes for any
+  component that wraps the page header (`compound-header` does this too).
+- Sticky table headers stop working inside an `overflow-x: auto` wrapper.
+  Only let table wrappers scroll sideways on phones.
 - The page body defaults to Lato at weight 300. `@include full-bleed-host`
   resets it to Plex at 400; components that don't use the mixin need to set
   `font-weight: 400` themselves.

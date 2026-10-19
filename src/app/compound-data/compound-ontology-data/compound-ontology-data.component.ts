@@ -1,42 +1,42 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { VendorData} from '../../_models/index';
+import { VendorData } from '../../_models/index';
 import { CompoundService } from '../../_services/index';
 
+// Where the compound sits in the REFRAME mechanism-of-action ontology: one
+// row per mechanism, linking into the ontology tree.
 @Component({
   selector: 'app-compound-ontology-data',
   templateUrl: './compound-ontology-data.component.html',
   styleUrls: ['./compound-ontology-data.component.scss']
 })
+export class CompoundOntologyDataComponent {
+  // Position of the ontology record in the vendor data (after integrity, gvk, informa)
+  private readonly ONTOLOGY_INDEX = 3;
 
-export class CompoundOntologyDataComponent implements OnInit {
-  private vendors: Array<Object> = [
-    { 'name': 'Clarivate Integrity', 'link': 'https://www.cortellis.com/drugdiscovery/home', 'id': 'integrity', 'updated': ''},
-    { 'name': 'GVK Excelra GoStar', 'link': 'https://gostardb.com/gostar/loginEntry.do', 'id': 'gvk', 'updated': ''},
-    { 'name': 'Citeline Pharmaprojects', 'link': 'https://pharmaintelligence.informa.com/contact/contact-us', 'id': 'informa', 'updated': ''}, //needs to be above adis to work
-    { 'name': 'Ontology', 'link': 'https://google.com','id': 'ontology', 'updated': ''}, //needs to be above adis to work
-  ];
+  open = false;
 
-  public vendor_data: VendorData;
+  public rows: Array<{ category: string; moa: string; path: string; source: string; src: string; node: string }> = [];
+
+  get moaSummary(): string {
+    return this.rows.map(r => r.moa).filter((m, i, a) => m && a.indexOf(m) === i).join(', ');
+  }
 
   constructor(private cmpdSvc: CompoundService) {
     this.cmpdSvc.vendorState.subscribe((vdata: VendorData) => {
-      this.vendor_data = vdata;
-    })
+      this.rows = [];
+      this.open = false;
+      const entries: any[] = (vdata && vdata[this.ONTOLOGY_INDEX]) || [];
+      entries.filter(x => x && x.node_id).forEach(x => {
+        (x.entity_name || []).forEach((name: string, i: number) => this.rows.push({
+          category: name,
+          moa: (x.parent_moa || [])[i],
+          path: (x.parent_moa_path || [])[i],
+          source: (x.xref || [])[i],
+          src: (x.entity_id || [])[i],
+          node: (x.node_id || [])[i]
+        }));
+      });
+    });
   }
-
-  ngOnInit() {
-  }
-
-  ontology_text = 'Show Data'
-  hide_ontology: boolean = true;
-  toggle_ontology(){
-    this.hide_ontology = !this.hide_ontology; 
-    if(this.hide_ontology == true){
-      this.ontology_text = 'Show Data'
-    }else{
-      this.ontology_text = 'Hide Data'
-    }
-  }
-
 }

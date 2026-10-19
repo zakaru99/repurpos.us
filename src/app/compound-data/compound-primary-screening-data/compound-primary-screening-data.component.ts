@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import * as d3 from 'd3';
 import { PrimaryScreenData } from '../../_models/index';
-import { CompoundService, ColorPaletteService } from '../../_services';
+import { CompoundService } from '../../_services';
 
 @Component({
   selector: 'app-primary-screening-data',
@@ -10,77 +9,60 @@ import { CompoundService, ColorPaletteService } from '../../_services';
 })
 export class CompoundPrimaryScreeningDataComponent implements OnInit {
   primaryData: Array<PrimaryScreenData> = [];
+  hitsOnly = false;
+  open = false;
+
+  readonly columns = [
+    { key: 'title_short', label: 'Assay' },
+    { key: 'indication', label: 'Indication' },
+    { key: 'hit', label: 'Result' }
+  ];
 
   // Sorting
-  sortColumn: string = '';
+  sortColumn = '';
   sortDirection: 'asc' | 'desc' = 'asc';
 
-  constructor(private cmpdSvc: CompoundService, public colorSvc: ColorPaletteService) { }
+  constructor(private cmpdSvc: CompoundService) { }
 
   ngOnInit() {
     this.cmpdSvc.primaryDataState.subscribe((pd: PrimaryScreenData[]) => {
-      this.primaryData = pd;
-
-    })
+      this.primaryData = pd || [];
+    });
   }
 
-  psd_text = 'Show Data'
-  hide_psd: boolean = true;
-  toggle_psd(){
-    this.hide_psd = !this.hide_psd; 
-    if(this.hide_psd == true){
-      this.psd_text = 'Show Data'
-    }else{
-      this.psd_text = 'Hide Data'
-    }
+  get hitCount(): number {
+    return this.primaryData.filter(x => x.hit).length;
   }
 
-  // Sorting function
+  get shownRows(): PrimaryScreenData[] {
+    return this.hitsOnly ? this.primaryData.filter(x => x.hit) : this.primaryData;
+  }
+
+  ariaSort(key: string): string {
+    if (this.sortColumn !== key) { return null; }
+    return this.sortDirection === 'asc' ? 'ascending' : 'descending';
+  }
+
   sortData(column: string) {
     if (this.sortColumn === column) {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
       this.sortColumn = column;
-      this.sortDirection = 'asc';
+      // Hits first on the first click
+      this.sortDirection = column === 'hit' ? 'desc' : 'asc';
     }
-
+    const dir = this.sortDirection === 'asc' ? 1 : -1;
     this.primaryData.sort((a: any, b: any) => {
       let valA = a[column];
       let valB = b[column];
-
-      // Handle numbers
-      if (!isNaN(valA) && !isNaN(valB)) {
-        return this.sortDirection === 'asc' ? valA - valB : valB - valA;
+      if (column === 'title_short') {
+        valA = valA || a.assay_title;
+        valB = valB || b.assay_title;
       }
-
-      // Handle strings
-      valA = valA ? valA.toString().toLowerCase() : '';
-      valB = valB ? valB.toString().toLowerCase() : '';
-      return this.sortDirection === 'asc' ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
+      if (typeof valA === 'boolean' || typeof valB === 'boolean') {
+        return ((valA ? 1 : 0) - (valB ? 1 : 0)) * dir;
+      }
+      return (valA || '').toString().toLowerCase().localeCompare((valB || '').toString().toLowerCase()) * dir;
     });
-  }
-
-  update_tabs(){
-    const tabs = d3.select('#tabs');
-    if (this.hide_hits == false) {
-      tabs.select('#all_screened').classed('active', true);
-      tabs.select('#hits_only').classed('active', false);
-    }else{
-        tabs.select('#all_screened').classed('active', false);
-        tabs.select('#hits_only').classed('active', true);
-      } 
-  }
-  
-
-   
-  hide_hits: boolean = false;
-  view_hits(){
-    this.hide_hits = true;
-    this.update_tabs()
-  }
-
-  view_all(){
-    this.hide_hits = false; 
-    this.update_tabs()
   }
 }

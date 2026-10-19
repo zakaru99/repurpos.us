@@ -23,7 +23,7 @@ import { TermsModule } from './terms/terms.module';
 
 // --- Components ---
 import { AppComponent } from './app.component';
-import { ForgotPasswordComponent, LoginFailComponent, UserRegistrationComponent, AssayDetailsModalComponent } from './_dialogs/index';
+import { AssayDetailsModalComponent } from './_dialogs/index';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { HeaderComponent } from './header/header.component';
@@ -43,10 +43,8 @@ import {
   AssayIndicationComponent,
 } from './compound-search/index';
 import {
-  ForgotPassButtonComponent,
   LoaderComponent,
   QuickSearchComponent, UserLoginComponent,
-  UserRegButtonComponent,
   DialogOverviewExample,
   DialogOverviewExampleDialog,
   MenuBarComponent,
@@ -102,13 +100,8 @@ import { OntologyColumnsComponent } from './ontology-tree/ontology-columns/ontol
     DialogOverviewExampleDialog,
     SearchResultsTableComponent,
     SearchResultSimilarComponent,
-    UserRegistrationComponent,
     UserLoginComponent,
-    UserRegButtonComponent,
-    ForgotPassButtonComponent,
-    LoginFailComponent,
     LoaderComponent,
-    ForgotPasswordComponent,
     ResetPasswordComponent,
     QuickSearchComponent,
     StructureSearchOptionsComponent,
@@ -178,9 +171,6 @@ import { OntologyColumnsComponent } from './ontology-tree/ontology-columns/ontol
   entryComponents: [
     DialogOverviewExample,
     DialogOverviewExampleDialog,
-    UserRegistrationComponent,
-    LoginFailComponent,
-    ForgotPasswordComponent,
     AssayDetailsModalComponent
   ],
 

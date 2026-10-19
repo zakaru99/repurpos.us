@@ -24,6 +24,12 @@ export class CompoundVendorDataComponent implements OnInit {
 
   public vendor_data: VendorData;
 
+  // One block per data source that has something to show, each entry with its
+  // phase worked out once (the template used to recompute it on every check)
+  // Selected source tab
+  public active = 0;
+  public sources: Array<{ meta: any; entries: Array<{ x: any; phase: { title: string; text: string; values: string[] } }> }> = [];
+
   // Mirrors PHASE_ORDER in search-results-table.component.ts and
   // best_phase()/PHASE_ORDER in repurpos-backend views.py.
   private PHASE_ORDER: { [key: string]: number } = {
@@ -45,7 +51,9 @@ export class CompoundVendorDataComponent implements OnInit {
   constructor(private cmpdSvc: CompoundService) {
     this.cmpdSvc.vendorState.subscribe((vdata: VendorData) => {
       this.vendor_data = vdata;
-    })
+      this.sources = this.buildSources(vdata);
+      this.active = 0;
+    });
   }
 
   ngOnInit() {
@@ -97,6 +105,39 @@ export class CompoundVendorDataComponent implements OnInit {
     }
 
     return x && x['highest_phase'] ? 'Highest Phase:' : 'Phase:';
+  }
+
+  private buildSources(vdata: any): Array<any> {
+    if (!vdata || !vdata.length) { return []; }
+    const out = [];
+    vdata.forEach((vendor: any[], k: number) => {
+      const meta: any = this.vendors[k];
+      if (!meta || meta['id'] === 'ontology' || !vendor || !vendor.length) { return; }
+      const v0 = vendor[0] || {};
+      if (!(v0.ikey || v0.drug_name || v0.phase || v0.gvk_id || v0.id || v0.informa_id)) { return; }
+      out.push({
+        meta,
+        entries: vendor.filter(x => !!x).map(x => ({ x, phase: this.phaseInfo(x, meta['id']) }))
+      });
+    });
+    return out;
+  }
+
+  // Phase line for one entry: the combo-elevated highest phase for Integrity,
+  // otherwise the source's own phase or highest phase
+  private phaseInfo(x: any, vendorId: string): { title: string; text: string; values: string[] } {
+    if (this.hasDisplayPhase(x, vendorId)) {
+      const text = this.displayHighestPhase(x, vendorId);
+      return { title: 'Highest phase', text, values: [text] };
+    }
+    if ((x.hasOwnProperty('phase') && x['phase'].length > 0) || x.hasOwnProperty('highest_phase')) {
+      return {
+        title: this.getDisplayPhaseTitle(x, vendorId) === 'Phase:' ? 'Phase' : 'Highest phase',
+        text: this.displayHighestPhase(x, vendorId),
+        values: this.getDisplayPhaseValues(x, vendorId)
+      };
+    }
+    return null;
   }
 
   private getPhaseCandidates(x: any): string[] {

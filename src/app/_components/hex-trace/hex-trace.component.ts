@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy } from '@angular/core';
 
 // Points of light that travel right to left along the hero's
-// hexagon lattice (hex-lattice in _design.scss) once on page load, each soft from
-// the start and dimming as they go. Each route is a random walk over the lattice's
+// hexagon lattice (hex-lattice in _design.scss): a burst on page load, then a
+// single pulse every few seconds at a random height. Each is soft from the
+// start and dims as it goes. Each route is a random walk over the lattice's
 // real edges, so the light stays on the lines.
 //
 // Lattice tile (31.18 x 54, origin at the host's top-left): a pointy-top
@@ -25,6 +26,11 @@ const SVG_NS = 'http://www.w3.org/2000/svg';
 export class HexTraceComponent implements AfterViewInit, OnDestroy {
   private timer: any;
   private svg: SVGSVGElement;
+  private destroyed = false;
+
+  // Gap between the follow-up pulses, in ms
+  private readonly AMBIENT_MIN = 3000;
+  private readonly AMBIENT_MAX = 7000;
 
   constructor(private host: ElementRef) { }
 
@@ -36,7 +42,9 @@ export class HexTraceComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.destroyed = true;
     clearTimeout(this.timer);
+    if (this.svg) { this.svg.remove(); this.svg = null; }
   }
 
   private run() {
@@ -58,14 +66,40 @@ export class HexTraceComponent implements AfterViewInit, OnDestroy {
     // of bunching; staggered starts so they read as separate pulses.
     const count = Math.max(3, Math.min(7, Math.round(w / 220)));
     const order = this.shuffle(Array.from({ length: count }, (_, i) => i));
-    let running = count;
+    let lastDelay = 0;
     order.forEach((band, i) => {
       const y = h * (0.12 + 0.76 * (band + 0.2 + Math.random() * 0.6) / count);
       const delay = i * 280 + Math.random() * 200;
-      this.trace(svg, w, h, y, delay, () => {
-        if (--running === 0) { svg.remove(); this.svg = null; }
-      });
+      lastDelay = Math.max(lastDelay, delay);
+      this.trace(svg, w, h, y, delay, () => { });
     });
+
+    // Then random single pulses, starting once the burst has mostly passed
+    this.timer = setTimeout(() => this.ambient(), lastDelay + 2500);
+  }
+
+  // One pulse at a random height, then schedule the next. Skipped (but still
+  // rescheduled) while the tab is hidden or the hero is scrolled out of view.
+  private ambient() {
+    if (this.destroyed || !this.svg) { return; }
+    const el: HTMLElement = this.host.nativeElement;
+    const rect = el.getBoundingClientRect();
+    const visible = !document.hidden && rect.bottom > 0 && rect.top < window.innerHeight;
+    const w = el.clientWidth;
+    const h = el.clientHeight;
+
+    if (visible && w >= 400 && h >= 150) {
+      // Keep the viewBox in step with the hero if the window was resized
+      this.svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      this.trace(this.svg, w, h, h * (0.12 + 0.76 * Math.random()), 0, () => { });
+      // Now and then a second one close behind, so the rhythm isn't metronomic
+      if (Math.random() < 0.25) {
+        this.trace(this.svg, w, h, h * (0.12 + 0.76 * Math.random()), 400 + Math.random() * 600, () => { });
+      }
+    }
+
+    const gap = this.AMBIENT_MIN + Math.random() * (this.AMBIENT_MAX - this.AMBIENT_MIN);
+    this.timer = setTimeout(() => this.ambient(), gap);
   }
 
   private trace(svg: SVGSVGElement, w: number, h: number, startY: number, delay: number, done: () => void) {
@@ -113,7 +147,8 @@ export class HexTraceComponent implements AfterViewInit, OnDestroy {
       [{ opacity: 0 }, { opacity: 0.6, offset: 0.06 }, { opacity: 0.3, offset: 0.4 }, { opacity: 0.08, offset: 0.7 }, { opacity: 0 }],
       Object.assign({ easing: 'linear' }, timing)
     );
-    fade.onfinish = done;
+    // Remove the finished pulse so the SVG doesn't fill up over time
+    fade.onfinish = () => { group.remove(); done(); };
   }
 
   private shuffle<T>(a: T[]): T[] {

@@ -10,6 +10,7 @@ import { CompoundService, TanimotoScaleService } from '../../_services/index';
 class Struct2dStubComponent {
   @Input() structure: any;
   @Input() struct_type: any;
+  @Input() launch_search: boolean;
 }
 
 @Component({ selector: 'app-available-data', template: '' })

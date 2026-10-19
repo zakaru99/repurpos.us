@@ -1,5 +1,7 @@
-// Header quick search: an icon that opens into a field, with the
-// compound/assay scope and suggestions in a panel underneath.
+// Header quick search: an icon that opens into a field, with the compound /
+// assay scope, suggestions and a "search all" row in a panel attached to its
+// bottom edge. Same field, focus ring and suggestion rows as the homepage
+// search (intro-text-modern/hero-search), sized for the header.
 
 @import '../../../design';
 
@@ -17,26 +19,33 @@ form.search {
 
 .search label {
   position: absolute;
-  left: 8px;
   top: 50%;
-  transform: translateY(-50%);
+  left: 9px;
+  z-index: 1;
   margin: 0;
   line-height: 0;
+  transform: translateY(-50%);
   cursor: pointer;
-  z-index: 1;
+}
 
-  mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-    color: $ink-soft;
-  }
+.search-icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: $ink-soft;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.search.expanded .search-icon {
+  stroke: $ink;
 }
 
 .input-toggle-wrapper {
   position: relative;
 }
 
+// Closed: just the icon. Open: a squared white field.
 .search input[type="text"] {
   box-sizing: border-box;
   width: 36px;
@@ -47,7 +56,7 @@ form.search {
   color: $ink;
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 2px;
+  border-radius: $radius-sharp;
   cursor: pointer;
   transition: width 0.25s ease, background 0.2s ease, border-color 0.2s ease;
 
@@ -61,48 +70,62 @@ form.search {
 }
 
 .search.expanded input[type="text"] {
-  width: 280px;
+  width: 320px;
   background: #fff;
   border-color: $field-border;
   cursor: text;
-  outline: none;
 
   &::placeholder {
     color: $ink-faint;
   }
 
+  // Same inset ring as the homepage search
   &:focus {
+    outline: none;
     border-color: $accent;
+    box-shadow: inset 0 0 0 1px $accent;
   }
+}
+
+// The panel joins the field: no gap, square top corners, same width
+.search.open input[type="text"] {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .qs-panel {
   position: absolute;
-  top: calc(100% + 6px);
+  top: 100%;
   left: 0;
-  width: 100%;
-  min-width: 280px;
-  box-sizing: border-box;
-  background: #fff;
-  border: 1px solid $rule;
-  box-shadow: 0 12px 28px rgba(15, 27, 45, 0.14);
   z-index: 1000;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 320px;
+  background: #fff;
+  border: 1px solid $field-border;
+  border-top: 0;
+  border-radius: 0 0 $radius-sharp $radius-sharp;
+  box-shadow: 0 12px 28px rgba(8, 20, 45, 0.18);
 }
 
+// Scope: text tabs, as above the homepage search
 .search-toggle {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   padding: 0 14px;
   border-bottom: 1px solid $rule-soft;
 }
 
 .toggle-option {
+  margin-bottom: -1px;
   padding: 10px 0 8px;
+  font: inherit;
   font-size: 0.8125rem;
   font-weight: 500;
   color: $ink-soft;
+  background: none;
+  border: 0;
   border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
   cursor: pointer;
   transition: color 0.15s ease, border-color 0.15s ease;
 
@@ -114,25 +137,65 @@ form.search {
     color: $ink;
     border-bottom-color: $accent;
   }
+
+  @include focus-ring($accent, 2px);
 }
 
 .suggestions-dropdown {
-  list-style: none;
+  max-height: 280px;
   margin: 0;
   padding: 4px 0;
-  max-height: 260px;
   overflow-y: auto;
+  list-style: none;
 
   li {
-    padding: 8px 14px;
-    font-size: 0.875rem;
+    padding: 9px 14px;
+    overflow: hidden;
+    font-size: 0.9375rem;
     color: $ink;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     cursor: pointer;
-
-    &:hover {
-      background: $selected;
-    }
   }
+
+  li.highlighted {
+    background: $selected;
+  }
+}
+
+// "Search compounds for "…"" with the Enter key hint
+.search-all {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  overflow: hidden;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $accent;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-top: 1px solid $rule-soft;
+  cursor: pointer;
+
+  &:hover {
+    background: $hover;
+  }
+}
+
+.key {
+  flex-shrink: 0;
+  padding: 1px 6px;
+  font-family: $mono;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  color: $ink-soft;
+  border: 1px solid $rule;
+  border-radius: $radius-sharp;
 }
 
 @media (max-width: 1080px) {
@@ -149,11 +212,12 @@ form.search {
     }
   }
 
-  .input-toggle-wrapper {
+  .input-toggle-wrapper,
+  form.search {
     width: 100%;
   }
 
-  form.search {
-    width: 100%;
+  .qs-panel {
+    min-width: 0;
   }
 }

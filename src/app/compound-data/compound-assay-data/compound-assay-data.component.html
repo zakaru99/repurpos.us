@@ -1,87 +1,54 @@
-<div id='assays'>
-  <div *ngIf="assayData.length > 0">
-    <div class="d-flex justify-content-between assay-header">
-      <h3 class="header-title-plus-btn" [ngClass]="hide_activity ? 'hidden' : 'shown'">Dose Response Activity <button type="submit" (click)="toggle_activity_data()" mat-flat-button color="accent">{{activity_text}}</button></h3>
-      <!-- <button class="float-right vendor-btn" (click)="showVendor = !showVendor" aria-label="show vendor source data">show vendor source</button> -->
-    </div>
+<!-- Dose-response results: open by default, the first rows shown, the rest one click away -->
+<div class="block" *ngIf="assayData.length > 0">
+  <button type="button" class="disclosure" (click)="open = !open" [attr.aria-expanded]="open">
+    <span class="chev"></span>
+    <span class="d-title">Dose response</span>
+    <span class="d-summary">{{ summary }}</span>
+  </button>
 
-
-    <!-- ASSAY TABLE -->
-    <div class="table-responsive">
-      <table class="assay-table table" [ngClass]="hide_activity ? 'hidden' : 'shown'">
+  <div class="panel" *ngIf="open">
+  <div class="scroll">
+    <table class="results">
+      <thead>
         <tr>
-          <th class="header-title align-middle sortable" (click)="sortData('assay_id')">
-            Assay ID <span class="sort-arrow" *ngIf="sortColumn === 'assay_id'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
+          <th *ngFor="let c of columns" [class.num]="c.num" [attr.aria-sort]="ariaSort(c.key)">
+            <button type="button" class="sort" (click)="sortData(c.key)">{{ c.label }}<span class="arrow" *ngIf="sortColumn === c.key">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span></button>
           </th>
-          <th class="header-title align-middle assay-name col sortable" (click)="sortData('title_short')">
-            Assay title <span class="sort-arrow" *ngIf="sortColumn === 'title_short'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
-          </th>
-          <th class="header-title align-middle assay-indic sortable" (click)="sortData('indication')">
-            Indication <span class="sort-arrow" *ngIf="sortColumn === 'indication'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
-          </th>
-          <th class="header-title align-middle sortable" (click)="sortData('activity_type')">
-            Activity<br/>type <span class="sort-arrow" *ngIf="sortColumn === 'activity_type'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
-          </th>
-          <th class="header-title align-middle sortable" (click)="sortData('ac50')">
-            Measurement <span class="sort-arrow" *ngIf="sortColumn === 'ac50'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
-          </th>
-          <th class="header-title align-middle">
-            Curve
-          </th>
-          <th class="header-title align-middle sortable" (click)="sortData('source')">
-            Assay Source <span class="sort-arrow" *ngIf="sortColumn === 'source'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
-          </th>
+          <th>Curve</th>
         </tr>
-
-        <tr *ngFor="let x of assayData">
-          <td class="content align-middle" data-label="Assay ID">
-            <a [routerLink]="['/assays', x['assay_id']]">
-              <span [outerHTML]="x['assay_id'] | sciItalicize"></span>
+      </thead>
+      <tbody>
+        <tr *ngFor="let x of shownRows">
+          <td class="assay">
+            <a [routerLink]="['/assays', x.assay_id]">
+              <span class="title" [outerHTML]="(x.title_short || x.assay_title) | sciItalicize"></span>
             </a>
+            <span class="id">{{ x.assay_id }}</span>
           </td>
-
-          <td class="content align-middle assay-title" data-label="Assay Title">
-            <a [routerLink]="['/assays', x['assay_id']]">
-              <span [outerHTML]="x['title_short'] | sciItalicize" *ngIf="x['title_short']; else notitle"></span>
-              <ng-template #notitle>
-                <span [outerHTML]="x['assay_title'] | sciItalicize"></span>
-              </ng-template>
-            </a>
+          <td><span *ngIf="x.indication" [outerHTML]="x.indication | sciItalicize"></span></td>
+          <td><span *ngIf="x.activity_type" [outerHTML]="x.activity_type.replace('50', '<sub>50</sub>')"></span></td>
+          <td class="num" [class.toxic]="isToxic(x)" [title]="x.ac50 ? x.ac50.toExponential(2) + ' M' : ''">
+            {{ x.ac_precision ? x.ac_precision + ' ' : '' }}{{ conc(x.ac50) }}
+            <span class="tox-note" *ngIf="isToxic(x)">cytotoxic</span>
           </td>
-
-          <td class="content align-middle" data-label="Indication">
-            <div class="assay-type" *ngIf="x['indication']" [ngStyle]="{'background-color': colorSvc.getIndicColor(x['indication'])['background'], 'color': colorSvc.getIndicColor(x['indication'])['font']}">
-              <span [outerHTML]="x['indication'] | sciItalicize"></span>
-            </div>
-          </td>
-
-          <td class="align-middle" data-label="Activity">
-            <span *ngIf="x['activity_type']" [outerHTML]="x['activity_type'].replace('50', '<sub>50</sub>')"></span>
-          </td>
-
-          <td class="align-middle" data-label="Measurement" [ngClass]="{'toxic': x.assay_id === 'A00295' && x.activity_type === 'IC50' && x.ac50 < 10e-5}">
-            <span *ngIf="x.ac_precision != ''">{{ x.ac_precision }} </span>
-            {{ x['ac50'] ? x['ac50'].toExponential(2) : 'NA' }}
-          </td>
-
-          <td class="align-middle" data-label="Curve">
+          <td class="curve">
             <button type="button" class="curve-thumb-btn" *ngFor="let key of x.curve_keys" (click)="openCurve(key)"
-                    [attr.aria-label]="'Enlarge dose response curve for ' + x['assay_id']">
-              <img class="curve-thumb" [src]="curveUrl(key)" loading="lazy" alt="Dose response curve for {{ x['assay_id'] }}">
+                    [attr.aria-label]="'Enlarge dose response curve for ' + x.assay_id">
+              <img class="curve-thumb" [src]="curveUrl(key)" loading="lazy" alt="">
             </button>
           </td>
-
-          <td class="align-middle" data-label="Source">
-            <a href="https://www.calibr.org/" target="_blank" rel="noreferrer">Calibr</a>
-          </td>
         </tr>
-      </table>
-    </div>
+      </tbody>
+    </table>
+  </div>
+
+  <button type="button" class="more" *ngIf="assayData.length > preview" (click)="showAll = !showAll">
+    {{ showAll ? 'Show fewer' : 'Show all ' + assayData.length }}
+  </button>
   </div>
 
   <!-- ENLARGED CURVE -->
   <div class="curve-overlay" *ngIf="enlargedCurve" (click)="closeCurve()" role="dialog" aria-modal="true" aria-label="Dose response curve">
     <img class="curve-full" [src]="enlargedCurve" alt="Dose response curve" (click)="$event.stopPropagation()">
   </div>
-
 </div>

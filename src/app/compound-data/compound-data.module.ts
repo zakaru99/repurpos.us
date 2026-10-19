@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { PageHeaderModule } from '../_components/page-header/page-header.module';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -40,7 +41,8 @@ import { CompoundSyntheticRouteComponent } from './compound-synthetic-route/comp
     CompoundDataRoutingModule,
     Struct2dModule,
     MaterialModule,
-    PipesModule
+    PipesModule,
+    PageHeaderModule
   ],
   declarations: [
     CompoundDataComponent,

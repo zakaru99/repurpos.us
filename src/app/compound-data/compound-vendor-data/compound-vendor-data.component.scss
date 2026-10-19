@@ -1,112 +1,141 @@
-$wikidata-button-color: #ff602c;
-/* // Reset bootstrap */
-.table > tbody > tr > td,
-.table > tbody > tr > th,
-.table > tfoot > tr > td,
-.table > tfoot > tr > th,
-.table > thead > tr > td,
-.table > thead > tr > th {
-  border: none;
+// Development and pharmacology (grey band under the Overview): one tab per licensed source (Integrity, GoStar,
+// Pharmaprojects). Record and phase with its stage track, then a label/value
+// table like the Overview facts.
+
+@import '../compound';
+
+// One framed panel: tinted tab strip, then the chosen source
+.sources {
+  background: #fff;
+  border: 1px solid $rule;
+  border-radius: $radius-sharp;
 }
 
-td.title {
-  padding-left: 15px;
-  width: 200px;
+.source {
+  padding: 16px 20px 18px;
 }
 
-td.content {
-  padding-right: 15px;
+// Source tabs: name with its phase under it
+.tabs {
+  @include underline-tabs;
+  flex-wrap: wrap;
+  gap: 8px 36px;
+  padding: 12px 20px 0;
+  background: $muted-bg;
+  border-bottom: 1px solid $rule;
+
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    margin-bottom: -1px;
+    padding-bottom: 10px;
+    text-align: left;
+  }
 }
 
-.cmpd-table,
-table#cmpd-names,
-table.cmpd-table {
-  margin-bottom: 35px;
+.tab-name {
+  font-weight: 600;
 }
 
-.vendor-smiles {
-  font-size: 0.75em;
+.tab-phase {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: $ink-soft;
 }
 
-.login-req {
-  margin-bottom: 10px;
+.source-site {
+  margin: 12px 0 0 !important;
+  font-size: 0.875rem;
 }
-// launch search
 
-.launch-search-container {
+.updated {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: $ink-soft;
+}
+
+// Record ID on the left, phase and its track beside it
+.entry + .entry {
+  margin-top: 20px;
+}
+
+.entry-head {
   display: flex;
   flex-wrap: wrap;
-  border-left: 3px solid $wikidata-button-color;
-  padding-left: 5px;
-  margin-top: 5px;
+  align-items: flex-start;
+  gap: 8px 48px;
+  margin-bottom: 12px;
+
+  p {
+    margin: 0 !important;
+    font-size: 0.9375rem;
+    color: $ink;
+  }
 }
 
-.launch-search-label {
-  flex-basis: 100%;
-  font-size: 0.7em;
-  color: lighten(#212529, 25%);
-  font-size: 80%;
-  padding-bottom: 3px;
-  line-height: 1em;
-  font-weight: 300;
-  text-transform: uppercase;
+.phase {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
 }
 
-.launch-search-button {
-  color: white;
-  background: lighten($wikidata-button-color, 10%);
-  padding: 1px 5px;
-  margin-right: 4px;
-  margin-bottom: 4px;
-  border-radius: 3px;
-  font-size: 80%;
-  font-weight: 400;
+.label {
+  margin-right: 6px;
+  color: $ink-soft;
+}
+
+.facts {
+  @include facts-table;
+}
+
+// Facts, then the PK / combination tables
+.side {
+  margin-top: 20px;
+}
+
+.side-block + .side-block {
+  margin-top: 24px;
+}
+
+.side-title {
+  margin: 0 0 8px !important;
+  font-family: $sans;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $ink;
+}
+
+// Lists of terms separated by a middle dot
+.terms {
+  @include dot-list;
+}
+
+a {
+  color: $accent;
 
   &:hover {
-    text-decoration: none !important;
-    background: $wikidata-button-color;
+    text-decoration: underline;
   }
 }
 
-@media (max-width: 640px) {
-  /* Stack label above value — scope strictly to the outer vendor table, not pk_table */
-  table.table > tbody > tr {
-    display: block;
-    border-bottom: 1px solid #eef0f2;
-    padding: 0.3rem 0;
+.mono {
+  font-family: $mono;
+  font-size: 0.8125rem;
+}
 
-    &:last-child { border-bottom: none; }
-  }
+// PK measurements and combination products: a small table inside the cell
+.sub-scroll {
+  overflow-x: auto;
+}
 
-  table.table > tbody > tr > td.title {
-    display: block;
-    width: 100% !important;
-    padding: 0.3rem 0.75rem 0;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #4a5568;
-  }
+.sub-table {
+  @include data-table;
+  font-size: 0.875rem;
 
-  table.table > tbody > tr > td.content {
-    display: block;
-    width: 100%;
-    padding: 0.1rem 0.75rem 0.4rem;
-  }
-
-  /* pk_table: keep as a real table, scroll horizontally */
-  .pk_table {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    font-size: 0.78rem;
-    margin-top: 0.25rem;
-
-    th, td {
-      padding: 5px 8px;
-      white-space: nowrap;
-    }
+  .num {
+    text-align: right;
   }
 }

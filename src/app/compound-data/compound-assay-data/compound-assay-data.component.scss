@@ -1,163 +1,110 @@
-.title-plus-btn {
-  display: inline-block;
+// Activity > Dose response: one row per assay result, sortable, with the
+// curve thumbnail. Cytotoxic counter-screen hits are marked in the potency cell.
+
+@import '../compound';
+
+.block {
+  @include disclosure-block;
 }
 
-.vendor-btn {
-  margin: 10px 0;
-  color: #7e8b98;
+.disclosure {
+  @include disclosure;
 }
 
-.header-title {
-  text-transform: uppercase;
-  font-weight: 300;
-  opacity: 0.6;
-  font-size: 0.85em;
+// Sideways scroll only on phones; elsewhere the header row sticks to the page
+@media (max-width: $bp-phone) {
+  .scroll {
+    overflow-x: auto;
+  }
 }
 
-.assay-title {
-  padding-left: 15px;
+.results {
+  @include data-table;
+  @include sticky-table-head;
+
+  td {
+    vertical-align: middle;
+  }
+
+  .num {
+    text-align: right;
+    white-space: nowrap;
+  }
 }
 
-.assay-name {
-  // width: 50%;
+.sort {
+  @include sort-button;
 }
 
-.assay-table,
-table#cmpd-names,
-table.assay-table {
-  width: 100%;
-  // table-layout: fixed;
-  border: none;
-  margin-bottom: 50px;
-}
+// Assay title as the link, the ID after it in mono
+.assay {
+  a {
+    color: $accent;
+    font-weight: 500;
 
-table.hidden {
-  display: none;
-  margin-bottom: 50px;
-}
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 
-h3.hidden {
-  margin-bottom: 50px;
-}
-
-
-td {
-  padding-top: 3px;
-  padding-bottom: 3px;
-  line-height: 1.2em;
-  height: 40px;
-}
-
-.td-fit {
-  width: 1px;
-}
-
-.assay-name,
-.content a {
-  // padding-left: 15px;
-}
-
-.warning {
-  color: #fd5457;
-}
-
-.assay-type {
-  padding: 5px;
-  text-transform: uppercase;
-  font-size: 0.8em;
-  color: #212529;
-  text-align: center;
+  .id {
+    margin-left: 8px;
+    font-family: $mono;
+    font-size: 0.75rem;
+    color: $ink-soft;
+  }
 }
 
 .toxic {
-  background-color: orange;
+  font-weight: 600;
+  color: $status-rejected;
 }
 
-.sortable {
-  cursor: pointer;
-  position: relative;
-  user-select: none;
+.tox-note {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
 }
 
-.sort-arrow {
-  font-size: 0.7em;
-  margin-left: 5px;
-  vertical-align: middle;
-  color: #555;
-  transition: transform 0.2s ease;
+.more {
+  @include text-button;
+  margin-top: 10px;
 }
 
-@media (max-width: 640px) {
-  /* Remove the horizontal scroll wrapper — cards don't need it */
-  .table-responsive {
-    overflow: visible;
-  }
-
-  .assay-table {
-    /* Hide column headers */
-    thead, tr:first-child { display: none; }
-
-    /* Each data row becomes a card */
-    tr {
-      display: block;
-      border: 1px solid #e5edf9;
-      border-radius: 8px;
-      padding: 0.6rem 0.75rem;
-      margin-bottom: 0.75rem;
-      background: #f9fbff;
-    }
-
-    /* Each cell is a label + value row */
-    td {
-      display: flex;
-      align-items: baseline;
-      gap: 0.5rem;
-      padding: 0.2rem 0;
-      height: auto;
-      border: none;
-
-      &::before {
-        content: attr(data-label);
-        font-size: 0.68rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: #4a5568;
-        min-width: 82px;
-        flex-shrink: 0;
-      }
-
-      &.toxic { background: none; }
-      &.toxic::after { content: ' ⚠'; color: orange; }
-    }
-  }
-
-  .assay-type {
-    font-size: 0.75em;
-    padding: 3px 6px;
-  }
+// Curve thumbnail, click to enlarge
+.curve {
+  width: 1%;
+  white-space: nowrap;
 }
+
 .curve-thumb-btn {
-  padding: 0;
   margin: 0 4px 0 0;
-  border: 1px solid #dee2e6;
-  background: #fff;
-  cursor: zoom-in;
+  padding: 0;
   line-height: 0;
+  background: #fff;
+  border: 1px solid $rule;
+  cursor: zoom-in;
+
+  &:hover {
+    border-color: $accent;
+  }
+
+  @include focus-ring($accent, 2px);
 }
 
+// Fixed box so a missing image doesn't change the row
 .curve-thumb {
-  height: 48px;
-  width: auto;
+  display: block;
+  width: 56px;
+  height: 32px;
+  object-fit: contain;
+  font-size: 0;
 }
 
 .curve-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 4000; // above the sticky site header (2500-3100)
+  inset: 0;
+  z-index: 4000; // above the sticky site header
   display: flex;
   align-items: center;
   justify-content: center;

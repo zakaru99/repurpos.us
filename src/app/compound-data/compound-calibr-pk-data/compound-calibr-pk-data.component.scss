@@ -1,34 +1,24 @@
-.pk-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 10px;
-  font-size: 0.85em;
+// Activity > Calibr pharmacokinetics: a short table, kept narrow.
+
+@import '../compound';
+
+.block {
+  @include disclosure-block;
 }
 
-.pk-table th {
-  text-align: left;
-  text-transform: uppercase;
-  font-weight: 500;
-  font-size: 0.75em;
-  color: #666;
-  padding: 6px 12px;
-  border-bottom: 1px solid #ccc;
+.disclosure {
+  @include disclosure;
 }
 
-.pk-table td {
-  padding: 6px 12px;
-  vertical-align: middle;
-  color: #333;
-  border-bottom: 1px solid #e0e0e0;
+.scroll {
+  max-width: 640px;
+  overflow-x: auto;
 }
 
-.pk-table tr:hover td {
-  background-color: #f9f9f9;
-}
+.results {
+  @include data-table;
 
-.pk-container {
-  border-top: 1px #b7bec5 solid;
-  border-bottom: 1px #b7bec5 solid;
-  margin: 20px 0 15px;
-  padding: 10px 0 2px;
+  .num {
+    text-align: right;
+  }
 }

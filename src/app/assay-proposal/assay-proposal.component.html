@@ -1,205 +1,129 @@
-<section *ngIf="loggedIn; else log_in" class="assay-proposal-form">
-  <h2>Calibr ReFRAME Assay Proposal</h2>
-  <p class="subtitle">
-    Please fill out the form below to submit your assay proposal.
-  </p>
+<app-page-header eyebrow="Screening partnerships" title="Propose an assay" [compact]="true" [wide]="true"
+                 lede="Screen the REFRAME collection in your assay. Calibr reviews every proposal and replies by email.">
+</app-page-header>
 
-  <form #proposalForm="ngForm" (ngSubmit)="onSubmit(proposalForm)" novalidate>
-    <!-- Section Header -->
-    <div class="form-section-header">General Information</div>
+<div class="page">
+  <div class="layout">
+    <section class="main">
+      <!-- Signed out: proposals are tied to an account -->
+      <div class="notice" *ngIf="!loggedIn">
+        <div>
+          <p class="notice-title">Sign in to submit a proposal</p>
+          <p>Proposals are linked to your account so you can follow their status under My assays.</p>
+        </div>
+        <button type="button" class="btn" (click)="signInPrompt()">Sign in</button>
+      </div>
 
-    <!-- Assay Contact Name -->
-    <div
-      class="form-row"
-      [ngClass]="{ 'has-error': contactName.invalid && (contactName.touched || proposalForm.submitted) }"
-    >
-      <label for="contactName">Assay Contact Name</label>
-      <input
-        id="contactName"
-        type="text"
-        name="contactName"
-        [(ngModel)]="formData.contactName"
-        required
-        #contactName="ngModel"
-      />
-      <div
-        class="error-message"
-        *ngIf="contactName.invalid && (contactName.touched || proposalForm.submitted)"
-      >
-        Contact name is required.
+      <!-- Submitted -->
+      <div class="done" *ngIf="loggedIn && submitted" role="status">
+        <h2>Proposal submitted</h2>
+        <p>Thanks — the Calibr team will review “{{ submitted }}” and reply by email. You can follow its status under My assays in your portal.</p>
+        <div class="done-actions">
+          <a class="btn" routerLink="/user_portal/my_assays">View my assays</a>
+          <button type="button" class="link" (click)="startAnother()">Submit another proposal</button>
+        </div>
       </div>
-    </div>
 
-    <!-- Assay Contact Email -->
-    <div
-      class="form-row"
-      [ngClass]="{ 'has-error': contactEmail.invalid && (contactEmail.touched || proposalForm.submitted) }"
-    >
-      <label for="contactEmail">Assay Contact Email(s)</label>
-      <input
-        id="contactEmail"
-        type="email"
-        name="contactEmail"
-        [(ngModel)]="formData.contactEmail"
-        required
-        email
-        #contactEmail="ngModel"
-      />
-      <div
-        class="error-message"
-        *ngIf="contactEmail.errors?.required && (contactEmail.touched || proposalForm.submitted)"
-      >
-        Email is required.
-      </div>
-      <div
-        class="error-message"
-        *ngIf="contactEmail.errors?.email && (contactEmail.touched || proposalForm.submitted)"
-      >
-        Please enter a valid email address.
-      </div>
-    </div>
+      <form *ngIf="loggedIn && !submitted" #proposalForm="ngForm" (ngSubmit)="onSubmit(proposalForm)" novalidate>
+        <p class="summary" *ngIf="proposalForm.submitted && proposalForm.invalid" role="alert">
+          Fill in the highlighted fields to submit.
+        </p>
 
-    <!-- Institution -->
-    <div
-      class="form-row"
-      [ngClass]="{ 'has-error': institution.invalid && (institution.touched || proposalForm.submitted) }"
-    >
-      <label for="institution">Institution</label>
-      <input
-        id="institution"
-        type="text"
-        name="institution"
-        [(ngModel)]="formData.institution"
-        required
-        #institution="ngModel"
-      />
-      <div
-        class="error-message"
-        *ngIf="institution.invalid && (institution.touched || proposalForm.submitted)"
-      >
-        Institution is required.
-      </div>
-    </div>
+        <fieldset>
+          <legend>Contact</legend>
+          <div class="grid three">
+            <div class="field" [class.invalid]="show(contactName, proposalForm)">
+              <label for="contactName">Contact name</label>
+              <input id="contactName" type="text" name="contactName" autocomplete="name"
+                     [(ngModel)]="formData.contactName" required #contactName="ngModel" />
+              <p class="error" *ngIf="show(contactName, proposalForm)">Enter a contact name.</p>
+            </div>
 
-    <!-- Assay Indication -->
-    <div
-      class="form-row"
-      [ngClass]="{ 'has-error': indication.invalid && (indication.touched || proposalForm.submitted) }"
-    >
-      <label for="indication">Assay Indication</label>
-      <input
-        id="indication"
-        type="text"
-        name="indication"
-        placeholder="Target, Disease, etc."
-        [(ngModel)]="formData.indication"
-        required
-        #indication="ngModel"
-      />
-      <div
-        class="error-message"
-        *ngIf="indication.invalid && (indication.touched || proposalForm.submitted)"
-      >
-        Indication is required.
-      </div>
-    </div>
-    <!-- Volume -->
-    <div
-      class="form-row"
-      [ngClass]="{ 'has-error': volume.invalid && (volume.touched || proposalForm.submitted) }"
-    >
-      <label for="volume">Volume (µL)</label>
-      <input
-        id="volume"
-        type="number"
-        name="volume"
-        min="0"
-        step="1"
-        [(ngModel)]="formData.volume"
-        required
-        #volume="ngModel"
-      />
-      <div
-        class="error-message"
-        *ngIf="volume.invalid && (volume.touched || proposalForm.submitted)"
-      >
-        Volume is required.
-      </div>
-    </div>
+            <div class="field" [class.invalid]="show(institution, proposalForm)">
+              <label for="institution">Institution</label>
+              <input id="institution" type="text" name="institution" autocomplete="organization"
+                     [(ngModel)]="formData.institution" required #institution="ngModel" />
+              <p class="error" *ngIf="show(institution, proposalForm)">Enter your institution.</p>
+            </div>
 
-    <!-- Concentration -->
-    <div
-      class="form-row"
-      [ngClass]="{ 'has-error': concentration.invalid && (concentration.touched || proposalForm.submitted) }"
-    >
-      <label for="concentration">Concentration (µM)</label>
-      <input
-        id="concentration"
-        type="number"
-        name="concentration"
-        min="0"
-        step="1"
-        [(ngModel)]="formData.concentration"
-        required
-        #concentration="ngModel"
-      />
-      <div
-        class="error-message"
-        *ngIf="concentration.invalid && (concentration.touched || proposalForm.submitted)"
-      >
-        Concentration is required.
-      </div>
-    </div>
-    
-    <!-- Assay Description -->
-    <div
-      class="form-row"
-      [ngClass]="{ 'has-error': description.invalid && (description.touched || proposalForm.submitted) }"
-    >
-      <label for="description">Assay Description</label>
-      <textarea
-        id="description"
-        name="description"
-        rows="4"
-        placeholder="Brief description of work and assay type."
-        [(ngModel)]="formData.description"
-        required
-        #description="ngModel"
-      ></textarea>
-      <div
-        class="error-message"
-        *ngIf="description.invalid && (description.touched || proposalForm.submitted)"
-      >
-        Description is required.
-      </div>
-    </div>
+            <div class="field" [class.invalid]="show(contactEmail, proposalForm)">
+              <label for="contactEmail">Contact email <span class="hint-inline">(commas between several)</span></label>
+              <input id="contactEmail" type="text" name="contactEmail" autocomplete="email"
+                     [(ngModel)]="formData.contactEmail" required [pattern]="emailPattern" #contactEmail="ngModel" />
+              <p class="error" *ngIf="contactEmail.errors?.required && show(contactEmail, proposalForm)">Enter an email address.</p>
+              <p class="error" *ngIf="contactEmail.errors?.pattern && show(contactEmail, proposalForm)">Check the email address.</p>
+            </div>
+          </div>
+        </fieldset>
 
-    <!-- Additional Notes -->
-    <div class="form-row">
-      <label for="notes">Additional Notes/Questions</label>
-      <textarea
-        id="notes"
-        name="notes"
-        rows="3"
-        [(ngModel)]="formData.notes"
-        #notes="ngModel"
-      ></textarea>
-    </div>
+        <fieldset>
+          <legend>Assay</legend>
+          <div class="grid assay-row">
+            <div class="field" [class.invalid]="show(indication, proposalForm)">
+              <label for="indication">Indication</label>
+              <input id="indication" type="text" name="indication" placeholder="Disease, pathogen or target"
+                     [(ngModel)]="formData.indication" required #indication="ngModel" />
+              <p class="error" *ngIf="show(indication, proposalForm)">Enter the indication.</p>
+            </div>
 
-    <!-- Submit -->
-    <div class="form-actions">
-      <button type="submit" [disabled]="!proposalForm.valid || isSubmitting">
-        {{ isSubmitting ? 'Submitting...' : 'Submit Proposal' }}
-      </button>
-    </div>
-  </form>
-  <div class="toast" *ngIf="toastMessage" [ngClass]="toastType">
-    {{ toastMessage }}
+            <div class="field" [class.invalid]="show(volume, proposalForm)">
+              <label for="volume">Assay volume</label>
+              <div class="unit-input">
+                <input id="volume" type="number" name="volume" min="0" step="any" inputmode="decimal"
+                       [(ngModel)]="formData.volume" required #volume="ngModel" />
+                <span class="unit">µL</span>
+              </div>
+              <p class="error" *ngIf="show(volume, proposalForm)">Enter the volume.</p>
+            </div>
+
+            <div class="field" [class.invalid]="show(concentration, proposalForm)">
+              <label for="concentration">Concentration</label>
+              <div class="unit-input">
+                <input id="concentration" type="number" name="concentration" min="0" step="any" inputmode="decimal"
+                       [(ngModel)]="formData.concentration" required #concentration="ngModel" />
+                <span class="unit">µM</span>
+              </div>
+              <p class="error" *ngIf="show(concentration, proposalForm)">Enter the concentration.</p>
+            </div>
+          </div>
+
+          <div class="field" [class.invalid]="show(description, proposalForm)">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="5"
+                      placeholder="What the assay measures, its format and readout, and why it suits the collection."
+                      [(ngModel)]="formData.description" required #description="ngModel"></textarea>
+            <p class="error" *ngIf="show(description, proposalForm)">Describe the assay.</p>
+          </div>
+
+          <div class="field">
+            <label for="notes">Notes or questions <span class="hint-inline">(optional)</span></label>
+            <textarea id="notes" name="notes" rows="2" placeholder="Anything else the team should know"
+                      [(ngModel)]="formData.notes"></textarea>
+          </div>
+        </fieldset>
+
+        <div class="actions">
+          <button type="submit" class="btn" [disabled]="isSubmitting">{{ isSubmitting ? 'Submitting…' : 'Submit proposal' }}</button>
+          <a class="arrow-link" routerLink="/contact-us">Questions? Contact us</a>
+          <p class="error" *ngIf="submitError" role="alert">{{ submitError }}</p>
+        </div>
+      </form>
+    </section>
+
+    <!-- Summary of the partner screen requirements on About > Accessing the library -->
+    <aside class="requirements" aria-labelledby="req-title">
+      <h2 id="req-title">Requirements</h2>
+      <p>Proposals are reviewed case by case. Partner screens should be:</p>
+      <ul>
+        <li><strong>Relevant to global health</strong></li>
+        <li><strong>Different from prior or ongoing screens</strong>, e.g. species, strain or isolate, lifecycle stage, or readout</li>
+        <li><strong>Miniaturized:</strong> under 50 µL (384- or 1536-well), suited to a single-point screen with under 1% hits to follow up</li>
+        <li><strong>Covered by an MTA</strong> that ensures global access to the data, published on REFRAMEdb after 12 months</li>
+      </ul>
+      <h3>Compound supply</h3>
+      <p>About 0.5 nmol of each compound for the primary screen, and up to 4 nmol per hit across the campaign.</p>
+      <a class="arrow-link" routerLink="/about" fragment="access">Full requirements</a>
+    </aside>
+
   </div>
-</section>
-
-<ng-template #log_in >
-  <div class="not-logged-in">
-  You must be logged in to submit an assay proposal
 </div>
-</ng-template>

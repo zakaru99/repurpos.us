@@ -1,37 +1,110 @@
 <div *ngIf="loggedIn; else lgin"><button (click)="logout()" type="button" class="logout-button">Sign out</button></div>
 
-
+<!-- One card, three views: sign in, create an account, reset password. The
+     header's container cancels default click actions inside it, so buttons
+     submit through (click) and Enter is handled on the inputs. -->
 <ng-template #lgin>
   <div class="login-card">
-    <div class="login-head">
-      <span class="login-title">Sign in</span>
-      <span class="login-sub">Access assay data, favorites and lists</span>
-    </div>
 
-    <!-- ngSubmit not firing so removed and put a click event on button -->
-    <form #userForm="ngForm" class="login-form">
-      <label class="field" [class.invalid]="email.invalid && submitted">
-        <span class="field-label">Email address</span>
-        <input type="email" [formControl]="email" required id="email"
-               name="email" autocomplete="email">
-      </label>
+    <!-- SIGN IN -->
+    <ng-container *ngIf="mode === 'signin'">
+      <div class="login-head">
+        <span class="login-title">Sign in</span>
+        <span class="login-sub">Access assay data, favorites and lists</span>
+      </div>
 
-      <label class="field" [class.invalid]="password.invalid && submitted">
-        <span class="field-label">Password</span>
-        <input type="password" id="password" required [formControl]="password"
-               name="password" autocomplete="current-password">
-      </label>
+      <form class="login-form" (keydown.enter)="$event.preventDefault(); onSubmit()">
+        <label class="field" [class.invalid]="email.invalid && submitted">
+          <span class="field-label">Email address</span>
+          <input type="email" [formControl]="email" id="email" name="email" autocomplete="email">
+        </label>
 
-      <p class="field-error" *ngIf="submitted && (email.invalid || password.invalid)">
-        Enter a valid email address and password.
-      </p>
+        <label class="field" [class.invalid]="password.invalid && submitted">
+          <span class="field-label">Password</span>
+          <input type="password" id="password" [formControl]="password" name="password" autocomplete="current-password">
+        </label>
 
-      <button class="login-button" type="submit" (click)="onSubmit()">Sign in</button>
-    </form>
+        <p class="field-error" *ngIf="submitted && (email.invalid || password.invalid)">
+          Enter a valid email address and password.
+        </p>
+        <p class="msg error" *ngIf="loginError" role="alert">{{ loginError }}</p>
 
-    <div class="login-footer">
-      <app-forgot-pass-button class="link"></app-forgot-pass-button>
-      <app-reg-user-dialog class="link"></app-reg-user-dialog>
-    </div>
+        <button class="login-button" type="button" (click)="onSubmit()" [disabled]="sending">{{ sending ? 'Signing in…' : 'Sign in' }}</button>
+      </form>
+
+      <div class="login-footer">
+        <button type="button" class="link" (click)="show('forgot')">Forgot password?</button>
+        <button type="button" class="link" (click)="show('register')">Create an account</button>
+      </div>
+    </ng-container>
+
+    <!-- CREATE AN ACCOUNT -->
+    <ng-container *ngIf="mode === 'register'">
+      <div class="login-head">
+        <span class="login-title">{{ regDone ? 'Check your email' : 'Create an account' }}</span>
+        <span class="login-sub" *ngIf="!regDone">For assay data, favorites, lists and assay proposals</span>
+      </div>
+
+      <p class="msg success" *ngIf="regDone">{{ regMessage || 'Your account was created. Follow the link we emailed you to confirm it, then sign in.' }}</p>
+
+      <form class="login-form" *ngIf="!regDone" [formGroup]="regForm" (keydown.enter)="$event.preventDefault(); register()">
+        <label class="field" [class.invalid]="regErr('email')">
+          <span class="field-label">Email address</span>
+          <input type="email" formControlName="email" name="reg-email" autocomplete="email">
+          <span class="field-error" *ngIf="regErr('email')">Enter a valid email address.</span>
+        </label>
+
+        <ng-container formGroupName="password">
+          <label class="field" [class.invalid]="regErr('password.password')">
+            <span class="field-label">Password</span>
+            <input type="password" formControlName="password" name="reg-password" autocomplete="new-password">
+            <span class="field-hint" [class.field-error]="regErr('password.password')">At least 8 characters</span>
+          </label>
+          <label class="field" [class.invalid]="regErr('password.confirmPassword')">
+            <span class="field-label">Confirm password</span>
+            <input type="password" formControlName="confirmPassword" name="reg-confirm" autocomplete="new-password">
+            <span class="field-error" *ngIf="regErr('password.confirmPassword')">Passwords don't match.</span>
+          </label>
+        </ng-container>
+
+        <div class="captcha">
+          <re-captcha (resolved)="recaptchaToken = $event" siteKey="6LcFYqYrAAAAAIHNVzxAutwuxAyHiSNuvi97tfj-"></re-captcha>
+          <span class="field-error" *ngIf="regSubmitted && !recaptchaToken">Confirm you're not a robot.</span>
+        </div>
+
+        <p class="small">By creating an account you agree to the <button type="button" class="link" (click)="openTerms()">Terms of Use</button>.</p>
+        <p class="msg error" *ngIf="regMessage" role="alert">{{ regMessage }}</p>
+
+        <button class="login-button" type="button" (click)="register()" [disabled]="sending">{{ sending ? 'Creating account…' : 'Create account' }}</button>
+      </form>
+
+      <div class="login-footer">
+        <button type="button" class="link" (click)="show('signin')">← Back to sign in</button>
+      </div>
+    </ng-container>
+
+    <!-- RESET PASSWORD -->
+    <ng-container *ngIf="mode === 'forgot'">
+      <div class="login-head">
+        <span class="login-title">{{ resetDone ? 'Check your email' : 'Reset your password' }}</span>
+        <span class="login-sub" *ngIf="!resetDone">We'll email you a link to set a new one</span>
+      </div>
+
+      <p class="msg success" *ngIf="resetDone">{{ resetMessage || 'We sent a link to set a new password. It may take a few minutes to arrive.' }}</p>
+
+      <form class="login-form" *ngIf="!resetDone" (keydown.enter)="$event.preventDefault(); sendReset()">
+        <label class="field" [class.invalid]="resetEmail.invalid && resetSubmitted">
+          <span class="field-label">Email address</span>
+          <input type="email" [formControl]="resetEmail" name="reset-email" autocomplete="email">
+          <span class="field-error" *ngIf="resetEmail.invalid && resetSubmitted">Enter a valid email address.</span>
+        </label>
+        <p class="msg error" *ngIf="resetMessage" role="alert">{{ resetMessage }}</p>
+        <button class="login-button" type="button" (click)="sendReset()" [disabled]="sending">{{ sending ? 'Sending…' : 'Send reset link' }}</button>
+      </form>
+
+      <div class="login-footer">
+        <button type="button" class="link" (click)="show('signin')">← Back to sign in</button>
+      </div>
+    </ng-container>
   </div>
 </ng-template>

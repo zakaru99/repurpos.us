@@ -1,0 +1,205 @@
+// Shared pieces for the compound page's section components.
+// Import with: @import '../compound';
+
+@import '../../design';
+@import '../internal/admin';
+
+// Sub-heading inside a page section, with a muted count after it
+@mixin block-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin: 0 0 10px !important;
+  font-family: $sans;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: $ink;
+
+  .count {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: $ink-soft;
+  }
+}
+
+// Sortable header button: whole cell clickable, arrow on the active column
+@mixin sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  white-space: nowrap;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  .arrow {
+    font-size: 0.625rem;
+  }
+
+  @include focus-ring($accent, 2px);
+}
+
+// Plain text button (Show all, etc.)
+@mixin text-button {
+  padding: 0;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $accent;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  @include focus-ring($accent, 2px);
+}
+
+// Label / value table (the Overview facts, source facts, chemistry)
+@mixin facts-table($label-width: 200px) {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  border-top: 1px solid $rule;
+
+  > tbody > tr > th,
+  > tbody > tr > td {
+    padding: 9px 0;
+    vertical-align: top;
+    border-bottom: 1px solid $rule-soft;
+  }
+
+  > tbody > tr > th {
+    width: $label-width;
+    padding-right: 16px;
+    font-weight: 400;
+    color: $ink-soft;
+  }
+
+  > tbody > tr > td {
+    color: $ink;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: $bp-phone) {
+    > tbody > tr > th,
+    > tbody > tr > td {
+      display: block;
+      width: auto;
+    }
+
+    > tbody > tr > th {
+      padding: 9px 0 0;
+      font-size: 0.8125rem;
+      border-bottom: 0;
+    }
+
+    > tbody > tr > td {
+      padding-top: 2px;
+    }
+  }
+}
+
+// Inline list of values separated by middle dots
+@mixin dot-list {
+  > * + *::before {
+    content: '·';
+    margin: 0 8px;
+    color: $ink-faint;
+  }
+}
+
+// One collapsible block. Boxed (white panel, 10px apart) on the grey
+// Activity band; flat ruled rows that share a rule on white.
+@mixin disclosure-block($boxed: true) {
+  display: block;
+
+  @if $boxed {
+    margin-bottom: 10px;
+    background: #fff;
+    border: 1px solid $rule;
+    border-radius: $radius-sharp;
+
+    > :not(.disclosure) {
+      margin: 0 18px 16px;
+    }
+
+    > .disclosure[aria-expanded='true'] {
+      margin-bottom: 14px;
+      border-bottom: 1px solid $rule-soft;
+    }
+  } @else {
+    margin-top: -1px;
+    border-top: 1px solid $rule;
+    border-bottom: 1px solid $rule;
+
+    > :not(.disclosure) {
+      margin: 0 0 16px;
+    }
+
+    > .disclosure {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}
+
+// Accordion row: a full-width button with a chevron, the block's name and a
+// one-line summary, ruled above. Markup:
+//   button.disclosure[aria-expanded] > span.chev + span.d-title + span.d-summary
+@mixin disclosure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 14px;
+  width: 100%;
+  padding: 14px 18px;
+  font: inherit;
+  color: $ink;
+  text-align: left;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  .chev {
+    flex-shrink: 0;
+    align-self: center;
+    width: 7px;
+    height: 7px;
+    margin: 0 2px;
+    border-right: 1.5px solid $ink-soft;
+    border-bottom: 1.5px solid $ink-soft;
+    transform: rotate(-45deg);
+    transition: transform 0.15s ease;
+  }
+
+  &[aria-expanded='true'] .chev {
+    transform: rotate(45deg);
+  }
+
+  .d-title {
+    font-size: 1.0625rem;
+    font-weight: 600;
+  }
+
+  .d-summary {
+    font-size: 0.875rem;
+    color: $ink-soft;
+  }
+
+  &:hover .d-title {
+    color: $accent;
+  }
+
+  @include focus-ring($accent, 2px);
+}

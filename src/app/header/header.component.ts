@@ -98,6 +98,13 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  // Account dialogs close the box so it doesn't sit behind them
+  // (window.dispatchEvent(new CustomEvent('reframe-close-sign-in')))
+  @HostListener('window:reframe-close-sign-in')
+  closeLogin() {
+    this.loginBox = false;
+  }
+
   clickedInside($event: Event) {
     $event.preventDefault();
     $event.stopPropagation();

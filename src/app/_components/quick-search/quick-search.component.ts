@@ -1,8 +1,8 @@
-import { Component, Output, EventEmitter, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-quick-search',
@@ -10,130 +10,124 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
   styleUrls: ['./quick-search.component.scss']
 })
 export class QuickSearchComponent implements OnInit {
-  query: string;
-  inputFocused: boolean = false;
-  buttonFocusedOrClicked: boolean = false;
+  query = '';
+  inputFocused = false;
   selected: 'compound' | 'assay' = 'compound';
 
-  suggestions: string[] = [];
+  // From /api/suggest: [{ value, type }]
+  suggestions: Array<{ value: string; type?: string }> = [];
+  highlightedIndex = -1;
   private queryChanged = new Subject<string>();
 
-  
+  @Output() toggleChange = new EventEmitter<'compound' | 'assay'>();
+  @ViewChild('inputEl') searchInput: ElementRef;
 
   constructor(private router: Router, private http2: HttpClient) { }
-  @Output() toggleChange = new EventEmitter<'compound' | 'assay'>();
-
-  @ViewChild('inputEl') searchInput!: ElementRef;
 
   ngOnInit(): void {
-    console.log("QuickSearchComponent initialized");
-
-
     this.queryChanged
       .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe((q: string) => {
-        if (q.length > 1) {
-          this.fetchSuggestions(q);
-        } else {
-          this.suggestions = [];
-        }
-      });
+      .subscribe((q: string) => this.fetchSuggestions(q));
   }
 
   select(option: 'compound' | 'assay') {
     if (this.selected !== option) {
       this.selected = option;
       this.toggleChange.emit(option);
+      // Suggestions belong to the scope; refetch for the new one
+      this.suggestions = [];
+      this.highlightedIndex = -1;
+      this.fetchSuggestions(this.query);
     }
+    this.focusInput(this.searchInput.nativeElement);
   }
 
-  getPlaceholder(): string{
-    return this.selected === 'compound'
-    ? 'Search for drugs, classes...'
-    : 'Search for title, summary...';
+  getPlaceholder(): string {
+    return this.selected === 'compound' ? 'Drug name, synonym or identifier' : 'Assay name, organism or keyword';
   }
 
   onFocusIn() {
     this.inputFocused = true;
   }
-  
+
+  // Only close when focus leaves the whole form (the scope tabs are inside it)
   onFocusOut(event: FocusEvent) {
-    const newTarget = event.relatedTarget as HTMLElement | null;
-  
-    // Only collapse if focus moved completely outside the form
-    if (!newTarget || !event.currentTarget || !(event.currentTarget as HTMLElement).contains(newTarget)) {
-      this.inputFocused = false;
+    const next = event.relatedTarget as HTMLElement | null;
+    if (!next || !(event.currentTarget as HTMLElement).contains(next)) {
+      this.close();
     }
   }
-  
 
   focusInput(input: HTMLInputElement) {
     input.focus();
   }
 
-  onInputFocus() {
-    this.inputFocused = true;
+  onQueryChange(q: string) {
+    this.highlightedIndex = -1;
+    this.queryChanged.next(q || '');
+  }
+
+  // Arrow keys move through suggestions, Enter searches (or opens the
+  // highlighted suggestion), Escape closes
+  onKeyDown(event: KeyboardEvent) {
+    const count = this.suggestions.length;
+    if (event.key === 'ArrowDown' && count) {
+      event.preventDefault();
+      this.highlightedIndex = (this.highlightedIndex + 1) % count;
+    } else if (event.key === 'ArrowUp' && count) {
+      event.preventDefault();
+      this.highlightedIndex = (this.highlightedIndex - 1 + count) % count;
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      if (this.highlightedIndex > -1 && this.suggestions[this.highlightedIndex]) {
+        this.onSuggestionClick(this.suggestions[this.highlightedIndex].value);
+      } else {
+        this.onEnter();
+      }
+    } else if (event.key === 'Escape') {
+      this.searchInput.nativeElement.blur();
+      this.close();
+    }
   }
 
   onEnter() {
-    if(this.selected === 'compound'){
-      let curr_query = this.query;
-      // reset query
-      this.query = '';
-      this.router.navigate(['search/'], {
-        queryParams:
-          {
-            query: curr_query,
-            type: 'string',
-            "fuzziness":"AUTO"
-          }
-      });
-    }else{
-      let curr_query = this.query;
+    const q = (this.query || '').trim();
+    if (!q) { return; }
+    if (this.selected === 'compound') {
+      this.router.navigate(['search/'], { queryParams: { query: q, type: 'string', fuzziness: 'AUTO' } });
+    } else {
+      this.router.navigate(['assays/'], { queryParams: { query: q } });
+    }
     this.query = '';
-    console.log(curr_query)
-    this.router.navigate(['assays/'], {
-      queryParams:
-        {
-          query: curr_query
-        }
-    });
-    }
-    
-  }
-
-    fetchSuggestions(q: string) {
-    console.log(this.selected)
-    if (!q || q.length < 2) {
-      this.suggestions = [];
-      return;
-    }
-
-    let curr_query = q;
-    const type =  this.selected;
-    const url = `/api/suggest?q=${encodeURIComponent(curr_query)}&type=${type}`;
-
-    this.http2.get<string[]>(url).subscribe({
-      next: (results: string[]) => {
-        this.suggestions = results;
-        console.log(`${type} suggestions for`, curr_query, ':', this.suggestions);
-      },
-      error: (err) => {
-        console.error(`Error fetching ${type} suggestions:`, err);
-        this.suggestions = [];
-      }
-    });
-    console.log(this.suggestions)
-  }
-
-  onKeyUp(event: KeyboardEvent){
-    console.log(this.query)
-    this.queryChanged.next(this.query);
+    this.searchInput.nativeElement.blur();
+    this.close();
   }
 
   onSuggestionClick(suggestion: string) {
-  this.query = suggestion;
-  this.suggestions = [];
-  this.onEnter(); // optional: auto-submit search on click
-}
+    this.query = suggestion;
+    this.onEnter();
+  }
+
+  private fetchSuggestions(q: string) {
+    if (!q || q.trim().length < 2) {
+      this.suggestions = [];
+      return;
+    }
+    const type = this.selected;
+    this.http2.get<Array<{ value: string; type?: string }>>(
+      `/api/suggest?q=${encodeURIComponent(q.trim())}&type=${type}`
+    ).subscribe({
+      next: results => {
+        // Ignore a late answer for a scope the user has since switched away from
+        if (type === this.selected) { this.suggestions = results || []; }
+      },
+      error: () => this.suggestions = []
+    });
+  }
+
+  private close() {
+    this.inputFocused = false;
+    this.suggestions = [];
+    this.highlightedIndex = -1;
+  }
 }

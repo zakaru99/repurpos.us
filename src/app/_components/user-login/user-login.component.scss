@@ -118,21 +118,72 @@
   padding-top: 14px;
   border-top: 1px solid $rule;
   font-size: 0.8125rem;
+}
 
-  /deep/ .btn-xs {
-    padding: 0;
-    font-family: inherit;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    color: $accent;
-    background: none;
-    border: 0;
-    cursor: pointer;
+// Text buttons: view switches, Terms of Use
+.link {
+  padding: 0;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: $accent;
+  background: none;
+  border: 0;
+  cursor: pointer;
 
-    &:hover {
-      text-decoration: underline;
-    }
+  &:hover {
+    text-decoration: underline;
   }
+
+  @include focus-ring($accent, 2px);
+}
+
+.field-hint {
+  margin: -2px 0 0 !important;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+
+  &.field-error {
+    color: $error-text;
+  }
+}
+
+// Result of a request: error in red on a tint, success in green
+.msg {
+  margin: 0 !important;
+  padding: 9px 12px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  border-radius: 2px;
+
+  &.error {
+    color: $status-rejected;
+    background: $status-rejected-bg;
+  }
+
+  &.success {
+    color: $ink;
+    background: $status-approved-bg;
+  }
+}
+
+.small {
+  margin: 0 !important;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: $ink-soft;
+}
+
+// reCAPTCHA is a fixed 304px widget; the header box is sized to fit it
+.captcha {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.login-button:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
 // Logged-in state: an inline text action in the header

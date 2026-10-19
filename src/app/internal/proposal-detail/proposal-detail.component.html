@@ -1,6 +1,7 @@
 <article class="detail" *ngIf="proposal">
-  <!-- Header: pinned to the top of the pane. Approve / Reject sit on the
-       title row; each confirms in place on a second click. -->
+  <!-- Header: pinned to the top of the pane. Downloads and Close on the meta
+       row; Approve / Reject on the title row, each confirming in place on a
+       second click. -->
   <header class="head">
     <div class="meta-row">
       <p class="meta">
@@ -8,7 +9,15 @@
         <span *ngIf="proposal.submittedOn"> · Submitted {{ proposal.submittedOn | date:'d MMMM y' }}</span>
         <span *ngIf="!isPending"> · <span class="status" [ngClass]="proposal.status | lowercase">{{ proposal.status }}</span></span>
       </p>
-      <button type="button" class="close" (click)="closed.emit()" aria-label="Close proposal">Close</button>
+      <div class="tools">
+        <button type="button" class="dl" (click)="exportPdf()" title="Download this proposal as a PDF">
+          <svg class="dl-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M3 13h10"/></svg>PDF
+        </button>
+        <button type="button" class="dl" (click)="exportJson()" title="Download this proposal as JSON">
+          <svg class="dl-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M3 13h10"/></svg>JSON
+        </button>
+        <button type="button" class="close" (click)="closed.emit()" aria-label="Close proposal">Close</button>
+      </div>
     </div>
 
     <div class="title-row">
@@ -66,8 +75,6 @@
     <h3>Reason for rejection</h3>
     <p class="text">{{ proposal.denialReason || 'No reason recorded.' }}</p>
   </ng-container>
-
-  <p class="export"><button type="button" (click)="exportJson()">Download as JSON</button></p>
 
 </article>
 

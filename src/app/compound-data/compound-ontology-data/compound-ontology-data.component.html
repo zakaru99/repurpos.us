@@ -1,36 +1,23 @@
-<div id="ontology-data" *ngIf="vendor_data && vendor_data.length > 0">
-  <ng-container *ngFor="let vendor of vendor_data; let k = index;">
-    <div [id]="vendors[k].name" *ngIf="vendors[k].name == 'Ontology'">
-      <!-- <div class="cmpd-table"> -->
-      <div class="cmpd-table" *ngFor="let x of vendor; let i=index">
-
-        <table [ngClass]="i === vendor.length - 1 ? 'last-entry' : ''">
-          <tr *ngIf="x && (x.hasOwnProperty('node_id'))">
-            <h5>
-              <a href="/ontology-tree?src=0" target="_blank" rel="noreferrer">
-                Mechanism Of Action Ontology 
-              </a><button type="submit" (click)="toggle_ontology()" mat-flat-button color="accent">{{ontology_text}}</button>
-            </h5>
-            <!-- <td class="title">Ontology Data</td> -->
-            <table [ngClass]="hide_ontology ? 'hidden' : 'shown'">
-              <tr class="header-title align-middle assay-name col">
-                <th class="header-title align-middle assay-name col">MoA Category</th>
-                <th class="header-title align-middle assay-name col">MoA</th>
-                <th class="header-title align-middle assay-name col">Parent MoA</th>
-                <th class="header-title align-middle assay-name col">Data Source</th>
-              </tr>
-              <tr *ngFor="let a of x['entity_name']; let i = index">
-                <td class="content">{{x['entity_name'][i]}}</td>
-                <td class="content"><a href="/ontology-tree?src={{x['entity_id'][i]}}&search_id={{x['node_id'][i]}}">{{x['parent_moa'][i]}}</a></td>
-                <td class="content">{{x['parent_moa_path'][i]}}</td>
-                <td class="content">{{x['xref'][i]}}</td>
-              </tr>
-            </table>
-          </tr>
-        </table>
-        <!-- END OF NGFOR OVER VENDOR LOOP -->
-      </div>
-    </div>
-  </ng-container>
-
+<div class="block" *ngIf="rows.length > 0">
+  <button type="button" class="disclosure" (click)="open = !open" [attr.aria-expanded]="open">
+    <span class="chev"></span>
+    <span class="d-title">Mechanism of action ontology</span>
+    <span class="d-summary">{{ moaSummary }}</span>
+  </button>
+  <div class="scroll" *ngIf="open">
+    <table class="results">
+      <thead>
+        <tr><th>Mechanism</th><th>Path</th><th>Category</th><th>Source</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of rows">
+          <td class="moa"><a [href]="'/ontology-tree?src=' + r.src + '&search_id=' + r.node">{{ r.moa }}</a></td>
+          <td class="path">{{ r.path }}</td>
+          <td>{{ r.category }}</td>
+          <td class="muted">{{ r.source }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="tree-link"><a href="/ontology-tree?src=0">Open the ontology tree</a></p>
+  </div>
 </div>

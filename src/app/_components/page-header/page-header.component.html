@@ -5,6 +5,8 @@
       <h1>{{ title }}</h1>
       <p class="lede" *ngIf="lede">{{ lede }}</p>
       <p class="byline" *ngIf="byline">{{ byline }}</p>
+      <!-- Optional details under the title, e.g. a compound's availability: <div header-meta> -->
+      <ng-content select="[header-meta]"></ng-content>
     </div>
     <!-- Optional right-hand content, e.g. a page's figures: <div header-aside> -->
     <ng-content select="[header-aside]"></ng-content>
@@ -16,5 +18,7 @@
     <button type="button" *ngFor="let s of sections" [class.active]="active === s.id"
             [attr.aria-current]="active === s.id ? 'location' : null" (click)="go(s)">{{ s.label }}</button>
     <a class="back" *ngIf="backLink" [routerLink]="backLink">{{ backLabel }}</a>
+    <!-- Optional actions at the right end of the bar: <div nav-actions> -->
+    <ng-content select="[nav-actions]"></ng-content>
   </div>
 </nav>

@@ -63,6 +63,9 @@ export class CompoundService {
   integrityPediatricsState = this.integrityPediatricsSubject.asObservable();
 
   public disclosureDateSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  // Highest development phase across the data sources, for the page header
+  public highestPhaseSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  highestPhaseState = this.highestPhaseSubject.asObservable();
   disclosureDateState = this.disclosureDateSubject.asObservable();
 
   private aliases: string[] = [];
@@ -260,6 +263,7 @@ export class CompoundService {
       this.rfmSubject.next('');
       this.integrityPediatricsSubject.next(false);
       this.disclosureDateSubject.next('');
+      this.highestPhaseSubject.next('');
       this.aliasSubject.next([]);
       this.chemSourceSubject.next([]);
       this.similarSubject.next([]);
@@ -517,7 +521,9 @@ export class CompoundService {
             console.log(b);
 
             // make sure certain keys exist as Arrays
-            let doc_keys = Array('reframe_id', 'gvk', 'informa', 'integrity');
+            // ontology too: a compound with no ontology entry used to throw in
+            // getVendorHeaderInfo and leave the page loading forever
+            let doc_keys = Array('reframe_id', 'gvk', 'informa', 'integrity', 'ontology');
 
             for (let x of doc_keys) {
               if (!b.hasOwnProperty(x)) {
@@ -532,6 +538,8 @@ export class CompoundService {
             this.integrityPediatricsSubject.next(b.integrity_pediatrics || false);
 
             this.disclosureDateSubject.next(b.disclosure_date || '');
+
+            this.highestPhaseSubject.next(b.highest_phase || '');
             
             // Pull out assay data --> compound-assay-data
             this.assaysSubject.next(<AssayData[]>b.assay);
@@ -599,13 +607,13 @@ export class CompoundService {
   }
 
   getVendorHeaderInfo(vendor_data: Object[]): void {
-    if (vendor_data.length > 0 && Object.keys(vendor_data[0]).length > 0) {
+    if (vendor_data && vendor_data.length > 0 && vendor_data[0] && Object.keys(vendor_data[0]).length > 0) {
       for (let compound of vendor_data) {
-        this.aliases = this.aliases.concat(compound['drug_name']);
+        this.aliases = this.aliases.concat(compound['drug_name'] || []);
       }
 
       // Arbitrarily: choose the first name, first SMILES string
-      this.vendorName = vendor_data[0]['drug_name'][0];
+      this.vendorName = (vendor_data[0]['drug_name'] || [])[0] || this.vendorName;
       // this.vendor_smiles = vendor_data[0]['smiles'];
     }
   }
@@ -636,6 +644,8 @@ export class CompoundService {
                 // Is it a Reframe compound? --> compound-header
                 // TODO: make sure this works when flip RFM id
                 this.rfmSubject.next(search_results.reframeid);
+
+                this.highestPhaseSubject.next(search_results.highest_phase || '');
 
                 this.integrityPediatricsSubject.next(search_results.integrity_pediatrics || false);
 

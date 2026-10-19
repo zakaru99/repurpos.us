@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -13,7 +13,9 @@ class MatIconStubComponent {}
 class QuickSearchStubComponent {}
 
 @Component({ selector: 'app-user-login', template: '' })
-class UserLoginStubComponent {}
+class UserLoginStubComponent {
+  @Input() open: boolean;
+}
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;

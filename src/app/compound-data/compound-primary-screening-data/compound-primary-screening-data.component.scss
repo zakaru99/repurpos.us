@@ -1,144 +1,67 @@
-.title-plus-btn {
-  //display: inline-block;
+// Activity > Primary screens: hit or not in each single-concentration screen.
+
+@import '../compound';
+
+.block {
+  @include disclosure-block;
 }
 
-.vendor-btn {
-  margin: 10px 0;
-  color: #7e8b98;
+.disclosure {
+  @include disclosure;
 }
 
-.header-title {
-  text-transform: uppercase;
-  font-weight: 300;
-  opacity: 0.6;
-  font-size: 0.85em;
+.head {
+  margin-bottom: 10px;
 }
 
-.assay-title {
-  padding-left: 15px;
+.seg {
+  @include segmented;
 }
 
-.assay-name {
-   width: 50%;
+.scroll {
+  max-width: 1100px;
 }
 
-.assay-table,
-table#cmpd-names,
-table.assay-table {
-  width: 100%;
-  // table-layout: fixed;
-  border: none;
-  margin-bottom: 50px;
+// Sideways scroll only on phones; elsewhere the header row sticks to the page
+@media (max-width: $bp-phone) {
+  .scroll {
+    overflow-x: auto;
+  }
 }
 
-div.hidden {
-  display: none;
-  margin-bottom: 50px;
+.results {
+  @include data-table;
+  @include sticky-table-head;
 }
 
-table.hidden {
-  display: none;
-  margin-bottom: 50px;
+.sort {
+  @include sort-button;
 }
 
-tr.not_hit.hidden {
-  display: none;
+.assay {
+  a {
+    color: $accent;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .id {
+    margin-left: 8px;
+    font-family: $mono;
+    font-size: 0.75rem;
+    color: $ink-soft;
+  }
 }
 
-h3.hidden {
-  margin-bottom: 50px;
+.results td:last-child {
+  color: $ink-soft;
+  white-space: nowrap;
 }
 
-td {
-  padding-top: 3px;
-  padding-bottom: 3px;
-  line-height: 1.2em;
-  height: 40px;
-}
-
-.td-fit {
-  width: 1px;
-}
-
-//.assay-name,
-.content a {
-  // padding-left: 15px;
-}
-
-.warning {
-  color: #fd5457;
-}
-
-.assay-type {
-  padding: 5px;
-  text-transform: uppercase;
-  font-size: 0.8em;
-  color: #212529;
-  text-align: center;
-}
-
-/* nav elements:  tab panes, pagination */
-
-.nav-pills {
-  margin-top: -0.5rem;
-  cursor: pointer;
-}
-
-.nav-pills .nav-link {
-  background-color: #eff1f2;
-  border-radius: 3px;
-  margin-left: 4px;
-  border: 0px #e4e7e9 solid;
-  border-bottom-width: 4px;
-  color: #c2c8ce;
-  -webkit-text-fill-color: #c2c8ce;
-}
-
-.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-  background-color: #dfe2e5;
-  border-color: #b7bec5;
-  -webkit-text-fill-color: #8d98a3;
-  color: #8d98a3;
-}
-
-.nav-pills .nav-link:hover {
-  background-color: #e4ebfb;
-  -webkit-text-fill-color: #3d6de0;
-  color: #3d6de0;
-  border-color: #cad7f6;
-}
-
-.nav>li>a {
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 4px;
-  padding-bottom: 6px;
-  margin-top: 4px;
-  margin-bottom: 8px;
-}
-
-span.btn {
-  font-family: "Lato", Arial, sans-serif;
-  font-weight: 300;
-  pointer-events: none;
-  /* Necessary to fix webkit error where child text screws up event firing */
-  padding: 0;
-}
-
-.nav-item {
-  display: block;
-}
-
-.sortable {
-  cursor: pointer;
-  position: relative;
-  user-select: none;
-}
-
-.sort-arrow {
-  font-size: 0.7em;
-  margin-left: 5px;
-  vertical-align: middle;
-  color: #555;
-  transition: transform 0.2s ease;
+.results td.hit {
+  font-weight: 600;
+  color: $status-approved;
 }

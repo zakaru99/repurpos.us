@@ -40,7 +40,7 @@ export class CompoundDataComponent implements OnInit {
   cmpdAvailData: Array<AvailableData> = [];
 
   // Parameters for similarity results
-  num_similar_per_page: number = 3;
+  num_similar_per_page: number = 8;
 
   // Meta tags
   meta_tags = [];
@@ -118,6 +118,15 @@ export class CompoundDataComponent implements OnInit {
 
 
   ngOnInit() {
+  }
+
+  // Data sources this compound has, for the signed-out panels
+  get availableNames(): string[] {
+    return (this.cmpdAvailData || []).filter((d: any) => d.value).map((d: any) => d.name);
+  }
+
+  signInPrompt() {
+    window.dispatchEvent(new CustomEvent('reframe-sign-in'));
   }
 
   // showMore(clickEvent, qid: string): void {

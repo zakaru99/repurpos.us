@@ -1,72 +1,34 @@
-<div class="container-fluid clearfix">
+<!-- Band, section nav and Overview -->
+<app-compound-header [results_per_page]="num_similar_per_page"></app-compound-header>
 
-  <app-compound-header [results_per_page]='num_similar_per_page'></app-compound-header>
-
-  <div class="row">
-    <!-- LEFT COLUMN -->
-    <div class="col-lg-4 pr-4">
-
-      <div class="row">
-
-        <!-- 2D structure -->
-        <div class="col-lg-12 col-md-8 col-sm-6 col-xs-12">
-          <app-struct2d [structure]="smiles" [smiles]="smiles" struct_type="smiles" *ngIf="smiles"></app-struct2d>
-        </div>
-
-
-        <!-- Chemical ids -->
-        <div class="col-lg-12 col-md-4 col-sm-6 col-xs-12">
-          <app-compound-wikidata-ids></app-compound-wikidata-ids>
-        </div>
-
-        <div class="col-lg-12 col-md-4 col-sm-6 col-xs-12">
-          <app-compound-calibr-pk-data></app-compound-calibr-pk-data>
-        </div>
-
-        <div class="col-lg-12 col-md-4 col-sm-6 col-xs-12">
-          <app-compound-ontology-data></app-compound-ontology-data>
-        </div>
-      </div>
-    </div>
-
-    <!-- RIGHT COLUMN -->
-    <div class="col-lg-8 pl-4">
-
-      <!-- Wikidata -->
-      <app-compound-wikidata></app-compound-wikidata>
-      
-      <!-- VENDOR DATA -->
+<!-- DEVELOPMENT AND PHARMACOLOGY: each licensed source's record for the drug
+     (phase, mechanism, targets, PK), on a grey band below the screening data -->
+<section id="development" class="band muted">
+  <div class="inner">
+    <h2>Development and pharmacology</h2>
+    <ng-container *ngIf="loggedIn">
       <app-compound-vendor-data></app-compound-vendor-data>
-
-      <!-- Assays -->
-      <app-compound-assay-data></app-compound-assay-data>
-
-      <!-- primary data-->
-      <app-primary-screening-data></app-primary-screening-data>
-
-      <!-- Synthetic route PDF -->
-      <app-compound-synthetic-route></app-compound-synthetic-route>
-
-      <!-- Log-in default -->
-      <div *ngIf="!loggedIn">
-        <h3>Log in required to view additional data</h3>
-        <div class="accent-color login-req">
-          Please sign in to view activity data and compound annotation data from our commercial partners
-        </div>
-      </div>
-
-      <app-available-data [availData]="cmpdAvailData" class="nodata" *ngIf="!loggedIn"></app-available-data>
-
-
-    </div>
-    <!-- end of right column -->
-
+      <app-compound-ontology-data></app-compound-ontology-data>
+    </ng-container>
+    <ng-container *ngIf="!loggedIn" [ngTemplateOutlet]="signIn"
+                  [ngTemplateOutletContext]="{ what: 'Highest phase, mechanism, targets and PK from Clarivate Integrity, GVK GoStar and Citeline Pharmaprojects.', showAvail: true }"></ng-container>
   </div>
+</section>
 
-  <!-- Reset the flow of the document so <app-similar-compounds>  is below the other sections-->
-  <div class="clearfix">
+<div class="band">
+  <div class="inner">
+    <app-similar-compounds [results_per_page]="num_similar_per_page"></app-similar-compounds>
   </div>
-
-  <app-similar-compounds [results_per_page]='num_similar_per_page'></app-similar-compounds>
-
 </div>
+
+<!-- Signed out: what signing in would show here, and what this compound has -->
+<ng-template #signIn let-what="what" let-showAvail="showAvail">
+  <div class="notice">
+    <div>
+      <p class="notice-title">Sign in to see this section</p>
+      <p>{{ what }}</p>
+      <p class="avail-data" *ngIf="showAvail && availableNames.length">Available for this compound: {{ availableNames.join(', ') }}.</p>
+    </div>
+    <button type="button" class="btn" (click)="signInPrompt()">Sign in</button>
+  </div>
+</ng-template>

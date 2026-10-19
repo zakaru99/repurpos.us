@@ -1,6 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, ViewChild } from '@angular/core';
+import { DatePipe } from '@angular/common';
 
 import { AdminApiService, AdminProposal, ProposalStatus } from '../admin-api.service';
+import { buildPdf, PdfBlock } from '../simple-pdf';
 
 // How long Approve stays armed ("Confirm approval") before reverting
 const ARM_MS = 4000;
@@ -100,12 +102,51 @@ export class ProposalDetailComponent implements OnChanges, OnDestroy {
 
   exportJson() {
     const blob = new Blob([JSON.stringify(this.proposal, null, 2)], { type: 'application/json' });
+    this.download(blob, 'reframe-proposal-' + this.proposal.id + '.json');
+  }
+
+  // The proposal as it reads in this pane: title, ID / date / status, the
+  // facts, then description, notes and any rejection reason
+  exportPdf() {
+    const p = this.proposal;
+    const date = p.submittedOn ? new DatePipe('en-US').transform(p.submittedOn, 'd MMMM y') : '';
+    const meta = ['REFRAME assay proposal #' + p.id];
+    if (date) { meta.push('Submitted ' + date); }
+    meta.push(String(p.status));
+
+    const blocks: PdfBlock[] = [
+      { type: 'title', text: p.indication || 'Untitled proposal' },
+      { type: 'meta', text: meta.join(' · ') },
+      { type: 'field', label: 'Submitted by', value: p.submittedBy || '—' },
+      { type: 'field', label: 'Email', value: p.email || '—' },
+      { type: 'field', label: 'Institution', value: p.institution || '—' },
+      { type: 'field', label: 'Assay volume', value: p.volume ? p.volume + ' µL' : '—' },
+      { type: 'field', label: 'Concentration', value: p.concentration ? p.concentration + ' µM' : '—' },
+      { type: 'heading', text: 'Description' },
+      p.description ? { type: 'para', text: p.description } : { type: 'para', text: 'No description provided.', muted: true }
+    ];
+    if (p.notes) {
+      blocks.push({ type: 'heading', text: 'Notes' }, { type: 'para', text: p.notes });
+    }
+    if (p.status === 'Rejected') {
+      blocks.push({ type: 'heading', text: 'Reason for rejection' },
+        p.denialReason ? { type: 'para', text: p.denialReason } : { type: 'para', text: 'No reason recorded.', muted: true });
+    }
+
+    const exported = new DatePipe('en-US').transform(new Date(), 'd MMMM y');
+    this.download(buildPdf(blocks, 'REFRAME assay proposal #' + p.id + ' · Exported ' + exported),
+      'reframe-proposal-' + p.id + '.pdf');
+  }
+
+  private download(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'reframe-proposal-' + this.proposal.id + '.json';
+    a.download = filename;
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   private reset() {

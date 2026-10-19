@@ -107,8 +107,13 @@ h1 {
   display: flex;
   gap: 28px;
   height: 46px;
-  overflow-x: auto;
   scrollbar-width: none;
+
+  // Sideways scroll only where the links might not fit; on wide screens it
+  // would clip dropdowns opened from the bar (Add to list, compound notes)
+  @media (max-width: $bp-nav) {
+    overflow-x: auto;
+  }
 
   &::-webkit-scrollbar {
     display: none;

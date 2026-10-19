@@ -1,59 +1,41 @@
-<form
-  class="search"
-  method="post"
-  [ngClass]="{ 'expanded': inputFocused }"
-  (focusin)="onFocusIn()"
-  (focusout)="onFocusOut($event)"
-  action=""
->
+<!-- Header quick search: an icon that opens into a field. While open, a panel
+     attached to the field holds the compound / assay scope, suggestions and a
+     "search all" row; arrow keys move through them like the homepage search. -->
+<form class="search" [class.expanded]="inputFocused" [class.open]="inputFocused"
+      (focusin)="onFocusIn()" (focusout)="onFocusOut($event)" (submit)="$event.preventDefault()" action="">
   <label for="search-box-add" (click)="focusInput(inputEl)">
-    <mat-icon>search</mat-icon>
+    <svg class="search-icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m12.6 12.6 4.4 4.4"/></svg>
   </label>
 
   <div class="input-toggle-wrapper">
-    <input
-      #inputEl
-      id="search-box-add"
-      type="text"
-      class="quick-search"
-      name="quick_search"
-      aria-label="quick search"
-      autocomplete="off"
-      [placeholder]="getPlaceholder()"
-      [(ngModel)]="query"
-      (keydown.enter)="onEnter()"
-      (keyup)="onKeyUp($event)"
-    />
+    <input #inputEl id="search-box-add" type="text" class="quick-search" name="quick_search"
+           autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="qs-suggestions"
+           [attr.aria-expanded]="inputFocused && suggestions.length > 0"
+           [attr.aria-label]="selected === 'compound' ? 'Search compounds' : 'Search assays'"
+           [placeholder]="getPlaceholder()"
+           [(ngModel)]="query" (ngModelChange)="onQueryChange($event)" (keydown)="onKeyDown($event)" />
 
-    <!-- Dropdown panel: scope toggle + suggestions, shown only while focused -->
     <div *ngIf="inputFocused" class="qs-panel">
-      <div class="search-toggle" role="tablist">
-        <div
-          class="toggle-option"
-          role="tab"
-          [class.active]="selected === 'compound'"
-          tabindex="0"
-          (click)="select('compound')">
-          Compounds
-        </div>
-        <div
-          class="toggle-option"
-          role="tab"
-          [class.active]="selected === 'assay'"
-          tabindex="0"
-          (click)="select('assay')">
-          Assays
-        </div>
+      <div class="search-toggle" role="tablist" aria-label="Search for">
+        <button type="button" role="tab" class="toggle-option" [class.active]="selected === 'compound'"
+                [attr.aria-selected]="selected === 'compound'" (click)="select('compound')">Compounds</button>
+        <button type="button" role="tab" class="toggle-option" [class.active]="selected === 'assay'"
+                [attr.aria-selected]="selected === 'assay'" (click)="select('assay')">Assays</button>
       </div>
 
-      <ul class="suggestions-dropdown" *ngIf="suggestions.length > 0">
-        <li
-          *ngFor="let suggestion of suggestions"
-          (mousedown)="onSuggestionClick(suggestion.value)"
-        >
-          {{ suggestion.value }}
+      <ul id="qs-suggestions" class="suggestions-dropdown" role="listbox" *ngIf="suggestions.length > 0">
+        <li *ngFor="let s of suggestions; let i = index" role="option" [class.highlighted]="i === highlightedIndex"
+            [attr.aria-selected]="i === highlightedIndex"
+            (mouseenter)="highlightedIndex = i" (mousedown)="$event.preventDefault(); onSuggestionClick(s.value)">
+          {{ s.value }}
         </li>
       </ul>
+
+      <!-- Always offer the plain search for what's typed -->
+      <button type="button" class="search-all" *ngIf="query?.trim()" (mousedown)="$event.preventDefault(); onEnter()">
+        Search {{ selected === 'compound' ? 'compounds' : 'assays' }} for “{{ query.trim() }}”
+        <span class="key" aria-hidden="true">Enter</span>
+      </button>
     </div>
   </div>
 </form>

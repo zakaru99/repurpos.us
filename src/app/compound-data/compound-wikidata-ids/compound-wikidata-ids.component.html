@@ -1,121 +1,57 @@
-<!-- Chemical formula, InChIKey, SMILES -->
-<div *ngIf="chemData.length > 0 && qid; else no_wd">
-
-  <div class="formula text-center" *ngIf="formula">
-    {{formula}}
-  </div>
-
-  <div class="chem-props-container">
-    <h5>Chemical properties (<a href="{{'http://www.wikidata.org/entity/' + qid}}" target="_blank" rel="noreferrer">Wikidata</a>)</h5>
-
-    <div class="chem-props alias wikidata" *ngFor="let x of chemData">
-      <div scope="row" class="title">{{ x['property'] }}</div>
-      <div scope="row" class="wrap">
-        <span *ngFor="let z of x['values']; let i = index;">
-        {{z}}
-      </span>
-      </div>
-    </div>
-
-    <div class="chem-props alias wikidata">
-      <div scope="row" class="title">Chirality</div>
-      <div scope="row" class="wrap">
-        <span>
-          {{chirality}}
-      </span>
-      </div>
-    </div>
-
-  </div>
+<!-- Chemical properties (Wikidata when the compound has an item, else from the vendors) -->
+<div class="block" *ngIf="(chemData.length > 0 && qid) || smiles || ikey?.length === 14">
+  <h3 class="block-heading">
+    Chemical properties
+    <span class="count" *ngIf="chemData.length > 0 && qid">from <a [href]="'https://www.wikidata.org/entity/' + qid" target="_blank" rel="noreferrer">Wikidata</a></span>
+  </h3>
+  <table class="facts">
+    <tbody>
+      <tr *ngIf="formula && qid">
+        <th scope="row">Formula</th>
+        <td class="formula">{{ formula }}</td>
+      </tr>
+      <ng-container *ngIf="chemData.length > 0 && qid; else fromVendors">
+        <tr *ngFor="let x of chemData">
+          <th scope="row">{{ x['property'] | slice:0:1 | uppercase }}{{ x['property'] | slice:1 }}</th>
+          <td class="mono"><span class="values"><span *ngFor="let z of x['values']">{{ z }}</span></span></td>
+        </tr>
+      </ng-container>
+      <ng-template #fromVendors>
+        <tr *ngIf="smiles">
+          <th scope="row">SMILES</th>
+          <td class="mono">{{ smiles }}</td>
+        </tr>
+        <tr *ngIf="ikey?.length === 14">
+          <th scope="row">InChIKey (first block)</th>
+          <td class="mono">{{ ikey }}</td>
+        </tr>
+      </ng-template>
+      <tr *ngIf="chirality">
+        <th scope="row">Chirality</th>
+        <td>{{ chirality }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
-<!-- Add in additional ID references -->
-<div class="resource-ids" *ngIf="idData.length > 0 && qid">
-  <div class="row">
-    <div class="col-12">
-      <h6>External Resources</h6>
-    </div>
-  </div>
-
-  <div class="chem-ids alias row">
-    <!-- template for the ID data -->
-    <ng-template #id_div let-obj="obj">
-      <div class="title" scope="row">{{obj['property']}}</div>
-
-      <div scope="row">
-        <ng-container [ngTemplateOutlet]="obj['url'] ? resource_link : no_link" [ngTemplateOutletContext]="{obj:obj}"></ng-container>
-
-        <!-- If there's a URL provided for the resource from Wikidata, hyperlink out -->
-        <ng-template #resource_link let-obj="obj">
-          <span *ngFor="let id of obj['values']; let i = index">
-            <a [href]="obj['url']" target="_blank" rel="noreferrer">{{ id }}</a>
-            <span class='data-separator' *ngIf="i + 1 < obj['values'].length"></span>
-          </span>
-        </ng-template>
-
-        <!-- If there's no URL provided for the resource from Wikidata, don't hyperlink out -->
-        <ng-template #no_link let-obj="obj">
-          <span *ngFor="let id of obj['values']; let i = index">
-            {{ id }}
-            <span class='data-separator' *ngIf="i + 1 < obj['values'].length"></span>
-          </span>
-        </ng-template>
-      </div>
-    </ng-template>
-
-    <div class="col-sm-6" id="left">
-      <!-- Wikidata ID -->
-      <div class="title" scope="row">Wikidata</div>
-      <div scope="row">
-        <a href="{{'http://www.wikidata.org/entity/' + qid}}" target="_blank" rel="noreferrer">
-            {{ qid }}
-          </a>
-      </div>
-
-      <span *ngFor="let obj of idData | slice:0:idData.length/2; let i=index">
-            <ng-container [ngTemplateOutlet]="id_div" [ngTemplateOutletContext]='{obj: obj}'>
-            </ng-container>
-        </span>
-    </div>
-
-    <div class="col-sm-6" id="right">
-      <span *ngFor="let obj of idData | slice:idData.length/2:idData.length; let i=index">
-          <ng-container [ngTemplateOutlet]="id_div" [ngTemplateOutletContext]='{obj: obj}'>
+<!-- Identifiers in other databases -->
+<div class="block" *ngIf="idData.length > 0 && qid">
+  <h3 class="block-heading">External resources</h3>
+  <table class="facts">
+    <tbody>
+      <tr>
+        <th scope="row">Wikidata</th>
+        <td class="mono"><a [href]="'https://www.wikidata.org/entity/' + qid" target="_blank" rel="noreferrer">{{ qid }}</a></td>
+      </tr>
+      <tr *ngFor="let obj of idData">
+        <th scope="row">{{ obj['property'] }}</th>
+        <td class="mono"><span class="values">
+          <ng-container *ngFor="let id of obj['values']">
+            <a *ngIf="obj['url']; else plainId" [href]="obj['url']" target="_blank" rel="noreferrer">{{ id }}</a>
+            <ng-template #plainId><span>{{ id }}</span></ng-template>
           </ng-container>
-      </span>
-    </div>
-
-  </div>
+        </span></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-
-
-<!-- If no wikidata data are available, use the information from the vendors -->
-<ng-template #no_wd>
-  <div class="chem-props-container" *ngIf="smiles || ikey.length === 14">
-    <div>
-      <h5>Chemical properties</h5>
-    </div>
-
-    <div class="chem-props alias wikidata">
-      <ng-container *ngIf="smiles">
-        <div scope="row" class="title">SMILES</div>
-        <div scope="row" class="wrap">{{ smiles }}</div>
-      </ng-container>
-
-      <ng-container *ngIf="ikey.length === 14">
-        <div scope="row" class="title">InChIKey</div>
-        <div scope="row" class="wrap">{{ ikey }}</div>
-      </ng-container>
-    </div>
-
-    <div class="chem-props alias wikidata">
-      <div scope="row" class="title">Chirality</div>
-      <div scope="row" class="wrap">
-        <span>
-          {{chirality}}
-      </span>
-      </div>
-    </div>
-  </div>
-
-</ng-template>

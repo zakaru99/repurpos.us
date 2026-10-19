@@ -1,162 +1,204 @@
-<div class="cmpd-header" (window:resize)="onResize($event)">
-
-  <div id="header">
-
-    <!-- Invisible placeholder: sticky can't stay pinned past its own
-         container's bounds (that's the bug just found - it un-stuck once
-         #header's own end was reached, well before the page's actual
-         content ends). This copy stays in normal flow purely to reserve
-         the row's height so nothing shifts; the real, always-visible
-         copy right below is position:fixed, which isn't bounded by any
-         container at all. -->
-    <div class="hdr-top-row hdr-top-row--placeholder" aria-hidden="true">
-      <div class="hdr-name-wrap">
-        <h1>{{ label }}</h1>
-        <div class="rfm-tile rfm-tile--{{ reframeStatus.key }}">{{ reframeStatus.label }}</div>
+<app-page-header [eyebrow]="'Compound · ' + compoundId" [title]="label || compoundId" [byline]="byline"
+                 [sections]="sections" [compact]="true" [wide]="true">
+  <!-- Key figures, same list as the homepage hero -->
+  <!-- Getting the compound: library status, vendors, disclosure, QC data -->
+  <div header-meta class="meta">
+    <dl class="meta-list">
+      <div>
+        <dt>Library</dt>
+        <dd class="avail" [class.sample]="reframeStatus.sample" [title]="reframeStatus.tooltip">{{ reframeStatus.label }}</dd>
       </div>
-      <div class="header-actions" *ngIf="loggedIn && compoundId">
-        <button class="hdr-icon-btn">{{ isFavorite ? '&#9829;' : '&#9825;' }} <span class="hdr-label">{{ isFavorite ? 'Saved' : 'Save' }}</span></button>
-        <div class="list-dropdown-wrap">
-          <button class="hdr-icon-btn">&#9776; <span class="hdr-label">Add to list</span></button>
-        </div>
+      <div *ngIf="chemVendors.length">
+        <dt>Available via</dt>
+        <dd>
+          <ng-container *ngFor="let vendor of chemVendors; let last = last">
+            {{ vendor['chem_vendor'] }}<span class="mono" *ngIf="vendor['chem_vendor_id']"> {{ vendor['chem_vendor_id'] }}</span><span *ngIf="!last">, </span>
+          </ng-container>
+        </dd>
       </div>
-    </div>
-
-    <!-- The real, interactive, always-visible row. -->
-    <div #fixedRow class="hdr-top-row hdr-top-row--fixed" [class.past-header]="pastHeader">
-      <div class="hdr-name-wrap">
-        <h1>{{ label }}</h1>
-        <div class="rfm-tile rfm-tile--{{ reframeStatus.key }}" [matTooltip]="reframeStatus.tooltip">{{ reframeStatus.label }}</div>
+      <div *ngIf="disclosureDate">
+        <dt>Structure disclosed</dt>
+        <dd>{{ disclosureDate | date:'d MMMM y' }}</dd>
       </div>
-      <div class="header-actions" *ngIf="loggedIn && compoundId">
-        <button class="hdr-icon-btn" [class.active]="isFavorite" (click)="toggleFavorite()">{{ isFavorite ? '&#9829;' : '&#9825;' }} <span class="hdr-label">{{ isFavorite ? 'Saved' : 'Save' }}</span></button>
-        <div class="list-dropdown-wrap">
-          <button class="hdr-icon-btn" (click)="showListDropdown = !showListDropdown">&#9776; <span class="hdr-label">Add to list</span></button>
-          <div class="list-dropdown" *ngIf="showListDropdown">
-            <div *ngIf="lists.length === 0" class="dropdown-empty">No lists yet</div>
-            <button class="dropdown-item" *ngFor="let list of lists" (click)="addToList(list.id)">{{ list.name }}<span class="dropdown-count">{{ list.item_count }}</span></button>
-            <div class="dropdown-divider" *ngIf="lists.length > 0"></div>
-            <div class="dropdown-new">
-              <input class="dropdown-input" type="text" placeholder="New list…" [(ngModel)]="newListName" (keyup.enter)="createAndAddList()" />
-              <button class="dropdown-create" (click)="createAndAddList()" [disabled]="!newListName.trim()">Add</button>
-            </div>
-          </div>
-        </div>
+      <div *ngIf="whoName">
+        <dt>WHO INN</dt>
+        <dd>{{ whoName }}</dd>
       </div>
-    </div>
-
-    <!-- Mobile compact row: status chip + action buttons -->
-    <div class="hdr-mobile-row">
-      <div class="hdr-status-chip">
-        <span class="status-chip status-{{ reframeStatus.key }}">{{ reframeStatus.label }}</span>
-      </div>
-      <div class="header-actions mobile-actions" *ngIf="loggedIn && compoundId">
-        <button class="hdr-icon-btn" [class.active]="isFavorite" (click)="toggleFavorite()">{{ isFavorite ? '&#9829;' : '&#9825;' }} <span class="hdr-label">{{ isFavorite ? 'Saved' : 'Save' }}</span></button>
-        <div class="list-dropdown-wrap">
-          <button class="hdr-icon-btn" (click)="showListDropdown = !showListDropdown">&#9776; <span class="hdr-label">Add to list</span></button>
-          <div class="list-dropdown" *ngIf="showListDropdown">
-            <div *ngIf="lists.length === 0" class="dropdown-empty">No lists yet</div>
-            <button class="dropdown-item" *ngFor="let list of lists" (click)="addToList(list.id)">{{ list.name }}<span class="dropdown-count">{{ list.item_count }}</span></button>
-            <div class="dropdown-divider" *ngIf="lists.length > 0"></div>
-            <div class="dropdown-new">
-              <input class="dropdown-input" type="text" placeholder="New list…" [(ngModel)]="newListName" (keyup.enter)="createAndAddList()" />
-              <button class="dropdown-create" (click)="createAndAddList()" [disabled]="!newListName.trim()">Add</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Two-column content -->
-    <div class="row">
-
-      <!-- LEFT: vendor, disclosure date, QC download -->
-      <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12 hdr-col-left">
-
-        <div class="cmpd-source" *ngIf="chemVendors.length > 0">
-          <h6>available via <span *ngFor="let vendor of chemVendors; let i = index;">{{ vendor['chem_vendor'] }}<span *ngIf="vendor['chem_vendor_id']"> ({{ vendor['chem_vendor_id'] }})</span><span class='data-separator' *ngIf="i + 1 < chemVendors.length"></span></span></h6>
-        </div>
-
-        <div class="cmpd-disclosure" *ngIf="disclosureDate">
-          <b>Structure Disclosure Date:</b> {{ disclosureDate | date:'mediumDate' }}
-        </div>
-
-        <div id="downloadQC" *ngIf="chemVendors.length > 0">
-          <button class="dwnld-btn" (click)="clickedQC(chemVendors[0]['chem_vendor_ikey'])">
-            Download QC Data
-          </button>
-        </div>
-
-      </div>
-
-      <!-- RIGHT: WHO name, aliases, similar compounds, note -->
-      <div class="col-lg-8 col-md-7 col-sm-12 col-xs-12 hdr-col-right">
-
-        <div class="row who-name" *ngIf="whoName">
-          <div class="col-12"><b>World Health Organisation International Nonproprietary Name:</b> {{ whoName }}</div>
-        </div>
-
-        <div class="row alias" *ngIf="aliases.length > 0">
-          <div class="col-12">
-            <b>Aliases: </b>
-            <span *ngFor="let alias of aliases | slice:0:alias_ct; let i=index;">{{alias}}<span *ngIf="i + 1 < alias_ct && i + 1 < aliases.length" class='data-separator'></span></span>
-            <a *ngIf="alias_ct <= aliases.length" id="more" (click)="showMore()" class="center-block">show {{ all_shown ? 'less' : 'more' }}</a>
-          </div>
-        </div>
-
-        <div class="row related" *ngIf="similarityResults && similarityResults.length > 0">
-          <div class="col-12">
-            <b>Similar compounds: </b>
-            <span *ngFor="let related of similarityResults | slice: 0:results_per_page; let i=index;"><a (click)="onAnchorClick(related.id)">{{related.main_label}}</a><span *ngIf="i + 1 < similarityResults.length" class='data-separator'></span></span>
-            <span *ngIf="similarityResults.length > results_per_page"><a (click)="onAnchorClick('more')">more</a></span>
-          </div>
-        </div>
-
-        <div class="hdr-note">
-          <span class="underline">Note</span>: counterions may differ between data sources.
-          <app-salt-warning-dialog></app-salt-warning-dialog>
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- Vendor bar (mobile only) -->
-    <div class="hdr-vendor-bar" *ngIf="chemVendors.length > 0">
-      {{ chemVendors[0]['chem_vendor'] }}<span *ngIf="chemVendors[0]['chem_vendor_id']"> &middot; {{ chemVendors[0]['chem_vendor_id'] }}</span>
-    </div>
-
-    <div *ngIf="hasA00295Data && isToxicA00295" class="toxicity-alert toxicity-alert--toxic">
-      This compound has been found to inhibit growth of HEK293 cells with IC50 &lt; 10μM
-    </div>
-    <div *ngIf="hasA00296Data && isToxicA00296" class="toxicity-alert toxicity-alert--toxic">
-      This compound has been found to inhibit growth of HepG2 cells with IC50 &lt; 10μM
-    </div>
-    <div *ngIf="hasA01229Data && isToxicA01229" class="toxicity-alert toxicity-alert--toxic">
-      This compound has been found to inhibit growth of U2OS cells with IC50 &lt; 10μM
-    </div>
-    <div *ngIf="hasA00295Data && !isToxicA00295" class="toxicity-alert toxicity-alert--non-toxic">
-      No inhibition of HEK293 cell growth at 12.5μM
-    </div>
-    <div *ngIf="hasA00296Data && !isToxicA00296" class="toxicity-alert toxicity-alert--non-toxic">
-      No inhibition of HepG2 cell growth at 12.5μM
-    </div>
-    <div *ngIf="hasA01229Data && !isToxicA01229" class="toxicity-alert toxicity-alert--non-toxic">
-      No inhibition of U2OS cell growth at 12.5μM
-    </div>
-    <div *ngIf="integrityPediatrics" class="pediatric-alert">
-      Drug tested for PK in pediatric patients
-      <span class="pediatric-note">(Clarivate Pharmacokinetics Datafeed reports that this drug has been administered in a pediatric patient in a clinical study)</span>
-    </div>
-
-    <!-- Marks the header's own bottom edge (the grey border) - once this
-         scrolls out of view, the fixed name row shows its own copy of that
-         border; until then, showing both at once would look like a
-         duplicate. Purely cosmetic - a class toggle, not a layout change. -->
-    <div #borderSentinel class="header-border-sentinel"></div>
-
+    </dl>
+    <button type="button" class="qc" *ngIf="chemVendors.length" (click)="clickedQC(chemVendors[0]['chem_vendor_ikey'])">Download QC data</button>
   </div>
 
-</div>
+  <dl header-aside class="figures" aria-label="This compound at a glance">
+    <div class="fig">
+      <dt>Highest phase</dt>
+      <dd class="word">{{ highestPhase || '—' }}</dd>
+    </div>
+    <div class="fig" *ngIf="loggedIn">
+      <dt>Assay hits</dt>
+      <dd><button type="button" class="fig-link" (click)="goTo('activity')">{{ assayHitCount }}</button></dd>
+    </div>
+    <div class="fig" *ngIf="similarityResults.length">
+      <dt>Similar compounds</dt>
+      <dd><button type="button" class="fig-link" (click)="goTo('similar')">{{ similarityResults.length }}</button></dd>
+    </div>
+  </dl>
 
-<div class="cmpd-toast" *ngIf="toastMessage" [ngClass]="toastType">{{ toastMessage }}</div>
+  <!-- Safety and PK messages in the sticky section bar: the first in full,
+       the rest in a list -->
+  <div nav-actions class="flags" *ngIf="notes.length">
+    <span class="flag" [ngClass]="notes[0].tone" [title]="notes[0].text + (notes[0].detail ? ' ' + notes[0].detail : '')">{{ notes[0].text }}</span>
+    <div class="list-wrap" *ngIf="notes.length > 1">
+      <button type="button" class="more-notes" (click)="showNotes = !showNotes" [attr.aria-expanded]="showNotes">+{{ notes.length - 1 }} more</button>
+      <ul class="list-menu notes-menu" *ngIf="showNotes">
+        <li *ngFor="let n of notes" [ngClass]="n.tone">{{ n.text }}<span class="note-detail" *ngIf="n.detail"> {{ n.detail }}</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Save / Add to list, at the right end of the sticky section bar -->
+  <div nav-actions class="actions" *ngIf="loggedIn && compoundId">
+    <button type="button" class="action" [class.on]="isFavorite" (click)="toggleFavorite()"
+            [attr.aria-pressed]="isFavorite">{{ isFavorite ? '♥ Saved' : '♡ Save' }}</button>
+    <div class="list-wrap">
+      <button type="button" class="action" (click)="showListDropdown = !showListDropdown"
+              [attr.aria-expanded]="showListDropdown">Add to list</button>
+      <div class="list-menu" *ngIf="showListDropdown">
+        <p class="menu-empty" *ngIf="lists.length === 0">No lists yet</p>
+        <button type="button" class="menu-item" *ngFor="let list of lists" (click)="addToList(list.id)">
+          <span>{{ list.name }}</span><span class="menu-count">{{ list.item_count }}</span>
+        </button>
+        <div class="menu-new">
+          <input type="text" placeholder="New list" [(ngModel)]="newListName" (keyup.enter)="createAndAddList()"
+                 aria-label="New list name">
+          <button type="button" (click)="createAndAddList()" [disabled]="!newListName.trim()">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-page-header>
+
+<!-- OVERVIEW: structure and identifiers on the left; screening data on the
+     right, with aliases and collapsed extras under it -->
+<section id="overview" class="overview">
+  <div class="structure">
+    <div class="struct-box">
+      <app-struct2d *ngIf="smiles" [structure]="smiles" [smiles]="smiles" struct_type="smiles" [launch_search]="false"></app-struct2d>
+    </div>
+    <a class="arrow-link" *ngIf="smiles" [routerLink]="['/search']" [queryParams]="{ query: smiles, type: 'structure', mode: 'similarity', tanimoto: 0.85 }">
+      Find similar structures
+    </a>
+
+    <!-- Identifiers: one summary line until opened (open when signed out) -->
+    <div class="ids" [class.bare]="!loggedIn">
+      <button type="button" class="disclosure" *ngIf="loggedIn" (click)="identifiersOpen = !identifiersOpen"
+              [attr.aria-expanded]="identifiersOpen">
+        <span class="chev"></span>
+        <span class="d-title">Identifiers</span>
+        <span class="d-summary mono">{{ identifiersSummary }}</span>
+      </button>
+
+      <div class="ids-body" *ngIf="identifiersShown">
+      <div class="groups">
+        <!-- What it is -->
+        <div class="group">
+          <h3 class="group-title">Chemistry</h3>
+          <table class="facts">
+            <tbody>
+              <tr *ngIf="formula">
+                <th scope="row">Formula</th>
+                <td class="formula">{{ formula }}</td>
+              </tr>
+              <tr>
+                <th scope="row">InChIKey</th>
+                <td class="mono">{{ inchikey }}</td>
+              </tr>
+              <tr *ngIf="chirality">
+                <th scope="row">Chirality</th>
+                <td>{{ chirality }}</td>
+              </tr>
+              <tr *ngFor="let x of otherChem">
+                <th scope="row">{{ x['property'] | slice:0:1 | uppercase }}{{ x['property'] | slice:1 }}</th>
+                <td>{{ x['values'].join(', ') }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Where else it's recorded -->
+        <div class="group" *ngIf="qid || idData.length">
+          <h3 class="group-title">External databases</h3>
+          <table class="facts">
+            <tbody>
+              <tr *ngIf="qid">
+                <th scope="row">Wikidata</th>
+                <td class="mono"><a [href]="'https://www.wikidata.org/entity/' + qid" target="_blank" rel="noreferrer">{{ qid }}</a></td>
+              </tr>
+              <tr *ngFor="let obj of idData">
+                <th scope="row">{{ obj['property'] }}</th>
+                <td class="mono">
+                  <ng-container *ngFor="let id of obj['values']; let last = last">
+                    <a *ngIf="obj['url']; else plainId" [href]="obj['url']" target="_blank" rel="noreferrer">{{ id }}</a>
+                    <ng-template #plainId>{{ id }}</ng-template><span *ngIf="!last">, </span>
+                  </ng-container>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Structure strings: one line each, click to show in full -->
+      <table class="facts strings" *ngIf="structureStrings.length">
+        <tbody>
+          <tr *ngFor="let str of structureStrings">
+            <th scope="row">{{ str.label }}</th>
+            <td>
+              <button type="button" class="string mono" [class.full]="expandedString === str.value"
+                      (click)="expandedString = expandedString === str.value ? '' : str.value"
+                      [attr.aria-expanded]="expandedString === str.value"
+                      [title]="expandedString === str.value ? '' : 'Show in full'">{{ str.value }}</button>
+            </td>
+            <td class="copy-cell">
+              <button type="button" class="copy" (click)="copy(str.value)">{{ copiedString === str.value ? 'Copied' : 'Copy' }}</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="details">
+    <!-- Screening data from REFRAME screens, first; vendor data follows below the Overview -->
+    <div id="activity" class="activity">
+      <ng-container *ngIf="loggedIn">
+        <app-compound-assay-data></app-compound-assay-data>
+        <app-primary-screening-data></app-primary-screening-data>
+        <app-compound-calibr-pk-data></app-compound-calibr-pk-data>
+      </ng-container>
+      <div class="notice" *ngIf="!loggedIn">
+        <p><strong>Sign in to see screening data:</strong> dose-response results from partner screens, primary screen hits and Calibr pharmacokinetics.</p>
+        <button type="button" class="btn" (click)="signInPrompt()">Sign in</button>
+      </div>
+    </div>
+
+    <p class="aliases" *ngIf="aliases.length">
+      <span class="aliases-label">Aliases</span>
+      {{ shownAliases.join(', ') }}<button type="button" class="link more" *ngIf="aliases.length > aliasPreview"
+        (click)="showAllAliases = !showAllAliases">{{ showAllAliases ? 'Show fewer' : 'Show all ' + aliases.length }}</button>
+    </p>
+
+    <p class="counterion">
+      Counterions may differ between data sources.
+      <app-salt-warning-dialog></app-salt-warning-dialog>
+    </p>
+
+    <!-- Collapsed extras -->
+    <div class="extras">
+      <app-compound-wikidata></app-compound-wikidata>
+      <app-compound-synthetic-route></app-compound-synthetic-route>
+    </div>
+  </div>
+</section>
+
+<div class="toast" *ngIf="toastMessage" [ngClass]="toastType" role="status">{{ toastMessage }}</div>

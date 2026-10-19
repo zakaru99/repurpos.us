@@ -11,7 +11,7 @@ import { WikiData } from '../../_models/vendor-data/index';
 export class CompoundWikidataComponent implements OnInit {
   public table_data: WikiData[] = [];
   public qid: string;
-  private today: number = Date.now();
+  open = false;
 
   constructor(private cmpdSvc: CompoundService) {
 
@@ -20,9 +20,15 @@ export class CompoundWikidataComponent implements OnInit {
     })
 
     this.cmpdSvc.wikiTableState.subscribe((wdata: WikiData[]) => {
-      this.table_data = wdata;
-      // console.log(wdata)
+      this.table_data = wdata || [];
+      this.open = false;
     })
+  }
+
+  // The first few property names, so the closed row says what's inside
+  get summary(): string {
+    const names = this.table_data.map(d => d['property']);
+    return names.slice(0, 4).join(', ') + (names.length > 4 ? ` and ${names.length - 4} more` : '');
   }
 
   ngOnInit() {

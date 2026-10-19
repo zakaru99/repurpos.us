@@ -87,10 +87,13 @@ $bp-nav: 1080px;
 @mixin shell($max: null) {
   max-width: if($max, $max, var(--shell-max));
   margin: 0 auto;
-  padding: 0 var(--shell-gutter);
+  // Sides only, so a page's own top/bottom padding survives on phones
+  padding-right: var(--shell-gutter);
+  padding-left: var(--shell-gutter);
 
   @media (max-width: $bp-phone) {
-    padding: 0 var(--shell-gutter-sm);
+    padding-right: var(--shell-gutter-sm);
+    padding-left: var(--shell-gutter-sm);
   }
 }
 
@@ -122,6 +125,21 @@ $hex-lattice: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' widt
   position: sticky;
   top: var(--site-header-height, 65px);
   z-index: 2400;
+}
+
+// Table header row that sticks under the site header plus any sticky
+// sub-header (the page header's section nav is 46px + a 1px rule). Use on any
+// table that can run longer than the screen. Sticky stops working inside an
+// overflow container, so don't wrap the table in overflow-x: auto except on
+// phones. Collapsed borders don't travel with sticky cells, so the rule under
+// the header is an inset shadow.
+@mixin sticky-table-head($subheader: 47px) {
+  thead th {
+    position: sticky;
+    top: calc(var(--site-header-height, 65px) + #{$subheader});
+    z-index: 2;
+    box-shadow: inset 0 -1px 0 $rule;
+  }
 }
 
 // ---------------------------------------------------------------- type

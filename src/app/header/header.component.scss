@@ -181,7 +181,8 @@ $bar-height: 64px;
     z-index: 3000;
 
     .login-sheet {
-      width: 340px;
+      // Fits the 304px reCAPTCHA in the create-account view
+      width: 356px;
       background: #fff;
       border: 1px solid $rule;
       border-top: 3px solid $navy;
