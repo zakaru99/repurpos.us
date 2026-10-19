@@ -69,7 +69,7 @@
             <div class="field" [class.invalid]="show(volume, proposalForm)">
               <label for="volume">Assay volume</label>
               <div class="unit-input">
-                <input id="volume" type="number" name="volume" min="0" step="any" inputmode="decimal"
+                <input id="volume" type="number" name="volume" min="0" step="1" inputmode="numeric"
                        [(ngModel)]="formData.volume" required #volume="ngModel" />
                 <span class="unit">µL</span>
               </div>
@@ -79,7 +79,7 @@
             <div class="field" [class.invalid]="show(concentration, proposalForm)">
               <label for="concentration">Concentration</label>
               <div class="unit-input">
-                <input id="concentration" type="number" name="concentration" min="0" step="any" inputmode="decimal"
+                <input id="concentration" type="number" name="concentration" min="0" step="1" inputmode="numeric"
                        [(ngModel)]="formData.concentration" required #concentration="ngModel" />
                 <span class="unit">µM</span>
               </div>
