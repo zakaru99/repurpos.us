@@ -53,7 +53,7 @@ export class AdminApiService {
   // ---------------------------------------------------------------- proposals
 
   getProposals(): Observable<AdminProposal[]> {
-    return this.http.get<{ success: boolean; data: any[] }>('/api/assay_proposal').pipe(
+    return this.http.get<{ success: boolean; data: any[] }>('/api/assay_proposal', { headers: this.authHeaders }).pipe(
       map(res => (res && res.success ? res.data : []).map(p => ({
         id: p.id,
         indication: p.indication || '',
@@ -76,7 +76,7 @@ export class AdminApiService {
     if (reason && reason.trim()) {
       payload.denial_reason = reason.trim();
     }
-    return this.http.post('/api/update_proposal_status', payload);
+    return this.http.post('/api/update_proposal_status', payload, { headers: this.authHeaders });
   }
 
   // ---------------------------------------------------------------- users

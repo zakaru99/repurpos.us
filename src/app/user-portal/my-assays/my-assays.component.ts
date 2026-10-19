@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { LoginStateService } from '../../_services';
 
@@ -69,7 +69,8 @@ export class MyAssaysComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.failed = false;
     const params = new HttpParams().set('email', userEmail);
-    this.http.get<{ success: boolean; data: Assay[] }>('/api/assay_proposal', { params })
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
+    this.http.get<{ success: boolean; data: Assay[] }>('/api/assay_proposal', { params, headers })
       .subscribe({
         next: (res) => {
           this.loading = false;

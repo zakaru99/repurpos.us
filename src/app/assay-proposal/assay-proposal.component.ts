@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NgForm } from '@angular/forms';
 import { LoginStateService } from '../_services';
 import { LoginState } from '../_models/index';
@@ -38,7 +38,8 @@ export class AssayProposalComponent {
     this.isSubmitting = true;
     this.toastMessage = '';
 
-    this.http.post('/api/assay_proposal', this.formData)
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
+    this.http.post('/api/assay_proposal', this.formData, { headers })
       .subscribe({
         next: (response: any) => {
         this.isSubmitting = false;
@@ -60,7 +61,7 @@ export class AssayProposalComponent {
         error: (err) => {
           this.isSubmitting = false;
           this.toastType = 'error';
-          this.toastMessage = 'Submission failed. Please try again.';
+          this.toastMessage = (err && err.error && err.error.error) || 'Submission failed. Please try again.';
           setTimeout(() => this.toastMessage = '', 3000);
         }
       });
