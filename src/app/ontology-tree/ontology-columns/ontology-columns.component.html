@@ -12,14 +12,14 @@
   <!-- Category summary: a slim bar instead of a side pane, so columns keep the room -->
   <div class="summary" *ngIf="selected && !selectedCompound">
     <span class="mark" [class.moa]="holdsCompounds(selected)" aria-hidden="true"></span>
-    <span class="summary-kicker">{{ holdsCompounds(selected) ? 'Mechanism' : 'Category' }}</span>
+    <span class="summary-kind">{{ holdsCompounds(selected) ? 'Mechanism' : 'Category' }}</span>
     <span class="summary-name">{{ selected.preferred_name }}</span>
     <span class="summary-stat"><b>{{ count(selected) | number }}</b> compounds</span>
     <span class="summary-stat" *ngIf="!holdsCompounds(selected)"><b>{{ selected.children.length | number }}</b> subcategories</span>
     <span class="summary-ref" *ngIf="selected.xref?.length">{{ selected.xref.join(', ') }}</span>
     <span class="summary-info" *ngIf="selected.comment" [title]="selected.comment" tabindex="0"
           [attr.aria-label]="'About: ' + selected.comment">i</span>
-    <button *ngIf="holdsCompounds(selected)" type="button" class="action primary small summary-action" (click)="download(selected)">
+    <button *ngIf="holdsCompounds(selected)" type="button" class="action small summary-action" (click)="download(selected)">
       Download {{ selected.children.length | number }} compounds (CSV)
     </button>
   </div>
@@ -59,7 +59,7 @@
           <p class="kicker">Compound</p>
           <h2>{{ s.preferred_name }}</h2>
         </div>
-        <a class="action primary small" [routerLink]="compoundLink(s)">Open compound profile</a>
+        <a class="action small" [routerLink]="compoundLink(s)">Open compound profile</a>
       </div>
       <dl class="facts">
         <div *ngIf="s.moa?.length">

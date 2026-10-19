@@ -2,7 +2,7 @@
 // IBM Plex Sans (loaded in index.html), figures in Plex Mono.
 //
 // Band rhythm: navy hero -> tinted partnership timeline -> white explore tabs
-// -> dark charts -> muted sources strip -> navy footer.
+// -> dark charts -> muted sources strip (data sources only) -> navy footer.
 
 @import '../../design';
 
@@ -499,14 +499,15 @@ p {
 .sources {
   background: $muted-bg;
   border-top: 1px solid $rule;
-  padding: 40px 0;
+  padding: 28px 0;
 }
 
-.sources-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-  gap: 56px;
-  align-items: center;
+// Label and sources on one line
+.sources-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 24px;
 }
 
 .sources-label {
@@ -515,7 +516,7 @@ p {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: $ink-soft;
-  margin-bottom: 14px !important;
+  margin: 0 !important;
 }
 
 .source-names {
@@ -540,18 +541,6 @@ p {
       vertical-align: -1px;
       background: $icon;
     }
-  }
-}
-
-.source-logos {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-
-  img {
-    display: block;
-    height: 40px;
-    width: auto;
   }
 }
 
@@ -855,10 +844,6 @@ p {
     gap: 16px;
   }
 
-  .sources-grid {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
 }
 
 @media (max-width: 640px) {
@@ -923,15 +908,6 @@ p {
 
     li + li::before {
       display: none;
-    }
-  }
-
-  .source-logos {
-    flex-wrap: wrap;
-    gap: 16px 24px;
-
-    img {
-      height: 32px;
     }
   }
 

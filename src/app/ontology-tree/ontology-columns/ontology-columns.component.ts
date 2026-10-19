@@ -26,8 +26,8 @@ export class OntologyColumnsComponent implements OnChanges, AfterViewInit {
   // Layout (wide screens): the active (deepest) column is full width, the
   // columns you've passed through shrink, and when even that doesn't fit the
   // oldest levels fold into a strip that can be peeked open on hover.
-  private readonly ACTIVE_W = 300;
-  private readonly ANCESTOR_W = 210;
+  private readonly ACTIVE_W = 320;
+  private readonly ANCESTOR_W = 270;
   private readonly DETAIL_W = 400;
   private readonly STRIP_W = 56;
   private width = 1200;

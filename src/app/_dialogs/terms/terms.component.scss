@@ -1,5 +1,6 @@
 // Terms of use. Shown on the About page, the /terms route and in the
-// registration dialog, so it's plain readable text with no boxes.
+// registration dialog, so it's plain readable text with no boxes. The vendors'
+// terms stack, each using the full width of the page.
 
 @import '../../../design';
 
@@ -16,8 +17,6 @@
 }
 
 .about-section {
-  max-width: 80ch;
-
   h4 {
     margin: 0 0 8px;
     font-family: $sans;

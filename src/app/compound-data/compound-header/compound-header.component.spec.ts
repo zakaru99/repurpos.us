@@ -14,8 +14,6 @@ import { LoginStateService } from '../../_services';
 import { FavoritesService } from '../../_services/favorites.service';
 import { CompoundListsService } from '../../_services/compound-lists.service';
 
-@Component({ selector: 'app-salt-warning-dialog', template: '' })
-class SaltWarningDialogStubComponent {}
 
 @Component({ selector: 'app-compound-assay-data', template: '' })
 class AssayDataStubComponent {}
@@ -78,7 +76,7 @@ describe('CompoundHeaderComponent', () => {
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule, FormsModule, NoopAnimationsModule, MatTooltipModule,
         RouterTestingModule, PageHeaderModule ],
-      declarations: [ CompoundHeaderComponent, SaltWarningDialogStubComponent, Struct2dStubComponent,
+      declarations: [ CompoundHeaderComponent, Struct2dStubComponent,
         WikidataStubComponent, SyntheticRouteStubComponent, AssayDataStubComponent, PrimaryScreeningStubComponent, CalibrPkStubComponent ],
       providers: [
         { provide: CompoundService, useValue: new CompoundServiceStub() },

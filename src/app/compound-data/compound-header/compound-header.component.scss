@@ -12,6 +12,23 @@
 // ---------------------------------------------------------------- band details
 
 // Under the name: label over value, in a row, then the QC download
+// Aliases line (in place of the page header's byline) with the counterion link
+.aka {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  max-width: 60em;
+  margin-top: 8px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.62);
+
+  .sep {
+    color: rgba(255, 255, 255, 0.35);
+  }
+}
+
 .meta {
   display: flex;
   flex-wrap: wrap;
@@ -57,6 +74,109 @@
   @include button-outline-on-dark;
   padding: 7px 14px;
   font-size: 0.875rem;
+}
+
+// "Counterions may differ between sources": text link in the band, panel below
+.combine {
+  position: relative;
+}
+
+.combine-link {
+  padding: 0;
+  font: inherit;
+  color: rgba(255, 255, 255, 0.72);
+  background: none;
+  border: 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+
+  &:hover,
+  &[aria-expanded='true'] {
+    color: #fff;
+    border-bottom-color: #fff;
+  }
+
+  @include focus-ring($accent-on-dark, 2px);
+}
+
+.combine-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 2450; // above the sticky section nav
+  width: 440px;
+  max-width: calc(100vw - 32px);
+  padding: 16px 18px 6px;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: $ink;
+  text-align: left;
+  background: #fff;
+  border: 1px solid $rule;
+  border-radius: $radius-sharp;
+  box-shadow: 0 12px 32px rgba(15, 27, 45, 0.22);
+
+  p {
+    margin: 0 0 10px !important;
+    color: $ink-soft;
+  }
+
+  .combine-summary {
+    color: $ink;
+  }
+}
+
+// Phones: the link gets its own line, the panel fits the screen
+@media (max-width: $bp-phone) {
+  .aka .sep {
+    display: none;
+  }
+
+  .combine {
+    flex-basis: 100%;
+  }
+
+  .combine-panel {
+    width: calc(100vw - 40px);
+  }
+}
+
+.combine-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+
+  h2 {
+    margin: 0 !important;
+    font-family: $sans;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $ink;
+  }
+}
+
+.combine-close {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin: -4px -6px 0 0;
+  padding: 0;
+  font-size: 1.125rem;
+  line-height: 1;
+  color: $ink-soft;
+  background: none;
+  border: 0;
+  border-radius: $radius-sharp;
+  cursor: pointer;
+
+  &:hover {
+    color: $ink;
+    background: $hover;
+  }
+
+  @include focus-ring($accent, 1px);
 }
 
 // ---------------------------------------------------------------- band figures
@@ -603,17 +723,6 @@
   }
 
   @include focus-ring($accent, 2px);
-}
-
-.counterion {
-  margin: 6px 0 0 !important;
-  font-size: 0.8125rem;
-  color: $ink-soft;
-
-  ::ng-deep a {
-    color: $accent;
-    cursor: pointer;
-  }
 }
 
 // More from Wikidata / Synthetic route rows

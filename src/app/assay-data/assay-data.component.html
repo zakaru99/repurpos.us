@@ -89,7 +89,8 @@
       <div class="results-layout">
         <div class="r-head">
           <h2>Results</h2>
-          <p class="hint">
+          <!-- How to read the chart; only when there's a chart to read -->
+          <p class="hint" *ngIf="!oneOff && (loggedIn ? doseRows.length : doseCount)">
             Each row is a compound at the concentration giving a half-maximal response (IC<sub>50</sub> / EC<sub>50</sub>);
             further right is more potent. Hollow dots are replicates, the filled dot their mean. Hover for the structure and fits.
           </p>

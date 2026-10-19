@@ -151,6 +151,13 @@ $text-soft: rgba(255, 255, 255, 0.7);
   align-items: center;
   gap: 32px;
 
+  // Says what the marks are; they appear only here
+  .logos-label {
+    font-size: 0.8125rem;
+    color: $text-soft;
+    white-space: nowrap;
+  }
+
   a {
     display: block;
     opacity: 0.85;
@@ -200,7 +207,12 @@ $text-soft: rgba(255, 255, 255, 0.7);
   }
 
   .logos {
-    gap: 24px;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+
+    .logos-label {
+      flex-basis: 100%;
+    }
 
     img {
       height: 28px;

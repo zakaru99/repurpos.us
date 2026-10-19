@@ -21,6 +21,26 @@
   color: $ink-soft;
 }
 
+// No results: a quiet panel, so it reads as the state of the section
+.empty {
+  padding: 18px 20px;
+  background: $muted-bg;
+  border-radius: $radius-sharp;
+
+  p {
+    margin: 0 !important;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: $ink-soft;
+  }
+}
+
+.empty-title {
+  margin-bottom: 2px !important;
+  font-weight: 600;
+  color: $ink !important;
+}
+
 .error {
   margin: 0 !important;
   color: $status-rejected;

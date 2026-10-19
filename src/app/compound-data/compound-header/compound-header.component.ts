@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 import { CompoundService } from '../../_services/index';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { LoginStateService } from '../../_services';
@@ -53,6 +53,8 @@ export class CompoundHeaderComponent {
   copiedString = '';
 
   showAllAliases = false;
+  // "Counterions may differ between sources" panel in the band
+  showCombine = false;
   readonly aliasPreview = 8;
 
   compoundId = '';
@@ -235,6 +237,12 @@ export class CompoundHeaderComponent {
     if (nav.clipboard && nav.clipboard.writeText) {
       nav.clipboard.writeText(value).then(done, () => this.showToast('Couldn\'t copy to the clipboard', 'error'));
     }
+  }
+
+  @HostListener('document:click')
+  @HostListener('document:keydown.escape')
+  closeCombine() {
+    this.showCombine = false;
   }
 
   get isFavorite(): boolean {

@@ -1,8 +1,32 @@
-<app-page-header [eyebrow]="'Compound · ' + compoundId" [title]="label || compoundId" [byline]="byline"
+<app-page-header [eyebrow]="'Compound · ' + compoundId" [title]="label || compoundId"
                  [sections]="sections" [compact]="true" [wide]="true">
   <!-- Key figures, same list as the homepage hero -->
   <!-- Getting the compound: library status, vendors, disclosure, QC data -->
-  <div header-meta class="meta">
+  <div header-meta class="head-meta">
+    <!-- Aliases, then the counterion note on the same line -->
+    <div class="aka">
+      <span *ngIf="byline">{{ byline }}</span>
+      <span class="sep" *ngIf="byline" aria-hidden="true">·</span>
+      <!-- How the vendor records were matched; opens a panel under the link -->
+      <div class="combine" (click)="$event.stopPropagation()">
+        <button type="button" class="combine-link" (click)="showCombine = !showCombine"
+                [attr.aria-expanded]="showCombine" aria-controls="combine-panel">Counterions may differ between sources</button>
+        <div class="combine-panel" id="combine-panel" *ngIf="showCombine" role="dialog" aria-labelledby="combine-title">
+          <div class="combine-head">
+            <h2 id="combine-title">How data from different sources were combined</h2>
+            <button type="button" class="combine-close" (click)="showCombine = false" aria-label="Close">×</button>
+          </div>
+          <p class="combine-summary">To aid in comparing data between data sources, compounds were combined if they contained the same primary ingredient.</p>
+          <p>If there was more than one compound in the SMILES string, the primary ingredient was isolated by first splitting the compound's SMILES string into separate components.
+            The primary ingredient was identified by comparing the frequency of the components to the rest of the Reframe collection; the more frequent components under 194 Daltons were deemed to be counterions and removed.</p>
+          <p>Compounds from different data sources were combined if they shared the same InChI key for the primary ingredient, after normalizing tautomers and protonation states.</p>
+          <p>No stereoisomers (or unknown stereochemistry) were combined. In a small number of cases, manual inspection was used to resolve edge cases.</p>
+          <p>To determine the precise form of the compound for each data source, look at the SMILES string listed.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="meta">
     <dl class="meta-list">
       <div>
         <dt>Library</dt>
@@ -26,6 +50,7 @@
       </div>
     </dl>
     <button type="button" class="qc" *ngIf="chemVendors.length" (click)="clickedQC(chemVendors[0]['chem_vendor_ikey'])">Download QC data</button>
+    </div>
   </div>
 
   <dl header-aside class="figures" aria-label="This compound at a glance">
@@ -186,11 +211,6 @@
       <span class="aliases-label">Aliases</span>
       {{ shownAliases.join(', ') }}<button type="button" class="link more" *ngIf="aliases.length > aliasPreview"
         (click)="showAllAliases = !showAllAliases">{{ showAllAliases ? 'Show fewer' : 'Show all ' + aliases.length }}</button>
-    </p>
-
-    <p class="counterion">
-      Counterions may differ between data sources.
-      <app-salt-warning-dialog></app-salt-warning-dialog>
     </p>
 
     <!-- Collapsed extras -->

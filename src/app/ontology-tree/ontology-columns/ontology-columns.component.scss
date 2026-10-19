@@ -1,16 +1,16 @@
 // Finder-style column browser. Quiet surfaces, one accent for the current
 // selection, light grey for the rest of the open path.
 //
-// Layout: the active (deepest) column is 300px, columns already passed
-// through shrink to 210px, and the oldest fold to zero width behind a strip
+// Layout: the active (deepest) column is 320px, columns already passed
+// through shrink to 270px (wide enough for most names), and the oldest fold to zero width behind a strip
 // that peeks them open on hover. Widths animate so folding is visible.
 
 @import '../../../design';
 
 $rule: $rule-soft; // hairlines inside the tool are softer than on pages
 
-$active-w: 300px;
-$ancestor-w: 210px;
+$active-w: 320px;
+$ancestor-w: 270px;
 $strip-w: 56px;
 $detail-w: 400px;
 $dur: 0.28s;
@@ -107,11 +107,8 @@ $dur: 0.28s;
   to { opacity: 1; transform: none; }
 }
 
-.summary-kicker {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+.summary-kind {
+  color: $ink-soft;
 }
 
 .summary-name {
@@ -224,7 +221,7 @@ $dur: 0.28s;
   font-size: 0.875rem;
   line-height: 1.3;
   color: $ink;
-  border-radius: 6px;
+  border-radius: $radius-sharp;
   cursor: pointer;
   user-select: none;
 
@@ -232,25 +229,18 @@ $dur: 0.28s;
     background: $hover;
   }
 
+  // Open path: grey; current item: the site's selected tint with an accent edge
   &.selected {
-    background: $selected;
+    background: $hover;
   }
 
   &.current {
-    color: #fff;
-    background: $accent;
+    font-weight: 600;
+    background: $selected;
+    box-shadow: inset 3px 0 0 $accent;
 
-    .count,
     .chev {
-      color: rgba(255, 255, 255, 0.85);
-    }
-
-    .mark {
-      border-color: #fff;
-
-      &.moa {
-        background: #fff;
-      }
+      color: $accent;
     }
   }
 }
@@ -440,7 +430,7 @@ $dur: 0.28s;
   margin-bottom: 20px;
   background: #fff;
   border: 1px solid $rule;
-  border-radius: 10px;
+  border-radius: $radius-sharp;
 
   // Scale the SVG drawing up to fill the box, keeping its proportions
   img {
@@ -466,11 +456,8 @@ $dur: 0.28s;
 }
 
 .kicker {
-  margin: 0 0 4px !important;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  margin: 0 0 2px !important;
+  font-size: 0.8125rem;
   color: $ink-soft;
 }
 
@@ -508,7 +495,7 @@ $dur: 0.28s;
   padding: 2px 8px;
   font-size: 0.8125rem;
   background: $selected;
-  border-radius: 6px;
+  border-radius: $radius-sharp;
 }
 
 .action {
@@ -518,10 +505,18 @@ $dur: 0.28s;
   font-size: 0.875rem;
   font-weight: 600;
   text-decoration: none;
+  color: #fff;
+  background: $navy;
   border: 0;
-  border-radius: 8px;
+  border-radius: $radius-sharp;
   cursor: pointer;
   transition: background 0.15s ease;
+
+  &:hover {
+    color: #fff;
+    text-decoration: none;
+    background: $accent;
+  }
 
   &.small {
     flex-shrink: 0;
@@ -530,16 +525,7 @@ $dur: 0.28s;
     white-space: nowrap;
   }
 
-  &.primary {
-    color: #fff;
-    background: $accent;
-
-    &:hover {
-      background: $accent-hover;
-      color: #fff;
-      text-decoration: none;
-    }
-  }
+  @include focus-ring($accent, 2px);
 }
 
 // ---------------------------------------------------------------- empty state
