@@ -5,8 +5,10 @@
     <nav class="tabs" aria-label="Admin sections">
       <a routerLink="dashboard" routerLinkActive="active">Overview</a>
       <a routerLink="proposals" routerLinkActive="active">Proposals<span class="n" *ngIf="pending > 0">{{ pending }} pending</span></a>
-      <a routerLink="user_management" routerLinkActive="active">Admins</a>
-      <a routerLink="maintenance_window" routerLinkActive="active">Maintenance</a>
+      <ng-container *ngIf="isAdmin">
+        <a routerLink="user_management" routerLinkActive="active">Access</a>
+        <a routerLink="maintenance_window" routerLinkActive="active">Maintenance</a>
+      </ng-container>
     </nav>
   </div>
 </header>

@@ -3,6 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 
 import { UserManagementComponent } from './user-management.component';
+import { LoginStateService } from '../../_services/index';
 
 describe('UserManagementComponent', () => {
   let component: UserManagementComponent;
@@ -11,6 +12,7 @@ describe('UserManagementComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ FormsModule, HttpClientTestingModule ],
+      providers: [ LoginStateService ],
       declarations: [ UserManagementComponent ]
     })
     .compileComponents();

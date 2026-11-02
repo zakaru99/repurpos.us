@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { MaintenanceWindow } from '../_models';
+import { MaintenanceWindow, Role, roleOf } from '../_models';
 
 export type ProposalStatus = 'Pending' | 'Approved' | 'Rejected';
 
@@ -25,16 +25,18 @@ export interface AdminProposal {
 export interface AdminUser {
   id: number;
   email: string;
+  role: Role;
   isAdmin: boolean;
   name?: string;          // not stored by the backend yet; used if it starts sending one
   registered_on?: string;
 }
 
-// The backend sends `admin`; the portal uses `isAdmin`
+// The backend sends `role` and `admin`; the portal uses `role` and `isAdmin`
 const toUser = (u: any): AdminUser => ({
   id: u.id,
   email: u.email,
-  isAdmin: u.isAdmin !== undefined ? !!u.isAdmin : !!u.admin,
+  role: roleOf(u),
+  isAdmin: roleOf(u) === 'admin',
   name: u.name || undefined,
   registered_on: u.registered_on
 });
@@ -81,11 +83,12 @@ export class AdminApiService {
 
   // ---------------------------------------------------------------- users
 
-  getAdmins(): Observable<AdminUser[]> {
+  // Everyone with portal access: admins and reviewers
+  getStaff(): Observable<AdminUser[]> {
     const params = new HttpParams().set('admins', 'true');
     return this.http.get<{ success: boolean; data: AdminUser[] }>('/api/users', { params, headers: this.authHeaders }).pipe(
       map(res => {
-        if (!res.success) { throw new Error('Failed to load admins'); }
+        if (!res.success) { throw new Error('Failed to load the access list'); }
         return res.data.map(toUser);
       })
     );
@@ -101,11 +104,12 @@ export class AdminApiService {
     );
   }
 
-  setAdmin(userId: number, makeAdmin: boolean): Observable<void> {
-    return this.http.post<{ success: boolean; message: string }>('/api/users',
-      { user_id: userId, make_admin: makeAdmin }, { headers: this.authHeaders }).pipe(
+  // 'user' removes portal access
+  setRole(userId: number, role: Role): Observable<void> {
+    return this.http.post<{ success: boolean; message: string; error?: string }>('/api/users',
+      { user_id: userId, role }, { headers: this.authHeaders }).pipe(
       map(res => {
-        if (!res.success) { throw new Error(res.message || 'Update failed'); }
+        if (!res.success) { throw new Error(res.error || res.message || 'Update failed'); }
       })
     );
   }

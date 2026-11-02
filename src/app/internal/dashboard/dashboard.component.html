@@ -34,9 +34,9 @@
     </ng-template>
   </section>
 
-  <!-- Right half: maintenance and recent activity -->
+  <!-- Right half: maintenance (admins only) and recent activity -->
   <aside class="side">
-    <section>
+    <section *ngIf="isAdmin">
       <p class="eyebrow">Maintenance</p>
       <p class="error" *ngIf="!windows">Could not load the maintenance queue.</p>
       <ng-container *ngIf="windows">

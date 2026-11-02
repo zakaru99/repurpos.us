@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LoginStateService } from '../../_services';
+import { canReview, roleOf } from '../../_models/index';
 
 interface UserStatus {
   user_id: number;
   email: string;
   admin: boolean;
+  role?: string;
   registered_on: string;
 }
 
@@ -29,6 +31,15 @@ export class MyAccountComponent implements OnInit {
   deleteConfirmEmail = '';
 
   constructor(private http: HttpClient, private loginState: LoginStateService) {}
+
+  get roleLabel(): string {
+    if (!this.userStatus) { return '—'; }
+    return { admin: 'Administrator', reviewer: 'Proposal reviewer', user: 'Researcher' }[roleOf(this.userStatus)];
+  }
+
+  get hasPortal(): boolean {
+    return !!this.userStatus && canReview(roleOf(this.userStatus));
+  }
 
   ngOnInit(): void {
     this.loginState.isUserLoggedIn.subscribe(state => {

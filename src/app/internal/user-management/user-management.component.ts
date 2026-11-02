@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 
+import { Role } from '../../_models';
+import { LoginStateService } from '../../_services';
 import { AdminApiService, AdminUser } from '../admin-api.service';
 
-// Admins and user lookup. Granting or revoking admin access asks for
-// confirmation in place, and errors are shown on the page.
+// Who can use the admin portal, and user lookup. Reviewers can decide
+// proposals; admins can also manage access and maintenance. Every change asks
+// for confirmation in place, and errors are shown on the page.
 @Component({
   selector: 'app-user-management',
   templateUrl: './user-management.component.html',
@@ -13,31 +16,58 @@ export class UserManagementComponent implements OnInit {
   searchQuery = '';
   searchResults: AdminUser[] = null;   // null = no search run yet
   searching = false;
-  admins: AdminUser[] = [];
-  loadingAdmins = false;
+  staff: AdminUser[] = [];
+  loadingStaff = false;
   errorMsg = '';
 
-  // The user whose access change is awaiting confirmation, and which change
+  // The user whose access change is awaiting confirmation, and the role they'd get
   confirmUser: AdminUser = null;
-  confirmGrant = false;
+  confirmRole: Role = null;
   saving = false;
 
-  constructor(private api: AdminApiService) { }
+  // The backend refuses changes to your own access
+  private myEmail: string = null;
+
+  constructor(private api: AdminApiService, private loginState: LoginStateService) { }
 
   ngOnInit(): void {
-    this.loadAdmins();
+    this.myEmail = this.loginState.getUserEmail();
+    this.loadStaff();
   }
 
-  loadAdmins(): void {
-    this.loadingAdmins = true;
-    this.api.getAdmins().subscribe({
+  get admins(): AdminUser[] {
+    return this.staff.filter(u => u.role === 'admin');
+  }
+
+  get reviewers(): AdminUser[] {
+    return this.staff.filter(u => u.role === 'reviewer');
+  }
+
+  // "2 admins and 3 reviewers"
+  get headline(): string {
+    const n = (count: number, one: string) => count + ' ' + one + (count === 1 ? '' : 's');
+    if (!this.reviewers.length) { return n(this.admins.length, 'admin'); }
+    return n(this.admins.length, 'admin') + ' and ' + n(this.reviewers.length, 'reviewer');
+  }
+
+  isMe(u: AdminUser): boolean {
+    return !!this.myEmail && u.email.toLowerCase() === this.myEmail.toLowerCase();
+  }
+
+  roleName(role: Role): string {
+    return { admin: 'Admin', reviewer: 'Reviewer', user: 'No access' }[role];
+  }
+
+  loadStaff(): void {
+    this.loadingStaff = true;
+    this.api.getStaff().subscribe({
       next: list => {
-        this.admins = list;
-        this.loadingAdmins = false;
+        this.staff = list;
+        this.loadingStaff = false;
       },
       error: () => {
-        this.errorMsg = 'Could not load the admin list.';
-        this.loadingAdmins = false;
+        this.errorMsg = 'Could not load who has access.';
+        this.loadingStaff = false;
       }
     });
   }
@@ -85,46 +115,43 @@ export class UserManagementComponent implements OnInit {
     return source.slice(0, 2).map(s => s.charAt(0).toUpperCase()).join('');
   }
 
-  askToGrant(user: AdminUser) {
+  ask(user: AdminUser, role: Role) {
     this.confirmUser = user;
-    this.confirmGrant = true;
-  }
-
-  askToRevoke(user: AdminUser) {
-    this.confirmUser = user;
-    this.confirmGrant = false;
+    this.confirmRole = role;
   }
 
   cancelConfirm() {
     this.confirmUser = null;
+    this.confirmRole = null;
   }
 
-  isConfirming(user: AdminUser, grant: boolean): boolean {
-    return !!this.confirmUser && this.confirmUser.id === user.id && this.confirmGrant === grant;
+  isConfirming(user: AdminUser, role?: Role): boolean {
+    return !!this.confirmUser && this.confirmUser.id === user.id && (!role || this.confirmRole === role);
   }
 
   confirmChange(): void {
     const user = this.confirmUser;
-    const grant = this.confirmGrant;
-    if (!user) { return; }
+    const role = this.confirmRole;
+    if (!user || !role) { return; }
     this.saving = true;
     this.errorMsg = '';
-    this.api.setAdmin(user.id, grant).subscribe({
+    this.api.setRole(user.id, role).subscribe({
       next: () => {
         this.saving = false;
-        this.confirmUser = null;
-        user.isAdmin = grant;
-        if (grant) {
-          this.loadAdmins();
-        } else {
-          this.admins = this.admins.filter(u => u.id !== user.id);
-        }
+        this.cancelConfirm();
+        // Only update the page once the server has made the change
         const found = (this.searchResults || []).find(u => u.id === user.id);
-        if (found) { found.isAdmin = grant; }
+        if (found) {
+          found.role = role;
+          found.isAdmin = role === 'admin';
+        }
+        this.loadStaff();
       },
       error: () => {
         this.saving = false;
-        this.errorMsg = grant ? 'Could not grant admin access.' : 'Could not revoke admin access.';
+        this.errorMsg = role === 'user'
+          ? 'Could not remove access for ' + user.email + '.'
+          : 'Could not make ' + user.email + ' ' + (role === 'admin' ? 'an admin.' : 'a reviewer.');
       }
     });
   }

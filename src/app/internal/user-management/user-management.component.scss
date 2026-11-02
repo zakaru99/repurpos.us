@@ -91,6 +91,14 @@
   color: $ink-soft;
 }
 
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  .btn + .btn { margin-left: 0; }
+}
+
 .confirm-block {
   display: flex;
   flex-direction: column;
@@ -120,10 +128,39 @@
   border-top: 3px solid $navy;
   border-radius: $radius-sharp;
 
+  // Reviewers have less access: a lighter rule and avatar
+  &.reviewer {
+    border-top-color: $accent;
+
+    .avatar { background: $accent-text; }
+  }
+
   &.confirming {
     border-top-color: $status-rejected;
   }
 }
+
+// "Admins / Reviewers" with what each role can do
+.group {
+  margin: 24px 0 10px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: $ink;
+
+  &:first-of-type { margin-top: 4px; }
+
+  span {
+    margin-left: 6px;
+    font-weight: 400;
+    color: $ink-soft;
+  }
+}
+
+.cards + .group,
+.muted + .group {
+  margin-top: 28px;
+}
+
 
 .avatar {
   display: flex;

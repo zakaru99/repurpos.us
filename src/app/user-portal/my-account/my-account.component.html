@@ -11,8 +11,8 @@
       <div>
         <dt>Role</dt>
         <dd>
-          {{ userStatus ? (userStatus.admin ? 'Administrator' : 'Researcher') : '—' }}
-          <a class="arrow-link" *ngIf="userStatus?.admin" routerLink="/internal">Admin portal</a>
+          {{ roleLabel }}
+          <a class="arrow-link" *ngIf="hasPortal" routerLink="/internal">Admin portal</a>
         </dd>
       </div>
       <div>

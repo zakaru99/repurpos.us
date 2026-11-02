@@ -4,7 +4,7 @@ import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { MaintenanceWindow } from '../../_models';
-import { formatPacificDisplay } from '../../_services';
+import { formatPacificDisplay, LoginStateService } from '../../_services';
 import { AdminApiService, AdminProposal } from '../admin-api.service';
 
 const submittedTime = (p: { submittedOn?: string }): number =>
@@ -22,13 +22,18 @@ export class DashboardComponent implements OnInit {
 
   proposals: AdminProposal[] = null;
   windows: MaintenanceWindow[] = null;
+  // Maintenance is admin-only; reviewers don't see it or load it
+  isAdmin = false;
 
-  constructor(private api: AdminApiService, private router: Router, private route: ActivatedRoute) { }
+  constructor(private api: AdminApiService, private router: Router, private route: ActivatedRoute,
+              private loginState: LoginStateService) { }
 
   ngOnInit() {
+    // The portal guard has already set the role by the time this page opens
+    this.isAdmin = this.loginState.isUserLoggedIn.value.role === 'admin';
     forkJoin(
       this.api.getProposals().pipe(catchError(() => of(null))),
-      this.api.getMaintenanceWindows().pipe(catchError(() => of(null)))
+      this.isAdmin ? this.api.getMaintenanceWindows().pipe(catchError(() => of(null))) : of([])
     ).subscribe(([proposals, windows]) => {
       this.proposals = proposals;
       this.windows = windows;

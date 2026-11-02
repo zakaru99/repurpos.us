@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { DashboardComponent } from './dashboard.component';
 import { ProposalTableComponent } from '../proposal-table/proposal-table.component';
+import { LoginStateService } from '../../_services/index';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -12,6 +13,7 @@ describe('DashboardComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule, RouterTestingModule ],
+      providers: [ LoginStateService ],
       declarations: [ DashboardComponent, ProposalTableComponent ]
     })
     .compileComponents();

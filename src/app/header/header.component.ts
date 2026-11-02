@@ -12,7 +12,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from "@angular
 import { isDefined } from "@angular/compiler/src/util";
 import { environment } from "../../environments/environment";
 import { LoginStateService } from '../_services/index';
-import { LoginState, RouteDef } from '../_models/index';
+import { LoginState, RouteDef, canReview } from '../_models/index';
 
 @Component({
   selector: 'app-header',
@@ -24,7 +24,8 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   routeDef: RouteDef[];
   loginBox: boolean = false;
   loggedIn: boolean = false;
-  isAdmin: boolean = false;
+  // Admins and reviewers get the admin portal link
+  hasPortal: boolean = false;
   expanded: boolean = false;
   isMobile: boolean;
   current_year: number;
@@ -74,7 +75,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loginSubscription = this.loginStateService.isUserLoggedIn
       .subscribe((state: LoginState) => {
         this.loggedIn = state.loggedIn;
-        this.isAdmin = state.isAdmin;
+        this.hasPortal = canReview(state.role);
         this.loginBox = false;
         this.expanded = false;
       });

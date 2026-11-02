@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material';
 import { TermsComponent } from '../../_dialogs/index';
 import { PasswordValidation } from '../../_models/password-validation';
 import { LoginStateService } from '../../_services/index';
+import { roleOf } from '../../_models/index';
 
 declare var grecaptcha: any;
 
@@ -16,6 +17,7 @@ interface UserStatus {
   user_id: number;
   email: string;
   admin: boolean;
+  role?: string;
   registered_on: string;
 }
 
@@ -170,7 +172,7 @@ private checkUserStatus(token: string) {
       this.loggedIn = true;
       this.isAdmin = userInfo.admin;
 
-    this.loginStateService.loggedIn(this.isAdmin, userInfo.email);
+    this.loginStateService.loggedIn(roleOf(userInfo), userInfo.email);
     this.email.reset();
     this.password.reset();
     },
