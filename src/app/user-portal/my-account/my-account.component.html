@@ -14,8 +14,8 @@
           <div class="profile-meta">
             <div class="profile-email">{{ userStatus?.email || '—' }}</div>
             <div class="profile-sub">
-              <span class="role-badge" [ngClass]="userStatus?.admin ? 'admin' : 'researcher'">
-                {{ userStatus?.admin ? 'Administrator' : 'Researcher' }}
+              <span class="role-badge" [ngClass]="role === 'user' ? 'researcher' : role">
+                {{ roleLabel }}
               </span>
               <span class="member-since" *ngIf="userStatus">
                 &nbsp;·&nbsp; Member since {{ userStatus.registered_on | date:'MMMM y' }}

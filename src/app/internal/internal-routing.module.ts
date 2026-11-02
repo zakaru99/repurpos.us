@@ -5,6 +5,7 @@ import { ProposalListComponent } from './proposal-list/proposal-list.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { MaintenanceWindowComponent } from './maintenance-window/maintenance-window.component';
+import { AdminGuard } from '../_guards/admin.guard';
 const routes: Routes = [
   {
     path: '',
@@ -12,8 +13,9 @@ const routes: Routes = [
     children: [
       { path: 'proposals', component: ProposalListComponent },
       { path: 'dashboard', component: DashboardComponent},
-      { path: 'user_management', component: UserManagementComponent},
-      { path: 'maintenance_window', component: MaintenanceWindowComponent}
+      // Admin-only; reviewers get the dashboard and proposals
+      { path: 'user_management', component: UserManagementComponent, canActivate: [AdminGuard] },
+      { path: 'maintenance_window', component: MaintenanceWindowComponent, canActivate: [AdminGuard] }
     ]
   }
 ];

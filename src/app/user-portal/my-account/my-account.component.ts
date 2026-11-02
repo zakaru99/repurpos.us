@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LoginStateService } from '../../_services';
+import { roleOf } from '../../_models/index';
 
 interface UserStatus {
   user_id: number;
   email: string;
   admin: boolean;
+  role?: string;
   registered_on: string;
 }
 
@@ -27,6 +29,14 @@ export class MyAccountComponent implements OnInit {
   resetState: 'idle' | 'loading' | 'sent' = 'idle';
   deleteState: 'idle' | 'confirming' | 'loading' | 'unavailable' = 'idle';
   deleteConfirmEmail = '';
+
+  get role(): string {
+    return this.userStatus ? roleOf(this.userStatus) : 'user';
+  }
+
+  get roleLabel(): string {
+    return { admin: 'Administrator', reviewer: 'Proposal reviewer', user: 'Researcher' }[this.role];
+  }
 
   constructor(private http: HttpClient, private loginState: LoginStateService) {}
 

@@ -1,12 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
+import { Role, roleOf } from '../../_models/index';
+import { LoginStateService } from '../../_services/index';
+
 interface User {
   id: number;
   email: string;
-  isAdmin: boolean;
+  role: Role;
   registered_on?: string;
 }
+
+// The backend sends `role` (and `admin` for older clients)
+const toUser = (u: any): User => ({ id: u.id, email: u.email, role: roleOf(u), registered_on: u.registered_on });
 
 @Component({
   selector: 'app-user-management',
@@ -16,32 +22,44 @@ interface User {
 export class UserManagementComponent implements OnInit {
   searchQuery: string = '';
   searchResults: User[] = [];
-  admins: User[] = [];
+  // Everyone with portal access: admins and reviewers
+  staff: User[] = [];
   errorMsg: string = '';
 
-  constructor(private http: HttpClient) { }
+  // The backend refuses changes to your own access
+  private myEmail: string = null;
+
+  constructor(private http: HttpClient, private loginState: LoginStateService) { }
 
   ngOnInit(): void {
-    this.loadAdmins();
+    this.myEmail = this.loginState.getUserEmail();
+    this.loadStaff();
   }
 
-  loadAdmins(): void {
+  private get headers(): HttpHeaders {
+    return new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
+  }
+
+  isMe(user: User): boolean {
+    return !!this.myEmail && user.email.toLowerCase() === this.myEmail.toLowerCase();
+  }
+
+  roleName(role: Role): string {
+    return { admin: 'Admin', reviewer: 'Reviewer', user: 'User' }[role];
+  }
+
+  loadStaff(): void {
     const params = new HttpParams().set('admins', 'true');
-    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
-    this.http.get<{ success: boolean; data: User[] }>('/api/users', { params, headers })
+    this.http.get<{ success: boolean; data: any[] }>('/api/users', { params, headers: this.headers })
       .subscribe({
         next: (res) => {
           if (res.success) {
-            this.admins = res.data;
+            this.staff = res.data.map(toUser);
           } else {
-            console.error('Failed to load admins:', res);
-            this.errorMsg = 'Failed to load admins';
+            this.errorMsg = 'Failed to load who has access';
           }
         },
-        error: (err) => {
-          console.error('Error loading admins:', err);
-          this.errorMsg = 'Error loading admins';
-        }
+        error: () => this.errorMsg = 'Error loading who has access'
       });
   }
 
@@ -53,72 +71,43 @@ export class UserManagementComponent implements OnInit {
     }
 
     const params = new HttpParams().set('search', term);
-    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
-    this.http.get<{ success: boolean; data: User[] }>('/api/users', { params, headers })
+    this.http.get<{ success: boolean; data: any[] }>('/api/users', { params, headers: this.headers })
       .subscribe({
         next: (res) => {
           if (res.success) {
-            this.searchResults = res.data;
+            this.searchResults = res.data.map(toUser);
           } else {
-            console.error('Search failed:', res);
             this.errorMsg = 'Search failed';
           }
         },
-        error: (err) => {
-          console.error('Error during search:', err);
-          this.errorMsg = 'Error during search';
-        }
+        error: () => this.errorMsg = 'Error during search'
       });
   }
 
-  makeAdmin(user: User): void {
-    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
-    this.http.post<{ success: boolean; message: string }>('/api/users', {
+  // 'user' removes portal access
+  setRole(user: User, role: Role): void {
+    const question = role === 'user' ? `Remove ${user.role} access for ${user.email}?`
+      : role === 'admin' ? `Make ${user.email} an admin? Admins can also manage access and maintenance.`
+      : `Make ${user.email} a reviewer? Reviewers can approve and decline proposals.`;
+    if (!window.confirm(question)) {
+      return;
+    }
+
+    this.errorMsg = '';
+    this.http.post<{ success: boolean; message: string; error?: string }>('/api/users', {
       user_id: user.id,
-      make_admin: true
-    }, { headers }).subscribe({
+      role
+    }, { headers: this.headers }).subscribe({
       next: (res) => {
         if (res.success) {
-          user.isAdmin = true;
-          this.loadAdmins(); // refresh admin table
-          this.searchResults = []; // clear search results
-          this.searchQuery = '';   // optional: clear search input
-        } else {
-          console.error('Failed to make admin:', res);
-          this.errorMsg = 'Failed to make admin';
-        }
-      },
-      error: (err) => {
-        console.error('Error making admin:', err);
-        this.errorMsg = 'Error making admin';
-      }
-    });
-  }
-
-
-  revokeAdmin(user: User): void {
-    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
-    this.http.post<{ success: boolean; message: string }>('/api/users', {
-      user_id: user.id,
-      make_admin: false  // <-- revoke
-    }, { headers }).subscribe({
-      next: (res) => {
-        if (res.success) {
-          // Remove from admin list
-          this.admins = this.admins.filter(u => u.id !== user.id);
-
-          // Update searchResults if needed
           const found = this.searchResults.find(u => u.id === user.id);
-          if (found) found.isAdmin = false;
+          if (found) { found.role = role; }
+          this.loadStaff();
         } else {
-          console.error('Failed to revoke admin:', res);
-          this.errorMsg = 'Failed to revoke admin';
+          this.errorMsg = res.error || 'Could not change access';
         }
       },
-      error: (err) => {
-        console.error('Error revoking admin:', err);
-        this.errorMsg = 'Error revoking admin';
-      }
+      error: (err) => this.errorMsg = (err.error && err.error.error) || 'Could not change access'
     });
   }
 

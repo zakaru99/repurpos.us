@@ -1,4 +1,6 @@
 <div class="user-management-page">
+  <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+
   <div class="card-block">
     <h5 class="section-title">User Lookup</h5>
     <div class="user-search">
@@ -12,18 +14,20 @@
         <p><strong>Registered On:</strong> {{ user.registered_on | date }}</p>
         <p>
           <strong>Role:</strong>
-          <span class="status-badge" [ngClass]="{ 'admin': user.isAdmin }">
-            {{ user.isAdmin ? 'Admin' : 'User' }}
-          </span>
+          <span class="status-badge" [ngClass]="user.role">{{ roleName(user.role) }}</span>
         </p>
-        <button *ngIf="!user.isAdmin" (click)="makeAdmin(user)">Make Admin</button>
+        <ng-container *ngIf="user.role === 'user'">
+          <button (click)="setRole(user, 'reviewer')">Make Reviewer</button>
+          <button (click)="setRole(user, 'admin')">Make Admin</button>
+        </ng-container>
       </div>
     </div>
     <p *ngIf="searchResults?.length === 0 && searchQuery">No users found.</p>
   </div>
 
   <div class="card-block">
-    <h5 class="section-title">Current CALIBR Admins</h5>
+    <h5 class="section-title">Portal Access</h5>
+    <p class="role-help">Reviewers can approve and decline proposals. Admins can also manage access and maintenance.</p>
     <div class="table-responsive">
       <table class="admin-table">
         <thead>
@@ -34,11 +38,16 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let admin of admins">
-            <td>{{ admin.email }}</td>
-            <td><span class="status-badge admin">Admin</span></td>
+          <tr *ngFor="let user of staff">
+            <td>{{ user.email }}</td>
+            <td><span class="status-badge" [ngClass]="user.role">{{ roleName(user.role) }}</span></td>
             <td>
-              <button (click)="revokeAdmin(admin)">Revoke</button>
+              <span *ngIf="isMe(user)">You</span>
+              <ng-container *ngIf="!isMe(user)">
+                <button class="change" *ngIf="user.role === 'reviewer'" (click)="setRole(user, 'admin')">Make Admin</button>
+                <button class="change" *ngIf="user.role === 'admin'" (click)="setRole(user, 'reviewer')">Make Reviewer</button>
+                <button (click)="setRole(user, 'user')">Revoke</button>
+              </ng-container>
             </td>
           </tr>
         </tbody>

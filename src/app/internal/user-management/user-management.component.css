@@ -128,6 +128,21 @@
   color: white;
 }
 
+.status-badge.reviewer {
+  background-color: #1d3b76;
+  color: white;
+}
+
+.role-help {
+  margin: 0 0 0.75rem;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.error {
+  color: #c0392b;
+}
+
 .status-badge.user {
   background-color: #f0f0f0;
   color: #333;
@@ -148,6 +163,16 @@
   background-color: #b02a37;
   transform: translateY(-1px);
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Role changes aren't destructive: blue, with red kept for Revoke */
+.admin-table button.change {
+  background-color: #3d6de0;
+  margin-right: 0.4rem;
+}
+
+.admin-table button.change:hover {
+  background-color: #335cc0;
 }
 
 /* Search result cards */
