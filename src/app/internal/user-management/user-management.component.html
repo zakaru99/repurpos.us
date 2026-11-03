@@ -92,10 +92,10 @@
       <span class="muted" *ngIf="isMe(u)">You</span>
       <ng-container *ngIf="!isMe(u)">
         <ng-container *ngIf="!isConfirming(u); else confirmCard">
+          <button type="button" class="text" *ngIf="u.role !== 'admin'" (click)="ask(u, 'admin')">Make admin</button>
           <button type="button" class="text" *ngIf="u.role === 'readonly'" (click)="ask(u, 'reviewer')">Make reviewer</button>
-          <button type="button" class="text" *ngIf="u.role === 'reviewer'" (click)="ask(u, 'admin')">Make admin</button>
-          <button type="button" class="text" *ngIf="u.role === 'reviewer'" (click)="ask(u, 'readonly')">Change to read-only</button>
           <button type="button" class="text" *ngIf="u.role === 'admin'" (click)="ask(u, 'reviewer')">Change to reviewer</button>
+          <button type="button" class="text" *ngIf="u.role !== 'readonly'" (click)="ask(u, 'readonly')">Change to read-only</button>
           <button type="button" class="text-danger" (click)="ask(u, 'user')">Remove access</button>
         </ng-container>
         <ng-template #confirmCard>
@@ -103,7 +103,7 @@
           <span class="confirm" *ngIf="confirmRole === 'admin'">Make admin? They can also manage access and maintenance.</span>
           <span class="confirm" *ngIf="confirmRole === 'reviewer' && u.role === 'admin'">Change to reviewer? They'll lose access and maintenance.</span>
           <span class="confirm" *ngIf="confirmRole === 'reviewer' && u.role === 'readonly'">Make reviewer? They can approve and decline proposals.</span>
-          <span class="confirm" *ngIf="confirmRole === 'readonly'">Change to read-only? They won't be able to decide proposals.</span>
+          <span class="confirm" *ngIf="confirmRole === 'readonly'">Change to read-only? They'll only be able to read proposals.</span>
           <span>
             <button type="button" class="btn" [ngClass]="confirmRole === 'user' ? 'danger' : 'primary'"
                     (click)="confirmChange()" [disabled]="saving">
