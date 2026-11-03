@@ -37,4 +37,22 @@ describe('UserManagementComponent', () => {
     component.staff = [u(1, 'admin')];
     expect(component.headline).toBe('1 admin');
   });
+
+  it('should open the role menu and ask before changing a role', () => {
+    const ro = { id: 4, email: 'ro@scripps.edu', role: 'readonly' } as any;
+    component.toggleMenu(ro, new Event('click'));
+    expect(component.isMenuOpen(ro)).toBe(true);
+    component.pick(ro, 'admin');
+    expect(component.isMenuOpen(ro)).toBe(false);
+    expect(component.isConfirming(ro, 'admin')).toBe(true);
+    expect(component.confirmLabel(ro)).toBe('Change role');
+  });
+
+  it('should only close the menu when their current role is picked', () => {
+    const ro = { id: 4, email: 'ro@scripps.edu', role: 'readonly' } as any;
+    component.toggleMenu(ro, new Event('click'));
+    component.pick(ro, 'readonly');
+    expect(component.menuFor).toBeNull();
+    expect(component.confirmUser).toBeNull();
+  });
 });

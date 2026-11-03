@@ -18,26 +18,12 @@
           <span class="result-email">{{ user.email }}</span>
           <span class="result-meta">Joined {{ (user.registered_on | date:'d MMM y') || '—' }}</span>
         </div>
-        <span class="muted" *ngIf="user.role !== 'user'">{{ isMe(user) ? 'You' : roleName(user.role) }}</span>
-        <ng-container *ngIf="user.role === 'user'">
-          <span class="result-actions" *ngIf="!isConfirming(user); else confirmGrant">
-            <button type="button" class="btn secondary" (click)="ask(user, 'readonly')">Make read-only</button>
-            <button type="button" class="btn secondary" (click)="ask(user, 'reviewer')">Make reviewer</button>
-            <button type="button" class="btn secondary" (click)="ask(user, 'admin')">Make admin</button>
-          </span>
-          <ng-template #confirmGrant>
-            <div class="confirm-block">
-              <span class="confirm" *ngIf="confirmRole === 'readonly'">Give read-only access? They can read proposals but not decide them.</span>
-              <span class="confirm" *ngIf="confirmRole === 'reviewer'">Give reviewer access? They can approve and decline proposals.</span>
-              <span class="confirm" *ngIf="confirmRole === 'admin'">Give full admin access? They can also manage access and maintenance.</span>
-              <span>
-                <button type="button" class="btn primary" (click)="confirmChange()" [disabled]="saving">
-                  {{ saving ? 'Saving…' : 'Make ' + (roleName(confirmRole) | lowercase) }}
-                </button>
-                <button type="button" class="btn secondary" (click)="cancelConfirm()" [disabled]="saving">Cancel</button>
-              </span>
-            </div>
-          </ng-template>
+        <span class="muted" *ngIf="isMe(user)">You</span>
+        <ng-container *ngIf="!isMe(user)">
+          <ng-container *ngTemplateOutlet="roleMenu; context: { $implicit: user }"></ng-container>
+        </ng-container>
+        <ng-container *ngIf="isConfirming(user)">
+          <ng-container *ngTemplateOutlet="confirmRow; context: { $implicit: user }"></ng-container>
         </ng-container>
       </li>
     </ul>
@@ -87,32 +73,53 @@
       <span class="email" [class.solo]="!displayName(u)">{{ u.email }}</span>
       <span class="meta" *ngIf="u.registered_on">Joined {{ u.registered_on | date:'MMM y' }}</span>
     </div>
+    <span class="muted you" *ngIf="isMe(u)">You</span>
+    <ng-container *ngIf="!isMe(u)">
+      <ng-container *ngTemplateOutlet="roleMenu; context: { $implicit: u }"></ng-container>
+    </ng-container>
 
-    <div class="card-action">
-      <span class="muted" *ngIf="isMe(u)">You</span>
-      <ng-container *ngIf="!isMe(u)">
-        <ng-container *ngIf="!isConfirming(u); else confirmCard">
-          <button type="button" class="text" *ngIf="u.role !== 'admin'" (click)="ask(u, 'admin')">Make admin</button>
-          <button type="button" class="text" *ngIf="u.role === 'readonly'" (click)="ask(u, 'reviewer')">Make reviewer</button>
-          <button type="button" class="text" *ngIf="u.role === 'admin'" (click)="ask(u, 'reviewer')">Change to reviewer</button>
-          <button type="button" class="text" *ngIf="u.role !== 'readonly'" (click)="ask(u, 'readonly')">Change to read-only</button>
-          <button type="button" class="text-danger" (click)="ask(u, 'user')">Remove access</button>
-        </ng-container>
-        <ng-template #confirmCard>
-          <span class="confirm" *ngIf="confirmRole === 'user'">Remove {{ roleName(u.role) | lowercase }} access?</span>
-          <span class="confirm" *ngIf="confirmRole === 'admin'">Make admin? They can also manage access and maintenance.</span>
-          <span class="confirm" *ngIf="confirmRole === 'reviewer' && u.role === 'admin'">Change to reviewer? They'll lose access and maintenance.</span>
-          <span class="confirm" *ngIf="confirmRole === 'reviewer' && u.role === 'readonly'">Make reviewer? They can approve and decline proposals.</span>
-          <span class="confirm" *ngIf="confirmRole === 'readonly'">Change to read-only? They'll only be able to read proposals.</span>
-          <span>
-            <button type="button" class="btn" [ngClass]="confirmRole === 'user' ? 'danger' : 'primary'"
-                    (click)="confirmChange()" [disabled]="saving">
-              {{ saving ? 'Saving…' : confirmRole === 'user' ? 'Remove' : u.role === 'admin' || confirmRole === 'readonly' ? 'Change' : 'Make ' + (roleName(confirmRole) | lowercase) }}
-            </button>
-            <button type="button" class="btn secondary" (click)="cancelConfirm()" [disabled]="saving">Cancel</button>
-          </span>
-        </ng-template>
-      </ng-container>
+    <div class="card-action" *ngIf="isConfirming(u)">
+      <ng-container *ngTemplateOutlet="confirmRow; context: { $implicit: u }"></ng-container>
     </div>
   </li>
+</ng-template>
+
+<!-- Pop-up menu: the person's role on a small button; the menu lists every
+     role with a checkmark on theirs, then Remove access for staff. -->
+<ng-template #roleMenu let-u>
+  <div class="role-picker">
+    <button type="button" class="role-button" [attr.data-role-button]="u.id"
+            aria-haspopup="menu" [attr.aria-expanded]="isMenuOpen(u)"
+            [attr.aria-label]="'Access for ' + u.email + ': ' + roleName(u.role)"
+            [disabled]="saving" (click)="toggleMenu(u, $event)">
+      {{ u.role === 'user' ? 'Give access' : roleName(u.role) }}
+      <svg class="chevron" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg>
+    </button>
+    <div class="role-menu" role="menu" *ngIf="isMenuOpen(u)"
+         (click)="$event.stopPropagation()" (keydown)="onMenuKey($event)">
+      <button type="button" role="menuitemradio" *ngFor="let r of roleOptions"
+              [attr.aria-checked]="u.role === r" (click)="pick(u, r)">
+        <svg class="check" *ngIf="u.role === r" viewBox="0 0 12 10" aria-hidden="true"><path d="M1 5.5l3.5 3L11 1.5"/></svg>
+        <span class="item-title">{{ roleName(r) }}</span>
+        <span class="item-note">{{ roleNote(r) }}</span>
+      </button>
+      <ng-container *ngIf="u.role !== 'user'">
+        <hr>
+        <button type="button" role="menuitem" class="remove" (click)="pick(u, 'user')">
+          <span class="item-title">Remove access</span>
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #confirmRow let-u>
+  <div class="confirm-row">
+    <span class="confirm">{{ confirmText(u) }}</span>
+    <span>
+      <button type="button" class="btn" [ngClass]="confirmRole === 'user' ? 'danger' : 'primary'"
+              (click)="confirmChange()" [disabled]="saving">{{ saving ? 'Saving…' : confirmLabel(u) }}</button>
+      <button type="button" class="btn secondary" (click)="cancelConfirm()" [disabled]="saving">Cancel</button>
+    </span>
+  </div>
 </ng-template>

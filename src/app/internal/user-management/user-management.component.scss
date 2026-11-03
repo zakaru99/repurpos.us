@@ -65,10 +65,9 @@
   border-top: 1px solid $rule;
 
   li {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    justify-content: space-between;
     gap: 8px 12px;
     padding: 10px 0;
     border-bottom: 1px solid $rule-soft;
@@ -91,26 +90,130 @@
   color: $ink-soft;
 }
 
-.result-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-
-  .btn + .btn { margin-left: 0; }
+// Role picker: a pop-up button showing the role, with a menu of every role
+.role-picker {
+  position: relative;
+  align-self: start;
 }
 
-.confirm-block {
+.role-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px 0 10px;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  color: $ink;
+  background: #fff;
+  border: 1px solid $field-border;
+  border-radius: $radius-sharp;
+  cursor: pointer;
+
+  &:hover:not(:disabled),
+  &[aria-expanded="true"] {
+    background: $muted-bg;
+  }
+
+  &:disabled {
+    cursor: default;
+    color: $ink-faint;
+  }
+
+  @include focus-ring($accent, 1px);
+
+  .chevron {
+    width: 10px;
+    height: 6px;
+    fill: none;
+    stroke: $ink-soft;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.role-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 10;
+  width: 260px;
+  padding: 4px;
+  background: #fff;
+  border: 1px solid $rule;
+  border-radius: $radius-sharp;
+  box-shadow: 0 8px 24px rgba(15, 27, 45, 0.14);
+
+  button {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 7px 10px 7px 30px;
+    font: inherit;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    border-radius: $radius-sharp;
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+      outline: none;
+      background: $muted-bg;
+    }
+  }
+
+  .check {
+    position: absolute;
+    top: 11px;
+    left: 10px;
+    width: 12px;
+    height: 10px;
+    fill: none;
+    stroke: $accent-text;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .item-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: $ink;
+  }
+
+  .item-note {
+    font-size: 0.8125rem;
+    color: $ink-soft;
+  }
+
+  .remove .item-title {
+    color: $status-rejected;
+  }
+
+  hr {
+    margin: 4px 0;
+    border: 0;
+    border-top: 1px solid $rule-soft;
+  }
+}
+
+.confirm-row {
+  grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: 100%;
 }
 
 // ---------------------------------------------------------------- admin cards (right)
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 12px;
   list-style: none;
   margin: 0;
@@ -120,7 +223,7 @@
 // Same treatment as the homepage's download blocks: hairline box, navy top rule
 .card {
   display: grid;
-  grid-template-columns: 36px minmax(0, 1fr);
+  grid-template-columns: 36px minmax(0, 1fr) auto;
   gap: 2px 12px;
   padding: 14px;
   background: #fff;
@@ -214,10 +317,7 @@
 
 .card-action {
   grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
   gap: 8px;
   margin-top: 10px;
   padding-top: 8px;
@@ -255,6 +355,11 @@
 .text-danger {
   @include admin-button(text-danger);
   font-size: 0.875rem;
+}
+
+.you {
+  align-self: start;
+  line-height: 28px;
 }
 
 @media (max-width: $bp-tablet) {

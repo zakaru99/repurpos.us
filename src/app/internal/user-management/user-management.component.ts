@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 
 import { Role } from '../../_models';
 import { LoginStateService } from '../../_services';
@@ -6,8 +6,8 @@ import { AdminApiService, AdminUser } from '../admin-api.service';
 
 // Who can use the admin portal, and user lookup. Read-only staff can read
 // proposals; reviewers can also decide them; admins can also manage access
-// and maintenance. Every change asks
-// for confirmation in place, and errors are shown on the page.
+// and maintenance. Each person's role is a pop-up menu; a pick asks for
+// confirmation in place, and errors are shown on the page.
 @Component({
   selector: 'app-user-management',
   templateUrl: './user-management.component.html',
@@ -18,6 +18,10 @@ export class UserManagementComponent implements OnInit {
   searchResults: AdminUser[] = null;   // null = no search run yet
   searching = false;
   staff: AdminUser[] = [];
+  // The role menu's options, least access first
+  roleOptions: Role[] = ['readonly', 'reviewer', 'admin'];
+  // The user whose role menu is open
+  menuFor: AdminUser = null;
   loadingStaff = false;
   errorMsg = '';
 
@@ -29,7 +33,7 @@ export class UserManagementComponent implements OnInit {
   // The backend refuses changes to your own access
   private myEmail: string = null;
 
-  constructor(private api: AdminApiService, private loginState: LoginStateService) { }
+  constructor(private api: AdminApiService, private loginState: LoginStateService, private host: ElementRef) { }
 
   ngOnInit(): void {
     this.myEmail = this.loginState.getUserEmail();
@@ -63,6 +67,14 @@ export class UserManagementComponent implements OnInit {
 
   roleName(role: Role): string {
     return { admin: 'Admin', reviewer: 'Reviewer', readonly: 'Read-only', user: 'No access' }[role];
+  }
+
+  roleNote(role: Role): string {
+    return {
+      readonly: 'Can read proposals',
+      reviewer: 'Can also approve and decline them',
+      admin: 'Can also manage access and maintenance'
+    }[role];
   }
 
   loadStaff(): void {
@@ -120,6 +132,87 @@ export class UserManagementComponent implements OnInit {
     const name = this.displayName(u);
     const source = name ? name.split(' ') : [(u.email || '?').charAt(0)];
     return source.slice(0, 2).map(s => s.charAt(0).toUpperCase()).join('');
+  }
+
+  isMenuOpen(u: AdminUser): boolean {
+    return !!this.menuFor && this.menuFor.id === u.id;
+  }
+
+  toggleMenu(u: AdminUser, event: Event) {
+    event.stopPropagation();
+    if (this.isMenuOpen(u)) {
+      this.closeMenu();
+      return;
+    }
+    this.menuFor = u;
+    // Focus the checked item, as a native pop-up menu does
+    setTimeout(() => this.focusMenuItem(0, true));
+  }
+
+  closeMenu(returnFocus = false) {
+    const id = this.menuFor && this.menuFor.id;
+    this.menuFor = null;
+    if (returnFocus && id != null) {
+      setTimeout(() => {
+        const button = this.host.nativeElement.querySelector('[data-role-button="' + id + '"]');
+        if (button) { button.focus(); }
+      });
+    }
+  }
+
+  // Picking their current role just closes the menu
+  pick(u: AdminUser, role: Role) {
+    this.closeMenu(true);
+    if (role !== u.role) {
+      this.ask(u, role);
+    }
+  }
+
+  // Up and Down move through the menu, Escape closes it
+  onMenuKey(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      this.closeMenu(true);
+    } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      this.focusMenuItem(event.key === 'ArrowDown' ? 1 : -1);
+    }
+  }
+
+  private focusMenuItem(step: number, checked = false) {
+    const items: HTMLElement[] = Array.from(this.host.nativeElement.querySelectorAll('.role-menu [role^="menuitem"]'));
+    if (!items.length) { return; }
+    let i = items.indexOf(document.activeElement as HTMLElement);
+    if (checked) {
+      i = Math.max(0, items.findIndex(el => el.getAttribute('aria-checked') === 'true'));
+    } else {
+      i = (i + step + items.length) % items.length;
+    }
+    items[i].focus();
+  }
+
+  @HostListener('document:click')
+  onDocumentClick() {
+    if (this.menuFor) { this.closeMenu(); }
+  }
+
+  confirmText(u: AdminUser): string {
+    switch (this.confirmRole) {
+      case 'user':
+        return 'Remove ' + this.roleName(u.role).toLowerCase() + ' access?';
+      case 'admin':
+        return (u.role === 'user' ? 'Give admin access?' : 'Make admin?') + ' They can also manage access and maintenance.';
+      case 'reviewer':
+        return u.role === 'admin' ? 'Change to reviewer? They\'ll lose access and maintenance.'
+          : 'Give reviewer access? They can approve and decline proposals.';
+      case 'readonly':
+        return u.role === 'user' ? 'Give read-only access? They can read proposals but not decide them.'
+          : 'Change to read-only? They\'ll only be able to read proposals.';
+    }
+  }
+
+  confirmLabel(u: AdminUser): string {
+    if (this.confirmRole === 'user') { return 'Remove'; }
+    return u.role === 'user' ? 'Give access' : 'Change role';
   }
 
   ask(user: AdminUser, role: Role) {
