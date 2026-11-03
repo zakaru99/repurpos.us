@@ -45,10 +45,9 @@
             <td>
               <span *ngIf="isMe(user)">You</span>
               <ng-container *ngIf="!isMe(user)">
-                <button class="change" *ngIf="user.role === 'readonly'" (click)="setRole(user, 'reviewer')">Make Reviewer</button>
-                <button class="change" *ngIf="user.role === 'reviewer'" (click)="setRole(user, 'admin')">Make Admin</button>
-                <button class="change" *ngIf="user.role === 'reviewer'" (click)="setRole(user, 'readonly')">Make Read-only</button>
-                <button class="change" *ngIf="user.role === 'admin'" (click)="setRole(user, 'reviewer')">Make Reviewer</button>
+                <button class="change" *ngIf="user.role !== 'admin'" (click)="setRole(user, 'admin')">Make Admin</button>
+                <button class="change" *ngIf="user.role !== 'reviewer'" (click)="setRole(user, 'reviewer')">Make Reviewer</button>
+                <button class="change" *ngIf="user.role !== 'readonly'" (click)="setRole(user, 'readonly')">Make Read-only</button>
                 <button (click)="setRole(user, 'user')">Revoke</button>
               </ng-container>
             </td>
