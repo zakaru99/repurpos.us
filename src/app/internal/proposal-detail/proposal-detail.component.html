@@ -7,7 +7,7 @@
       <p class="meta">
         <span class="id">#{{ proposal.id }}</span>
         <span *ngIf="proposal.submittedOn"> · Submitted {{ proposal.submittedOn | date:'d MMMM y' }}</span>
-        <span *ngIf="!isPending"> · <span class="status" [ngClass]="proposal.status | lowercase">{{ proposal.status }}</span></span>
+        <span *ngIf="!isPending || !canDecide"> · <span class="status" [ngClass]="proposal.status | lowercase">{{ proposal.status }}</span></span>
       </p>
       <div class="tools">
         <button type="button" class="dl" (click)="exportPdf()" title="Download this proposal as a PDF">
@@ -23,7 +23,7 @@
     <div class="title-row">
       <h2>{{ proposal.indication || 'Untitled proposal' }}</h2>
 
-      <div class="decide" *ngIf="isPending">
+      <div class="decide" *ngIf="isPending && canDecide">
         <button type="button" class="cancel" *ngIf="mode !== 'view' && !saving" (click)="cancel()">Cancel</button>
         <button type="button" class="btn approve" [class.armed]="mode === 'confirm-approve'"
                 (click)="onApprove()" [disabled]="saving || mode === 'reject'">

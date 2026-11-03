@@ -12,7 +12,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from "@angular
 import { isDefined } from "@angular/compiler/src/util";
 import { environment } from "../../environments/environment";
 import { LoginStateService } from '../_services/index';
-import { LoginState, RouteDef, canReview } from '../_models/index';
+import { LoginState, RouteDef, hasPortal } from '../_models/index';
 
 @Component({
   selector: 'app-header',
@@ -75,7 +75,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loginSubscription = this.loginStateService.isUserLoggedIn
       .subscribe((state: LoginState) => {
         this.loggedIn = state.loggedIn;
-        this.hasPortal = canReview(state.role);
+        this.hasPortal = hasPortal(state.role);
         this.loginBox = false;
         this.expanded = false;
       });

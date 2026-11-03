@@ -1,6 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, ViewChild } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
+import { canReview } from '../../_models';
+import { LoginStateService } from '../../_services';
 import { AdminApiService, AdminProposal, ProposalStatus } from '../admin-api.service';
 import { buildPdf, PdfBlock } from '../simple-pdf';
 
@@ -10,7 +12,8 @@ const ARM_MS = 4000;
 // Detail pane for one proposal. The decision bar is pinned to the bottom of
 // the pane. Approve and Reject confirm in place: the same button becomes the
 // confirm button, so the second click lands where the first one did. The
-// status only changes once the server accepts it.
+// status only changes once the server accepts it. Read-only staff get the
+// pane without Approve and Reject.
 @Component({
   selector: 'app-proposal-detail',
   templateUrl: './proposal-detail.component.html',
@@ -29,7 +32,11 @@ export class ProposalDetailComponent implements OnChanges, OnDestroy {
   error = '';
   private armTimer: any;
 
-  constructor(private api: AdminApiService) { }
+  constructor(private api: AdminApiService, private loginState: LoginStateService) { }
+
+  get canDecide(): boolean {
+    return canReview(this.loginState.isUserLoggedIn.value.role);
+  }
 
   ngOnChanges() {
     this.reset();

@@ -4,10 +4,13 @@
   <section class="main">
     <p class="eyebrow">Proposals</p>
     <ng-container *ngIf="proposals; else proposalsFailed">
-      <h2 class="headline">
+      <h2 class="headline" *ngIf="canDecide">
         {{ waiting.length === 0 ? 'Nothing needs a decision'
            : waiting.length === 1 ? '1 needs a decision'
            : waiting.length + ' need a decision' }}
+      </h2>
+      <h2 class="headline" *ngIf="!canDecide">
+        {{ waiting.length === 0 ? 'Nothing pending' : waiting.length + ' pending' }}
       </h2>
       <!-- All proposals by outcome -->
       <div class="mix" *ngIf="proposals.length" role="img"
@@ -25,7 +28,7 @@
                           [showWaiting]="true" [scroll]="true" (pick)="open($event)"></app-proposal-table>
 
       <a class="arrow-link more" routerLink="../proposals" [queryParams]="waiting.length ? { status: 'Pending' } : {}">
-        {{ waiting.length ? 'Review in Proposals' : 'All proposals' }}
+        {{ !waiting.length ? 'All proposals' : canDecide ? 'Review in Proposals' : 'View in Proposals' }}
       </a>
     </ng-container>
     <ng-template #proposalsFailed>

@@ -4,8 +4,9 @@ import { Role } from '../../_models';
 import { LoginStateService } from '../../_services';
 import { AdminApiService, AdminUser } from '../admin-api.service';
 
-// Who can use the admin portal, and user lookup. Reviewers can decide
-// proposals; admins can also manage access and maintenance. Every change asks
+// Who can use the admin portal, and user lookup. Read-only staff can read
+// proposals; reviewers can also decide them; admins can also manage access
+// and maintenance. Every change asks
 // for confirmation in place, and errors are shown on the page.
 @Component({
   selector: 'app-user-management',
@@ -43,11 +44,17 @@ export class UserManagementComponent implements OnInit {
     return this.staff.filter(u => u.role === 'reviewer');
   }
 
-  // "2 admins and 3 reviewers"
+  get readonly(): AdminUser[] {
+    return this.staff.filter(u => u.role === 'readonly');
+  }
+
+  // "2 admins, 3 reviewers and 1 read-only"
   get headline(): string {
-    const n = (count: number, one: string) => count + ' ' + one + (count === 1 ? '' : 's');
-    if (!this.reviewers.length) { return n(this.admins.length, 'admin'); }
-    return n(this.admins.length, 'admin') + ' and ' + n(this.reviewers.length, 'reviewer');
+    const n = (count: number, one: string, many = one + 's') => count + ' ' + (count === 1 ? one : many);
+    const parts = [n(this.admins.length, 'admin')];
+    if (this.reviewers.length) { parts.push(n(this.reviewers.length, 'reviewer')); }
+    if (this.readonly.length) { parts.push(n(this.readonly.length, 'read-only', 'read-only')); }
+    return parts.length === 1 ? parts[0] : parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1];
   }
 
   isMe(u: AdminUser): boolean {
@@ -55,7 +62,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   roleName(role: Role): string {
-    return { admin: 'Admin', reviewer: 'Reviewer', user: 'No access' }[role];
+    return { admin: 'Admin', reviewer: 'Reviewer', readonly: 'Read-only', user: 'No access' }[role];
   }
 
   loadStaff(): void {
@@ -151,7 +158,7 @@ export class UserManagementComponent implements OnInit {
         this.saving = false;
         this.errorMsg = role === 'user'
           ? 'Could not remove access for ' + user.email + '.'
-          : 'Could not make ' + user.email + ' ' + (role === 'admin' ? 'an admin.' : 'a reviewer.');
+          : 'Could not make ' + user.email + ' ' + { admin: 'an admin.', reviewer: 'a reviewer.', readonly: 'read-only.' }[role];
       }
     });
   }

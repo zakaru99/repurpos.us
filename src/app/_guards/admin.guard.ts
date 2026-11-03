@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { LoginStateService } from '../_services';
-import { Role, canReview, roleOf } from '../_models/index';
+import { Role, hasPortal, roleOf } from '../_models/index';
 
 interface UserStatus {
   user_id: number;
@@ -62,7 +62,7 @@ abstract class RoleGuard implements CanActivate {
   }
 }
 
-// The admin portal as a whole: admins and reviewers
+// The admin portal as a whole: admins, reviewers and read-only staff
 @Injectable({
   providedIn: 'root'
 })
@@ -71,13 +71,13 @@ export class PortalGuard extends RoleGuard {
     super(loginStateService, router, http);
   }
 
-  protected allowed(role: Role) { return canReview(role); }
+  protected allowed(role: Role) { return hasPortal(role); }
 
   protected fallback() { return '/'; }
 }
 
-// Admin-only pages inside the portal (access and maintenance). Reviewers who
-// land on one are sent to the proposals instead.
+// Admin-only pages inside the portal (access and maintenance). Other staff
+// who land on one are sent to the proposals instead.
 @Injectable({
   providedIn: 'root'
 })
@@ -89,6 +89,6 @@ export class AdminGuard extends RoleGuard {
   protected allowed(role: Role) { return role === 'admin'; }
 
   protected fallback(role: Role) {
-    return canReview(role) ? '/internal/proposals' : '/';
+    return hasPortal(role) ? '/internal/proposals' : '/';
   }
 }

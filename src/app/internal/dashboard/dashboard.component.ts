@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { MaintenanceWindow } from '../../_models';
+import { MaintenanceWindow, canReview } from '../../_models';
 import { formatPacificDisplay, LoginStateService } from '../../_services';
 import { AdminApiService, AdminProposal } from '../admin-api.service';
 
@@ -22,15 +22,19 @@ export class DashboardComponent implements OnInit {
 
   proposals: AdminProposal[] = null;
   windows: MaintenanceWindow[] = null;
-  // Maintenance is admin-only; reviewers don't see it or load it
+  // Maintenance is admin-only; other staff don't see it or load it
   isAdmin = false;
+  // Read-only staff see what's pending rather than what needs their decision
+  canDecide = false;
 
   constructor(private api: AdminApiService, private router: Router, private route: ActivatedRoute,
               private loginState: LoginStateService) { }
 
   ngOnInit() {
     // The portal guard has already set the role by the time this page opens
-    this.isAdmin = this.loginState.isUserLoggedIn.value.role === 'admin';
+    const role = this.loginState.isUserLoggedIn.value.role;
+    this.isAdmin = role === 'admin';
+    this.canDecide = canReview(role);
     forkJoin(
       this.api.getProposals().pipe(catchError(() => of(null))),
       this.isAdmin ? this.api.getMaintenanceWindows().pipe(catchError(() => of(null))) : of([])

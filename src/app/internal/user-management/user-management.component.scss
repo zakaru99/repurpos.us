@@ -135,6 +135,13 @@
     .avatar { background: $accent-text; }
   }
 
+  // Read-only has the least access: a grey rule and avatar
+  &.readonly {
+    border-top-color: $ink-faint;
+
+    .avatar { background: $ink-soft; }
+  }
+
   &.confirming {
     border-top-color: $status-rejected;
   }

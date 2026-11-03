@@ -21,16 +21,18 @@
         <span class="muted" *ngIf="user.role !== 'user'">{{ isMe(user) ? 'You' : roleName(user.role) }}</span>
         <ng-container *ngIf="user.role === 'user'">
           <span class="result-actions" *ngIf="!isConfirming(user); else confirmGrant">
+            <button type="button" class="btn secondary" (click)="ask(user, 'readonly')">Make read-only</button>
             <button type="button" class="btn secondary" (click)="ask(user, 'reviewer')">Make reviewer</button>
             <button type="button" class="btn secondary" (click)="ask(user, 'admin')">Make admin</button>
           </span>
           <ng-template #confirmGrant>
             <div class="confirm-block">
+              <span class="confirm" *ngIf="confirmRole === 'readonly'">Give read-only access? They can read proposals but not decide them.</span>
               <span class="confirm" *ngIf="confirmRole === 'reviewer'">Give reviewer access? They can approve and decline proposals.</span>
               <span class="confirm" *ngIf="confirmRole === 'admin'">Give full admin access? They can also manage access and maintenance.</span>
               <span>
                 <button type="button" class="btn primary" (click)="confirmChange()" [disabled]="saving">
-                  {{ saving ? 'Saving…' : (confirmRole === 'admin' ? 'Make admin' : 'Make reviewer') }}
+                  {{ saving ? 'Saving…' : 'Make ' + (roleName(confirmRole) | lowercase) }}
                 </button>
                 <button type="button" class="btn secondary" (click)="cancelConfirm()" [disabled]="saving">Cancel</button>
               </span>
@@ -65,12 +67,20 @@
           <ng-container *ngTemplateOutlet="card; context: { $implicit: u }"></ng-container>
         </ng-container>
       </ul>
+
+      <h3 class="group">Read-only <span>read proposals</span></h3>
+      <p class="muted" *ngIf="!readonly.length">No read-only users yet.</p>
+      <ul class="cards" *ngIf="readonly.length">
+        <ng-container *ngFor="let u of readonly">
+          <ng-container *ngTemplateOutlet="card; context: { $implicit: u }"></ng-container>
+        </ng-container>
+      </ul>
     </ng-container>
   </section>
 </div>
 
 <ng-template #card let-u>
-  <li class="card" [class.reviewer]="u.role === 'reviewer'" [class.confirming]="isConfirming(u, 'user')">
+  <li class="card" [class.reviewer]="u.role === 'reviewer'" [class.readonly]="u.role === 'readonly'" [class.confirming]="isConfirming(u, 'user')">
     <span class="avatar" aria-hidden="true">{{ initials(u) }}</span>
     <div class="who">
       <span class="name" *ngIf="displayName(u)">{{ displayName(u) }}</span>
@@ -82,18 +92,22 @@
       <span class="muted" *ngIf="isMe(u)">You</span>
       <ng-container *ngIf="!isMe(u)">
         <ng-container *ngIf="!isConfirming(u); else confirmCard">
+          <button type="button" class="text" *ngIf="u.role === 'readonly'" (click)="ask(u, 'reviewer')">Make reviewer</button>
           <button type="button" class="text" *ngIf="u.role === 'reviewer'" (click)="ask(u, 'admin')">Make admin</button>
+          <button type="button" class="text" *ngIf="u.role === 'reviewer'" (click)="ask(u, 'readonly')">Change to read-only</button>
           <button type="button" class="text" *ngIf="u.role === 'admin'" (click)="ask(u, 'reviewer')">Change to reviewer</button>
           <button type="button" class="text-danger" (click)="ask(u, 'user')">Remove access</button>
         </ng-container>
         <ng-template #confirmCard>
-          <span class="confirm" *ngIf="confirmRole === 'user'">Remove {{ u.role }} access?</span>
+          <span class="confirm" *ngIf="confirmRole === 'user'">Remove {{ roleName(u.role) | lowercase }} access?</span>
           <span class="confirm" *ngIf="confirmRole === 'admin'">Make admin? They can also manage access and maintenance.</span>
-          <span class="confirm" *ngIf="confirmRole === 'reviewer'">Change to reviewer? They'll lose access and maintenance.</span>
+          <span class="confirm" *ngIf="confirmRole === 'reviewer' && u.role === 'admin'">Change to reviewer? They'll lose access and maintenance.</span>
+          <span class="confirm" *ngIf="confirmRole === 'reviewer' && u.role === 'readonly'">Make reviewer? They can approve and decline proposals.</span>
+          <span class="confirm" *ngIf="confirmRole === 'readonly'">Change to read-only? They won't be able to decide proposals.</span>
           <span>
             <button type="button" class="btn" [ngClass]="confirmRole === 'user' ? 'danger' : 'primary'"
                     (click)="confirmChange()" [disabled]="saving">
-              {{ saving ? 'Saving…' : (confirmRole === 'user' ? 'Remove' : confirmRole === 'admin' ? 'Make admin' : 'Change') }}
+              {{ saving ? 'Saving…' : confirmRole === 'user' ? 'Remove' : u.role === 'admin' || confirmRole === 'readonly' ? 'Change' : 'Make ' + (roleName(confirmRole) | lowercase) }}
             </button>
             <button type="button" class="btn secondary" (click)="cancelConfirm()" [disabled]="saving">Cancel</button>
           </span>
