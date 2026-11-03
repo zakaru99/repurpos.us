@@ -89,8 +89,8 @@
 
   </div>
 
-  <!-- Sticky footer actions (Pending only) -->
-  <div class="dialog-footer" *ngIf="data.status === 'Pending'">
+  <!-- Sticky footer actions (Pending only, and only for those who can decide) -->
+  <div class="dialog-footer" *ngIf="data.status === 'Pending' && canDecide">
     <div class="dialog-actions" *ngIf="!showRejectForm">
       <button class="btn-pill approve" (click)="approveProposal()">Approve</button>
       <button class="btn-pill reject" (click)="rejectProposal()">Reject</button>

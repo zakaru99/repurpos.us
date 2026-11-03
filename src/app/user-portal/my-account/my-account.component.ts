@@ -35,7 +35,7 @@ export class MyAccountComponent implements OnInit {
   }
 
   get roleLabel(): string {
-    return { admin: 'Administrator', reviewer: 'Proposal reviewer', user: 'Researcher' }[this.role];
+    return { admin: 'Administrator', reviewer: 'Proposal reviewer', readonly: 'Proposal viewer (read-only)', user: 'Researcher' }[this.role];
   }
 
   constructor(private http: HttpClient, private loginState: LoginStateService) {}

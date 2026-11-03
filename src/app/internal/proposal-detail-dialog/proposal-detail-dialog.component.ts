@@ -1,6 +1,7 @@
 import { Component, Inject, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Proposal } from '../../_models';
+import { Proposal, canReview } from '../../_models';
+import { LoginStateService } from '../../_services';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
@@ -19,8 +20,14 @@ export class ProposalDetailDialogComponent implements AfterViewChecked {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: Proposal,
     public dialogRef: MatDialogRef<ProposalDetailDialogComponent>,
-    private http: HttpClient
+    private http: HttpClient,
+    private loginState: LoginStateService
   ) {}
+
+  // Read-only staff see the proposal without Approve and Reject
+  get canDecide(): boolean {
+    return canReview(this.loginState.isUserLoggedIn.value.role);
+  }
 
   closeDialog(): void {
     this.dialogRef.close();

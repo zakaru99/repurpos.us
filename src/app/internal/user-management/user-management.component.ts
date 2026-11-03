@@ -22,7 +22,7 @@ const toUser = (u: any): User => ({ id: u.id, email: u.email, role: roleOf(u), r
 export class UserManagementComponent implements OnInit {
   searchQuery: string = '';
   searchResults: User[] = [];
-  // Everyone with portal access: admins and reviewers
+  // Everyone with portal access: admins, reviewers and read-only staff
   staff: User[] = [];
   errorMsg: string = '';
 
@@ -45,7 +45,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   roleName(role: Role): string {
-    return { admin: 'Admin', reviewer: 'Reviewer', user: 'User' }[role];
+    return { admin: 'Admin', reviewer: 'Reviewer', readonly: 'Read-only', user: 'User' }[role];
   }
 
   loadStaff(): void {
@@ -88,7 +88,8 @@ export class UserManagementComponent implements OnInit {
   setRole(user: User, role: Role): void {
     const question = role === 'user' ? `Remove ${user.role} access for ${user.email}?`
       : role === 'admin' ? `Make ${user.email} an admin? Admins can also manage access and maintenance.`
-      : `Make ${user.email} a reviewer? Reviewers can approve and decline proposals.`;
+      : role === 'reviewer' ? `Make ${user.email} a reviewer? Reviewers can approve and decline proposals.`
+      : `Make ${user.email} read-only? They can read proposals but not decide them.`;
     if (!window.confirm(question)) {
       return;
     }

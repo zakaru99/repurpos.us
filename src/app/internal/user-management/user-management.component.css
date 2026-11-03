@@ -133,6 +133,11 @@
   color: white;
 }
 
+.status-badge.readonly {
+  background-color: #5a6a85;
+  color: white;
+}
+
 .role-help {
   margin: 0 0 0.75rem;
   color: #6c757d;

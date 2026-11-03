@@ -40,11 +40,13 @@ describe('Portal and admin guards', () => {
   const reviewer = { user_id: 2, email: 'rev@scripps.edu', admin: false, role: 'reviewer' };
   const admin = { user_id: 1, email: 'admin@scripps.edu', admin: true, role: 'admin' };
   const user = { user_id: 3, email: 'someone@example.org', admin: false, role: 'user' };
+  const readonly = { user_id: 4, email: 'ro@scripps.edu', admin: false, role: 'readonly' };
 
-  it('lets reviewers and admins into the portal', () => {
+  it('lets read-only staff, reviewers and admins into the portal', () => {
     expect(run(TestBed.get(PortalGuard), reviewer)).toBe(true);
     expect(loginState.isUserLoggedIn.value.role).toBe('reviewer');
     expect(run(TestBed.get(PortalGuard), admin)).toBe(true);
+    expect(run(TestBed.get(PortalGuard), readonly)).toBe(true);
   });
 
   it('keeps other users out of the portal', () => {
@@ -52,9 +54,11 @@ describe('Portal and admin guards', () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith('/');
   });
 
-  it('sends reviewers from admin-only pages to the proposals', () => {
+  it('sends reviewers and read-only staff from admin-only pages to the proposals', () => {
     expect(run(TestBed.get(AdminGuard), reviewer)).toBe(false);
     expect(router.navigateByUrl).toHaveBeenCalledWith('/internal/proposals');
+    expect(run(TestBed.get(AdminGuard), readonly)).toBe(false);
+    expect(router.navigateByUrl).toHaveBeenCalledTimes(2);
   });
 
   it('lets admins onto admin-only pages', () => {

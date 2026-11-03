@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
+import { LoginStateService } from '../../_services';
 import { ProposalDetailDialogComponent } from './proposal-detail-dialog.component';
 
 describe('ProposalDetailDialogComponent', () => {
@@ -14,6 +15,7 @@ describe('ProposalDetailDialogComponent', () => {
       imports: [ FormsModule, HttpClientTestingModule ],
       declarations: [ ProposalDetailDialogComponent ],
       providers: [
+        LoginStateService,
         { provide: MatDialogRef, useValue: { close: () => {} } },
         {
           provide: MAT_DIALOG_DATA,

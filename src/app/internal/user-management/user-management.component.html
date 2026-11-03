@@ -17,6 +17,7 @@
           <span class="status-badge" [ngClass]="user.role">{{ roleName(user.role) }}</span>
         </p>
         <ng-container *ngIf="user.role === 'user'">
+          <button (click)="setRole(user, 'readonly')">Make Read-only</button>
           <button (click)="setRole(user, 'reviewer')">Make Reviewer</button>
           <button (click)="setRole(user, 'admin')">Make Admin</button>
         </ng-container>
@@ -27,7 +28,7 @@
 
   <div class="card-block">
     <h5 class="section-title">Portal Access</h5>
-    <p class="role-help">Reviewers can approve and decline proposals. Admins can also manage access and maintenance.</p>
+    <p class="role-help">Read-only users can read proposals. Reviewers can also approve and decline them. Admins can also manage access and maintenance.</p>
     <div class="table-responsive">
       <table class="admin-table">
         <thead>
@@ -44,7 +45,9 @@
             <td>
               <span *ngIf="isMe(user)">You</span>
               <ng-container *ngIf="!isMe(user)">
+                <button class="change" *ngIf="user.role === 'readonly'" (click)="setRole(user, 'reviewer')">Make Reviewer</button>
                 <button class="change" *ngIf="user.role === 'reviewer'" (click)="setRole(user, 'admin')">Make Admin</button>
+                <button class="change" *ngIf="user.role === 'reviewer'" (click)="setRole(user, 'readonly')">Make Read-only</button>
                 <button class="change" *ngIf="user.role === 'admin'" (click)="setRole(user, 'reviewer')">Make Reviewer</button>
                 <button (click)="setRole(user, 'user')">Revoke</button>
               </ng-container>
