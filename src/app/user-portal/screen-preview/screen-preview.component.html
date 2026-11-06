@@ -1,46 +1,52 @@
-<!-- Header: who and what this screen is, the dates that matter, and the
-     four phases as tabs along its bottom edge -->
+<!-- Header: the screen on the left, the dates that matter stacked on the right -->
 <div class="screen-head">
   <div class="inner">
-    <p class="preview-note">Preview with sample data. Nothing on this page is loaded or saved.</p>
-    <p class="crumbs">Screen <span class="mono">{{ screen.id }}</span></p>
-    <h1 class="screen-title">{{ screen.title }}</h1>
-    <p class="meta">{{ screen.pi }} · {{ screen.institution }} · Proposed {{ screen.started | date:'d MMM y' }}</p>
+   <div class="head-grid">
+    <div class="head-main">
+      <p class="preview-note">Preview with sample data. Nothing on this page is loaded or saved.</p>
+      <p class="crumbs">Screen <span class="mono">{{ screen.id }}</span></p>
+      <h1 class="screen-title">{{ screen.title }}</h1>
+      <p class="meta">{{ screen.pi }} · {{ screen.institution }} · Proposed {{ screen.started | date:'d MMM y' }}</p>
+    </div>
 
     <dl class="dates">
       <div *ngFor="let d of keyDates"><dt>{{ d.label }}</dt><dd>{{ d.value }}</dd></div>
     </dl>
-
-    <nav class="phase-tabs" aria-label="Phases">
-      <button type="button" *ngFor="let phase of phases" [ngClass]="phaseState(phase)"
-              [class.active]="phaseOf(selected) === phase" [attr.aria-current]="phaseOf(selected) === phase ? 'page' : null"
-              (click)="openPhase(phase)">
-        <span class="tab-name">{{ phase.title }}</span>
-        <span class="tab-state">{{ phaseSummary(phase) }}</span>
-      </button>
-    </nav>
+   </div>
   </div>
 </div>
 
-<div class="screen-body">
-  <!-- The open phase's steps, in order -->
-  <ol class="step-row" aria-label="Steps in this phase">
-    <li *ngFor="let s of phaseOf(selected).steps">
-      <button type="button" class="step" [ngClass]="isDone(s) ? (s.state === 'skipped' ? 'skipped' : 'done') : s.state"
-              [class.selected]="s.key === selectedKey"
-              [attr.aria-current]="s.key === selectedKey ? 'step' : null" (click)="select(s)">
-        <span class="num">{{ pad(number(s)) }}</span>
-        <span class="step-title">{{ s.title }}</span>
-        <span class="step-note" *ngIf="!(sent && s.key === 'hits')">{{ s.note }}</span>
-        <span class="step-note" *ngIf="sent && s.key === 'hits'">Sent today</span>
-      </button>
-    </li>
-  </ol>
+<!-- The four phases, in their own bar under the header -->
+<nav class="tab-bar" aria-label="Phases">
+  <div class="inner">
+    <button type="button" *ngFor="let phase of phases" [ngClass]="phaseState(phase)"
+            [class.active]="phaseOf(selected) === phase" [attr.aria-current]="phaseOf(selected) === phase ? 'page' : null"
+            (click)="openPhase(phase)">
+      <span class="tab-name">{{ phase.title }}</span>
+      <span class="tab-state">{{ phaseSummary(phase) }}</span>
+    </button>
+  </div>
+</nav>
 
+<div class="screen-body">
   <div class="layout">
     <!-- What this step needs -->
     <aside class="reqs" aria-labelledby="reqs-title">
-      <h2 class="reqs-title" id="reqs-title">{{ requirements[selectedKey].title }}</h2>
+      <h2 class="side-title">In this phase</h2>
+      <ol class="phase-steps">
+        <li *ngFor="let s of phaseOf(selected).steps">
+          <button type="button" class="step" [ngClass]="isDone(s) ? (s.state === 'skipped' ? 'skipped' : 'done') : s.state"
+                  [class.selected]="s.key === selectedKey"
+                  [attr.aria-current]="s.key === selectedKey ? 'step' : null" (click)="select(s)">
+            <span class="num">{{ pad(number(s)) }}</span>
+            <span class="step-title">{{ s.title }}</span>
+            <span class="step-note" *ngIf="!(sent && s.key === 'hits')">{{ s.note }}</span>
+            <span class="step-note" *ngIf="sent && s.key === 'hits'">Sent today</span>
+          </button>
+        </li>
+      </ol>
+
+      <h2 class="side-title reqs-title" id="reqs-title">{{ requirements[selectedKey].title }}</h2>
       <ul>
         <li *ngFor="let r of requirements[selectedKey].items">{{ r }}</li>
       </ul>

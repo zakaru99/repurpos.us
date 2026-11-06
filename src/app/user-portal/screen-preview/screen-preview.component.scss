@@ -7,7 +7,8 @@
 @import '../user-portal';
 
 :host {
-  @include full-bleed-host;
+  // The portal layout already runs edge to edge (full-bleed-host), so no
+  // negative margins here
   display: block;
 }
 
@@ -15,7 +16,7 @@
 
 // Same column as the other portal pages (portal-page), but the header band
 // runs edge to edge, so the column is set on .inner and .body instead
-%portal-column {
+@mixin portal-column {
   max-width: var(--shell-max);
   margin: 0 auto;
   padding-left: var(--shell-gutter);
@@ -38,9 +39,22 @@
   border-bottom: 1px solid $rule;
 
   .inner {
-    @extend %portal-column;
+    @include portal-column;
     padding-top: 20px;
+    padding-bottom: 26px;
   }
+}
+
+// Inside the same 1100px width as the content below
+.head-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 24px 56px;
+  align-items: start;
+}
+
+.head-main {
+  min-width: 0;
 }
 
 .preview-note {
@@ -81,19 +95,19 @@
   color: $ink-soft;
 }
 
-// Key dates: label over value, hairline between pairs
+// Key dates, stacked in the header's right column
 .dates {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 18px 0 0;
+  margin: 0;
+  padding-left: 24px;
+  border-left: 1px solid $rule-on-tint;
 
   div {
-    padding: 0 22px;
-    border-left: 1px solid $rule-on-tint;
+    padding: 8px 0;
+    border-top: 1px solid $rule-on-tint;
 
     &:first-child {
-      padding-left: 0;
-      border-left: 0;
+      padding-top: 2px;
+      border-top: 0;
     }
   }
 
@@ -106,20 +120,37 @@
   dd {
     margin: 0;
     font-size: 0.9375rem;
+    line-height: 1.4;
     color: $ink;
   }
 }
 
-// Phase tabs sit on the header's bottom edge; the open one is underlined
-.phase-tabs {
-  display: flex;
-  gap: 36px;
-  margin-top: 22px;
-  overflow-x: auto;
-  scrollbar-width: none;
+// ---------------------------------------------------------------- phase tabs
+// A white bar of its own under the tinted header, pinned under the portal
+// band while the page scrolls
 
-  &::-webkit-scrollbar {
-    display: none;
+.tab-bar {
+  @include sticky-subheader;
+  top: calc(var(--site-header-height, 65px) + 46px);
+  z-index: 2300;
+  background: #fff;
+  border-bottom: 1px solid $rule;
+  box-shadow: 0 1px 0 rgba(15, 27, 45, 0.04);
+
+  .inner {
+    @include portal-column;
+    display: flex;
+    gap: 40px;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    > * {
+      max-width: none;
+    }
   }
 
   button {
@@ -128,7 +159,7 @@
     align-items: flex-start;
     gap: 1px;
     margin-bottom: -1px;
-    padding: 0 0 10px;
+    padding: 12px 0 10px;
     font: inherit;
     white-space: nowrap;
     background: none;
@@ -148,7 +179,7 @@
       }
     }
 
-    @include focus-ring($accent, 2px);
+    @include focus-ring($accent, -2px);
   }
 
   .tab-name {
@@ -175,27 +206,32 @@
 // ---------------------------------------------------------------- body
 
 .screen-body {
-  @extend %portal-column;
-  padding-top: 20px;
+  @include portal-column;
+  padding-top: 28px;
   padding-bottom: 48px;
 }
 
-// The open phase's steps in a row, with a rule under them
-.step-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 8px;
-  margin: 0 0 28px;
-  padding: 0 0 14px;
+// The phase's steps in the side panel, one per line
+.phase-steps {
+  margin: 0 -18px 18px;
+  padding: 0;
   list-style: none;
-  border-bottom: 1px solid $rule;
+}
+
+// Not the hairlined rows of the requirements list
+.reqs .phase-steps {
+  li,
+  li:first-child {
+    padding: 0;
+    border-top: 0;
+  }
 }
 
 .step {
   display: grid;
-  grid-template-columns: auto auto;
-  column-gap: 8px;
-  padding: 6px 14px 7px 10px;
+  grid-template-columns: 26px minmax(0, 1fr);
+  width: 100%;
+  padding: 6px 18px 7px;
   font: inherit;
   text-align: left;
   background: none;
@@ -208,8 +244,8 @@
   }
 
   &.selected {
-    background: $selected;
-    box-shadow: inset 0 -2px 0 $accent;
+    background: #fff;
+    box-shadow: inset 3px 0 0 $accent;
   }
 
   @include focus-ring($accent, -2px);
@@ -226,7 +262,6 @@
 .step-title {
   font-size: 0.875rem;
   line-height: 1.35;
-  white-space: nowrap;
   color: $ink;
 }
 
@@ -234,7 +269,6 @@
   grid-column: 2;
   font-size: 0.75rem;
   line-height: 1.4;
-  white-space: nowrap;
   color: $ink-faint;
 }
 
@@ -260,7 +294,7 @@
 // Requirements for the selected step, pinned while the step scrolls
 .reqs {
   position: sticky;
-  top: calc(var(--site-header-height, 65px) + 47px + 20px);
+  top: calc(var(--site-header-height, 65px) + 46px + 62px + 20px);
   padding: 14px 18px 16px;
   background: $muted-bg;
   border-top: 2px solid $navy;
@@ -285,12 +319,18 @@
   }
 }
 
-.reqs-title {
+.side-title {
   margin: 0 0 8px;
   font-family: $sans;
   font-size: 0.9375rem;
   font-weight: 600;
   color: $ink;
+}
+
+// Requirements start under a rule, after the phase's steps
+.reqs-title {
+  padding-top: 14px;
+  border-top: 1px solid $rule-on-tint;
 }
 
 .reqs-foot {
@@ -721,9 +761,12 @@ legend {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .dates div {
-    flex-basis: 100%;
-    padding: 0 0 8px;
+  .head-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dates {
+    padding-left: 0;
     border-left: 0;
   }
 }
