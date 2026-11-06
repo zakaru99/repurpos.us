@@ -18,6 +18,10 @@ interface Step {
   state: State;
   // Shown under the title in the step list, e.g. "Approved 12 Mar"
   note: string;
+  // When a finished step happened, for the history table
+  date?: Date;
+  // Past-tense line for the history table, e.g. "Plate layout uploaded"
+  done?: string;
 }
 
 interface Phase {
@@ -48,17 +52,17 @@ export class ScreenPreviewComponent implements OnInit {
     {
       title: 'Before screening',
       steps: [
-        { key: 'proposal', title: 'Assay proposal', who: 'you', state: 'done', note: 'Approved 12 Mar' },
-        { key: 'mta', title: 'Material transfer agreement', who: 'both', state: 'done', note: 'Signed 2 Apr' },
-        { key: 'description', title: 'Assay description', who: 'you', state: 'done', note: 'Approved 18 Apr' },
-        { key: 'layout', title: 'Plate layout', who: 'you', state: 'done', note: 'Uploaded 20 Apr' },
-        { key: 'controls', title: 'Controls', who: 'you', state: 'skipped', note: 'Not sent (optional)' }
+        { key: 'proposal', title: 'Assay proposal', who: 'you', state: 'done', note: 'Approved 12 Mar', date: new Date(2026, 2, 12), done: 'Proposal approved' },
+        { key: 'mta', title: 'Material transfer agreement', who: 'both', state: 'done', note: 'Signed 2 Apr', date: new Date(2026, 3, 2), done: 'Transfer agreement signed' },
+        { key: 'description', title: 'Assay description', who: 'you', state: 'done', note: 'Approved 18 Apr', date: new Date(2026, 3, 18), done: 'Assay description approved' },
+        { key: 'layout', title: 'Plate layout', who: 'you', state: 'done', note: 'Uploaded 20 Apr', date: new Date(2026, 3, 20), done: 'Plate layout uploaded' },
+        { key: 'controls', title: 'Controls', who: 'you', state: 'skipped', note: 'Not sent (optional)', date: new Date(2026, 3, 20), done: 'Controls skipped (optional)' }
       ]
     },
     {
       title: 'Primary screen',
       steps: [
-        { key: 'plates', title: 'Primary screen plates', who: 'calibr', state: 'done', note: 'Shipped 6 May' },
+        { key: 'plates', title: 'Primary screen plates', who: 'calibr', state: 'done', note: 'Shipped 6 May', date: new Date(2026, 4, 6), done: 'Primary screen plates shipped' },
         { key: 'hits', title: 'Hit list', who: 'you', state: 'current', note: 'Your turn' }
       ]
     },
@@ -81,11 +85,16 @@ export class ScreenPreviewComponent implements OnInit {
 
   selectedKey = 'hits';
 
+  // PREVIEW: two layouts to compare, chosen with ?layout=focus|tabs
+  layout: 'focus' | 'tabs' = 'focus';
+  showAllHistory = false;
+
   constructor(private route: ActivatedRoute, private router: Router) { }
 
   // ?step=<key> opens a step directly, so a step can be linked to
   ngOnInit(): void {
     this.route.queryParamMap.subscribe(q => {
+      this.layout = q.get('layout') === 'tabs' ? 'tabs' : 'focus';
       const key = q.get('step');
       this.selectedKey = key && this.allSteps.some(s => s.key === key) ? key : this.current.key;
     });
@@ -124,6 +133,7 @@ export class ScreenPreviewComponent implements OnInit {
   select(step: Step): void {
     this.router.navigate([], {
       queryParams: { step: step.key === this.current.key ? null : step.key },
+      queryParamsHandling: 'merge',
       replaceUrl: true
     });
     // Below the tablet breakpoint the list sits under the step it opens
@@ -181,6 +191,46 @@ export class ScreenPreviewComponent implements OnInit {
     return { label: 'Coming up', tone: 'upcoming' };
   }
 
+  setLayout(layout: 'focus' | 'tabs'): void {
+    this.router.navigate([], {
+      queryParams: { layout: layout === 'focus' ? null : layout },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
+  }
+
+  phaseOf(step: Step): Phase {
+    return this.phases.filter(p => p.steps.indexOf(step) > -1)[0];
+  }
+
+  // Phase tabs: open a phase on its due step, else its first step
+  openPhase(phase: Phase): void {
+    const due = phase.steps.filter(s => s.state === 'current')[0];
+    this.select(due || phase.steps[0]);
+  }
+
+  // Focus layout: the next few steps after the due one
+  get upcoming(): Step[] {
+    return this.allSteps.filter(s => s.state === 'upcoming').slice(0, 3);
+  }
+
+  // Focus layout: finished steps, newest first
+  get history(): Step[] {
+    const done = this.allSteps.filter(s => s.date).slice().reverse();
+    return this.showAllHistory ? done : done.slice(0, 3);
+  }
+
+  get historyCount(): number {
+    return this.allSteps.filter(s => s.date).length;
+  }
+
+  // Dates that matter to the partner, said plainly at the top
+  readonly keyDates = [
+    { label: 'Transfer agreement signed', value: '2 Apr 2026' },
+    { label: 'Primary plates shipped', value: '6 May 2026' },
+    { label: 'Data goes public', value: 'One year after your hit structures are released' }
+  ];
+
   whoLabel(who: Who): string {
     return who === 'you' ? 'You' : who === 'calibr' ? 'Calibr' : 'You and Calibr';
   }
@@ -222,7 +272,18 @@ export class ScreenPreviewComponent implements OnInit {
   }
 
   send(): void {
-    if (this.canSend) { this.sent = true; }
+    if (!this.canSend) { return; }
+    this.sent = true;
+    const hits = this.allSteps.filter(s => s.key === 'hits')[0];
+    hits.date = new Date();
+    hits.done = 'Hit list sent (' + this.hitCheck.valid.length + ' compounds)';
+  }
+
+  unsend(): void {
+    this.sent = false;
+    const hits = this.allSteps.filter(s => s.key === 'hits')[0];
+    hits.date = undefined;
+    hits.done = undefined;
   }
 
   // ------------------------------------------------------------ reference content
