@@ -10,10 +10,10 @@
 
       <!-- Who the screen is waiting on right now -->
       <p class="waiting" [ngClass]="waiting.who" role="status">
-        <span class="waiting-who">{{ waiting.who === 'you' ? 'Waiting on you' : 'Waiting on Calibr' }}</span>
+        <span class="waiting-who">{{ waiting.who === 'you' ? 'Your next step' : 'With Calibr' }}</span>
         <span class="waiting-what">{{ waiting.text }}</span>
         <button type="button" class="link" *ngIf="selectedKey !== waiting.step.key" (click)="select(waiting.step)">
-          {{ waiting.who === 'you' ? 'Go to it' : 'See what happens next' }}
+          {{ waiting.who === 'you' ? 'Open it' : 'What happens next' }}
         </button>
       </p>
     </div>
@@ -99,7 +99,7 @@
       <!-- ===== Current: hit list ===== -->
       <ng-container *ngSwitchCase="'hits'">
         <ng-container *ngIf="!sent; else hitsSent">
-          <h2 class="step-heading">Send your hit list</h2>
+          <h2 class="step-heading">Share your hit list</h2>
           <p class="lede">List the compounds you're taking forward, as RFM IDs from your compound key. You can send up to
             1% of the library ({{ hitLimit }} compounds). Calibr prepares two dose-response sets from this list.</p>
 
@@ -166,15 +166,15 @@
             </fieldset>
 
             <div class="actions">
-              <button type="submit" class="btn" [disabled]="!canSend">Send hit list</button>
+              <button type="submit" class="btn" [disabled]="!canSend">Share hit list</button>
               <button type="button" class="link">Save draft</button>
-              <span class="hint" *ngIf="!canSend">Fix the IDs above to send.</span>
+              <span class="hint" *ngIf="!canSend">Once the IDs above check out, you can share the list.</span>
             </div>
           </form>
         </ng-container>
 
         <ng-template #hitsSent>
-          <h2 class="step-heading">Hit list sent</h2>
+          <h2 class="step-heading">Thanks, your hit list is with Calibr</h2>
           <p class="lede">{{ hitCheck.valid.length }} compounds sent today. Calibr will email you when your dose-response plates ship.
             You can change the list until then.</p>
           <button type="button" class="link" (click)="sent = false">Change the list</button>

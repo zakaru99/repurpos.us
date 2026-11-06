@@ -59,7 +59,7 @@ export class ScreenPreviewComponent implements OnInit {
       title: 'Primary screen',
       steps: [
         { key: 'plates', title: 'Primary screen plates', who: 'calibr', state: 'done', note: 'Shipped 6 May' },
-        { key: 'hits', title: 'Hit list', who: 'you', state: 'current', note: 'Action needed' }
+        { key: 'hits', title: 'Hit list', who: 'you', state: 'current', note: 'Your next step' }
       ]
     },
     {
@@ -186,7 +186,7 @@ export class ScreenPreviewComponent implements OnInit {
   get selectedStatus(): { label: string; tone: string } {
     const s = this.selected;
     if (s.key === 'hits' && this.sent) { return { label: 'Sent', tone: 'done' }; }
-    if (s.state === 'current') { return { label: 'Action needed', tone: 'current' }; }
+    if (s.state === 'current') { return { label: 'Your next step', tone: 'current' }; }
     if (s.state === 'done') { return { label: 'Done', tone: 'done' }; }
     if (s.state === 'skipped') { return { label: 'Skipped', tone: 'skipped' }; }
     return { label: 'Coming up', tone: 'upcoming' };
@@ -319,10 +319,10 @@ export class ScreenPreviewComponent implements OnInit {
   // Who the screen is waiting on, said in the header
   get waiting(): { who: 'you' | 'calibr'; text: string; step: Step } {
     if (!this.sent) {
-      return { who: 'you', text: 'Send your hit list', step: this.current };
+      return { who: 'you', text: 'Share your hit list whenever it’s ready', step: this.current };
     }
     const next = this.allSteps.filter(s => s.key === 'dr-plates')[0];
-    return { who: 'calibr', text: 'Preparing your dose-response plates', step: next };
+    return { who: 'calibr', text: 'Calibr is preparing your dose-response plates', step: next };
   }
 
   // Hit list requirements, ticked off as the form meets them
