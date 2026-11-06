@@ -10,6 +10,65 @@
   line-height: 1.6;
 }
 
+/* Upcoming-launch notice: full-width strip under the header that slides
+   down once on load. Comes before .whats-new-trigger in the markup so that
+   fixed button (no explicit top) lands below the strip, not on it. The
+   negative margin cancels .container-fluid's 15px side padding. */
+.ui-notice {
+  display: grid;
+  margin: 0 -15px;
+  background: var(--color-brand-100);
+  border-bottom: 1px solid var(--color-border-strong);
+  /* Animating grid rows 0fr -> 1fr grows the strip to its real height,
+     however many lines the text wraps to (max-height can't do that). */
+  animation: ui-notice-open 900ms ease-in-out 1s both;
+}
+
+.ui-notice p {
+  min-height: 0;
+  overflow: hidden;
+  margin: 0;
+  color: var(--color-brand-700);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.ui-notice strong {
+  font-weight: var(--font-weight-bold);
+}
+
+.ui-notice a {
+  color: var(--color-brand-500);
+  text-decoration: underline;
+}
+
+/* Padding lives on an inner span so the row can collapse to zero. */
+.ui-notice p span {
+  display: block;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: var(--space-2) var(--space-4);
+  animation: ui-notice-slide 900ms ease-in-out 1s both;
+}
+
+@keyframes ui-notice-open {
+  from { grid-template-rows: 0fr; border-bottom-color: transparent; }
+  to { grid-template-rows: 1fr; }
+}
+
+@keyframes ui-notice-slide {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-notice,
+  .ui-notice p span {
+    animation: none;
+  }
+}
+
 /* Hero section headline */
 .hero {
   text-align: center;

@@ -1,4 +1,12 @@
 <div class="intro">
+  <div class="ui-notice" role="status">
+    <p><span>
+      <strong>A new look is coming to REFRAMEdb next week.</strong>
+      We've redesigned the site to make it easier to use. The data, your account and your saved lists stay the same.
+      Questions or feedback? <a routerLink="/contact-us">Contact us</a>.
+    </span></p>
+  </div>
+
   <div class="whats-new-trigger" #trigger [class.hidden]="isWhatsNewOpen" (click)="toggleWhatsNew($event)">
     <i #bellIcon class="bell-icon"></i>
     <div class="label-container">
