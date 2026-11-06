@@ -1,10 +1,4 @@
-<p class="preview-note">
-  Preview with sample data. Nothing on this page is loaded or saved.
-  <span class="switch">Layout:
-    <button type="button" [class.on]="layout === 'focus'" (click)="setLayout('focus')">Focus on now</button>
-    <button type="button" [class.on]="layout === 'tabs'" (click)="setLayout('tabs')">Phase tabs</button>
-  </span>
-</p>
+<p class="preview-note">Preview with sample data. Nothing on this page is loaded or saved.</p>
 
 <div class="head">
   <p class="crumbs">Screen <span class="mono">{{ screen.id }}</span></p>
@@ -17,105 +11,54 @@
   </dl>
 </div>
 
-<!-- ============ Layout 1: focus on now ============ -->
-<ng-container *ngIf="layout === 'focus'">
-  <!-- Progress: one marker per step, grouped by phase -->
-  <nav class="dots" aria-label="Steps in this screen">
-    <div class="dot-phase" *ngFor="let phase of phases" [ngClass]="phaseState(phase)">
-      <div class="dot-row">
-        <button type="button" *ngFor="let s of phase.steps" class="dot"
-                [ngClass]="isDone(s) ? (s.state === 'skipped' ? 'skipped' : 'done') : s.state"
-                [class.selected]="s.key === selectedKey" [attr.title]="number(s) + '. ' + s.title"
-                [attr.aria-label]="'Step ' + number(s) + ': ' + s.title + ', ' + s.note"
-                [attr.aria-current]="s.key === selectedKey ? 'step' : null" (click)="select(s)">
-          <ng-container *ngIf="!isDone(s)">{{ number(s) }}</ng-container>
-        </button>
-      </div>
-      <span class="dot-label">{{ phase.title }}</span>
-    </div>
-  </nav>
+<!-- Where the screen is: the four phases from the Workflow page -->
+<section class="track" aria-label="Progress">
+  <ol>
+    <li *ngFor="let phase of phases; let i = index" [ngClass]="phaseState(phase)">
+      <span class="bar"></span>
+      <span class="phase-name">{{ phase.title }}</span>
+      <span class="phase-state" *ngIf="phaseState(phase) === 'done'">Done</span>
+      <span class="phase-state" *ngIf="phaseState(phase) === 'current'">Now</span>
+      <span class="phase-state" *ngIf="phaseState(phase) === 'upcoming'">To come</span>
+    </li>
+  </ol>
+  <p class="where" *ngIf="!sent">Your primary screen plates shipped on 6 May. <strong>Next, send Calibr your hit list.</strong></p>
+  <p class="where" *ngIf="sent">Hit list sent. <strong>Calibr is preparing your dose-response plates.</strong></p>
+</section>
 
-  <div class="focus">
-    <ng-container *ngTemplateOutlet="stepDetail"></ng-container>
+<div class="layout">
+  <!-- The whole screen, step by step -->
+  <nav class="steps" aria-labelledby="steps-title">
+    <h2 class="rail-title" id="steps-title">Contents</h2>
 
-    <!-- What comes after the due step -->
-    <section class="next" *ngIf="upcoming.length">
-      <h2 class="sub">What's next</h2>
-      <ol class="next-list">
-        <li *ngFor="let s of upcoming">
-          <button type="button" class="row-link" (click)="select(s)">
-            <span class="num">{{ number(s) }}</span>
-            <span class="row-title">{{ s.title }}</span>
-            <span class="row-who">{{ whoLabel(s.who) }}</span>
+    <section class="phase" *ngFor="let phase of phases" [ngClass]="phaseState(phase)">
+      <button type="button" class="phase-head" [attr.aria-expanded]="isOpen(phase)" (click)="togglePhase(phase)">
+        <span class="phase-name">{{ phase.title }}</span>
+        <span class="phase-sum">{{ phaseSummary(phase) }}</span>
+      </button>
+
+      <ol *ngIf="isOpen(phase)">
+        <li *ngFor="let s of phase.steps">
+          <button type="button" class="step" [ngClass]="isDone(s) ? (s.state === 'skipped' ? 'skipped' : 'done') : s.state"
+                  [class.selected]="s.key === selectedKey"
+                  [attr.aria-current]="s.key === selectedKey ? 'step' : null" (click)="select(s)">
+            <span class="num">{{ pad(number(s)) }}</span>
+            <span class="step-title">{{ s.title }}</span>
+            <span class="step-note" *ngIf="!(sent && s.key === 'hits')">{{ s.note }}</span>
+            <span class="step-note" *ngIf="sent && s.key === 'hits'">Sent today</span>
           </button>
         </li>
       </ol>
     </section>
 
-    <!-- Finished steps, newest first -->
-    <section class="history">
-      <h2 class="sub">Done so far</h2>
-      <table class="table">
-        <tbody>
-          <tr *ngFor="let s of history">
-            <td class="col-date muted">{{ s.date | date:'d MMM' }}</td>
-            <td>{{ s.done }}</td>
-            <td class="muted">{{ whoLabel(s.who) }}</td>
-            <td class="col-end"><button type="button" class="link small-link" (click)="select(s)">View</button></td>
-          </tr>
-        </tbody>
-      </table>
-      <button type="button" class="link small-link more" *ngIf="historyCount > 3" (click)="showAllHistory = !showAllHistory">
-        {{ showAllHistory ? 'Show fewer' : 'Show all ' + historyCount }}
-      </button>
-    </section>
-
-    <p class="requests-line">Something outside the usual steps?
-      <a href="javascript:void(0)">Ask for a quantity exception</a> ·
-      <a href="javascript:void(0)">Add a counter screen</a> ·
-      <a href="javascript:void(0)">Ask to delay publication</a>
+    <p class="requests">Outside the usual steps:
+      <a href="javascript:void(0)">quantity exception</a>,
+      <a href="javascript:void(0)">counter screen</a>,
+      <a href="javascript:void(0)">delay publication</a>
     </p>
-  </div>
-</ng-container>
-
-<!-- ============ Layout 3: phase tabs ============ -->
-<ng-container *ngIf="layout === 'tabs'">
-  <nav class="phase-tabs" aria-label="Phases">
-    <button type="button" *ngFor="let phase of phases" [ngClass]="phaseState(phase)"
-            [class.active]="phaseOf(selected) === phase" (click)="openPhase(phase)">
-      <span class="tab-mark" aria-hidden="true"></span>{{ phase.title }}
-    </button>
   </nav>
 
-  <!-- The open phase's steps, in a row -->
-  <ol class="step-row">
-    <li *ngFor="let s of phaseOf(selected).steps">
-      <button type="button" class="step" [ngClass]="isDone(s) ? (s.state === 'skipped' ? 'skipped' : 'done') : s.state"
-              [class.selected]="s.key === selectedKey"
-              [attr.aria-current]="s.key === selectedKey ? 'step' : null" (click)="select(s)">
-        <span class="marker" aria-hidden="true"><ng-container *ngIf="!isDone(s)">{{ number(s) }}</ng-container></span>
-        <span class="step-text">
-          <span class="step-title">{{ s.title }}</span>
-          <span class="step-note" *ngIf="!(sent && s.key === 'hits')">{{ s.note }}</span>
-          <span class="step-note" *ngIf="sent && s.key === 'hits'">Sent today</span>
-        </span>
-      </button>
-    </li>
-  </ol>
-
-  <div class="focus">
-    <ng-container *ngTemplateOutlet="stepDetail"></ng-container>
-
-    <p class="requests-line">Something outside the usual steps?
-      <a href="javascript:void(0)">Ask for a quantity exception</a> ·
-      <a href="javascript:void(0)">Add a counter screen</a> ·
-      <a href="javascript:void(0)">Ask to delay publication</a>
-    </p>
-  </div>
-</ng-container>
-
-<!-- The selected step at full size, shared by both layouts -->
-<ng-template #stepDetail>
+  <!-- The selected step at full size -->
   <section class="detail" [ngSwitch]="selectedKey" aria-live="polite">
     <!-- Viewing something other than what's due: a way back -->
     <p class="back" *ngIf="selectedKey !== current.key">
@@ -210,7 +153,7 @@
         <h2 class="step-heading">Hit list sent</h2>
         <p class="lede">{{ hitCheck.valid.length }} compounds sent today. Calibr will email you when your dose-response plates ship.
           You can change the list until then.</p>
-        <button type="button" class="link" (click)="unsend()">Change the list</button>
+        <button type="button" class="link" (click)="sent = false">Change the list</button>
       </ng-template>
     </ng-container>
 
@@ -334,4 +277,4 @@
       </ul>
     </ng-container>
   </section>
-</ng-template>
+</div>
