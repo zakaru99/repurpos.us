@@ -28,7 +28,8 @@ interface Phase {
 // Library size from the homepage ("13,831 clinical-stage drugs"); partners may
 // take forward up to 1% as hits.
 const LIBRARY_SIZE = 13831;
-const RFM_ID = /^RFM-\d{3}-\d{3}-\d+$/;
+// Calibr IDs as in the Primary Data template, e.g. CBR-000-000-000-0
+const CBR_ID = /^CBR-\d{3}-\d{3}-\d{3}-\d+$/;
 
 @Component({
   selector: 'app-screen-preview',
@@ -108,11 +109,10 @@ export class ScreenPreviewComponent implements OnInit {
 
   // Sample paste, with one ID mistyped so the checking shows
   hitText = [
-    'RFM-000-077-1', 'RFM-000-112-4', 'RFM-000-215-2', 'RFM-000-301-1',
-    'RFM-000-488-3', 'RFM-00-512-1', 'RFM-000-640-2', 'RFM-000-077-1'
+    'CBR-000-000-077-1', 'CBR-000-000-112-4', 'CBR-000-000-215-2', 'CBR-000-000-301-1',
+    'CBR-000-000-488-3', 'CBR-000-00-512-1', 'CBR-000-000-640-2', 'CBR-000-000-077-1'
   ].join('\n');
 
-  stats = { zPrime: 0.52, foldChange: 10, cvDmso: 7.5, cvCompound: 10, cvControl: 15 };
   hitNotes = '';
   sent = false;
 
@@ -239,12 +239,11 @@ export class ScreenPreviewComponent implements OnInit {
     'plates': { title: 'What you receive', items: [
       'Assay-ready plates, pre-spotted in singlicate',
       'About 0.5 nmol of each compound',
-      'A compound key mapping each well to a blinded RFM ID'
+      'A compound key mapping each well to a blinded Calibr ID'
     ] },
     'hits': { title: 'Requirements', items: [
-      'RFM IDs from your compound key',
-      'At most 1% of the library: 138 compounds',
-      'Average Z′, fold change and CVs per plate'
+      'Calibr IDs from your compound key',
+      'At most 1% of the library: 138 compounds'
     ] },
     'dr-plates': { title: 'What you receive', items: [
       'Two replicate sets of dose-response plates',
@@ -252,7 +251,7 @@ export class ScreenPreviewComponent implements OnInit {
       'One set can be used for a counter screen, once you add one'
     ] },
     'dr-results': { title: 'Requirements', items: [
-      'One row per hit, by RFM ID',
+      'One row per hit, by Calibr ID',
       'AC50 in molar, as a number: no < or > signs',
       'Precision: EQUAL, LESS THAN or GREATER THAN',
       'Efficacy, r², data mode and normalization'
@@ -311,7 +310,7 @@ export class ScreenPreviewComponent implements OnInit {
     tokens.forEach(t => {
       if (seen[t]) { duplicates++; return; }
       seen[t] = true;
-      (RFM_ID.test(t) ? valid : invalid).push(t);
+      (CBR_ID.test(t) ? valid : invalid).push(t);
     });
     return { valid, invalid, duplicates };
   }
@@ -328,12 +327,9 @@ export class ScreenPreviewComponent implements OnInit {
   // Hit list requirements, ticked off as the form meets them
   get hitReqs(): Array<{ text: string; met: boolean }> {
     const c = this.hitCheck;
-    const st = this.stats as { [k: string]: number };
-    const statsIn = Object.keys(st).every(k => st[k] !== null && st[k] !== undefined && String(st[k]) !== '');
     return [
-      { text: 'RFM IDs from your compound key, all recognised', met: c.valid.length > 0 && !c.invalid.length },
-      { text: 'At most 1% of the library: ' + this.hitLimit + ' compounds', met: c.valid.length > 0 && !this.overLimit },
-      { text: 'Average Z′, fold change and CVs per plate', met: statsIn }
+      { text: 'Calibr IDs from your compound key, all recognised', met: c.valid.length > 0 && !c.invalid.length },
+      { text: 'At most 1% of the library: ' + this.hitLimit + ' compounds', met: c.valid.length > 0 && !this.overLimit }
     ];
   }
 
@@ -393,7 +389,7 @@ export class ScreenPreviewComponent implements OnInit {
   // Columns of the dose-response upload, from the "More information" sheet of
   // 3_DoseResponseData.xlsx
   readonly drColumns = [
-    ['RFM ID', 'One row per hit, using the IDs from your compound key.'],
+    ['Calibr ID', 'One row per hit, using the IDs from your compound key.'],
     ['Precision', 'EQUAL if the AC50 is inside the tested range, LESS THAN for super-active compounds, GREATER THAN if it is above the curve.'],
     ['AC50 (M)', 'AC50, IC50, EC50 or CC50 in molar. A number or blank, with no < or > signs; use Precision for those.'],
     ['Efficacy', '100 for full activation, −100 for full inhibition, normalized to controls.'],

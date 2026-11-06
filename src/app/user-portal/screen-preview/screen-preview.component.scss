@@ -383,7 +383,7 @@
   }
 }
 
-.check {
+.tick {
   width: 16px;
   height: 16px;
   margin-top: 2px;
@@ -392,7 +392,7 @@
   background: #fff;
 }
 
-.checks li.met .check {
+.checks li.met .tick {
   position: relative;
   background: $status-approved;
   border-color: $status-approved;
