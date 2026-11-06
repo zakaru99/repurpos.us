@@ -133,6 +133,54 @@ export class ScreenPreviewComponent implements OnInit {
     }
   }
 
+  // What each step is for, shown under its heading
+  readonly purposes: { [key: string]: string } = {
+    'proposal': 'Tells Calibr about your assay, so they can decide whether it suits the collection.',
+    'mta': 'The agreement between your institution and Calibr covering the compounds and the data from your screen.',
+    'description': 'The full details of your assay. It becomes the public page for your assay on REFRAMEdb.',
+    'layout': 'Tells Calibr where to put compounds and controls on your plates.',
+    'controls': 'Your own controls, spotted onto the plates with the compounds. Optional.',
+    'plates': 'Calibr ships the collection to you on assay-ready plates.',
+    'hits': 'Tells Calibr which compounds to test again, in dose response.',
+    'dr-plates': 'Calibr ships your hits again as dilution series, to confirm them.',
+    'dr-results': 'Your dose-response measurements for each hit.',
+    'structures': 'Calibr tells you what your confirmed hits are.',
+    'publish': 'Your results become public on REFRAMEdb.',
+    'milestones': 'Tells Calibr what came of your hits.'
+  };
+
+  // Steps are numbered across the whole screen, not per phase
+  number(step: Step): number {
+    return this.allSteps.indexOf(step) + 1;
+  }
+
+  isDone(step: Step): boolean {
+    return step.state === 'done' || step.state === 'skipped' || (this.sent && step.key === 'hits');
+  }
+
+  // Each phase is done, current (holds the step that's due) or still to come
+  phaseState(phase: Phase): 'done' | 'current' | 'upcoming' {
+    if (phase.steps.every(s => this.isDone(s))) { return 'done'; }
+    if (phase.steps.some(s => s.state === 'current' && !this.isDone(s))) { return 'current'; }
+    if (phase === this.firstOpenPhase) { return 'current'; }
+    return 'upcoming';
+  }
+
+  // First phase with anything left in it; that's where the screen is
+  private get firstOpenPhase(): Phase {
+    return this.phases.filter(p => !p.steps.every(s => this.isDone(s)))[0];
+  }
+
+  // Status of the selected step, said plainly at the top of it
+  get selectedStatus(): { label: string; tone: string } {
+    const s = this.selected;
+    if (s.key === 'hits' && this.sent) { return { label: 'Sent', tone: 'done' }; }
+    if (s.state === 'current') { return { label: 'Your turn', tone: 'current' }; }
+    if (s.state === 'done') { return { label: 'Done', tone: 'done' }; }
+    if (s.state === 'skipped') { return { label: 'Skipped', tone: 'skipped' }; }
+    return { label: 'Coming up', tone: 'upcoming' };
+  }
+
   whoLabel(who: Who): string {
     return who === 'you' ? 'You' : who === 'calibr' ? 'Calibr' : 'You and Calibr';
   }

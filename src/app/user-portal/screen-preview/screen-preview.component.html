@@ -4,29 +4,49 @@
   <p class="crumbs">Screen <span class="mono">{{ screen.id }}</span></p>
   <h1 class="title-text">{{ screen.title }}</h1>
   <p class="meta">{{ screen.pi }} · {{ screen.institution }} · Proposed {{ screen.started | date:'d MMM y' }}</p>
-  <p class="where" *ngIf="!sent">Your primary screen plates shipped on 6 May. <strong>Your hit list is next.</strong></p>
-  <p class="where" *ngIf="sent">Hit list sent. <strong>Calibr is preparing your dose-response plates.</strong></p>
 </div>
+
+<!-- Where the screen is: the four phases from the Workflow page -->
+<section class="track" aria-label="Progress">
+  <ol>
+    <li *ngFor="let phase of phases; let i = index" [ngClass]="phaseState(phase)">
+      <span class="bar"></span>
+      <span class="phase-name">{{ phase.title }}</span>
+      <span class="phase-state" *ngIf="phaseState(phase) === 'done'">Done</span>
+      <span class="phase-state" *ngIf="phaseState(phase) === 'current'">Now</span>
+      <span class="phase-state" *ngIf="phaseState(phase) === 'upcoming'">To come</span>
+    </li>
+  </ol>
+  <p class="where" *ngIf="!sent">Your primary screen plates shipped on 6 May. <strong>Next, send Calibr your hit list.</strong></p>
+  <p class="where" *ngIf="sent">Hit list sent. <strong>Calibr is preparing your dose-response plates.</strong></p>
+</section>
 
 <div class="layout">
   <!-- The whole screen, step by step -->
-  <nav class="steps" aria-label="Steps in this screen">
+  <nav class="steps" aria-labelledby="steps-title">
+    <h2 class="rail-title" id="steps-title">All steps</h2>
     <div class="phase" *ngFor="let phase of phases">
       <p class="phase-title">{{ phase.title }}</p>
       <ol>
         <li *ngFor="let s of phase.steps">
-          <button type="button" class="step" [ngClass]="s.state" [class.selected]="s.key === selectedKey"
+          <button type="button" class="step" [ngClass]="isDone(s) ? (s.state === 'skipped' ? 'skipped' : 'done') : s.state"
+                  [class.selected]="s.key === selectedKey"
                   [attr.aria-current]="s.key === selectedKey ? 'step' : null" (click)="select(s)">
-            <span class="step-title">{{ s.title }}</span>
-            <span class="step-note" *ngIf="!(sent && s.key === 'hits')">{{ s.note }}</span>
-            <span class="step-note" *ngIf="sent && s.key === 'hits'">Sent today</span>
+            <span class="marker" aria-hidden="true">
+              <ng-container *ngIf="!isDone(s)">{{ number(s) }}</ng-container>
+            </span>
+            <span class="step-text">
+              <span class="step-title">{{ s.title }}</span>
+              <span class="step-note" *ngIf="!(sent && s.key === 'hits')">{{ s.note }}</span>
+              <span class="step-note" *ngIf="sent && s.key === 'hits'">Sent today</span>
+            </span>
           </button>
         </li>
       </ol>
     </div>
 
     <div class="requests">
-      <p class="phase-title">Requests</p>
+      <p class="phase-title">Something outside the usual steps?</p>
       <a class="request" href="javascript:void(0)">Ask for a quantity exception</a>
       <a class="request" href="javascript:void(0)">Add a counter screen</a>
       <a class="request" href="javascript:void(0)">Ask to delay publication</a>
@@ -35,7 +55,17 @@
 
   <!-- The selected step at full size -->
   <section class="detail" [ngSwitch]="selectedKey" aria-live="polite">
-    <p class="step-of">Step {{ stepNumber }} of {{ allSteps.length }} · {{ whoLabel(selected.who) }}</p>
+    <!-- Viewing something other than what's due: a way back -->
+    <p class="back" *ngIf="selectedKey !== current.key">
+      <button type="button" class="link" (click)="select(current)">Back to what's due: {{ current.title }}</button>
+    </p>
+
+    <p class="step-of">
+        <span class="state" [ngClass]="selectedStatus.tone">{{ selectedStatus.label }}</span>
+        <span class="sep">·</span> Step {{ stepNumber }} of {{ allSteps.length }}
+        <span class="sep">·</span> {{ whoLabel(selected.who) }}
+    </p>
+    <p class="purpose">{{ purposes[selectedKey] }}</p>
 
     <!-- ===== Current: hit list ===== -->
     <ng-container *ngSwitchCase="'hits'">
@@ -149,7 +179,7 @@
     <ng-container *ngSwitchCase="'description'">
       <h2 class="step-heading">Assay description</h2>
       <p class="outcome approved">Approved 18 Apr 2026</p>
-      <p class="body">This is published on your assay's public page once the data is released. To change it, contact Calibr.</p>
+      <p class="body">Published once your data is released. To change it, contact Calibr.</p>
 
       <h3 class="group">General</h3>
       <dl class="record">

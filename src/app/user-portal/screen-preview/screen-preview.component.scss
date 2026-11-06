@@ -42,13 +42,63 @@
   color: $ink-soft;
 }
 
-// Where the screen is, said as a sentence rather than a stat or a badge
+// ---------------------------------------------------------------- progress track
+// The four phases as one bar split in four: done in green, the current phase
+// in the accent, the rest as hairlines. The label under each says which.
+
+.track {
+  margin: 0 0 32px;
+
+  ol {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .bar {
+    display: block;
+    height: 4px;
+    margin-bottom: 8px;
+    background: $rule;
+  }
+
+  .phase-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: $ink-soft;
+  }
+
+  .phase-state {
+    font-size: 0.75rem;
+    color: $ink-faint;
+  }
+
+  .done {
+    .bar { background: $status-approved; }
+    .phase-name { color: $ink; }
+    .phase-state { color: $status-approved; }
+  }
+
+  .current {
+    .bar { background: $accent; }
+    .phase-name { font-weight: 600; color: $ink; }
+    .phase-state { font-weight: 600; color: $accent-text; }
+  }
+}
+
 .where {
-  margin: 16px 0 0 !important;
-  padding-top: 14px;
+  margin: 18px 0 0 !important;
   font-size: 1rem;
   color: $ink;
-  border-top: 1px solid $rule;
 
   strong {
     font-weight: 600;
@@ -65,20 +115,34 @@
 }
 
 // ---------------------------------------------------------------- step list
+// A tinted rail, so it reads as navigation apart from the step it opens.
+// Each step has a marker: tick when done, filled number when due, outlined
+// number when still to come. A thin line joins the markers within a phase.
 
 .steps {
   position: sticky;
   top: calc(var(--site-header-height, 65px) + 47px + 16px);
+  padding: 16px 0 14px;
+  background: $muted-bg;
+  border-top: 2px solid $navy;
 }
 
-.phase + .phase,
-.requests {
-  margin-top: 18px;
+.rail-title {
+  margin: 0 0 12px;
+  padding: 0 14px;
+  font-family: $sans;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $ink;
+}
+
+.phase + .phase {
+  margin-top: 14px;
 }
 
 .phase-title {
-  margin: 0 0 4px !important;
-  padding-left: 12px;
+  margin: 0 0 2px !important;
+  padding: 0 14px;
   font-size: 0.75rem;
   font-weight: 500;
   color: $ink-soft;
@@ -90,10 +154,25 @@ ol {
   list-style: none;
 }
 
+.steps li {
+  position: relative;
+}
+
+// Line joining one marker to the next within a phase
+.steps li + li::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 24px;
+  height: 18px;
+  border-left: 1px solid $field-border;
+}
+
 .step {
-  display: block;
+  display: flex;
+  gap: 10px;
   width: 100%;
-  padding: 6px 12px 7px;
+  padding: 6px 14px 7px;
   font: inherit;
   text-align: left;
   background: none;
@@ -105,13 +184,64 @@ ol {
     background: $hover;
   }
 
-  // Same treatment as a selected table row: tint plus an accent edge
+  // Same treatment as a selected table row: white plus an accent edge
   &.selected {
-    background: $selected;
-    box-shadow: inset 2px 0 0 $accent;
+    background: #fff;
+    box-shadow: inset 3px 0 0 $accent;
   }
 
   @include focus-ring($accent, -2px);
+}
+
+.marker {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  font-family: $mono;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: $ink-soft;
+  background: #fff;
+  border: 1px solid $field-border;
+  border-radius: 50%;
+}
+
+.step.done .marker {
+  border-color: $status-approved;
+  background: $status-approved;
+
+  // Tick
+  &::after {
+    content: '';
+    width: 5px;
+    height: 9px;
+    margin-top: -2px;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(45deg);
+  }
+}
+
+.step.skipped .marker::after {
+  content: '';
+  width: 8px;
+  border-top: 1.5px solid $ink-soft;
+}
+
+.step.current .marker {
+  color: #fff;
+  background: $accent;
+  border-color: $accent;
+}
+
+.step-text {
+  min-width: 0;
 }
 
 .step-title {
@@ -148,12 +278,18 @@ ol {
 }
 
 .requests {
-  padding-top: 14px;
+  margin: 16px 14px 0;
+  padding-top: 12px;
   border-top: 1px solid $rule;
+
+  .phase-title {
+    padding: 0;
+    margin-bottom: 4px !important;
+  }
 
   .request {
     display: block;
-    padding: 3px 12px;
+    padding: 3px 0;
     font-size: 0.8125rem;
     color: $accent;
 
@@ -167,14 +303,70 @@ ol {
 
 .detail {
   scroll-margin-top: calc(var(--site-header-height, 65px) + 47px + 16px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   min-width: 0;
   max-width: 760px;
+
+  // Header order: way back, status line, heading, what the step is for, then
+  // the step's own content (headings sit inside each step's block)
+  > * { order: 5; }
+  > .back { order: 1; }
+  > .step-of { order: 2; }
+  > .step-heading { order: 3; }
+  > .purpose { order: 4; }
+
+  // Links and buttons keep their own width in the column
+  > a,
+  > button {
+    align-self: flex-start;
+  }
+}
+
+.back {
+  margin: 0 0 14px !important;
+  padding-bottom: 10px;
+  font-size: 0.875rem;
+  border-bottom: 1px solid $rule-soft;
+
+  .link {
+    font-size: 0.875rem;
+
+    &::before {
+      content: '\2190\00a0';
+    }
+  }
 }
 
 .step-of {
   margin: 0 0 4px !important;
   font-size: 0.8125rem;
   color: $ink-soft;
+
+  .sep {
+    margin: 0 4px;
+    color: $ink-faint;
+  }
+}
+
+.state {
+  font-weight: 600;
+
+  &.current { color: $status-pending; }
+  &.done { color: $status-approved; }
+  &.skipped,
+  &.upcoming { color: $ink-soft; }
+}
+
+// What the step is for, then a rule before the step's content
+.purpose {
+  margin: 0 0 22px !important;
+  padding-bottom: 16px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: $ink-soft;
+  border-bottom: 1px solid $rule;
 }
 
 .step-heading {
@@ -516,6 +708,11 @@ legend {
   .steps {
     position: static;
     order: 2;
+  }
+
+  .track ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 14px;
   }
 
   .grid.five {
