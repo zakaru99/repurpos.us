@@ -5,16 +5,8 @@
                  [sections]="phaseTabs" [tabs]="true" [activeId]="phaseOf(selected).title"
                  (tabSelect)="openPhaseTab($event)" [compact]="true"
                  backLabel="Your account" backLink="/user_portal/my_assays">
-  <!-- Like an assay page's figures: who's next first, then the dates -->
-  <dl header-aside class="figures" aria-label="This screen at a glance">
-    <div class="fig">
-      <dt>Waiting on</dt>
-      <dd class="who" [ngClass]="waiting.who">{{ waiting.who === 'you' ? 'You' : 'Calibr' }}</dd>
-    </div>
-    <div class="fig">
-      <dt>Next step</dt>
-      <dd><button type="button" class="fig-link" (click)="select(waiting.step)">{{ waiting.step.title }}</button></dd>
-    </div>
+  <!-- Like an assay page's figures: the dates that matter -->
+  <dl header-aside class="figures" aria-label="Key dates">
     <div class="fig" *ngFor="let d of keyDates"><dt>{{ d.label }}</dt><dd>{{ d.value }}</dd></div>
   </dl>
 </app-page-header>
@@ -34,8 +26,7 @@
                     [attr.aria-current]="s.key === selectedKey ? 'step' : null" (click)="select(s)">
               <span class="num">{{ pad(number(s)) }}</span>
               <span class="step-title">{{ s.title }}</span>
-              <span class="step-note" *ngIf="!(sent && s.key === 'hits')">{{ s.note }}</span>
-              <span class="step-note" *ngIf="sent && s.key === 'hits'">Sent today</span>
+              <span class="step-note">{{ s.note }}</span>
             </button>
           </li>
         </ol>
@@ -70,13 +61,13 @@
     <section class="detail" [ngSwitch]="selectedKey" aria-live="polite">
       <!-- Viewing something other than what's due: a way back -->
       <p class="back" *ngIf="selectedKey !== current.key">
-        <button type="button" class="link" (click)="select(current)">Back to what's due: {{ current.title }}</button>
+        <button type="button" class="link" (click)="select(current)">Back to the current step: {{ current.title }}</button>
       </p>
 
       <p class="step-of">
           <span class="state" [ngClass]="selectedStatus.tone">{{ selectedStatus.label }}</span>
           <span class="sep">·</span> Step {{ stepNumber }} of {{ allSteps.length }}
-          <span class="sep">·</span> {{ whoLabel(selected.who) }}
+          <ng-container *ngIf="selected.state !== 'current'"><span class="sep">·</span> {{ whoLabel(selected.who) }}</ng-container>
       </p>
 
       <!-- ===== Current: hit list ===== -->
@@ -128,9 +119,9 @@
 
         <ng-template #hitsSent>
           <h2 class="step-heading">Thanks, your hit list is with Calibr</h2>
-          <p class="lede">{{ hitCheck.valid.length }} compounds sent today. Calibr will email you when your dose-response plates ship.
+          <p class="lede">{{ hitCheck.valid.length }} compounds shared today. Calibr will email you when your dose-response plates ship.
             You can change the list until then.</p>
-          <button type="button" class="link" (click)="sent = false">Change the list</button>
+          <button type="button" class="link" (click)="unsend(); select(hitsStep)">Change the list</button>
         </ng-template>
       </ng-container>
 

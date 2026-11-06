@@ -61,15 +61,15 @@ export class ScreenPreviewComponent implements OnInit {
       title: 'Primary screen',
       steps: [
         { key: 'plates', title: 'Primary screen plates', who: 'calibr', state: 'done', note: 'Shipped 6 May' },
-        { key: 'hits', title: 'Hit list', who: 'you', state: 'current', note: 'Your next step' }
+        { key: 'hits', title: 'Hit list', who: 'you', state: 'current', note: 'With you' }
       ]
     },
     {
       title: 'Dose response',
       steps: [
-        { key: 'dr-plates', title: 'Dose-response plates', who: 'calibr', state: 'upcoming', note: 'Calibr, after your hit list' },
-        { key: 'dr-results', title: 'Dose-response results', who: 'you', state: 'upcoming', note: 'You, after the plates arrive' },
-        { key: 'structures', title: 'Hit structures released', who: 'calibr', state: 'upcoming', note: 'Calibr, after your results' }
+        { key: 'dr-plates', title: 'Dose-response plates', who: 'calibr', state: 'upcoming', note: 'After your hit list' },
+        { key: 'dr-results', title: 'Dose-response results', who: 'you', state: 'upcoming', note: 'After the plates arrive' },
+        { key: 'structures', title: 'Hit structures released', who: 'calibr', state: 'upcoming', note: 'After your results' }
       ]
     },
     {
@@ -125,6 +125,10 @@ export class ScreenPreviewComponent implements OnInit {
     return this.allSteps.filter(s => s.key === this.selectedKey)[0];
   }
 
+  get hitsStep(): Step {
+    return this.allSteps.filter(s => s.key === 'hits')[0];
+  }
+
   get current(): Step {
     return this.allSteps.filter(s => s.state === 'current')[0];
   }
@@ -167,7 +171,7 @@ export class ScreenPreviewComponent implements OnInit {
   }
 
   isDone(step: Step): boolean {
-    return step.state === 'done' || step.state === 'skipped' || (this.sent && step.key === 'hits');
+    return step.state === 'done' || step.state === 'skipped';
   }
 
   // Each phase is done, current (holds the step that's due) or still to come
@@ -186,8 +190,7 @@ export class ScreenPreviewComponent implements OnInit {
   // Status of the selected step, said plainly at the top of it
   get selectedStatus(): { label: string; tone: string } {
     const s = this.selected;
-    if (s.key === 'hits' && this.sent) { return { label: 'Sent', tone: 'done' }; }
-    if (s.state === 'current') { return { label: 'Your next step', tone: 'current' }; }
+    if (s.state === 'current') { return { label: s.who === 'calibr' ? 'With Calibr' : 'With you', tone: 'current' }; }
     if (s.state === 'done') { return { label: 'Done', tone: 'done' }; }
     if (s.state === 'skipped') { return { label: 'Skipped', tone: 'skipped' }; }
     return { label: 'Coming up', tone: 'upcoming' };
@@ -330,15 +333,6 @@ export class ScreenPreviewComponent implements OnInit {
     return { valid, invalid, duplicates };
   }
 
-  // Who the screen is waiting on, said in the header
-  get waiting(): { who: 'you' | 'calibr'; text: string; step: Step } {
-    if (!this.sent) {
-      return { who: 'you', text: 'Share your hit list whenever it’s ready', step: this.current };
-    }
-    const next = this.allSteps.filter(s => s.key === 'dr-plates')[0];
-    return { who: 'calibr', text: 'Calibr is preparing your dose-response plates', step: next };
-  }
-
   // Hit list requirements, ticked off as the form meets them
   get hitReqs(): Array<{ text: string; met: boolean }> {
     const c = this.hitCheck;
@@ -370,7 +364,24 @@ export class ScreenPreviewComponent implements OnInit {
   }
 
   send(): void {
-    if (this.canSend) { this.sent = true; }
+    if (!this.canSend) { return; }
+    this.sent = true;
+    this.moveOn(true);
+  }
+
+  unsend(): void {
+    this.sent = false;
+    this.moveOn(false);
+  }
+
+  // PREVIEW: sharing the hit list hands the screen to Calibr
+  private moveOn(shared: boolean): void {
+    const hits = this.allSteps.filter(s => s.key === 'hits')[0];
+    const plates = this.allSteps.filter(s => s.key === 'dr-plates')[0];
+    hits.state = shared ? 'done' : 'current';
+    hits.note = shared ? 'Shared today' : 'With you';
+    plates.state = shared ? 'current' : 'upcoming';
+    plates.note = shared ? 'With Calibr' : 'After your hit list';
   }
 
   // ------------------------------------------------------------ reference content

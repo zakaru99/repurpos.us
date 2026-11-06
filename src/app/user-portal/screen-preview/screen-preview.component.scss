@@ -34,7 +34,7 @@
 
 // ---------------------------------------------------------------- header
 // app-page-header, as on an assay page. The header-aside slot holds this
-// screen's figures: who's next, then the key dates.
+// screen's key dates, styled like an assay page's figures.
 
 .figures {
   flex-shrink: 0;
@@ -65,30 +65,8 @@
     color: #fff;
   }
 
-  // Who's next, in the light stage colours an assay page uses on navy
-  .who {
-    font-weight: 600;
-
-    &.you { color: #f2c27b; }
-    &.calibr { color: $accent-on-dark; }
-  }
 }
 
-.fig-link {
-  padding: 0;
-  font: inherit;
-  color: #fff;
-  background: none;
-  border: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-  cursor: pointer;
-
-  &:hover {
-    border-bottom-color: #fff;
-  }
-
-  @include focus-ring($accent-on-dark, 2px);
-}
 
 // ---------------------------------------------------------------- body
 
