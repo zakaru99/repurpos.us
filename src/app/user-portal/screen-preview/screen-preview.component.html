@@ -1,280 +1,274 @@
-<p class="preview-note">Preview with sample data. Nothing on this page is loaded or saved.</p>
+<!-- Header: who and what this screen is, the dates that matter, and the
+     four phases as tabs along its bottom edge -->
+<div class="screen-head">
+  <div class="inner">
+    <p class="preview-note">Preview with sample data. Nothing on this page is loaded or saved.</p>
+    <p class="crumbs">Screen <span class="mono">{{ screen.id }}</span></p>
+    <h1 class="screen-title">{{ screen.title }}</h1>
+    <p class="meta">{{ screen.pi }} · {{ screen.institution }} · Proposed {{ screen.started | date:'d MMM y' }}</p>
 
-<div class="head">
-  <p class="crumbs">Screen <span class="mono">{{ screen.id }}</span></p>
-  <h1 class="title-text">{{ screen.title }}</h1>
-  <p class="meta">{{ screen.pi }} · {{ screen.institution }} · Proposed {{ screen.started | date:'d MMM y' }}</p>
+    <dl class="dates">
+      <div *ngFor="let d of keyDates"><dt>{{ d.label }}</dt><dd>{{ d.value }}</dd></div>
+    </dl>
 
-  <!-- Dates that matter, in plain words -->
-  <dl class="dates">
-    <div *ngFor="let d of keyDates"><dt>{{ d.label }}</dt><dd>{{ d.value }}</dd></div>
-  </dl>
+    <nav class="phase-tabs" aria-label="Phases">
+      <button type="button" *ngFor="let phase of phases" [ngClass]="phaseState(phase)"
+              [class.active]="phaseOf(selected) === phase" [attr.aria-current]="phaseOf(selected) === phase ? 'page' : null"
+              (click)="openPhase(phase)">
+        <span class="tab-name">{{ phase.title }}</span>
+        <span class="tab-state">{{ phaseSummary(phase) }}</span>
+      </button>
+    </nav>
+  </div>
 </div>
 
-<!-- Where the screen is: the four phases from the Workflow page -->
-<section class="track" aria-label="Progress">
-  <ol>
-    <li *ngFor="let phase of phases; let i = index" [ngClass]="phaseState(phase)">
-      <span class="bar"></span>
-      <span class="phase-name">{{ phase.title }}</span>
-      <span class="phase-state" *ngIf="phaseState(phase) === 'done'">Done</span>
-      <span class="phase-state" *ngIf="phaseState(phase) === 'current'">Now</span>
-      <span class="phase-state" *ngIf="phaseState(phase) === 'upcoming'">To come</span>
+<div class="screen-body">
+  <!-- The open phase's steps, in order -->
+  <ol class="step-row" aria-label="Steps in this phase">
+    <li *ngFor="let s of phaseOf(selected).steps">
+      <button type="button" class="step" [ngClass]="isDone(s) ? (s.state === 'skipped' ? 'skipped' : 'done') : s.state"
+              [class.selected]="s.key === selectedKey"
+              [attr.aria-current]="s.key === selectedKey ? 'step' : null" (click)="select(s)">
+        <span class="num">{{ pad(number(s)) }}</span>
+        <span class="step-title">{{ s.title }}</span>
+        <span class="step-note" *ngIf="!(sent && s.key === 'hits')">{{ s.note }}</span>
+        <span class="step-note" *ngIf="sent && s.key === 'hits'">Sent today</span>
+      </button>
     </li>
   </ol>
-  <p class="where" *ngIf="!sent">Your primary screen plates shipped on 6 May. <strong>Next, send Calibr your hit list.</strong></p>
-  <p class="where" *ngIf="sent">Hit list sent. <strong>Calibr is preparing your dose-response plates.</strong></p>
-</section>
 
-<div class="layout">
-  <!-- The whole screen, step by step -->
-  <nav class="steps" aria-labelledby="steps-title">
-    <h2 class="rail-title" id="steps-title">Contents</h2>
+  <div class="layout">
+    <!-- What this step needs -->
+    <aside class="reqs" aria-labelledby="reqs-title">
+      <h2 class="reqs-title" id="reqs-title">{{ requirements[selectedKey].title }}</h2>
+      <ul>
+        <li *ngFor="let r of requirements[selectedKey].items">{{ r }}</li>
+      </ul>
+      <p class="reqs-foot">Outside the usual steps:
+        <a href="javascript:void(0)">quantity exception</a>,
+        <a href="javascript:void(0)">counter screen</a>,
+        <a href="javascript:void(0)">delay publication</a>
+      </p>
+    </aside>
 
-    <section class="phase" *ngFor="let phase of phases" [ngClass]="phaseState(phase)">
-      <button type="button" class="phase-head" [attr.aria-expanded]="isOpen(phase)" (click)="togglePhase(phase)">
-        <span class="phase-name">{{ phase.title }}</span>
-        <span class="phase-sum">{{ phaseSummary(phase) }}</span>
-      </button>
+    <!-- The selected step at full size -->
+    <section class="detail" [ngSwitch]="selectedKey" aria-live="polite">
+      <!-- Viewing something other than what's due: a way back -->
+      <p class="back" *ngIf="selectedKey !== current.key">
+        <button type="button" class="link" (click)="select(current)">Back to what's due: {{ current.title }}</button>
+      </p>
 
-      <ol *ngIf="isOpen(phase)">
-        <li *ngFor="let s of phase.steps">
-          <button type="button" class="step" [ngClass]="isDone(s) ? (s.state === 'skipped' ? 'skipped' : 'done') : s.state"
-                  [class.selected]="s.key === selectedKey"
-                  [attr.aria-current]="s.key === selectedKey ? 'step' : null" (click)="select(s)">
-            <span class="num">{{ pad(number(s)) }}</span>
-            <span class="step-title">{{ s.title }}</span>
-            <span class="step-note" *ngIf="!(sent && s.key === 'hits')">{{ s.note }}</span>
-            <span class="step-note" *ngIf="sent && s.key === 'hits'">Sent today</span>
-          </button>
-        </li>
-      </ol>
-    </section>
+      <p class="step-of">
+          <span class="state" [ngClass]="selectedStatus.tone">{{ selectedStatus.label }}</span>
+          <span class="sep">·</span> Step {{ stepNumber }} of {{ allSteps.length }}
+          <span class="sep">·</span> {{ whoLabel(selected.who) }}
+      </p>
+      <p class="purpose">{{ purposes[selectedKey] }}</p>
 
-    <p class="requests">Outside the usual steps:
-      <a href="javascript:void(0)">quantity exception</a>,
-      <a href="javascript:void(0)">counter screen</a>,
-      <a href="javascript:void(0)">delay publication</a>
-    </p>
-  </nav>
+      <!-- ===== Current: hit list ===== -->
+      <ng-container *ngSwitchCase="'hits'">
+        <ng-container *ngIf="!sent; else hitsSent">
+          <h2 class="step-heading">Send your hit list</h2>
+          <p class="lede">List the compounds you're taking forward, as RFM IDs from your compound key. You can send up to
+            1% of the library ({{ hitLimit }} compounds). Calibr prepares two dose-response sets from this list.</p>
 
-  <!-- The selected step at full size -->
-  <section class="detail" [ngSwitch]="selectedKey" aria-live="polite">
-    <!-- Viewing something other than what's due: a way back -->
-    <p class="back" *ngIf="selectedKey !== current.key">
-      <button type="button" class="link" (click)="select(current)">Back to what's due: {{ current.title }}</button>
-    </p>
-
-    <p class="step-of">
-        <span class="state" [ngClass]="selectedStatus.tone">{{ selectedStatus.label }}</span>
-        <span class="sep">·</span> Step {{ stepNumber }} of {{ allSteps.length }}
-        <span class="sep">·</span> {{ whoLabel(selected.who) }}
-    </p>
-    <p class="purpose">{{ purposes[selectedKey] }}</p>
-
-    <!-- ===== Current: hit list ===== -->
-    <ng-container *ngSwitchCase="'hits'">
-      <ng-container *ngIf="!sent; else hitsSent">
-        <h2 class="step-heading">Send your hit list</h2>
-        <p class="lede">List the compounds you're taking forward, as RFM IDs from your compound key. You can send up to
-          1% of the library ({{ hitLimit }} compounds). Calibr prepares two dose-response sets from this list.</p>
-
-        <form (ngSubmit)="send()" novalidate>
-          <fieldset>
-            <legend>Hits</legend>
-            <div class="field">
-              <label for="hits">RFM IDs <span class="hint-inline">(paste from your spreadsheet, one per line or separated by commas)</span></label>
-              <textarea id="hits" name="hits" rows="8" class="mono-input" spellcheck="false"
-                        [(ngModel)]="hitText"></textarea>
-            </div>
-            <div class="file-row">
-              <label class="file-btn">
-                Add from a file
-                <input #fileInput type="file" accept=".csv,.txt" (change)="readFile(fileInput)" />
-              </label>
-              <span class="hint">CSV or text. In the real form this would also take the Excel template.</span>
-            </div>
-
-            <!-- Checked as you type -->
-            <div class="check" role="status">
-              <p [class.bad]="overLimit">
-                <strong>{{ hitCheck.valid.length }}</strong> of {{ hitLimit }} allowed
-                <span class="soft" *ngIf="hitCheck.duplicates"> · {{ hitCheck.duplicates }} duplicate{{ hitCheck.duplicates === 1 ? '' : 's' }} ignored</span>
-              </p>
-              <p class="bad" *ngIf="hitCheck.invalid.length">
-                {{ hitCheck.invalid.length }} not recognised as an RFM ID:
-                <span class="mono">{{ hitCheck.invalid.join(', ') }}</span>
-              </p>
-              <p class="bad" *ngIf="overLimit">Remove {{ hitCheck.valid.length - hitLimit }} to stay within 1% of the library.</p>
-              <p class="soft">This preview checks the ID format only. The real form would also check each ID against your compound key.</p>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>Primary screening statistics <span class="hint-inline">(average per plate)</span></legend>
-            <div class="grid five">
+          <form (ngSubmit)="send()" novalidate>
+            <fieldset>
+              <legend>Hits</legend>
               <div class="field">
-                <label for="z">Z′ factor</label>
-                <input id="z" name="z" type="number" step="0.01" [(ngModel)]="stats.zPrime" />
+                <label for="hits">RFM IDs <span class="hint-inline">(paste from your spreadsheet, one per line or separated by commas)</span></label>
+                <textarea id="hits" name="hits" rows="8" class="mono-input" spellcheck="false"
+                          [(ngModel)]="hitText"></textarea>
+              </div>
+              <div class="file-row">
+                <label class="file-btn">
+                  Add from a file
+                  <input #fileInput type="file" accept=".csv,.txt" (change)="readFile(fileInput)" />
+                </label>
+                <span class="hint">CSV or text. In the real form this would also take the Excel template.</span>
+              </div>
+
+              <!-- Checked as you type -->
+              <div class="check" role="status">
+                <p [class.bad]="overLimit">
+                  <strong>{{ hitCheck.valid.length }}</strong> of {{ hitLimit }} allowed
+                  <span class="soft" *ngIf="hitCheck.duplicates"> · {{ hitCheck.duplicates }} duplicate{{ hitCheck.duplicates === 1 ? '' : 's' }} ignored</span>
+                </p>
+                <p class="bad" *ngIf="hitCheck.invalid.length">
+                  {{ hitCheck.invalid.length }} not recognised as an RFM ID:
+                  <span class="mono">{{ hitCheck.invalid.join(', ') }}</span>
+                </p>
+                <p class="bad" *ngIf="overLimit">Remove {{ hitCheck.valid.length - hitLimit }} to stay within 1% of the library.</p>
+                <p class="soft">This preview checks the ID format only. The real form would also check each ID against your compound key.</p>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Primary screening statistics <span class="hint-inline">(average per plate)</span></legend>
+              <div class="grid five">
+                <div class="field">
+                  <label for="z">Z′ factor</label>
+                  <input id="z" name="z" type="number" step="0.01" [(ngModel)]="stats.zPrime" />
+                </div>
+                <div class="field">
+                  <label for="fc">Fold change</label>
+                  <input id="fc" name="fc" type="number" step="0.1" [(ngModel)]="stats.foldChange" />
+                </div>
+                <div class="field">
+                  <label for="cvd">CV, DMSO</label>
+                  <div class="unit-input"><input id="cvd" name="cvd" type="number" step="0.1" [(ngModel)]="stats.cvDmso" /><span class="unit">%</span></div>
+                </div>
+                <div class="field">
+                  <label for="cvc">CV, compounds</label>
+                  <div class="unit-input"><input id="cvc" name="cvc" type="number" step="0.1" [(ngModel)]="stats.cvCompound" /><span class="unit">%</span></div>
+                </div>
+                <div class="field">
+                  <label for="cvs">CV, strongest control</label>
+                  <div class="unit-input"><input id="cvs" name="cvs" type="number" step="0.1" [(ngModel)]="stats.cvControl" /><span class="unit">%</span></div>
+                </div>
               </div>
               <div class="field">
-                <label for="fc">Fold change</label>
-                <input id="fc" name="fc" type="number" step="0.1" [(ngModel)]="stats.foldChange" />
+                <label for="hn">How you picked hits <span class="hint-inline">(optional)</span></label>
+                <textarea id="hn" name="hn" rows="2" placeholder="e.g. signal more than 7 standard deviations below the plate mean"
+                          [(ngModel)]="hitNotes"></textarea>
               </div>
-              <div class="field">
-                <label for="cvd">CV, DMSO</label>
-                <div class="unit-input"><input id="cvd" name="cvd" type="number" step="0.1" [(ngModel)]="stats.cvDmso" /><span class="unit">%</span></div>
-              </div>
-              <div class="field">
-                <label for="cvc">CV, compounds</label>
-                <div class="unit-input"><input id="cvc" name="cvc" type="number" step="0.1" [(ngModel)]="stats.cvCompound" /><span class="unit">%</span></div>
-              </div>
-              <div class="field">
-                <label for="cvs">CV, strongest control</label>
-                <div class="unit-input"><input id="cvs" name="cvs" type="number" step="0.1" [(ngModel)]="stats.cvControl" /><span class="unit">%</span></div>
-              </div>
-            </div>
-            <div class="field">
-              <label for="hn">How you picked hits <span class="hint-inline">(optional)</span></label>
-              <textarea id="hn" name="hn" rows="2" placeholder="e.g. signal more than 7 standard deviations below the plate mean"
-                        [(ngModel)]="hitNotes"></textarea>
-            </div>
-          </fieldset>
+            </fieldset>
 
-          <div class="actions">
-            <button type="submit" class="btn" [disabled]="!canSend">Send hit list</button>
-            <button type="button" class="link">Save draft</button>
-            <span class="hint" *ngIf="!canSend">Fix the IDs above to send.</span>
-          </div>
-        </form>
+            <div class="actions">
+              <button type="submit" class="btn" [disabled]="!canSend">Send hit list</button>
+              <button type="button" class="link">Save draft</button>
+              <span class="hint" *ngIf="!canSend">Fix the IDs above to send.</span>
+            </div>
+          </form>
+        </ng-container>
+
+        <ng-template #hitsSent>
+          <h2 class="step-heading">Hit list sent</h2>
+          <p class="lede">{{ hitCheck.valid.length }} compounds sent today. Calibr will email you when your dose-response plates ship.
+            You can change the list until then.</p>
+          <button type="button" class="link" (click)="sent = false">Change the list</button>
+        </ng-template>
       </ng-container>
 
-      <ng-template #hitsSent>
-        <h2 class="step-heading">Hit list sent</h2>
-        <p class="lede">{{ hitCheck.valid.length }} compounds sent today. Calibr will email you when your dose-response plates ship.
-          You can change the list until then.</p>
-        <button type="button" class="link" (click)="sent = false">Change the list</button>
-      </ng-template>
-    </ng-container>
+      <!-- ===== Done: proposal ===== -->
+      <ng-container *ngSwitchCase="'proposal'">
+        <h2 class="step-heading">Assay proposal</h2>
+        <p class="outcome approved">Approved 12 Mar 2026</p>
+        <dl class="facts">
+          <div><dt>Contact</dt><dd>Dr. Jane Doe, JaneDoe@scripps.edu</dd></div>
+          <div><dt>Institution</dt><dd>Scripps Research</dd></div>
+          <div><dt>Indication</dt><dd>Cryptosporidiosis</dd></div>
+          <div><dt>Assay volume</dt><dd>50 µL</dd></div>
+          <div><dt>Concentration</dt><dd>10 µM</dd></div>
+        </dl>
+        <p class="body">High-content imaging assay measuring proliferation of <em>C. hominis</em>, in 384-well format.</p>
+      </ng-container>
 
-    <!-- ===== Done: proposal ===== -->
-    <ng-container *ngSwitchCase="'proposal'">
-      <h2 class="step-heading">Assay proposal</h2>
-      <p class="outcome approved">Approved 12 Mar 2026</p>
-      <dl class="facts">
-        <div><dt>Contact</dt><dd>Dr. Jane Doe, JaneDoe@scripps.edu</dd></div>
-        <div><dt>Institution</dt><dd>Scripps Research</dd></div>
-        <div><dt>Indication</dt><dd>Cryptosporidiosis</dd></div>
-        <div><dt>Assay volume</dt><dd>50 µL</dd></div>
-        <div><dt>Concentration</dt><dd>10 µM</dd></div>
-      </dl>
-      <p class="body">High-content imaging assay measuring proliferation of <em>C. hominis</em>, in 384-well format.</p>
-    </ng-container>
+      <!-- ===== Done: MTA ===== -->
+      <ng-container *ngSwitchCase="'mta'">
+        <h2 class="step-heading">Material transfer agreement</h2>
+        <p class="outcome approved">Signed by both institutions 2 Apr 2026</p>
+        <p class="body">Calibr sends the agreement template to your institution, and both sides sign it before any plates ship.
+          It ensures the data from your screen becomes public after a 12-month delay.</p>
+        <a class="btn-secondary" href="javascript:void(0)">Download signed agreement</a>
+      </ng-container>
 
-    <!-- ===== Done: MTA ===== -->
-    <ng-container *ngSwitchCase="'mta'">
-      <h2 class="step-heading">Material transfer agreement</h2>
-      <p class="outcome approved">Signed by both institutions 2 Apr 2026</p>
-      <p class="body">Calibr sends the agreement template to your institution, and both sides sign it before any plates ship.
-        It ensures the data from your screen becomes public after a 12-month delay.</p>
-      <a class="btn-secondary" href="javascript:void(0)">Download signed agreement</a>
-    </ng-container>
+      <!-- ===== Done: assay description ===== -->
+      <ng-container *ngSwitchCase="'description'">
+        <h2 class="step-heading">Assay description</h2>
+        <p class="outcome approved">Approved 18 Apr 2026</p>
+        <p class="body">Published once your data is released. To change it, contact Calibr.</p>
 
-    <!-- ===== Done: assay description ===== -->
-    <ng-container *ngSwitchCase="'description'">
-      <h2 class="step-heading">Assay description</h2>
-      <p class="outcome approved">Approved 18 Apr 2026</p>
-      <p class="body">Published once your data is released. To change it, contact Calibr.</p>
+        <h3 class="group">General</h3>
+        <dl class="record">
+          <div *ngFor="let r of description.general"><dt>{{ r[0] }}</dt><dd>{{ r[1] }}</dd></div>
+        </dl>
+        <h3 class="group">Compound transfer</h3>
+        <dl class="record">
+          <div *ngFor="let r of description.transfer"><dt>{{ r[0] }}</dt><dd>{{ r[1] }}</dd></div>
+        </dl>
+        <h3 class="group">Assay</h3>
+        <dl class="record">
+          <div *ngFor="let r of description.assay"><dt>{{ r[0] }}</dt><dd>{{ r[1] }}</dd></div>
+        </dl>
+        <p class="soft small">Shortened for the preview. The full form also covers the background, protocol, readout and normalization, detection reagent, components and controls.</p>
+      </ng-container>
 
-      <h3 class="group">General</h3>
-      <dl class="record">
-        <div *ngFor="let r of description.general"><dt>{{ r[0] }}</dt><dd>{{ r[1] }}</dd></div>
-      </dl>
-      <h3 class="group">Compound transfer</h3>
-      <dl class="record">
-        <div *ngFor="let r of description.transfer"><dt>{{ r[0] }}</dt><dd>{{ r[1] }}</dd></div>
-      </dl>
-      <h3 class="group">Assay</h3>
-      <dl class="record">
-        <div *ngFor="let r of description.assay"><dt>{{ r[0] }}</dt><dd>{{ r[1] }}</dd></div>
-      </dl>
-      <p class="soft small">Shortened for the preview. The full form also covers the background, protocol, readout and normalization, detection reagent, components and controls.</p>
-    </ng-container>
+      <!-- ===== Done: plate layout ===== -->
+      <ng-container *ngSwitchCase="'layout'">
+        <h2 class="step-heading">Plate layout</h2>
+        <p class="outcome approved">Uploaded 20 Apr 2026</p>
+        <p class="body">Where compounds and controls go on each plate. Calibr spots the plates exactly as laid out here.</p>
+        <p class="file"><span class="mono">plate_layout_A00981.xlsx</span> · 384-well · uploaded by Jane Doe</p>
+        <a class="arrow-link" href="assets/workflow/1_AssayRegistration.PlateLayout_new.xlsx" download>Blank layout template (96, 384 and 1536-well)</a>
+      </ng-container>
 
-    <!-- ===== Done: plate layout ===== -->
-    <ng-container *ngSwitchCase="'layout'">
-      <h2 class="step-heading">Plate layout</h2>
-      <p class="outcome approved">Uploaded 20 Apr 2026</p>
-      <p class="body">Where compounds and controls go on each plate. Calibr spots the plates exactly as laid out here.</p>
-      <p class="file"><span class="mono">plate_layout_A00981.xlsx</span> · 384-well · uploaded by Jane Doe</p>
-      <a class="arrow-link" href="assets/workflow/1_AssayRegistration.PlateLayout_new.xlsx" download>Blank layout template (96, 384 and 1536-well)</a>
-    </ng-container>
+      <!-- ===== Skipped: controls ===== -->
+      <ng-container *ngSwitchCase="'controls'">
+        <h2 class="step-heading">Controls</h2>
+        <p class="outcome">Not sent. This step is optional.</p>
+        <p class="body">You can send Calibr your controls dissolved in DMSO, to be spotted with the screening compounds. 100 µL of a
+          10 mM stock is usually enough.</p>
+      </ng-container>
 
-    <!-- ===== Skipped: controls ===== -->
-    <ng-container *ngSwitchCase="'controls'">
-      <h2 class="step-heading">Controls</h2>
-      <p class="outcome">Not sent. This step is optional.</p>
-      <p class="body">You can send Calibr your controls dissolved in DMSO, to be spotted with the screening compounds. 100 µL of a
-        10 mM stock is usually enough.</p>
-    </ng-container>
+      <!-- ===== Done: primary plates ===== -->
+      <ng-container *ngSwitchCase="'plates'">
+        <h2 class="step-heading">Primary screen plates</h2>
+        <p class="outcome approved">Shipped 6 May 2026</p>
+        <p class="body">Calibr dry-spotted the collection onto assay-ready 384-well plates in singlicate, as set out in your plate layout.
+          Compounds are blinded; your compound key maps each well to an RFM ID.</p>
+        <a class="btn-secondary" href="javascript:void(0)">Download compound key</a>
+        <p class="soft small">Why pre-spotted plates? The collection is finite and meant for many partners, so each partner gets nanomole amounts:
+          about 0.5 nmol of each compound for the primary screen, and up to 4 nmol for hits across the whole screen.</p>
+      </ng-container>
 
-    <!-- ===== Done: primary plates ===== -->
-    <ng-container *ngSwitchCase="'plates'">
-      <h2 class="step-heading">Primary screen plates</h2>
-      <p class="outcome approved">Shipped 6 May 2026</p>
-      <p class="body">Calibr dry-spotted the collection onto assay-ready 384-well plates in singlicate, as set out in your plate layout.
-        Compounds are blinded; your compound key maps each well to an RFM ID.</p>
-      <a class="btn-secondary" href="javascript:void(0)">Download compound key</a>
-      <p class="soft small">Why pre-spotted plates? The collection is finite and meant for many partners, so each partner gets nanomole amounts:
-        about 0.5 nmol of each compound for the primary screen, and up to 4 nmol for hits across the whole screen.</p>
-    </ng-container>
+      <!-- ===== Upcoming: dose-response plates ===== -->
+      <ng-container *ngSwitchCase="'dr-plates'">
+        <h2 class="step-heading">Dose-response plates</h2>
+        <p class="outcome">After your hit list. Calibr will email you when they ship.</p>
+        <p class="body">Calibr prepares two replicate sets of dose-response plates from your hits: 8-point, 1:3 serial dilutions starting
+          at 10 µM unless agreed otherwise. You can use one set for a counter screen if you add a counter screen to this record.</p>
+      </ng-container>
 
-    <!-- ===== Upcoming: dose-response plates ===== -->
-    <ng-container *ngSwitchCase="'dr-plates'">
-      <h2 class="step-heading">Dose-response plates</h2>
-      <p class="outcome">After your hit list. Calibr will email you when they ship.</p>
-      <p class="body">Calibr prepares two replicate sets of dose-response plates from your hits: 8-point, 1:3 serial dilutions starting
-        at 10 µM unless agreed otherwise. You can use one set for a counter screen if you add a counter screen to this record.</p>
-    </ng-container>
+      <!-- ===== Upcoming: dose-response results ===== -->
+      <ng-container *ngSwitchCase="'dr-results'">
+        <h2 class="step-heading">Dose-response results</h2>
+        <p class="outcome">Opens when your dose-response plates arrive.</p>
+        <p class="body">You'll upload one row per hit, or paste them from a spreadsheet. Each row is checked as you add it, so problems
+          show up here rather than in an email later.</p>
+        <table class="table">
+          <thead><tr><th>Column</th><th>What goes in it</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let c of drColumns"><td class="col-name">{{ c[0] }}</td><td>{{ c[1] }}</td></tr>
+          </tbody>
+        </table>
+        <a class="arrow-link" href="assets/workflow/3_DoseResponseData.xlsx" download>Excel template, if you'd rather fill it offline</a>
+      </ng-container>
 
-    <!-- ===== Upcoming: dose-response results ===== -->
-    <ng-container *ngSwitchCase="'dr-results'">
-      <h2 class="step-heading">Dose-response results</h2>
-      <p class="outcome">Opens when your dose-response plates arrive.</p>
-      <p class="body">You'll upload one row per hit, or paste them from a spreadsheet. Each row is checked as you add it, so problems
-        show up here rather than in an email later.</p>
-      <table class="table">
-        <thead><tr><th>Column</th><th>What goes in it</th></tr></thead>
-        <tbody>
-          <tr *ngFor="let c of drColumns"><td class="col-name">{{ c[0] }}</td><td>{{ c[1] }}</td></tr>
-        </tbody>
-      </table>
-      <a class="arrow-link" href="assets/workflow/3_DoseResponseData.xlsx" download>Excel template, if you'd rather fill it offline</a>
-    </ng-container>
+      <!-- ===== Upcoming: structures ===== -->
+      <ng-container *ngSwitchCase="'structures'">
+        <h2 class="step-heading">Hit structures released</h2>
+        <p class="outcome">After your dose-response results are in.</p>
+        <p class="body">Calibr releases the structures and names of your confirmed hits. They'll appear here, linked to each compound's page.</p>
+      </ng-container>
 
-    <!-- ===== Upcoming: structures ===== -->
-    <ng-container *ngSwitchCase="'structures'">
-      <h2 class="step-heading">Hit structures released</h2>
-      <p class="outcome">After your dose-response results are in.</p>
-      <p class="body">Calibr releases the structures and names of your confirmed hits. They'll appear here, linked to each compound's page.</p>
-    </ng-container>
+      <!-- ===== Upcoming: publication ===== -->
+      <ng-container *ngSwitchCase="'publish'">
+        <h2 class="step-heading">Data published on REFRAMEdb</h2>
+        <p class="outcome">One year after your hit structures are released.</p>
+        <p class="body">Calibr publishes your dose-response data and assay description on REFRAMEdb. If you need more time, for example
+          for a paper or patent, ask for a delay from this page.</p>
+      </ng-container>
 
-    <!-- ===== Upcoming: publication ===== -->
-    <ng-container *ngSwitchCase="'publish'">
-      <h2 class="step-heading">Data published on REFRAMEdb</h2>
-      <p class="outcome">One year after your hit structures are released.</p>
-      <p class="body">Calibr publishes your dose-response data and assay description on REFRAMEdb. If you need more time, for example
-        for a paper or patent, ask for a delay from this page.</p>
-    </ng-container>
-
-    <!-- ===== Upcoming: milestones ===== -->
-    <ng-container *ngSwitchCase="'milestones'">
-      <h2 class="step-heading">Milestone check-ins</h2>
-      <p class="outcome">Once a year after your screen. We'll email you when one is due.</p>
-      <p class="body">A short check-in on what came of your hits. Public success is the best way to support REFRAME. We'll ask about:</p>
-      <ul class="plain">
-        <li *ngFor="let m of milestones">{{ m }}</li>
-      </ul>
-    </ng-container>
-  </section>
+      <!-- ===== Upcoming: milestones ===== -->
+      <ng-container *ngSwitchCase="'milestones'">
+        <h2 class="step-heading">Milestone check-ins</h2>
+        <p class="outcome">Once a year after your screen. We'll email you when one is due.</p>
+        <p class="body">A short check-in on what came of your hits. Public success is the best way to support REFRAME. We'll ask about:</p>
+        <ul class="plain">
+          <li *ngFor="let m of milestones">{{ m }}</li>
+        </ul>
+      </ng-container>
+    </section>
+  </div>
 </div>

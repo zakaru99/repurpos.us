@@ -192,6 +192,86 @@ export class ScreenPreviewComponent implements OnInit {
     return { label: 'Coming up', tone: 'upcoming' };
   }
 
+  phaseOf(step: Step): Phase {
+    return this.phases.filter(p => p.steps.indexOf(step) > -1)[0];
+  }
+
+  // A phase tab opens on its due step, else its first step
+  openPhase(phase: Phase): void {
+    const due = phase.steps.filter(s => s.state === 'current')[0];
+    this.select(due || phase.steps[0]);
+  }
+
+  // Left column: what the selected step needs from the partner, or for
+  // Calibr's steps, what the partner receives. Taken from the workflow
+  // documents (Can I use REFRAME, Assay Description form, Plate Layout,
+  // Regarding Pre-spotted Plates, Dose Response template, Milestone form).
+  readonly requirements: { [key: string]: { title: string; items: string[] } } = {
+    'proposal': { title: 'Requirements', items: [
+      'Relevant to global health',
+      'Different from prior or ongoing screens: species, strain, lifecycle stage or readout',
+      'Assay volume under 50 µL, in 384- or 1536-well plates',
+      'Suited to a single-point screen with under 1% hits to follow up'
+    ] },
+    'mta': { title: 'Requirements', items: [
+      'Signed by someone authorised at your institution',
+      'Data from your screen becomes public 12 months after hit structures are released'
+    ] },
+    'description': { title: 'Requirements', items: [
+      'Short title under 50 characters',
+      'Description of 100 to 200 words: the biology behind the screen, not the disease in general',
+      'Protocol written in sentences, not bullet points',
+      'Readout, normalization, detection method and reagent',
+      'Controls with their plate positions and volumes',
+      'Assay development statistics: Z′, fold change, CVs'
+    ] },
+    'layout': { title: 'Requirements', items: [
+      'Plate type with vendor and catalog number',
+      'Positions of compounds and controls on the plate',
+      'Transfer volumes, typically 2.5 to 100 nL from 10 mM stock',
+      'Values that match your assay description'
+    ] },
+    'controls': { title: 'Requirements', items: [
+      'Optional',
+      'Dissolved in DMSO at 10 mM',
+      'About 100 µL of stock is usually enough'
+    ] },
+    'plates': { title: 'What you receive', items: [
+      'Assay-ready plates, pre-spotted in singlicate',
+      'About 0.5 nmol of each compound',
+      'A compound key mapping each well to a blinded RFM ID'
+    ] },
+    'hits': { title: 'Requirements', items: [
+      'RFM IDs from your compound key',
+      'At most 1% of the library: 138 compounds',
+      'Average Z′, fold change and CVs per plate'
+    ] },
+    'dr-plates': { title: 'What you receive', items: [
+      'Two replicate sets of dose-response plates',
+      '8-point, 1:3 dilutions from 10 µM, unless agreed otherwise',
+      'One set can be used for a counter screen, once you add one'
+    ] },
+    'dr-results': { title: 'Requirements', items: [
+      'One row per hit, by RFM ID',
+      'AC50 in molar, as a number: no < or > signs',
+      'Precision: EQUAL, LESS THAN or GREATER THAN',
+      'Efficacy, r², data mode and normalization'
+    ] },
+    'structures': { title: 'What you receive', items: [
+      'Structures and names of your confirmed hits',
+      'Released once your dose-response results are in'
+    ] },
+    'publish': { title: 'What happens', items: [
+      'Dose-response data and your assay description go public on REFRAMEdb',
+      'One year after structures are released',
+      'Ask for a delay before then if you need one'
+    ] },
+    'milestones': { title: 'Requirements', items: [
+      'Once a year',
+      'In vivo activity, patents, publications, IND-enabling studies, grants and licensing'
+    ] }
+  };
+
   isOpen(phase: Phase): boolean {
     return !!this.opened[phase.title] || this.phaseState(phase) === 'current' ||
       phase.steps.some(s => s.key === this.selectedKey);

@@ -1,27 +1,52 @@
-// PREVIEW: a partner's screen as one record. Step list on the left (the whole
-// screen, grouped like the Workflow page), the selected step at full size on
-// the right. Built from the portal's shared pieces: no cards, status as
-// coloured text, hairlines between groups.
+// PREVIEW: a partner's screen as one record. A tinted header (screen, key
+// dates, the four phases as tabs), then the open phase's steps in a row, then
+// two columns: what the selected step requires on the left, the step itself
+// on the right. Built from the portal's shared pieces: status as coloured
+// text, hairlines between sections, no cards.
 
 @import '../user-portal';
 
 :host {
-  @include portal-page;
+  @include full-bleed-host;
+  display: block;
 }
 
 @include portal-page-common;
 
-.preview-note {
-  margin: 0 0 18px !important;
-  font-size: 0.8125rem;
-  color: $status-pending;
+// Same column as the other portal pages (portal-page), but the header band
+// runs edge to edge, so the column is set on .inner and .body instead
+%portal-column {
+  max-width: var(--shell-max);
+  margin: 0 auto;
+  padding-left: var(--shell-gutter);
+  padding-right: var(--shell-gutter);
+
+  > * {
+    max-width: 1100px;
+  }
+
+  @media (max-width: $bp-phone) {
+    padding-left: var(--shell-gutter-sm);
+    padding-right: var(--shell-gutter-sm);
+  }
 }
 
-// ---------------------------------------------------------------- heading
+// ---------------------------------------------------------------- header
 
-.head {
-  display: block;
-  margin-bottom: 28px;
+.screen-head {
+  background: $muted-bg;
+  border-bottom: 1px solid $rule;
+
+  .inner {
+    @extend %portal-column;
+    padding-top: 20px;
+  }
+}
+
+.preview-note {
+  margin: 0 0 14px !important;
+  font-size: 0.8125rem;
+  color: $status-pending;
 }
 
 .crumbs {
@@ -36,21 +61,35 @@
   }
 }
 
+.screen-title {
+  margin: 0;
+  font-family: $sans;
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: $ink;
+
+  @media (max-width: $bp-phone) {
+    font-size: 1.375rem;
+  }
+}
+
 .meta {
   margin: 6px 0 0 !important;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   color: $ink-soft;
 }
 
-// Key dates: one line of label/value pairs, hairline between them
+// Key dates: label over value, hairline between pairs
 .dates {
   display: flex;
   flex-wrap: wrap;
-  margin: 14px 0 0;
+  margin: 18px 0 0;
 
   div {
-    padding: 0 20px;
-    border-left: 1px solid $rule;
+    padding: 0 22px;
+    border-left: 1px solid $rule-on-tint;
 
     &:first-child {
       padding-left: 0;
@@ -66,166 +105,97 @@
 
   dd {
     margin: 0;
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     color: $ink;
   }
 }
 
-// ---------------------------------------------------------------- progress track
-// The four phases as one bar split in four: done in green, the current phase
-// in the accent, the rest as hairlines. The label under each says which.
+// Phase tabs sit on the header's bottom edge; the open one is underlined
+.phase-tabs {
+  display: flex;
+  gap: 36px;
+  margin-top: 22px;
+  overflow-x: auto;
+  scrollbar-width: none;
 
-.track {
-  margin: 0 0 32px;
-
-  ol {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 6px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  &::-webkit-scrollbar {
+    display: none;
   }
 
-  li {
+  button {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    align-items: flex-start;
+    gap: 1px;
+    margin-bottom: -1px;
+    padding: 0 0 10px;
+    font: inherit;
+    white-space: nowrap;
+    background: none;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+
+    &:hover .tab-name {
+      color: $ink;
+    }
+
+    &.active {
+      border-bottom-color: $accent;
+
+      .tab-name {
+        color: $ink;
+      }
+    }
+
+    @include focus-ring($accent, 2px);
   }
 
-  .bar {
-    display: block;
-    height: 4px;
-    margin-bottom: 8px;
-    background: $rule;
-  }
-
-  .phase-name {
-    font-size: 0.875rem;
+  .tab-name {
+    font-size: 0.9375rem;
     font-weight: 500;
     color: $ink-soft;
   }
 
-  .phase-state {
+  .tab-state {
     font-size: 0.75rem;
     color: $ink-faint;
   }
 
-  .done {
-    .bar { background: $status-approved; }
-    .phase-name { color: $ink; }
-    .phase-state { color: $status-approved; }
+  .done .tab-state {
+    color: $status-approved;
   }
 
-  .current {
-    .bar { background: $accent; }
-    .phase-name { font-weight: 600; color: $ink; }
-    .phase-state { font-weight: 600; color: $accent-text; }
-  }
-}
-
-.where {
-  margin: 18px 0 0 !important;
-  font-size: 1rem;
-  color: $ink;
-
-  strong {
+  .current .tab-state {
     font-weight: 600;
+    color: $accent-text;
   }
 }
 
-// ---------------------------------------------------------------- layout
+// ---------------------------------------------------------------- body
 
-.layout {
-  display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
-  gap: 48px;
-  align-items: start;
+.screen-body {
+  @extend %portal-column;
+  padding-top: 20px;
+  padding-bottom: 48px;
 }
 
-// ---------------------------------------------------------------- contents
-// The step list reads like an article's contents: plain text on white,
-// hairline rules, step numbers in mono. Only the current phase is open;
-// others fold to one line and open on click.
-
-.steps {
-  position: sticky;
-  top: calc(var(--site-header-height, 65px) + 47px + 16px);
-  padding-right: 24px;
-  border-right: 1px solid $rule;
-}
-
-.rail-title {
-  margin: 0 0 6px;
-  font-family: $sans;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: $ink-soft;
-}
-
-.phase {
-  border-top: 1px solid $rule;
-}
-
-.phase-head {
+// The open phase's steps in a row, with a rule under them
+.step-row {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  width: 100%;
-  padding: 9px 0;
-  font: inherit;
-  text-align: left;
-  background: none;
-  border: 0;
-  cursor: pointer;
-
-  &:hover .phase-name {
-    color: $accent;
-  }
-
-  @include focus-ring($accent, 2px);
-}
-
-.phase-name {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: $ink;
-}
-
-.phase-sum {
-  font-size: 0.75rem;
-  color: $ink-faint;
-  white-space: nowrap;
-}
-
-.phase.done .phase-sum {
-  color: $status-approved;
-}
-
-.phase.current .phase-sum {
-  font-weight: 600;
-  color: $accent-text;
-}
-
-.phase.upcoming .phase-name {
-  font-weight: 500;
-  color: $ink-soft;
-}
-
-ol {
-  margin: 0 0 8px;
-  padding: 0;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  margin: 0 0 28px;
+  padding: 0 0 14px;
   list-style: none;
+  border-bottom: 1px solid $rule;
 }
 
-// A step: number, title, and its date or status on the line below
 .step {
   display: grid;
-  grid-template-columns: 24px minmax(0, 1fr);
-  column-gap: 4px;
-  width: 100%;
-  padding: 5px 8px 6px 0;
+  grid-template-columns: auto auto;
+  column-gap: 8px;
+  padding: 6px 14px 7px 10px;
   font: inherit;
   text-align: left;
   background: none;
@@ -239,7 +209,7 @@ ol {
 
   &.selected {
     background: $selected;
-    box-shadow: inset 2px 0 0 $accent;
+    box-shadow: inset 0 -2px 0 $accent;
   }
 
   @include focus-ring($accent, -2px);
@@ -247,7 +217,7 @@ ol {
 
 .num {
   grid-row: span 2;
-  padding: 2px 0 0 6px;
+  padding-top: 2px;
   font-family: $mono;
   font-size: 0.6875rem;
   color: $ink-faint;
@@ -256,6 +226,7 @@ ol {
 .step-title {
   font-size: 0.875rem;
   line-height: 1.35;
+  white-space: nowrap;
   color: $ink;
 }
 
@@ -263,34 +234,72 @@ ol {
   grid-column: 2;
   font-size: 0.75rem;
   line-height: 1.4;
+  white-space: nowrap;
   color: $ink-faint;
 }
 
-.step.done .step-note {
-  color: $status-approved;
-}
-
-.step.skipped .step-note {
-  color: $ink-soft;
-}
+.step.done .step-note { color: $status-approved; }
+.step.skipped .step-note { color: $ink-soft; }
+.step.upcoming .step-title { color: $ink-soft; }
 
 .step.current {
-  .num { color: $accent-text; font-weight: 600; }
+  .num { font-weight: 600; color: $accent-text; }
   .step-title { font-weight: 600; }
   .step-note { font-weight: 600; color: $status-pending; }
 }
 
-.step.upcoming .step-title {
-  color: $ink-soft;
+// ---------------------------------------------------------------- two columns
+
+.layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 44px;
+  align-items: start;
 }
 
-.requests {
-  margin: 0 !important;
-  padding-top: 12px;
+// Requirements for the selected step, pinned while the step scrolls
+.reqs {
+  position: sticky;
+  top: calc(var(--site-header-height, 65px) + 47px + 20px);
+  padding: 14px 18px 16px;
+  background: $muted-bg;
+  border-top: 2px solid $navy;
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    padding: 7px 0;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: $ink;
+    border-top: 1px solid $rule-on-tint;
+
+    &:first-child {
+      border-top: 0;
+      padding-top: 2px;
+    }
+  }
+}
+
+.reqs-title {
+  margin: 0 0 8px;
+  font-family: $sans;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $ink;
+}
+
+.reqs-foot {
+  margin: 14px 0 0 !important;
+  padding-top: 10px;
   font-size: 0.75rem;
   line-height: 1.6;
   color: $ink-soft;
-  border-top: 1px solid $rule;
+  border-top: 1px solid $rule-on-tint;
 
   a {
     color: $accent;
@@ -699,33 +708,23 @@ legend {
 @media (max-width: $bp-tablet) {
   .layout {
     grid-template-columns: minmax(0, 1fr);
-    gap: 28px;
+    gap: 24px;
   }
 
-  // The step list follows the current step and stops sticking
-  .steps {
+  // Requirements come after the step on narrow screens
+  .reqs {
     position: static;
     order: 2;
   }
 
-  .track ol {
+  .grid.five {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    row-gap: 14px;
-  }
-
-  .steps {
-    padding-right: 0;
-    border-right: 0;
   }
 
   .dates div {
     flex-basis: 100%;
     padding: 0 0 8px;
     border-left: 0;
-  }
-
-  .grid.five {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
