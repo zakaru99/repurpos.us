@@ -1,0 +1,537 @@
+// PREVIEW: a partner's screen as one record. Step list on the left (the whole
+// screen, grouped like the Workflow page), the selected step at full size on
+// the right. Built from the portal's shared pieces: no cards, status as
+// coloured text, hairlines between groups.
+
+@import '../user-portal';
+
+:host {
+  @include portal-page;
+}
+
+@include portal-page-common;
+
+.preview-note {
+  margin: 0 0 18px !important;
+  font-size: 0.8125rem;
+  color: $status-pending;
+}
+
+// ---------------------------------------------------------------- heading
+
+.head {
+  display: block;
+  margin-bottom: 28px;
+}
+
+.crumbs {
+  margin: 0 0 4px !important;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+
+  .mono {
+    margin-left: 4px;
+    font-family: $mono;
+    font-size: 0.75rem;
+  }
+}
+
+.meta {
+  margin: 6px 0 0 !important;
+  font-size: 0.875rem;
+  color: $ink-soft;
+}
+
+// Where the screen is, said as a sentence rather than a stat or a badge
+.where {
+  margin: 16px 0 0 !important;
+  padding-top: 14px;
+  font-size: 1rem;
+  color: $ink;
+  border-top: 1px solid $rule;
+
+  strong {
+    font-weight: 600;
+  }
+}
+
+// ---------------------------------------------------------------- layout
+
+.layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+
+// ---------------------------------------------------------------- step list
+
+.steps {
+  position: sticky;
+  top: calc(var(--site-header-height, 65px) + 47px + 16px);
+}
+
+.phase + .phase,
+.requests {
+  margin-top: 18px;
+}
+
+.phase-title {
+  margin: 0 0 4px !important;
+  padding-left: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: $ink-soft;
+}
+
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: block;
+  width: 100%;
+  padding: 6px 12px 7px;
+  font: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+
+  &:hover {
+    background: $hover;
+  }
+
+  // Same treatment as a selected table row: tint plus an accent edge
+  &.selected {
+    background: $selected;
+    box-shadow: inset 2px 0 0 $accent;
+  }
+
+  @include focus-ring($accent, -2px);
+}
+
+.step-title {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: $ink;
+}
+
+.step-note {
+  display: block;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: $ink-faint;
+}
+
+.step.done .step-note {
+  color: $status-approved;
+}
+
+.step.skipped .step-note {
+  color: $ink-soft;
+}
+
+.step.current .step-note {
+  font-weight: 600;
+  color: $status-pending;
+}
+
+.step.upcoming .step-title {
+  font-weight: 400;
+  color: $ink-soft;
+}
+
+.requests {
+  padding-top: 14px;
+  border-top: 1px solid $rule;
+
+  .request {
+    display: block;
+    padding: 3px 12px;
+    font-size: 0.8125rem;
+    color: $accent;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// ---------------------------------------------------------------- selected step
+
+.detail {
+  scroll-margin-top: calc(var(--site-header-height, 65px) + 47px + 16px);
+  min-width: 0;
+  max-width: 760px;
+}
+
+.step-of {
+  margin: 0 0 4px !important;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+}
+
+.step-heading {
+  @include content-heading;
+  margin-bottom: 8px;
+}
+
+.lede,
+.body {
+  max-width: 68ch;
+  margin: 0 0 20px !important;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: $ink;
+}
+
+.outcome {
+  margin: 0 0 14px !important;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $ink-soft;
+
+  &.approved {
+    color: $status-approved;
+  }
+}
+
+.soft {
+  color: $ink-soft;
+}
+
+.small {
+  max-width: 68ch;
+  margin: 16px 0 0 !important;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.mono {
+  font-family: $mono;
+  font-size: 0.8125rem;
+}
+
+// Read-only record: label column beside the value, hairline between rows
+.group {
+  margin: 22px 0 6px;
+  font-family: $sans;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $ink;
+}
+
+.record {
+  margin: 0;
+  border-top: 1px solid $rule;
+
+  div {
+    display: grid;
+    grid-template-columns: 170px minmax(0, 1fr);
+    gap: 16px;
+    padding: 7px 0;
+    font-size: 0.875rem;
+    border-bottom: 1px solid $rule-soft;
+  }
+
+  dt {
+    font-weight: 400;
+    color: $ink-soft;
+  }
+
+  dd {
+    margin: 0;
+    color: $ink;
+  }
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 32px;
+  margin: 0 0 12px;
+  font-size: 0.875rem;
+
+  div {
+    display: flex;
+    gap: 8px;
+  }
+
+  dt {
+    font-weight: 400;
+    color: $ink-soft;
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.file {
+  margin: 0 0 14px !important;
+  font-size: 0.875rem;
+  color: $ink-soft;
+
+  .mono {
+    color: $ink;
+  }
+}
+
+.plain {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.9375rem;
+  line-height: 1.8;
+}
+
+.table {
+  margin-bottom: 16px;
+
+  .col-name {
+    width: 1%;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  td {
+    vertical-align: top;
+    line-height: 1.5;
+  }
+}
+
+.btn-secondary {
+  @include admin-button(secondary);
+  height: 34px;
+  padding: 0 14px;
+  text-decoration: none;
+
+  &:hover {
+    color: $ink;
+    text-decoration: none;
+  }
+}
+
+// ---------------------------------------------------------------- form
+// Same fields as the assay proposal form
+
+fieldset {
+  min-width: 0;
+  margin: 0 0 24px;
+  padding: 0;
+  border: 0;
+}
+
+legend {
+  width: 100%;
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  font-family: $sans;
+  font-size: 1rem;
+  font-weight: 600;
+  color: $ink;
+  border-bottom: 1px solid $rule;
+}
+
+.grid.five {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 14px;
+
+  label {
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: $ink;
+  }
+
+  input,
+  textarea {
+    box-sizing: border-box;
+    width: 100%;
+    height: 36px;
+    padding: 0 10px;
+    font: inherit;
+    font-size: 0.9375rem;
+    color: $ink;
+    background: #fff;
+    border: 1px solid $field-border;
+    border-radius: $radius-sharp;
+
+    &::placeholder {
+      color: $ink-faint;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $accent;
+      box-shadow: 0 0 0 1px $accent;
+    }
+  }
+
+  textarea {
+    height: auto;
+    padding: 8px 10px;
+    line-height: 1.5;
+    resize: vertical;
+  }
+
+  .mono-input {
+    font-family: $mono;
+    font-size: 0.8125rem;
+  }
+}
+
+.unit-input {
+  position: relative;
+
+  input {
+    padding-right: 30px;
+  }
+
+  .unit {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    font-size: 0.875rem;
+    color: $ink-soft;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+}
+
+.hint-inline {
+  font-weight: 400;
+  color: $ink-soft;
+}
+
+.hint {
+  font-size: 0.8125rem;
+  color: $ink-soft;
+}
+
+.file-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin: -4px 0 12px;
+}
+
+.file-btn {
+  @include admin-button(secondary);
+  margin: 0;
+
+  input {
+    display: none;
+  }
+}
+
+// Result of checking the pasted IDs
+.check {
+  padding: 10px 0 0;
+  border-top: 1px solid $rule-soft;
+
+  p {
+    margin: 0 0 4px !important;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: $ink;
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  .bad {
+    color: $status-rejected;
+  }
+
+  .soft {
+    font-size: 0.8125rem;
+    color: $ink-soft;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+}
+
+.btn {
+  @include button-navy;
+  height: auto; // the portal's shared .btn is a fixed-height small button
+  font-size: 0.9375rem;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    &:hover {
+      background: $navy;
+    }
+  }
+}
+
+.link {
+  padding: 0;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: $accent;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  @include focus-ring($accent, 2px);
+}
+
+// ---------------------------------------------------------------- smaller screens
+
+@media (max-width: $bp-tablet) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  // The step list follows the current step and stops sticking
+  .steps {
+    position: static;
+    order: 2;
+  }
+
+  .grid.five {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: $bp-phone) {
+  .record div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+}
+
+// The portal's shared .arrow-link is indented to sit after table text
+.detail .arrow-link {
+  margin-left: 0;
+  font-size: 0.875rem;
+}

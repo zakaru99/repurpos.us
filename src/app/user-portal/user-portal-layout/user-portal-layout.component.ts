@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { LoginStateService } from '../../_services';
@@ -15,7 +16,12 @@ export class UserPortalLayoutComponent implements OnInit, OnDestroy {
   email: string | null = null;
   private subs: Subscription[] = [];
 
-  constructor(private loginState: LoginStateService) { }
+  constructor(private loginState: LoginStateService, private router: Router) { }
+
+  // PREVIEW: the sample screen page works without signing in
+  isPreview(): boolean {
+    return this.router.url.indexOf('/user_portal/screens') === 0;
+  }
 
   ngOnInit() {
     this.subs.push(

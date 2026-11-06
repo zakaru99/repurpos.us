@@ -8,6 +8,7 @@ import { UserPortalLayoutComponent } from './user-portal-layout/user-portal-layo
 import { MyAccountComponent } from './my-account/my-account.component';
 import { MyFavoritesComponent } from './my-favorites/my-favorites.component';
 import { MyListsComponent } from './my-lists/my-lists.component';
+import { ScreenPreviewComponent } from './screen-preview/screen-preview.component';
 
 const routes: Routes = [
   { path: '', component: UserPortalLayoutComponent }
@@ -26,7 +27,8 @@ const routes: Routes = [
     UserPortalLayoutComponent,
     MyAccountComponent,
     MyFavoritesComponent,
-    MyListsComponent
+    MyListsComponent,
+    ScreenPreviewComponent
   ]
 })
 export class UserPortalModule { }

@@ -3,6 +3,7 @@
     <p class="portal-name"><span class="eyebrow">REFRAMEdb</span> Your account</p>
 
     <nav class="tabs" aria-label="Account sections">
+      <a routerLink="screens" routerLinkActive="active">Screens</a>
       <a routerLink="my_assays" routerLinkActive="active">Proposals</a>
       <a routerLink="my_favorites" routerLinkActive="active">Favorites</a>
       <a routerLink="my_lists" routerLinkActive="active">Lists</a>
@@ -14,7 +15,7 @@
 </header>
 
 <main class="content">
-  <router-outlet *ngIf="loggedIn; else signedOut"></router-outlet>
+  <router-outlet *ngIf="loggedIn || isPreview(); else signedOut"></router-outlet>
   <ng-template #signedOut>
     <p class="signed-out">Sign in to see your proposals, favorites and lists.</p>
   </ng-template>
