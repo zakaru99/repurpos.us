@@ -95,6 +95,41 @@
   color: $ink-soft;
 }
 
+// Who the screen is waiting on: a white strip on the tinted header, edged
+// in the colour of whoever has to act
+.waiting {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin: 20px 0 0 !important;
+  padding: 11px 16px;
+  font-size: 1rem;
+  background: #fff;
+  border-left: 3px solid $navy;
+
+  &.you {
+    border-left-color: $status-pending;
+  }
+
+  .link {
+    font-size: 0.875rem;
+  }
+}
+
+.waiting-who {
+  font-weight: 600;
+  color: $navy;
+}
+
+.waiting.you .waiting-who {
+  color: $status-pending;
+}
+
+.waiting-what {
+  color: $ink;
+}
+
 // Key dates, stacked in the header's right column
 .dates {
   margin: 0;
@@ -457,19 +492,9 @@
   &.upcoming { color: $ink-soft; }
 }
 
-// What the step is for, then a rule before the step's content
-.purpose {
-  margin: 0 0 22px !important;
-  padding-bottom: 16px;
-  font-size: 0.9375rem;
-  line-height: 1.5;
-  color: $ink-soft;
-  border-bottom: 1px solid $rule;
-}
-
 .step-heading {
   @include content-heading;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .lede,

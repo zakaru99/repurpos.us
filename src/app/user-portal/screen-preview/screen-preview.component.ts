@@ -316,6 +316,15 @@ export class ScreenPreviewComponent implements OnInit {
     return { valid, invalid, duplicates };
   }
 
+  // Who the screen is waiting on, said in the header
+  get waiting(): { who: 'you' | 'calibr'; text: string; step: Step } {
+    if (!this.sent) {
+      return { who: 'you', text: 'Send your hit list', step: this.current };
+    }
+    const next = this.allSteps.filter(s => s.key === 'dr-plates')[0];
+    return { who: 'calibr', text: 'Preparing your dose-response plates', step: next };
+  }
+
   // Hit list requirements, ticked off as the form meets them
   get hitReqs(): Array<{ text: string; met: boolean }> {
     const c = this.hitCheck;

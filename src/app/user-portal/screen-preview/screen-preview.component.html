@@ -7,6 +7,15 @@
       <p class="crumbs">Screen <span class="mono">{{ screen.id }}</span></p>
       <h1 class="screen-title">{{ screen.title }}</h1>
       <p class="meta">{{ screen.pi }} · {{ screen.institution }} · Proposed {{ screen.started | date:'d MMM y' }}</p>
+
+      <!-- Who the screen is waiting on right now -->
+      <p class="waiting" [ngClass]="waiting.who" role="status">
+        <span class="waiting-who">{{ waiting.who === 'you' ? 'Waiting on you' : 'Waiting on Calibr' }}</span>
+        <span class="waiting-what">{{ waiting.text }}</span>
+        <button type="button" class="link" *ngIf="selectedKey !== waiting.step.key" (click)="select(waiting.step)">
+          {{ waiting.who === 'you' ? 'Go to it' : 'See what happens next' }}
+        </button>
+      </p>
     </div>
 
     <dl class="dates">
@@ -86,7 +95,6 @@
           <span class="sep">·</span> Step {{ stepNumber }} of {{ allSteps.length }}
           <span class="sep">·</span> {{ whoLabel(selected.who) }}
       </p>
-      <p class="purpose">{{ purposes[selectedKey] }}</p>
 
       <!-- ===== Current: hit list ===== -->
       <ng-container *ngSwitchCase="'hits'">
@@ -200,7 +208,7 @@
       <ng-container *ngSwitchCase="'description'">
         <h2 class="step-heading">Assay description</h2>
         <p class="outcome approved">Approved 18 Apr 2026</p>
-        <p class="body">Published once your data is released. To change it, contact Calibr.</p>
+        <p class="body">The full details of your assay, as they will appear on its public page once your data is released. To change anything, contact Calibr.</p>
 
         <h3 class="group">General</h3>
         <dl class="record">
