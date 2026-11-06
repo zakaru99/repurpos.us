@@ -40,6 +40,7 @@ export class ScreenPreviewComponent implements OnInit {
   readonly screen = {
     id: 'A00981',
     title: 'Crypto-C. hominis high-content imaging proliferation',
+    shortTitle: 'Crypto-C. hominis proliferation',
     institution: 'Scripps Research',
     pi: 'Dr. Jane Doe',
     started: new Date(2026, 2, 12)
@@ -190,6 +191,16 @@ export class ScreenPreviewComponent implements OnInit {
     if (s.state === 'done') { return { label: 'Done', tone: 'done' }; }
     if (s.state === 'skipped') { return { label: 'Skipped', tone: 'skipped' }; }
     return { label: 'Coming up', tone: 'upcoming' };
+  }
+
+  // Phases as the page header's tabs
+  get phaseTabs(): Array<{ id: string; label: string }> {
+    return this.phases.map(p => ({ id: p.title, label: p.title }));
+  }
+
+  openPhaseTab(tab: { id: string }): void {
+    const phase = this.phases.filter(p => p.title === tab.id)[0];
+    if (phase) { this.openPhase(phase); }
   }
 
   phaseOf(step: Step): Phase {

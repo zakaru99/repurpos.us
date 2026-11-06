@@ -1,8 +1,8 @@
-// PREVIEW: a partner's screen as one record. A tinted header (screen, key
-// dates, the four phases as tabs), then the open phase's steps in a row, then
-// two columns: what the selected step requires on the left, the step itself
-// on the right. Built from the portal's shared pieces: status as coloured
-// text, hairlines between sections, no cards.
+// PREVIEW: a partner's screen as one record, laid out like an assay page:
+// the shared page header (eyebrow, title, byline, key dates on the right,
+// and a sticky navy bar whose tabs are the four phases), then two columns:
+// the phase's steps and what the selected step requires on the left, the
+// step itself on the right. Status as coloured text, hairlines, no cards.
 
 @import '../user-portal';
 
@@ -14,8 +14,8 @@
 
 @include portal-page-common;
 
-// Same column as the other portal pages (portal-page), but the header band
-// runs edge to edge, so the column is set on .inner and .body instead
+// Same column as the other portal pages (portal-page), set on the body
+// because the page header above runs edge to edge
 @mixin portal-column {
   max-width: var(--shell-max);
   margin: 0 auto;
@@ -33,216 +33,85 @@
 }
 
 // ---------------------------------------------------------------- header
+// app-page-header, as on an assay page. These style what this page puts in
+// its slots: the next-step line (header-meta) and the key dates
+// (header-aside, same as an assay page's figures).
 
-.screen-head {
-  background: $muted-bg;
-  border-bottom: 1px solid $rule;
-
-  .inner {
-    @include portal-column;
-    padding-top: 20px;
-    padding-bottom: 26px;
-  }
-}
-
-// Inside the same 1100px width as the content below
-.head-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: 24px 56px;
-  align-items: start;
-}
-
-.head-main {
-  min-width: 0;
-}
-
-.preview-note {
-  margin: 0 0 14px !important;
-  font-size: 0.8125rem;
-  color: $status-pending;
-}
-
-.crumbs {
-  margin: 0 0 4px !important;
-  font-size: 0.8125rem;
-  color: $ink-soft;
-
-  .mono {
-    margin-left: 4px;
-    font-family: $mono;
-    font-size: 0.75rem;
-  }
-}
-
-.screen-title {
-  margin: 0;
-  font-family: $sans;
-  font-size: 1.75rem;
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-  color: $ink;
-
-  @media (max-width: $bp-phone) {
-    font-size: 1.375rem;
-  }
-}
-
-.meta {
-  margin: 6px 0 0 !important;
-  font-size: 0.9375rem;
-  color: $ink-soft;
-}
-
-// Who the screen is waiting on: a white strip on the tinted header, edged
-// in the colour of whoever has to act
-.waiting {
+.next {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 4px 12px;
-  margin: 20px 0 0 !important;
-  padding: 11px 16px;
-  font-size: 1rem;
-  background: #fff;
-  border-left: 3px solid $navy;
+  margin: 16px 0 0 !important;
+  padding: 2px 0 2px 12px;
+  font-size: 0.9375rem;
+  color: #fff;
+  border-left: 3px solid $accent-on-dark;
 
   &.you {
-    border-left-color: $status-pending;
-  }
-
-  .link {
-    font-size: 0.875rem;
+    border-left-color: #f2c27b; // the assay page's light amber for "in progress" on navy
   }
 }
 
-.waiting-who {
+.next-who {
   font-weight: 600;
-  color: $navy;
+  color: $accent-on-dark;
 }
 
-.waiting.you .waiting-who {
-  color: $status-pending;
+.next.you .next-who {
+  color: #f2c27b;
 }
 
-.waiting-what {
-  color: $ink;
+.next-link {
+  @include arrow-link($accent-on-dark, #fff);
+  padding: 0;
+  font: inherit;
+  font-size: 0.875rem;
+  background: none;
+  border: 0;
 }
 
-// Key dates, stacked in the header's right column
-.dates {
+.figures {
+  flex-shrink: 0;
+  width: 300px;
   margin: 0;
-  padding-left: 24px;
-  border-left: 1px solid $rule-on-tint;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
 
-  div {
-    padding: 8px 0;
-    border-top: 1px solid $rule-on-tint;
-
-    &:first-child {
-      padding-top: 2px;
-      border-top: 0;
-    }
+  .fig {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 5px 0;
+    border-bottom: 1px solid $rule-dark;
   }
 
   dt {
-    font-size: 0.75rem;
+    flex-shrink: 0;
+    font-size: 0.875rem;
     font-weight: 400;
-    color: $ink-soft;
+    color: rgba(255, 255, 255, 0.72);
   }
 
   dd {
     margin: 0;
     font-size: 0.9375rem;
-    line-height: 1.4;
-    color: $ink;
-  }
-}
-
-// ---------------------------------------------------------------- phase tabs
-// A white bar of its own under the tinted header, pinned under the portal
-// band while the page scrolls
-
-.tab-bar {
-  @include sticky-subheader;
-  top: calc(var(--site-header-height, 65px) + 46px);
-  z-index: 2300;
-  background: #fff;
-  border-bottom: 1px solid $rule;
-  box-shadow: 0 1px 0 rgba(15, 27, 45, 0.04);
-
-  .inner {
-    @include portal-column;
-    display: flex;
-    gap: 40px;
-    overflow-x: auto;
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-
-    > * {
-      max-width: none;
-    }
-  }
-
-  button {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1px;
-    margin-bottom: -1px;
-    padding: 12px 0 10px;
-    font: inherit;
-    white-space: nowrap;
-    background: none;
-    border: 0;
-    border-bottom: 3px solid transparent;
-    cursor: pointer;
-
-    &:hover .tab-name {
-      color: $ink;
-    }
-
-    &.active {
-      border-bottom-color: $accent;
-
-      .tab-name {
-        color: $ink;
-      }
-    }
-
-    @include focus-ring($accent, -2px);
-  }
-
-  .tab-name {
-    font-size: 0.9375rem;
-    font-weight: 500;
-    color: $ink-soft;
-  }
-
-  .tab-state {
-    font-size: 0.75rem;
-    color: $ink-faint;
-  }
-
-  .done .tab-state {
-    color: $status-approved;
-  }
-
-  .current .tab-state {
-    font-weight: 600;
-    color: $accent-text;
+    text-align: right;
+    color: #fff;
   }
 }
 
 // ---------------------------------------------------------------- body
 
+.preview-note {
+  margin: 0 0 18px !important;
+  font-size: 0.8125rem;
+  color: $status-pending;
+}
+
 .screen-body {
   @include portal-column;
-  padding-top: 28px;
+  padding-top: 24px;
   padding-bottom: 48px;
 }
 
@@ -316,7 +185,7 @@
 // the requirements (a tinted reference box). Pinned while the step scrolls.
 .side {
   position: sticky;
-  top: calc(var(--site-header-height, 65px) + 46px + 62px + 20px);
+  top: calc(var(--site-header-height, 65px) + 47px + 20px);
 }
 
 .side-label {
@@ -837,13 +706,9 @@ legend {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .head-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .dates {
-    padding-left: 0;
-    border-left: 0;
+  .figures {
+    align-self: stretch;
+    width: 100%;
   }
 }
 

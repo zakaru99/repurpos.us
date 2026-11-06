@@ -9,6 +9,7 @@ import { MyAccountComponent } from './my-account/my-account.component';
 import { MyFavoritesComponent } from './my-favorites/my-favorites.component';
 import { MyListsComponent } from './my-lists/my-lists.component';
 import { ScreenPreviewComponent } from './screen-preview/screen-preview.component';
+import { PageHeaderModule } from '../_components/page-header/page-header.module';
 
 const routes: Routes = [
   { path: '', component: UserPortalLayoutComponent }
@@ -20,7 +21,8 @@ const routes: Routes = [
     UserPortalRoutingModule,
     RouterModule.forChild(routes),
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PageHeaderModule
   ],
   declarations: [
     MyAssaysComponent,

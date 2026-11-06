@@ -1,43 +1,26 @@
-<!-- Header: the screen on the left, the dates that matter stacked on the right -->
-<div class="screen-head">
-  <div class="inner">
-   <div class="head-grid">
-    <div class="head-main">
-      <p class="preview-note">Preview with sample data. Nothing on this page is loaded or saved.</p>
-      <p class="crumbs">Screen <span class="mono">{{ screen.id }}</span></p>
-      <h1 class="screen-title">{{ screen.title }}</h1>
-      <p class="meta">{{ screen.pi }} · {{ screen.institution }} · Proposed {{ screen.started | date:'d MMM y' }}</p>
-
-      <!-- Who the screen is waiting on right now -->
-      <p class="waiting" [ngClass]="waiting.who" role="status">
-        <span class="waiting-who">{{ waiting.who === 'you' ? 'Your next step' : 'With Calibr' }}</span>
-        <span class="waiting-what">{{ waiting.text }}</span>
-        <button type="button" class="link" *ngIf="selectedKey !== waiting.step.key" (click)="select(waiting.step)">
-          {{ waiting.who === 'you' ? 'Open it' : 'What happens next' }}
-        </button>
-      </p>
-    </div>
-
-    <dl class="dates">
-      <div *ngFor="let d of keyDates"><dt>{{ d.label }}</dt><dd>{{ d.value }}</dd></div>
-    </dl>
-   </div>
-  </div>
-</div>
-
-<!-- The four phases, in their own bar under the header -->
-<nav class="tab-bar" aria-label="Phases">
-  <div class="inner">
-    <button type="button" *ngFor="let phase of phases" [ngClass]="phaseState(phase)"
-            [class.active]="phaseOf(selected) === phase" [attr.aria-current]="phaseOf(selected) === phase ? 'page' : null"
-            (click)="openPhase(phase)">
-      <span class="tab-name">{{ phase.title }}</span>
-      <span class="tab-state">{{ phaseSummary(phase) }}</span>
+<!-- Same header as an assay page: eyebrow, title, byline, key figures on
+     the right, and a sticky navy bar; here the bar's tabs are the phases -->
+<app-page-header [eyebrow]="'Screen ' + screen.id" [title]="screen.shortTitle" [lede]="screen.title"
+                 [byline]="screen.pi + ' · ' + screen.institution + ' · Proposed ' + (screen.started | date:'d MMM y')"
+                 [sections]="phaseTabs" [tabs]="true" [activeId]="phaseOf(selected).title"
+                 (tabSelect)="openPhaseTab($event)" [compact]="true"
+                 backLabel="Your account" backLink="/user_portal/my_assays">
+  <!-- Where the screen is: whose move it is -->
+  <p header-meta class="next" [ngClass]="waiting.who" role="status">
+    <span class="next-who">{{ waiting.who === 'you' ? 'Your next step' : 'With Calibr' }}</span>
+    <span class="next-what">{{ waiting.text }}</span>
+    <button type="button" class="next-link" *ngIf="selectedKey !== waiting.step.key" (click)="select(waiting.step)">
+      {{ waiting.who === 'you' ? 'Open it' : 'What happens next' }}
     </button>
-  </div>
-</nav>
+  </p>
+
+  <dl header-aside class="figures" aria-label="Key dates">
+    <div class="fig" *ngFor="let d of keyDates"><dt>{{ d.label }}</dt><dd>{{ d.value }}</dd></div>
+  </dl>
+</app-page-header>
 
 <div class="screen-body">
+  <p class="preview-note">Preview with sample data. Nothing on this page is loaded or saved.</p>
   <div class="layout">
     <!-- What this step needs -->
     <aside class="side">

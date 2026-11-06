@@ -1,4 +1,5 @@
-<header class="band">
+<!-- The screen page brings its own page header (like an assay page) -->
+<header class="band" *ngIf="!isPreview()">
   <div class="inner">
     <p class="portal-name"><span class="eyebrow">REFRAMEdb</span> Your account</p>
 

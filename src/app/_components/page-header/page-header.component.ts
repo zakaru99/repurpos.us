@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnChanges } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, Output } from '@angular/core';
 
 export interface PageSection {
   id: string;     // element id of the section on the page
@@ -28,15 +28,28 @@ export class PageHeaderComponent implements OnChanges {
   @Input() compact = false;
   // Use the wide column (data pages) instead of the reading column
   @Input() wide = false;
+  // Tab mode: the bar switches views instead of scrolling. The page sets
+  // which tab is active and handles tabSelect; nothing scrolls.
+  @Input() tabs = false;
+  @Input() activeId: string = null;
+  @Output() tabSelect = new EventEmitter<PageSection>();
 
   active: string = null;
 
   ngOnChanges() {
+    if (this.tabs) {
+      this.active = this.activeId;
+      return;
+    }
     this.active = this.sections && this.sections.length ? this.sections[0].id : null;
   }
 
   // Scroll to a section; the URL stays as it is
   go(section: PageSection) {
+    if (this.tabs) {
+      this.tabSelect.emit(section);
+      return;
+    }
     const el = document.getElementById(section.id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -48,7 +61,7 @@ export class PageHeaderComponent implements OnChanges {
   // The last section whose top has passed the sticky headers is "current"
   @HostListener('window:scroll')
   onScroll() {
-    if (!this.sections || !this.sections.length) { return; }
+    if (this.tabs || !this.sections || !this.sections.length) { return; }
     const offset = this.stickyOffset() + 24;
     let current = this.sections[0].id;
     for (const s of this.sections) {
