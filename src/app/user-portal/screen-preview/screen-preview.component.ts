@@ -59,7 +59,7 @@ export class ScreenPreviewComponent implements OnInit {
       title: 'Primary screen',
       steps: [
         { key: 'plates', title: 'Primary screen plates', who: 'calibr', state: 'done', note: 'Shipped 6 May' },
-        { key: 'hits', title: 'Hit list', who: 'you', state: 'current', note: 'Your turn' }
+        { key: 'hits', title: 'Hit list', who: 'you', state: 'current', note: 'Action needed' }
       ]
     },
     {
@@ -186,7 +186,7 @@ export class ScreenPreviewComponent implements OnInit {
   get selectedStatus(): { label: string; tone: string } {
     const s = this.selected;
     if (s.key === 'hits' && this.sent) { return { label: 'Sent', tone: 'done' }; }
-    if (s.state === 'current') { return { label: 'Your turn', tone: 'current' }; }
+    if (s.state === 'current') { return { label: 'Action needed', tone: 'current' }; }
     if (s.state === 'done') { return { label: 'Done', tone: 'done' }; }
     if (s.state === 'skipped') { return { label: 'Skipped', tone: 'skipped' }; }
     return { label: 'Coming up', tone: 'upcoming' };
@@ -314,6 +314,18 @@ export class ScreenPreviewComponent implements OnInit {
       (RFM_ID.test(t) ? valid : invalid).push(t);
     });
     return { valid, invalid, duplicates };
+  }
+
+  // Hit list requirements, ticked off as the form meets them
+  get hitReqs(): Array<{ text: string; met: boolean }> {
+    const c = this.hitCheck;
+    const st = this.stats as { [k: string]: number };
+    const statsIn = Object.keys(st).every(k => st[k] !== null && st[k] !== undefined && String(st[k]) !== '');
+    return [
+      { text: 'RFM IDs from your compound key, all recognised', met: c.valid.length > 0 && !c.invalid.length },
+      { text: 'At most 1% of the library: ' + this.hitLimit + ' compounds', met: c.valid.length > 0 && !this.overLimit },
+      { text: 'Average Z′, fold change and CVs per plate', met: statsIn }
+    ];
   }
 
   get overLimit(): boolean {

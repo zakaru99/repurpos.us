@@ -212,26 +212,12 @@
 }
 
 // The phase's steps in the side panel, one per line
-.phase-steps {
-  margin: 0 -18px 18px;
-  padding: 0;
-  list-style: none;
-}
-
-// Not the hairlined rows of the requirements list
-.reqs .phase-steps {
-  li,
-  li:first-child {
-    padding: 0;
-    border-top: 0;
-  }
-}
-
 .step {
   display: grid;
   grid-template-columns: 26px minmax(0, 1fr);
   width: 100%;
-  padding: 6px 18px 7px;
+  margin-left: -1px;
+  padding: 6px 12px 7px 14px;
   font: inherit;
   text-align: left;
   background: none;
@@ -244,7 +230,7 @@
   }
 
   &.selected {
-    background: #fff;
+    background: $selected;
     box-shadow: inset 3px 0 0 $accent;
   }
 
@@ -291,19 +277,49 @@
   align-items: start;
 }
 
-// Requirements for the selected step, pinned while the step scrolls
-.reqs {
+// Left column: the phase's steps (navigation, on white), then a gap, then
+// the requirements (a tinted reference box). Pinned while the step scrolls.
+.side {
   position: sticky;
   top: calc(var(--site-header-height, 65px) + 46px + 62px + 20px);
+}
+
+.side-label {
+  margin: 0 0 8px;
+  font-family: $sans;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: $ink-soft;
+}
+
+// Steps hang off a thin line, like a timeline in a methods section
+.phase-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-left: 1px solid $rule;
+}
+
+.reqs {
+  margin-top: 32px;
   padding: 14px 18px 16px;
   background: $muted-bg;
   border-top: 2px solid $navy;
+}
 
-  ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
+.reqs-title {
+  margin: 0 0 10px;
+  font-family: $sans;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $ink;
+}
+
+.plain-list,
+.checks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 
   li {
     padding: 7px 0;
@@ -313,24 +329,59 @@
     border-top: 1px solid $rule-on-tint;
 
     &:first-child {
+      padding-top: 0;
       border-top: 0;
-      padding-top: 2px;
     }
   }
 }
 
-.side-title {
-  margin: 0 0 8px;
-  font-family: $sans;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: $ink;
+// Live checklist: hollow ring until met, then a green tick
+.checks li {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: start;
+  color: $ink-soft;
+
+  &.met {
+    color: $ink;
+  }
 }
 
-// Requirements start under a rule, after the phase's steps
-.reqs-title {
-  padding-top: 14px;
-  border-top: 1px solid $rule-on-tint;
+.check {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  border: 1.5px solid $field-border;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.checks li.met .check {
+  position: relative;
+  background: $status-approved;
+  border-color: $status-approved;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 4.5px;
+    width: 4px;
+    height: 7px;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(45deg);
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 .reqs-foot {
@@ -751,8 +802,8 @@ legend {
     gap: 24px;
   }
 
-  // Requirements come after the step on narrow screens
-  .reqs {
+  // The side column comes after the step on narrow screens
+  .side {
     position: static;
     order: 2;
   }

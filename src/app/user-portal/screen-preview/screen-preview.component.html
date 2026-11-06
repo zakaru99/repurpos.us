@@ -31,30 +31,47 @@
 <div class="screen-body">
   <div class="layout">
     <!-- What this step needs -->
-    <aside class="reqs" aria-labelledby="reqs-title">
-      <h2 class="side-title">In this phase</h2>
-      <ol class="phase-steps">
-        <li *ngFor="let s of phaseOf(selected).steps">
-          <button type="button" class="step" [ngClass]="isDone(s) ? (s.state === 'skipped' ? 'skipped' : 'done') : s.state"
-                  [class.selected]="s.key === selectedKey"
-                  [attr.aria-current]="s.key === selectedKey ? 'step' : null" (click)="select(s)">
-            <span class="num">{{ pad(number(s)) }}</span>
-            <span class="step-title">{{ s.title }}</span>
-            <span class="step-note" *ngIf="!(sent && s.key === 'hits')">{{ s.note }}</span>
-            <span class="step-note" *ngIf="sent && s.key === 'hits'">Sent today</span>
-          </button>
-        </li>
-      </ol>
+    <aside class="side">
+      <!-- The phase's steps: plain navigation on white -->
+      <nav class="phase-nav" aria-labelledby="phase-nav-title">
+        <h2 class="side-label" id="phase-nav-title">{{ phaseOf(selected).title }}</h2>
+        <ol class="phase-steps">
+          <li *ngFor="let s of phaseOf(selected).steps">
+            <button type="button" class="step" [ngClass]="isDone(s) ? (s.state === 'skipped' ? 'skipped' : 'done') : s.state"
+                    [class.selected]="s.key === selectedKey"
+                    [attr.aria-current]="s.key === selectedKey ? 'step' : null" (click)="select(s)">
+              <span class="num">{{ pad(number(s)) }}</span>
+              <span class="step-title">{{ s.title }}</span>
+              <span class="step-note" *ngIf="!(sent && s.key === 'hits')">{{ s.note }}</span>
+              <span class="step-note" *ngIf="sent && s.key === 'hits'">Sent today</span>
+            </button>
+          </li>
+        </ol>
+      </nav>
 
-      <h2 class="side-title reqs-title" id="reqs-title">{{ requirements[selectedKey].title }}</h2>
-      <ul>
-        <li *ngFor="let r of requirements[selectedKey].items">{{ r }}</li>
-      </ul>
-      <p class="reqs-foot">Outside the usual steps:
-        <a href="javascript:void(0)">quantity exception</a>,
-        <a href="javascript:void(0)">counter screen</a>,
-        <a href="javascript:void(0)">delay publication</a>
-      </p>
+      <!-- What the selected step needs: a reference box of its own -->
+      <section class="reqs" aria-labelledby="reqs-title">
+        <h2 class="reqs-title" id="reqs-title">{{ requirements[selectedKey].title }}</h2>
+
+        <!-- The due step: ticked off live as the form meets each one -->
+        <ul class="checks" *ngIf="selectedKey === 'hits' && !sent">
+          <li *ngFor="let r of hitReqs" [class.met]="r.met">
+            <span class="check" aria-hidden="true"></span>
+            <span>{{ r.text }}</span>
+            <span class="sr-only">{{ r.met ? '(done)' : '(not yet)' }}</span>
+          </li>
+        </ul>
+
+        <ul class="plain-list" *ngIf="!(selectedKey === 'hits' && !sent)">
+          <li *ngFor="let r of requirements[selectedKey].items">{{ r }}</li>
+        </ul>
+
+        <p class="reqs-foot">Outside the usual steps:
+          <a href="javascript:void(0)">quantity exception</a>,
+          <a href="javascript:void(0)">counter screen</a>,
+          <a href="javascript:void(0)">delay publication</a>
+        </p>
+      </section>
     </aside>
 
     <!-- The selected step at full size -->
