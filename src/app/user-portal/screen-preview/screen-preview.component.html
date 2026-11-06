@@ -5,16 +5,16 @@
                  [sections]="phaseTabs" [tabs]="true" [activeId]="phaseOf(selected).title"
                  (tabSelect)="openPhaseTab($event)" [compact]="true"
                  backLabel="Your account" backLink="/user_portal/my_assays">
-  <!-- Where the screen is: whose move it is -->
-  <p header-meta class="next" [ngClass]="waiting.who" role="status">
-    <span class="next-who">{{ waiting.who === 'you' ? 'Your next step' : 'With Calibr' }}</span>
-    <span class="next-what">{{ waiting.text }}</span>
-    <button type="button" class="next-link" *ngIf="selectedKey !== waiting.step.key" (click)="select(waiting.step)">
-      {{ waiting.who === 'you' ? 'Open it' : 'What happens next' }}
-    </button>
-  </p>
-
-  <dl header-aside class="figures" aria-label="Key dates">
+  <!-- Like an assay page's figures: who's next first, then the dates -->
+  <dl header-aside class="figures" aria-label="This screen at a glance">
+    <div class="fig">
+      <dt>Waiting on</dt>
+      <dd class="who" [ngClass]="waiting.who">{{ waiting.who === 'you' ? 'You' : 'Calibr' }}</dd>
+    </div>
+    <div class="fig">
+      <dt>Next step</dt>
+      <dd><button type="button" class="fig-link" (click)="select(waiting.step)">{{ waiting.step.title }}</button></dd>
+    </div>
     <div class="fig" *ngFor="let d of keyDates"><dt>{{ d.label }}</dt><dd>{{ d.value }}</dd></div>
   </dl>
 </app-page-header>

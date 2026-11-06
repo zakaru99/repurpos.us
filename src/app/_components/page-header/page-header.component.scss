@@ -146,7 +146,47 @@ h1 {
       border-bottom-color: #fff;
     }
 
+    // Tab mode with states: finished in green with a tick, current in amber,
+    // still to come faded. Same light forms of the stage colours as an assay
+    // page's header figures. The open tab keeps its white underline.
+    &.done {
+      color: #7fd6a7;
+
+      &::before {
+        content: '';
+        width: 4px;
+        height: 8px;
+        margin: -3px 9px 0 1px;
+        border-right: 1.5px solid currentColor;
+        border-bottom: 1.5px solid currentColor;
+        transform: rotate(45deg);
+      }
+    }
+
+    &.current {
+      color: #f2c27b;
+    }
+
+    &.upcoming {
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    &.done:hover,
+    &.current:hover,
+    &.upcoming:hover {
+      filter: brightness(1.15);
+    }
+
     @include focus-ring($accent-on-dark, -2px);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 
   // Back to the list, at the far right

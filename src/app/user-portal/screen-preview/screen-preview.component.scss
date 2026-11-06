@@ -33,43 +33,8 @@
 }
 
 // ---------------------------------------------------------------- header
-// app-page-header, as on an assay page. These style what this page puts in
-// its slots: the next-step line (header-meta) and the key dates
-// (header-aside, same as an assay page's figures).
-
-.next {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 12px;
-  margin: 16px 0 0 !important;
-  padding: 2px 0 2px 12px;
-  font-size: 0.9375rem;
-  color: #fff;
-  border-left: 3px solid $accent-on-dark;
-
-  &.you {
-    border-left-color: #f2c27b; // the assay page's light amber for "in progress" on navy
-  }
-}
-
-.next-who {
-  font-weight: 600;
-  color: $accent-on-dark;
-}
-
-.next.you .next-who {
-  color: #f2c27b;
-}
-
-.next-link {
-  @include arrow-link($accent-on-dark, #fff);
-  padding: 0;
-  font: inherit;
-  font-size: 0.875rem;
-  background: none;
-  border: 0;
-}
+// app-page-header, as on an assay page. The header-aside slot holds this
+// screen's figures: who's next, then the key dates.
 
 .figures {
   flex-shrink: 0;
@@ -99,6 +64,30 @@
     text-align: right;
     color: #fff;
   }
+
+  // Who's next, in the light stage colours an assay page uses on navy
+  .who {
+    font-weight: 600;
+
+    &.you { color: #f2c27b; }
+    &.calibr { color: $accent-on-dark; }
+  }
+}
+
+.fig-link {
+  padding: 0;
+  font: inherit;
+  color: #fff;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+
+  &:hover {
+    border-bottom-color: #fff;
+  }
+
+  @include focus-ring($accent-on-dark, 2px);
 }
 
 // ---------------------------------------------------------------- body

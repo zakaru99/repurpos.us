@@ -15,8 +15,8 @@
 
 <nav class="sections" *ngIf="sections?.length" [class.wide]="wide" aria-label="On this page">
   <div class="sections-inner">
-    <button type="button" *ngFor="let s of sections" [class.active]="active === s.id"
-            [attr.aria-current]="active === s.id ? (tabs ? 'page' : 'location') : null" (click)="go(s)">{{ s.label }}</button>
+    <button type="button" *ngFor="let s of sections" [ngClass]="s.state" [class.active]="active === s.id"
+            [attr.aria-current]="active === s.id ? (tabs ? 'page' : 'location') : null" (click)="go(s)">{{ s.label }}<span class="sr-only" *ngIf="s.stateLabel">, {{ s.stateLabel }}</span></button>
     <a class="back" *ngIf="backLink" [routerLink]="backLink">{{ backLabel }}</a>
     <!-- Optional actions at the right end of the bar: <div nav-actions> -->
     <ng-content select="[nav-actions]"></ng-content>

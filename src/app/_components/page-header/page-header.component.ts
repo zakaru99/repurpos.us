@@ -3,6 +3,9 @@ import { Component, EventEmitter, HostListener, Input, OnChanges, Output } from 
 export interface PageSection {
   id: string;     // element id of the section on the page
   label: string;
+  // Tab mode only: colours the tab as finished, current or still to come
+  state?: 'done' | 'current' | 'upcoming';
+  stateLabel?: string; // said to screen readers, e.g. "finished"
 }
 
 // Header for content pages (About, Workflow, Contact): a navy band in the

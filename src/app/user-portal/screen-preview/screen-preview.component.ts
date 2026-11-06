@@ -194,8 +194,12 @@ export class ScreenPreviewComponent implements OnInit {
   }
 
   // Phases as the page header's tabs
-  get phaseTabs(): Array<{ id: string; label: string }> {
-    return this.phases.map(p => ({ id: p.title, label: p.title }));
+  get phaseTabs(): Array<{ id: string; label: string; state: 'done' | 'current' | 'upcoming'; stateLabel: string }> {
+    const said = { done: 'finished', current: 'in progress', upcoming: 'still to come' };
+    return this.phases.map(p => {
+      const state = this.phaseState(p);
+      return { id: p.title, label: p.title, state, stateLabel: said[state] };
+    });
   }
 
   openPhaseTab(tab: { id: string }): void {
