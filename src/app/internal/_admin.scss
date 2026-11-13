@@ -56,6 +56,10 @@ $admin-max: var(--shell-wide); // the data-page column; see "Page width" in DESI
     overflow-x: auto;
     scrollbar-width: none;
 
+    @media (max-width: $bp-nav) {
+      @include scroll-fade;
+    }
+
     &::-webkit-scrollbar {
       display: none;
     }

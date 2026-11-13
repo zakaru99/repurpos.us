@@ -113,6 +113,7 @@ h1 {
   // would clip dropdowns opened from the bar (Add to list, compound notes)
   @media (max-width: $bp-nav) {
     overflow-x: auto;
+    @include scroll-fade;
   }
 
   &::-webkit-scrollbar {
