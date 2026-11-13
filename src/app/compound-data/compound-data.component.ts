@@ -50,6 +50,7 @@ export class CompoundDataComponent implements OnInit {
 
 
   loadFailed = false;
+  cmpdId = '';
 
   constructor(
     @Inject(forwardRef(() => WDQService)) public wd: WDQService,
@@ -78,6 +79,7 @@ export class CompoundDataComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       // console.log('routing... ')
+      this.cmpdId = params['id'];
       this.compoundService.idSubject.next({ id: params['id'], qid: params['qid'] });
     });
 

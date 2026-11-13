@@ -45,12 +45,13 @@
   </p>
   <p class="muted" *ngIf="loading && !failed">Loading assays…</p>
 
-  <div class="message" *ngIf="loading && failed" role="alert">
-    <p class="message-title">The assays didn't load.</p>
-    <p>Try again in a moment. If it keeps failing, email
-      <a href="mailto:reframescreens@scripps.edu">reframescreens@scripps.edu</a>.</p>
-    <button type="button" class="retry" (click)="retry()">Try again</button>
-  </div>
+  <app-status-message *ngIf="loading && failed" kicker="Temporary problem" title="We couldn't load the assays">
+    <p>This is usually a short interruption on our side. Please try again in a moment.</p>
+    <ng-container actions>
+      <button type="button" class="status-primary" (click)="retry()">Try again</button>
+      <a class="status-link" href="mailto:reframescreens@scripps.edu">Report a problem</a>
+    </ng-container>
+  </app-status-message>
 
   <ul class="cards" *ngIf="!loading && shown.length">
     <li class="card" *ngFor="let r of shown; trackBy: trackRow">

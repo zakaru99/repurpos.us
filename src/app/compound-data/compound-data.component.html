@@ -1,14 +1,17 @@
 <!-- The record couldn't be fetched: say so rather than show an empty record -->
-<div class="band" *ngIf="loadFailed">
-  <div class="inner">
-    <div class="message" role="alert">
-      <p class="message-title">This compound's record didn't load.</p>
-      <p>Try again in a moment. If it keeps failing, email
-        <a href="mailto:reframescreens@scripps.edu">reframescreens@scripps.edu</a>.</p>
-      <button type="button" class="btn" (click)="reload()">Try again</button>
+<ng-container *ngIf="loadFailed">
+  <app-page-header eyebrow="Temporary problem" title="We couldn't load this compound"
+                   lede="This is usually a short interruption on our side, not a missing record. Please try again in a moment.">
+    <div header-meta class="failed-meta" role="alert">
+      <p class="requested">InChIKey <code>{{ cmpdId }}</code></p>
+      <div class="failed-actions">
+        <button type="button" class="retry" (click)="reload()">Try again</button>
+        <a class="report" href="mailto:reframescreens@scripps.edu">Report a problem</a>
+      </div>
     </div>
-  </div>
-</div>
+  </app-page-header>
+  <div class="failed-space"></div>
+</ng-container>
 
 <ng-container *ngIf="!loadFailed">
 <!-- Band, section nav and Overview -->

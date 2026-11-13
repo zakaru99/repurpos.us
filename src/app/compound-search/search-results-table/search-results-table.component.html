@@ -1,11 +1,13 @@
 <div class="results" id="results-top" *ngIf="status !== 'idle'">
 
   <!-- Search failed -->
-  <div class="message" *ngIf="status === 'error'" role="alert">
-    <p class="message-title">The search didn't go through.</p>
-    <p>Try again in a moment. If it keeps failing, email
-      <a href="mailto:reframescreens@scripps.edu">reframescreens@scripps.edu</a>.</p>
-  </div>
+  <app-status-message *ngIf="status === 'error'" kicker="Temporary problem" title="We couldn't run this search">
+    <p>This is usually a short interruption on our side. Please try again in a moment.</p>
+    <ng-container actions>
+      <button type="button" class="status-primary" (click)="retry()">Try again</button>
+      <a class="status-link" href="mailto:reframescreens@scripps.edu">Report a problem</a>
+    </ng-container>
+  </app-status-message>
 
   <!-- No matches -->
   <div class="message" *ngIf="status === 'done' && !rows.length">

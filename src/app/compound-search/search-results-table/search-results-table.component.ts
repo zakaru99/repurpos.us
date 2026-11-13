@@ -89,6 +89,11 @@ export class SearchResultsTableComponent implements OnDestroy {
     this.subs.forEach(s => s.unsubscribe());
   }
 
+  // The query lives in the URL, so reloading runs the same search again
+  retry() {
+    window.location.reload();
+  }
+
   // ------------------------------------------------------------ derived lists
 
   get hasSimilarity(): boolean {

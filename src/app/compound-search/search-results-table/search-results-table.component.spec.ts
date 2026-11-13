@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
 import { of } from 'rxjs';
+import { PageHeaderModule } from '../../_components/page-header/page-header.module';
 
 import { SearchResultsTableComponent } from './search-results-table.component';
 import { SearchResultService } from '../../_services/index';
@@ -25,7 +26,7 @@ describe('SearchResultsTableComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, FormsModule],
+      imports: [RouterTestingModule, FormsModule, PageHeaderModule],
       declarations: [SearchResultsTableComponent, Struct2dStubComponent, SciItalicizePipe],
       providers: [
         SearchResultService,

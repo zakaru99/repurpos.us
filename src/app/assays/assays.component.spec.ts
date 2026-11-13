@@ -55,7 +55,7 @@ describe('AssaysComponent', () => {
     http.expectOne('/api/assay_list').flush('down', { status: 500, statusText: 'Server Error' });
     fixture.detectChanges();
     const text = fixture.nativeElement.textContent;
-    expect(text).toContain("The assays didn't load.");
+    expect(text).toContain("We couldn't load the assays");
     expect(text).not.toContain('Loading assays');
 
     component.retry();
