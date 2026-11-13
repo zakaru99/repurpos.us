@@ -1,5 +1,6 @@
 import { Component, Inject, Injectable, OnInit, AfterViewInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { Router, NavigationEnd } from '@angular/router';
 
 import { Subscription } from 'rxjs/Subscription';
 
@@ -37,6 +38,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   isMobile: boolean;
   current_year: number;
   private loginSubscription: Subscription;
+  private routerSubscription: Subscription;
   // Typed any: this TS/lib version predates ResizeObserver's ambient type
   // declarations (unlike the older IntersectionObserver, used elsewhere).
   private resizeObserver: any;
@@ -45,9 +47,21 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     @Inject(DOCUMENT) private document: any,
     private http: HttpClient,
     private loginStateService: LoginStateService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private router: Router
   ) {
     this.checkMobile();
+
+    // Close the phone menu after any navigation, not just its own links:
+    // a search from the menu's field navigates from inside quick-search
+    this.routerSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd && this.expanded) {
+        this.expanded = false;
+        // Drop focus from the search field so the phone keyboard closes too
+        const active = document.activeElement as HTMLElement;
+        if (active && active.blur) { active.blur(); }
+      }
+    });
   }
 
   // Publishes this (sticky) header's real rendered height as a CSS custom
@@ -75,6 +89,9 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     if (this.loginSubscription) {
       this.loginSubscription.unsubscribe();
+    }
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
     }
   }
 
