@@ -241,6 +241,15 @@ export class CompoundService {
 
   }
 
+  // /api/data answers a compound missing from the index with a 500 whose
+  // body carries Elasticsearch's NotFoundError (404); treat a real 404 the same
+  static isNotFound(err: any): boolean {
+    if (!err) { return false; }
+    if (err.status === 404) { return true; }
+    const body = err.error && typeof err.error === 'object' ? err.error.error : err.error;
+    return typeof body === 'string' && /NotFoundError|404/.test(body);
+  }
+
   resetVars(): Promise<void> {
     return new Promise<any>((resolve, reject) => {
       // console.log('0 resetting')
@@ -593,7 +602,12 @@ export class CompoundService {
             (err: any) => {
               console.log("Error getting data from backend")
               console.log(err)
-              this.loadFailedSubject.next(true);
+              // A compound with no REFRAME record (e.g. Wikidata only) isn't a
+              // failure: the page shows what Wikidata has. Only real errors
+              // get the "didn't load, try again" message.
+              if (!CompoundService.isNotFound(err)) {
+                this.loadFailedSubject.next(true);
+              }
               resolve('Error fetching data from /data API')
             });
 
