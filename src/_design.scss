@@ -142,6 +142,20 @@ $hex-lattice: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' widt
   }
 }
 
+// A row that scrolls sideways (section and portal tabs on phones): fade the
+// right edge so a cut-off tab reads as "more this way", and end the row with
+// a spacer so the last tab can scroll clear of the fade.
+@mixin scroll-fade($fade: 40px) {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - #{$fade}), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - #{$fade}), transparent);
+
+  &::after {
+    content: '';
+    flex: 0 0 1px;
+    padding-right: $fade;
+  }
+}
+
 // ---------------------------------------------------------------- type
 
 // Small uppercase label above a heading
@@ -374,7 +388,8 @@ $hex-lattice: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' widt
 
 // Readable running text
 @mixin prose {
-  p,
+  // Not the eyebrow label above a heading, which keeps its own small size
+  p:not(.eyebrow),
   li {
     max-width: 68ch;
     font-size: 1rem;
@@ -382,11 +397,12 @@ $hex-lattice: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' widt
     color: $ink;
   }
 
-  p {
+  p:not(.eyebrow) {
     margin: 0 0 14px !important;
   }
 
-  a {
+  // Text links only: a button inside prose keeps its own colours
+  a:not(.btn) {
     color: $accent;
   }
 }

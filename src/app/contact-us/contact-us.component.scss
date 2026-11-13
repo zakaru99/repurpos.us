@@ -148,7 +148,8 @@ form {
     border-top: 1px solid $rule-on-tint;
   }
 
-  p {
+  // Not the eyebrow labels, which keep their own small size and colour
+  p:not(.eyebrow) {
     margin: 0 0 8px !important;
     font-size: 0.9375rem;
     line-height: 1.6;
