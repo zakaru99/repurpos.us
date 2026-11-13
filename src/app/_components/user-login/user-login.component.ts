@@ -2,7 +2,6 @@ import { Component, OnInit, OnChanges, Input, HostListener } from '@angular/core
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
-import { TermsComponent } from '../../_dialogs/index';
 import { PasswordValidation } from '../../_models/password-validation';
 import { LoginStateService } from '../../_services/index';
 import { roleOf } from '../../_models/index';
@@ -143,10 +142,6 @@ export class UserLoginComponent implements OnInit, OnChanges {
         this.resetMessage = (err.error && err.error.message) || RESET_FAILED;
       }
     });
-  }
-
-  openTerms() {
-    this.dialog.open(TermsComponent, { width: '80vw', height: '80vh' });
   }
 
   private resetCaptcha() {

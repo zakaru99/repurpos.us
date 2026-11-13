@@ -72,7 +72,7 @@
           <span class="field-error" *ngIf="regSubmitted && !recaptchaToken">Confirm you're not a robot.</span>
         </div>
 
-        <p class="small">By creating an account you agree to the <button type="button" class="link" (click)="openTerms()">Terms of Use</button>.</p>
+        <p class="small">By creating an account you agree to the <a class="link" href="/about#terms" target="_blank" rel="noopener">terms of use</a>.</p>
         <p class="msg error" *ngIf="regMessage" role="alert">{{ regMessage }}</p>
 
         <button class="login-button" type="button" (click)="register()" [disabled]="sending">{{ sending ? 'Creating account…' : 'Create account' }}</button>

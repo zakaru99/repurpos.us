@@ -7,7 +7,7 @@ import { IntroTextModernComponent } from './intro-text-modern/intro-text-modern.
 import { CompoundSearchComponent } from './compound-search/compound-search.component';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { TermsComponent } from "./_dialogs/terms/terms.component";
+import { TermsRedirectComponent } from "./terms/terms-redirect.component";
 import { WorkflowComponent } from "./workflow/workflow.component";
 import { OntologyTreeComponent } from "./ontology-tree/ontology-tree.component";
 import { ContactUsComponent } from './contact-us/contact-us.component';
@@ -18,7 +18,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 
 const appRoutes: Routes = [
   { path: '', component: IntroTextModernComponent, pathMatch: 'full' },
-  { path: 'terms', component: TermsComponent, pathMatch: 'full', data: { title: 'terms of use' } },
+  { path: 'terms', component: TermsRedirectComponent, pathMatch: 'full' },
   { path: 'search', component: CompoundSearchComponent, pathMatch: 'full', data: { title: 'search' } },
   { path: 'about', pathMatch: 'full', data: { title: 'about' }, loadChildren: () => import('./about/about.module').then(mod => mod.AboutModule) },
   { path: 'workflow', component: WorkflowComponent, pathMatch: 'full', data: { title: 'workflow' } },

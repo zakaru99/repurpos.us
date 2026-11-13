@@ -27,6 +27,7 @@ import { AssayDetailsModalComponent } from './_dialogs/index';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { TermsRedirectComponent } from './terms/terms-redirect.component';
 import { HeaderComponent } from './header/header.component';
 import { HeroSearchComponent } from './intro-text-modern/hero-search/hero-search.component';
 import { ExploreTabsComponent } from './intro-text-modern/explore-tabs/explore-tabs.component';
@@ -105,6 +106,7 @@ import { OntologyColumnsComponent } from './ontology-tree/ontology-columns/ontol
     LoaderComponent,
     ResetPasswordComponent,
     NotFoundComponent,
+    TermsRedirectComponent,
     QuickSearchComponent,
     StructureSearchOptionsComponent,
     StructureSearchComponent,
