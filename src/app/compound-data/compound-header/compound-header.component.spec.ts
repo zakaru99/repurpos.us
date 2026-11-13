@@ -5,7 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTooltipModule } from '@angular/material';
-import { of } from 'rxjs';
+import { of, BehaviorSubject } from 'rxjs';
 
 import { CompoundHeaderComponent } from './compound-header.component';
 import { PageHeaderModule } from '../../_components/page-header/page-header.module';
@@ -50,7 +50,10 @@ class CompoundServiceStub {
   integrityPediatricsState = of(false);
   disclosureDateState = of('');
   smilesState = of('');
-  highestPhaseState = of('');
+  highestPhaseState = new BehaviorSubject<any>('');
+  primaryDataState = of([]);
+  calibrPKDataState = of([]);
+  recordLoadedState = new BehaviorSubject<boolean>(false);
   idStates = of({});
   chiralityState = of('');
   wikiIDsState = of({ chem: [], ids: [] });
@@ -96,5 +99,23 @@ describe('CompoundHeaderComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('shows a dash for highest phase when the API sends an empty list', () => {
+    const svc = TestBed.get(CompoundService);
+    svc.highestPhaseState.next([]);
+    expect(component.highestPhase).toBe('');
+    svc.highestPhaseState.next(['Launched']);
+    expect(component.highestPhase).toBe('Launched');
+  });
+
+  it('says there are no screening results only once the record has loaded empty, when signed in', () => {
+    const svc = TestBed.get(CompoundService);
+    component.loggedIn = true;
+    expect(component.noScreeningData).toBe(false);   // still loading
+    svc.recordLoadedState.next(true);
+    expect(component.noScreeningData).toBe(true);
+    component.loggedIn = false;
+    expect(component.noScreeningData).toBe(false);   // signed out gets the sign-in prompt instead
   });
 });

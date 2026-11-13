@@ -200,9 +200,16 @@
         <app-compound-assay-data></app-compound-assay-data>
         <app-primary-screening-data></app-primary-screening-data>
         <app-compound-calibr-pk-data></app-compound-calibr-pk-data>
+        <p class="empty-note" *ngIf="noScreeningData">
+          No partner screen has reported results for this compound yet.
+          <a routerLink="/assays">Browse assays</a>
+        </p>
       </ng-container>
       <div class="notice" *ngIf="!loggedIn">
-        <p><strong>Sign in to see screening data:</strong> dose-response results from partner screens, primary screen hits and Calibr pharmacokinetics.</p>
+        <div>
+          <p class="notice-title">Sign in to see screening data</p>
+          <p>Dose-response results from partner screens, primary screen hits and Calibr pharmacokinetics.</p>
+        </div>
         <button type="button" class="btn" (click)="signInPrompt()">Sign in</button>
       </div>
     </div>

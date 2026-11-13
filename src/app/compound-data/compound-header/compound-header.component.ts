@@ -38,6 +38,14 @@ export class CompoundHeaderComponent {
   public disclosureDate = '';
   public smiles = '';
   public highestPhase = '';
+  // For the Overview's "no screening results" line
+  primaryCount = 0;
+  pkCount = 0;
+  recordLoaded = false;
+
+  get noScreeningData(): boolean {
+    return this.loggedIn && this.recordLoaded && !this.assayData.length && !this.primaryCount && !this.pkCount;
+  }
 
   // Chemistry (Wikidata when the compound has an item)
   public qid = '';
@@ -93,7 +101,13 @@ export class CompoundHeaderComponent {
     this.cmpdSvc.integrityPediatricsState.subscribe((p: boolean) => this.integrityPediatrics = p);
     this.cmpdSvc.disclosureDateState.subscribe((d: string) => this.disclosureDate = d);
     this.cmpdSvc.smilesState.subscribe((s: string) => this.smiles = s);
-    this.cmpdSvc.highestPhaseState.subscribe((p: string) => this.highestPhase = p);
+    // The API sends the phase as a list ('Launched' or ['Launched']); an empty
+    // list must read as no phase, so the figure shows a dash
+    this.cmpdSvc.highestPhaseState.subscribe((p: any) =>
+      this.highestPhase = Array.isArray(p) ? (p[0] || '') : (p || ''));
+    this.cmpdSvc.primaryDataState.subscribe((d: any[]) => this.primaryCount = (d || []).length);
+    this.cmpdSvc.calibrPKDataState.subscribe((d: any[]) => this.pkCount = (d || []).length);
+    this.cmpdSvc.recordLoadedState.subscribe((loaded: boolean) => this.recordLoaded = loaded);
     this.cmpdSvc.idStates.subscribe((ids: Object) => this.qid = (ids && ids['qid']) || '');
     this.cmpdSvc.chiralityState.subscribe((c: string) => this.chirality = c);
     this.cmpdSvc.idStates.subscribe(() => this.identifiersOpen = false);

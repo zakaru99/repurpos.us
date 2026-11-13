@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 
 import { VendorData } from '../../_models/index';
 import { CompoundService } from '../../_services/index';
@@ -22,6 +22,9 @@ export class CompoundOntologyDataComponent {
     return this.rows.map(r => r.moa).filter((m, i, a) => m && a.indexOf(m) === i).join(', ');
   }
 
+  // Tells the page whether there's anything to show, for its empty state
+  @Output() hasData = new EventEmitter<boolean>();
+
   constructor(private cmpdSvc: CompoundService) {
     this.cmpdSvc.vendorState.subscribe((vdata: VendorData) => {
       this.rows = [];
@@ -37,6 +40,7 @@ export class CompoundOntologyDataComponent {
           node: (x.node_id || [])[i]
         }));
       });
+      this.hasData.emit(this.rows.length > 0);
     });
   }
 }

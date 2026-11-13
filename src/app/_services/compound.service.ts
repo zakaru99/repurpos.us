@@ -55,6 +55,11 @@ export class CompoundService {
   public loadFailedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   loadFailedState = this.loadFailedSubject.asObservable();
 
+  // True once the record's data has arrived (or come back empty), so pages
+  // can show "no data" without flashing it while still loading
+  public recordLoadedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  recordLoadedState = this.recordLoadedSubject.asObservable();
+
   public nameSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
   nameState = this.nameSubject.asObservable();
 
@@ -229,6 +234,7 @@ export class CompoundService {
 
             // console.log('4 promises all resolved: id=' + id + '; qid=' + qid + '; login=' + loginState)
             this.getAliases(id);
+            this.recordLoadedSubject.next(true);
 
             // Set SMILES
             // let smiles = this.wiki_smiles || this.vendor_smiles;
@@ -269,6 +275,7 @@ export class CompoundService {
 
       // announce changes
       this.loadFailedSubject.next(false);
+      this.recordLoadedSubject.next(false);
       this.assaysSubject.next([]);
       this.primaryDataSubject.next([]);
       this.calibrPKDataSubject.next([]);

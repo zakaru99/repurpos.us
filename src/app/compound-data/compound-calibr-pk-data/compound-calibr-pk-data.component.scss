@@ -3,7 +3,7 @@
 @import '../compound';
 
 .block {
-  @include disclosure-block;
+  @include disclosure-block(false);
 }
 
 .disclosure {

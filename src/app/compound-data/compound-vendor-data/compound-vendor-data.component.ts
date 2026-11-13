@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { VendorData} from '../../_models/index';
 import { CompoundService } from '../../_services/index';
@@ -48,11 +48,15 @@ export class CompoundVendorDataComponent implements OnInit {
     'Launched': 13
   };
 
+  // Tells the page whether there's anything to show, for its empty state
+  @Output() hasData = new EventEmitter<boolean>();
+
   constructor(private cmpdSvc: CompoundService) {
     this.cmpdSvc.vendorState.subscribe((vdata: VendorData) => {
       this.vendor_data = vdata;
       this.sources = this.buildSources(vdata);
       this.active = 0;
+      this.hasData.emit(this.sources.length > 0);
     });
   }
 

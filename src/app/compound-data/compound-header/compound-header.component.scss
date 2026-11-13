@@ -501,12 +501,14 @@
 }
 
 // Signed out: what signing in shows here
+// Signed out: same tinted strip as the Development band's prompt
+// (compound-data .notice): title line, one sentence, button
 .notice {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 16px 20px;
+  padding: 18px 20px;
   background: $tint-bg;
   border-radius: $radius-sharp;
 
@@ -516,9 +518,27 @@
     line-height: 1.55;
     color: $ink;
   }
+}
 
-  strong {
-    font-weight: 600;
+.notice-title {
+  margin-bottom: 4px !important;
+  font-weight: 600;
+}
+
+// Signed in, nothing screened yet: one quiet line between rules
+.empty-note {
+  margin: 0 !important;
+  padding: 16px 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: $ink-soft;
+  border-top: 1px solid $rule;
+  border-bottom: 1px solid $rule;
+
+  a {
+    margin-left: 4px;
+    font-weight: 500;
+    color: $accent;
   }
 }
 

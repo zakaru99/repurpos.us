@@ -50,6 +50,10 @@ export class CompoundDataComponent implements OnInit {
 
 
   loadFailed = false;
+  // For the Development band's empty state
+  recordLoaded = false;
+  devVendor = false;
+  devOntology = false;
   cmpdId = '';
 
   constructor(
@@ -118,6 +122,7 @@ export class CompoundDataComponent implements OnInit {
     })
 
     this.compoundService.loadFailedState.subscribe((failed: boolean) => this.loadFailed = failed);
+    this.compoundService.recordLoadedState.subscribe((loaded: boolean) => this.recordLoaded = loaded);
   }
 
   // Fetch the record again after a failed load
