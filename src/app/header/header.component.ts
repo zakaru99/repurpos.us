@@ -26,7 +26,14 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   loggedIn: boolean = false;
   // Admins and reviewers get the admin portal link
   hasPortal: boolean = false;
-  expanded: boolean = false;
+  // Phone/tablet menu. Open, it covers the page, so the page behind it
+  // mustn't scroll (body.menu-open, styles.scss)
+  private _expanded = false;
+  get expanded(): boolean { return this._expanded; }
+  set expanded(open: boolean) {
+    this._expanded = open;
+    document.body.classList.toggle('menu-open', open);
+  }
   isMobile: boolean;
   current_year: number;
   private loginSubscription: Subscription;
@@ -120,6 +127,19 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   collapseNav() {
     this.expanded = false;
+  }
+
+  // Search button in the phone bar: open the menu with the field focused
+  openSearch() {
+    this.expanded = true;
+    setTimeout(() => {
+      const input = document.getElementById('search-box-add') as HTMLInputElement;
+      if (input) { input.focus(); }
+    });
+  }
+
+  @HostListener('document:keydown.escape') onEscape() {
+    if (this.expanded && !this.loginBox) { this.expanded = false; }
   }
 
   checkMobile() {

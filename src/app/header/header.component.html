@@ -1,11 +1,6 @@
 <header class="site-header" [class.nav-open]="expanded" [class.login-open]="loginBox">
   <div class="bar">
 
-    <button class="nav-toggle" type="button" (click)="toggleNav()"
-            [attr.aria-expanded]="expanded" aria-controls="primary-nav" aria-label="Toggle navigation">
-      <span class="nav-toggle-lines"></span>
-    </button>
-
     <a href="/" class="brand">
       <img src="../assets/logo-app-sm.png" width="28" height="28" alt="">
       <span class="wordmark"><span class="bold">reframe</span><span class="thin">db</span></span>
@@ -40,6 +35,18 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Phones and tablets: search and menu buttons at the right of the bar -->
+    <div class="bar-end">
+      <button class="icon-btn search-btn" type="button" (click)="openSearch()" aria-label="Search" *ngIf="!expanded">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m12.6 12.6 4.4 4.4"/></svg>
+      </button>
+      <button class="icon-btn nav-toggle" type="button" (click)="toggleNav()"
+              [attr.aria-expanded]="expanded" aria-controls="primary-nav"
+              [attr.aria-label]="expanded ? 'Close menu' : 'Open menu'">
+        <span class="nav-toggle-lines"></span>
+      </button>
     </div>
 
   </div>

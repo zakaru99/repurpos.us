@@ -319,3 +319,11 @@ p {
 p.about-p {
   margin-bottom: 1rem !important;
 }
+
+// Phone/tablet menu open (header.component): it covers the page, so stop the
+// page behind it from scrolling
+@media (max-width: 1080px) {
+  body.menu-open {
+    overflow: hidden;
+  }
+}

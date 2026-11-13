@@ -206,20 +206,38 @@ $bar-height: 64px;
   }
 }
 
-// ---------------------------------------------------------------- toggle (mobile only)
+// ---------------------------------------------------------------- phone bar buttons
 
-.nav-toggle {
+.bar-end {
   display: none;
-  width: 40px;
-  height: 40px;
-  margin-left: -8px;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  margin-right: -10px;
+}
+
+// 44px square touch targets
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   padding: 0;
   background: none;
   border: 0;
+  border-radius: $radius-sharp;
   cursor: pointer;
 
-  &:focus-visible {
-    outline: 2px solid $accent;
+  @include focus-ring($accent, -2px);
+
+  svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: $ink;
+    stroke-width: 1.8;
+    stroke-linecap: round;
   }
 }
 
@@ -229,7 +247,6 @@ $bar-height: 64px;
   display: block;
   width: 20px;
   height: 2px;
-  margin: 0 auto;
   background: $ink;
   transition: transform 0.2s ease, background 0.2s ease;
 }
@@ -255,6 +272,11 @@ $bar-height: 64px;
   &::after { transform: translateY(-6px) rotate(-45deg); }
 }
 
+@keyframes menuIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 // ---------------------------------------------------------------- narrower desktop
 
 @media (max-width: 1280px) {
@@ -264,46 +286,85 @@ $bar-height: 64px;
 }
 
 // ---------------------------------------------------------------- collapsed nav
+// Below 1080px: a slim bar (brand left, search and menu buttons right). The
+// menu opens as a full-screen white panel under the bar: search field, the
+// page links as full-width rows, then the account action.
 
 @media (max-width: 1080px) {
   .bar {
-    flex-wrap: wrap;
-    gap: 0 12px;
+    gap: 12px;
+    min-height: 56px;
     padding: 0 20px;
   }
 
-  .nav-toggle {
-    display: block;
+  .brand .wordmark {
+    font-size: 1.25rem;
+  }
+
+  .bar-end {
+    display: flex;
   }
 
   .nav-body {
     display: none;
-    flex: 0 0 100%;
+    position: fixed;
+    top: var(--site-header-height, 57px);
+    right: 0;
+    bottom: 0;
+    left: 0;
     flex-direction: column;
     align-items: stretch;
+    justify-content: flex-start;
     gap: 0;
-    padding: 12px 0 20px;
+    padding: 16px 20px calc(32px + env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: #fff;
     border-top: 1px solid $rule;
   }
 
   .nav-open .nav-body {
     display: flex;
+    animation: menuIn 0.16s ease-out;
   }
 
   .search {
+    display: block;
     padding-bottom: 8px;
   }
 
   .nav-links {
     flex-direction: column;
+    align-self: stretch;
     gap: 0;
 
+    li {
+      display: block;
+    }
+
+    // Full-width rows with a chevron, like a settings list
     a {
-      padding: 12px 0;
+      justify-content: space-between;
+      width: 100%;
+      padding: 15px 0;
+      font-size: 1.0625rem;
       border-bottom: 1px solid $rule-soft;
 
       &::after {
-        display: none;
+        position: static;
+        width: 7px;
+        height: 7px;
+        margin-right: 4px;
+        background: none;
+        border-top: 1.5px solid $icon;
+        border-right: 1.5px solid $icon;
+        transform: rotate(45deg);
+        transition: none;
+      }
+
+      &:hover::after,
+      &.active::after {
+        transform: rotate(45deg);
       }
 
       &.active {
@@ -317,12 +378,24 @@ $bar-height: 64px;
     align-items: stretch;
     gap: 12px;
     height: auto;
-    padding: 16px 0 0;
+    padding: 24px 0 0;
     border-left: 0;
   }
 
+  // Signed out: one plain full-width button (outline, not a navy CTA)
   .sign-in {
-    padding: 4px 0;
+    width: 100%;
+    padding: 12px 22px;
+    font-weight: 600;
+    text-align: center;
+    color: $ink;
+    border: 1px solid $field-border;
+    border-radius: $radius-sharp;
+
+    &:hover {
+      color: $ink;
+      border-color: $icon;
+    }
   }
 
   // Full-screen sign-in sheet

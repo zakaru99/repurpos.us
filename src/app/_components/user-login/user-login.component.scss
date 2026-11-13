@@ -203,11 +203,20 @@
   }
 }
 
+// In the phone menu: the same full-width outline button as Sign in
 @media (max-width: 1080px) {
   .logout-button {
     display: block;
     width: 100%;
-    padding: 4px 0;
-    text-align: left;
+    padding: 12px 22px;
+    font-weight: 600;
+    text-align: center;
+    color: $ink;
+    border: 1px solid $field-border;
+    border-radius: $radius-sharp;
+
+    &:hover {
+      border-color: $icon;
+    }
   }
 }
