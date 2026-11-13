@@ -57,7 +57,7 @@ describe('IntroTextModernComponent', () => {
     fixture.detectChanges();
     expect(component.phases.length).toBe(2);
     expect(component.phaseTotal).toBe(30);
-    expect(fixture.nativeElement.textContent).toContain('Share of 30 compounds');
+    expect(fixture.nativeElement.textContent).toContain('Share of the 30 compounds in the screening library');
   });
 
   it('should hide the phase chart if the counts fail to load', () => {

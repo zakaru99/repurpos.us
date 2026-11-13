@@ -118,7 +118,7 @@
       <figure class="chart" *ngIf="!phasesFailed">
         <figcaption>
           <h3>Compounds by highest development phase</h3>
-          <span class="chart-sub">{{ phases ? 'Share of ' + (phaseTotal | number) + ' compounds' : 'Loading…' }}</span>
+          <span class="chart-sub">{{ phases ? 'Share of the ' + (phaseTotal | number) + ' compounds in the screening library' : 'Loading…' }}</span>
         </figcaption>
         <ul class="hbars" *ngIf="phases">
           <li *ngFor="let p of phases" tabindex="0"
