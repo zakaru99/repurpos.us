@@ -84,7 +84,8 @@
 }
 
 .curve-thumb-btn {
-  margin: 0 4px 0 0;
+  position: relative;
+  margin: 0;
   padding: 0;
   line-height: 0;
   background: #fff;
@@ -118,9 +119,96 @@
   cursor: zoom-out;
 }
 
-.curve-full {
-  max-width: 90vw;
-  max-height: 90vh;
+// "+2": more curves for this row, in the viewer
+.curve-more {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  padding: 2px 4px;
+  font-family: $mono;
+  font-size: 0.6875rem;
+  line-height: 1;
+  color: #fff;
+  background: $navy;
+}
+
+.curve-viewer {
+  margin: 0;
   background: #fff;
   cursor: default;
+}
+
+.curve-full {
+  display: block;
+  max-width: 90vw;
+  max-height: calc(90vh - 56px);
+}
+
+// Under the curve: which assay, "2 of 5" with arrows, close
+.curve-caption {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 12px 10px 16px;
+  font-family: $sans;
+  font-size: 0.875rem;
+  color: $ink;
+  border-top: 1px solid $rule;
+}
+
+.curve-what {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.curve-id {
+  margin-left: 6px;
+  font-family: $mono;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+}
+
+.curve-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  color: $ink-soft;
+
+  button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 1.25rem;
+    line-height: 1;
+    color: $ink;
+    background: none;
+    border: 1px solid $rule;
+    border-radius: $radius-sharp;
+    cursor: pointer;
+
+    &:hover {
+      border-color: $accent;
+    }
+
+    @include focus-ring($accent, 2px);
+  }
+}
+
+.curve-close {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: $ink-soft;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:hover {
+    color: $ink;
+  }
+
+  @include focus-ring($accent, 2px);
 }

@@ -29,4 +29,18 @@ describe('CompoundAssayDataComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('opens all curves of a row in the viewer and steps through them, wrapping round', () => {
+    component.openCurves({ assay_id: 'A1', curve_keys: ['k1', 'k2', 'k3'] } as any);
+    expect(component.viewer.index).toBe(0);
+    component.step(1);
+    expect(component.viewer.keys[component.viewer.index]).toBe('k2');
+    component.step(-1);
+    component.step(-1);
+    expect(component.viewer.keys[component.viewer.index]).toBe('k3');
+    component.onViewerKey(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+    expect(component.viewer.index).toBe(0);
+    component.closeCurve();
+    expect(component.viewer).toBeNull();
+  });
 });

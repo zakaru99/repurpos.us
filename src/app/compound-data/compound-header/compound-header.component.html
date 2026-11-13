@@ -5,8 +5,10 @@
   <div header-meta class="head-meta">
     <!-- Aliases, then the counterion note on the same line -->
     <div class="aka">
-      <span *ngIf="byline">{{ byline }}</span>
-      <span class="sep" *ngIf="byline" aria-hidden="true">·</span>
+      <span *ngIf="distinctAliases.length">Also known as {{ shownAliases.join(', ') }}<button type="button" class="aka-more"
+          *ngIf="distinctAliases.length > aliasPreview" [attr.aria-expanded]="showAllAliases"
+          (click)="showAllAliases = !showAllAliases">{{ showAllAliases ? 'show fewer' : 'and ' + (distinctAliases.length - aliasPreview) + ' more' }}</button></span>
+      <span class="sep" *ngIf="distinctAliases.length" aria-hidden="true">·</span>
       <!-- How the vendor records were matched; opens a panel under the link -->
       <div class="combine" (click)="$event.stopPropagation()">
         <button type="button" class="combine-link" (click)="showCombine = !showCombine"
@@ -214,11 +216,6 @@
       </div>
     </div>
 
-    <p class="aliases" *ngIf="aliases.length">
-      <span class="aliases-label">Aliases</span>
-      {{ shownAliases.join(', ') }}<button type="button" class="link more" *ngIf="aliases.length > aliasPreview"
-        (click)="showAllAliases = !showAllAliases">{{ showAllAliases ? 'Show fewer' : 'Show all ' + aliases.length }}</button>
-    </p>
 
     <!-- Collapsed extras -->
     <div class="extras">

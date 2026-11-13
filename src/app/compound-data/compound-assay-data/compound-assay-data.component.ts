@@ -33,7 +33,8 @@ export class CompoundAssayDataComponent {
 
   // Dose-response curve images, served by the backend from the ACAS uploads S3 bucket
   curveUrlBase = environment.api_url + '/curve_image?key=';
-  enlargedCurve: string = null;
+  // Enlarged view of one row's curves, stepped through with arrows
+  viewer: { keys: string[]; index: number; assayId: string; title: string } = null;
 
   constructor(private cmpdSvc: CompoundService) {
     this.cmpdSvc.assaysState.subscribe((assays: AssayData[]) => {
@@ -80,13 +81,31 @@ export class CompoundAssayDataComponent {
     return this.curveUrlBase + encodeURIComponent(key);
   }
 
-  openCurve(key: string) {
-    this.enlargedCurve = this.curveUrl(key);
+  openCurves(row: AssayData, index = 0) {
+    this.viewer = {
+      keys: row.curve_keys || [],
+      index,
+      assayId: row.assay_id,
+      title: (row as any).title_short || (row as any).assay_title || ''
+    };
+  }
+
+  step(by: number) {
+    if (!this.viewer) { return; }
+    const n = this.viewer.keys.length;
+    this.viewer.index = (this.viewer.index + by + n) % n;
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onViewerKey(event: KeyboardEvent) {
+    if (!this.viewer) { return; }
+    if (event.key === 'ArrowRight') { this.step(1); event.preventDefault(); }
+    if (event.key === 'ArrowLeft') { this.step(-1); event.preventDefault(); }
   }
 
   @HostListener('document:keydown.escape')
   closeCurve() {
-    this.enlargedCurve = null;
+    this.viewer = null;
   }
 
   sortData(column: string) {

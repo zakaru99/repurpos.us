@@ -32,9 +32,11 @@
             <span class="tox-note" *ngIf="isToxic(x)">cytotoxic</span>
           </td>
           <td class="curve">
-            <button type="button" class="curve-thumb-btn" *ngFor="let key of x.curve_keys" (click)="openCurve(key)"
-                    [attr.aria-label]="'Enlarge dose response curve for ' + x.assay_id">
-              <img class="curve-thumb" [src]="curveUrl(key)" loading="lazy" alt="">
+            <!-- One thumbnail per row; the rest of the row's curves are in the viewer -->
+            <button type="button" class="curve-thumb-btn" *ngIf="x.curve_keys?.length" (click)="openCurves(x)"
+                    [attr.aria-label]="(x.curve_keys.length > 1 ? 'View ' + x.curve_keys.length + ' dose response curves' : 'Enlarge dose response curve') + ' for ' + x.assay_id">
+              <img class="curve-thumb" [src]="curveUrl(x.curve_keys[0])" loading="lazy" alt="">
+              <span class="curve-more" *ngIf="x.curve_keys.length > 1">+{{ x.curve_keys.length - 1 }}</span>
             </button>
           </td>
         </tr>
@@ -48,7 +50,20 @@
   </div>
 
   <!-- ENLARGED CURVE -->
-  <div class="curve-overlay" *ngIf="enlargedCurve" (click)="closeCurve()" role="dialog" aria-modal="true" aria-label="Dose response curve">
-    <img class="curve-full" [src]="enlargedCurve" alt="Dose response curve" (click)="$event.stopPropagation()">
+  <div class="curve-overlay" *ngIf="viewer" (click)="closeCurve()" role="dialog" aria-modal="true"
+       [attr.aria-label]="'Dose response curves for ' + viewer.assayId">
+    <figure class="curve-viewer" (click)="$event.stopPropagation()">
+      <img class="curve-full" [src]="curveUrl(viewer.keys[viewer.index])"
+           [alt]="'Dose response curve ' + (viewer.index + 1) + ' of ' + viewer.keys.length + ' for ' + viewer.assayId">
+      <figcaption class="curve-caption">
+        <span class="curve-what">{{ viewer.title }} <span class="curve-id">{{ viewer.assayId }}</span></span>
+        <span class="curve-nav" *ngIf="viewer.keys.length > 1">
+          <button type="button" (click)="step(-1)" aria-label="Previous curve">‹</button>
+          <span aria-live="polite">{{ viewer.index + 1 }} of {{ viewer.keys.length }}</span>
+          <button type="button" (click)="step(1)" aria-label="Next curve">›</button>
+        </span>
+        <button type="button" class="curve-close" (click)="closeCurve()" aria-label="Close">×</button>
+      </figcaption>
+    </figure>
   </div>
 </div>

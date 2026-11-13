@@ -29,6 +29,24 @@
   }
 }
 
+// "and 3 more" / "show fewer" after the aliases: expands the list in place
+.aka-more {
+  margin-left: 4px;
+  padding: 0;
+  font: inherit;
+  color: $accent-on-dark;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  @include focus-ring($accent-on-dark, 2px);
+}
+
 .meta {
   display: flex;
   flex-wrap: wrap;
@@ -690,18 +708,6 @@
   }
 
   @include focus-ring($accent, 2px);
-}
-
-.aliases {
-  margin: 14px 0 0 !important;
-  font-size: 0.9375rem;
-  line-height: 1.55;
-  color: $ink;
-}
-
-.aliases-label {
-  margin-right: 10px;
-  color: $ink-soft;
 }
 
 .formula {

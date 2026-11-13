@@ -63,7 +63,8 @@ export class CompoundHeaderComponent {
   showAllAliases = false;
   // "Counterions may differ between sources" panel in the band
   showCombine = false;
-  readonly aliasPreview = 8;
+  // Aliases shown in the header line before "and N more"
+  readonly aliasPreview = 4;
 
   compoundId = '';
   compoundName = '';
@@ -154,15 +155,23 @@ export class CompoundHeaderComponent {
     return new Set(this.assayData.map(a => a.assay_id)).size;
   }
 
-  // "Run by"-style line under the title: the first few aliases
-  get byline(): string {
-    if (!this.aliases.length) { return ''; }
-    const shown = this.aliases.slice(0, 4).join(', ');
-    return 'Also known as ' + shown + (this.aliases.length > 4 ? ` and ${this.aliases.length - 4} more` : '');
+  // Aliases without repeats that differ only in case (Gleevec / GLEEVEC) or
+  // repeat the compound's own name; the first spelling seen is kept
+  get distinctAliases(): string[] {
+    const seen = new Set<string>([(this.label || '').trim().toLowerCase()]);
+    return this.aliases.filter(a => {
+      const key = (a || '').trim().toLowerCase();
+      if (!key || seen.has(key)) { return false; }
+      seen.add(key);
+      return true;
+    });
   }
 
+  // "Also known as" line under the name: the first few, then all of them
+  // in place once "and N more" is clicked
   get shownAliases(): string[] {
-    return this.showAllAliases ? this.aliases : this.aliases.slice(0, this.aliasPreview);
+    const all = this.distinctAliases;
+    return this.showAllAliases ? all : all.slice(0, this.aliasPreview);
   }
 
   // Safety and clinical notes for the top of the Overview

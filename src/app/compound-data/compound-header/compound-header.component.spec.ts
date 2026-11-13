@@ -101,6 +101,15 @@ describe('CompoundHeaderComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('lists each alias once, ignoring case and the compound name, four before more', () => {
+    component.label = 'Imatinib';
+    component.aliases = ['Gleevec', 'GLEEVEC', 'Glivec', 'imatinib', 'IMATINIB', 'Imatinib mesilate', 'STI-571', 'CGP-57148B'];
+    expect(component.distinctAliases).toEqual(['Gleevec', 'Glivec', 'Imatinib mesilate', 'STI-571', 'CGP-57148B']);
+    expect(component.shownAliases.length).toBe(4);
+    component.showAllAliases = true;
+    expect(component.shownAliases.length).toBe(5);
+  });
+
   it('shows a dash for highest phase when the API sends an empty list', () => {
     const svc = TestBed.get(CompoundService);
     svc.highestPhaseState.next([]);
