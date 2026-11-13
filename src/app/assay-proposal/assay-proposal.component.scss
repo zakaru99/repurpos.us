@@ -1,4 +1,5 @@
-// Assay proposal: page header, then one compact form. Related fields share a
+// Assay proposal: page header, then one compact form in the reading column
+// (a content page, like Contact), with the requirements beside it. Related fields share a
 // row (contact; indication, volume, concentration). Fields: label above, squared input, blue focus ring.
 
 @import '../../design';
@@ -9,14 +10,14 @@
 }
 
 .page {
-  @include shell(var(--shell-wide));
+  @include shell;
   padding-top: 28px;
   padding-bottom: 48px;
 }
 
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 1100px) minmax(300px, 400px);
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
   gap: 48px;
   align-items: start;
 }

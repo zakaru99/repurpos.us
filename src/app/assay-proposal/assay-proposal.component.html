@@ -1,4 +1,4 @@
-<app-page-header eyebrow="Screening partnerships" title="Propose an assay" [compact]="true" [wide]="true"
+<app-page-header eyebrow="Screening partnerships" title="Propose an assay" [compact]="true"
                  lede="Screen the REFRAME collection in your assay. Calibr reviews every proposal and replies by email.">
 </app-page-header>
 
@@ -9,7 +9,7 @@
       <div class="notice" *ngIf="!loggedIn">
         <div>
           <p class="notice-title">Sign in to submit a proposal</p>
-          <p>Proposals are linked to your account so you can follow their status under My assays.</p>
+          <p>Proposals are linked to your account so you can follow their status under Proposals in your user portal.</p>
         </div>
         <button type="button" class="btn" (click)="signInPrompt()">Sign in</button>
       </div>
@@ -17,7 +17,7 @@
       <!-- Submitted -->
       <div class="done" *ngIf="loggedIn && submitted" role="status">
         <h2>Proposal submitted</h2>
-        <p>Thanks — the Calibr team will review “{{ submitted }}” and reply by email. You can follow its status under My assays in your portal.</p>
+        <p>Thanks — the Calibr team will review “{{ submitted }}” and reply by email. You can follow its status under Proposals in your user portal.</p>
         <div class="done-actions">
           <a class="btn" routerLink="/user_portal/my_assays">View my assays</a>
           <button type="button" class="link" (click)="startAnother()">Submit another proposal</button>
