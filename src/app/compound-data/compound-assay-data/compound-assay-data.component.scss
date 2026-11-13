@@ -15,6 +15,12 @@
 @media (max-width: $bp-phone) {
   .scroll {
     overflow-x: auto;
+
+    // Sticky can't work inside the scroll box; it would park the header
+    // row partway down the table, so let it scroll with the rows
+    .results thead th {
+      position: static;
+    }
   }
 }
 

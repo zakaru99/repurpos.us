@@ -28,7 +28,8 @@
       </ul>
 
       <div class="nav-actions">
-        <a *ngIf="!loggedIn" class="sign-in" (click)="showLogin()" (click)="clickedInside($event)">Sign in</a>
+        <button *ngIf="!loggedIn" type="button" class="sign-in" [attr.aria-expanded]="loginBox"
+                (click)="showLogin()" (click)="clickedInside($event)">Sign in</button>
 
         <div class="reveal user-login" [ngClass]="{'open': loginBox, 'logout': loggedIn}">
           <div class="login-sheet" (click)="clickedInside($event)">

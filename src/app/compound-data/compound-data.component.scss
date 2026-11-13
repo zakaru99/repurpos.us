@@ -73,6 +73,31 @@
   font-size: 0.9375rem;
 }
 
+// Record failed to load: same message as the search page's
+.message {
+  padding: 28px 0;
+  font-size: 0.9375rem;
+  color: $ink-soft;
+
+  p {
+    margin: 0 0 6px !important;
+  }
+
+  a {
+    color: $accent;
+  }
+
+  .btn {
+    margin-top: 12px;
+  }
+}
+
+.message-title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: $ink;
+}
+
 @media (max-width: $bp-tablet) {
   .notice {
     flex-direction: column;

@@ -43,7 +43,14 @@
   <p class="count" *ngIf="!loading">
     <strong>{{ shown.length | number }}</strong>&nbsp;of {{ rows.length | number }} assays
   </p>
-  <p class="muted" *ngIf="loading">Loading assays…</p>
+  <p class="muted" *ngIf="loading && !failed">Loading assays…</p>
+
+  <div class="message" *ngIf="loading && failed" role="alert">
+    <p class="message-title">The assays didn't load.</p>
+    <p>Try again in a moment. If it keeps failing, email
+      <a href="mailto:reframescreens@scripps.edu">reframescreens@scripps.edu</a>.</p>
+    <button type="button" class="retry" (click)="retry()">Try again</button>
+  </div>
 
   <ul class="cards" *ngIf="!loading && shown.length">
     <li class="card" *ngFor="let r of shown; trackBy: trackRow">

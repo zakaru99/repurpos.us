@@ -133,16 +133,22 @@ $bar-height: 64px;
 }
 
 .sign-in {
+  padding: 0;
+  font: inherit;
   font-size: 0.9375rem;
   font-weight: 500;
   white-space: nowrap;
   color: $accent;
+  background: none;
+  border: 0;
   cursor: pointer;
 
   &:hover {
     color: $accent-deep;
     text-decoration: none;
   }
+
+  @include focus-ring;
 }
 
 // ---------------------------------------------------------------- sign-in popover
@@ -151,12 +157,19 @@ $bar-height: 64px;
   height: 0;
   width: 0;
   overflow: hidden;
+  // Closed, the sign-in form must not take keyboard focus
+  visibility: hidden;
+
+  &.open {
+    visibility: visible;
+  }
 
   // Logged in: the reveal just holds the logout button inline
   &.logout {
     height: auto;
     width: auto;
     overflow: visible;
+    visibility: visible;
   }
 }
 

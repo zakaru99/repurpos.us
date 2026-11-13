@@ -11,10 +11,10 @@ const routes: Routes = [
     path: '',
     component: UserPortalLayoutComponent,
     children: [
-      { path: 'my_assays', component: MyAssaysComponent },
-      { path: 'my_account', component: MyAccountComponent },
-      { path: 'my_favorites', component: MyFavoritesComponent },
-      { path: 'my_lists', component: MyListsComponent },
+      { path: 'my_assays', component: MyAssaysComponent, data: { title: 'your proposals' } },
+      { path: 'my_account', component: MyAccountComponent, data: { title: 'your account' } },
+      { path: 'my_favorites', component: MyFavoritesComponent, data: { title: 'your favorites' } },
+      { path: 'my_lists', component: MyListsComponent, data: { title: 'your lists' } },
       { path: '', redirectTo: 'my_account', pathMatch: 'full' }
     ]
   }

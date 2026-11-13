@@ -134,11 +134,31 @@ h2 {
 
 @media (max-width: $bp-nav) {
   .layout {
-    grid-template-columns: 1fr;
+    // minmax(0, …) so the table's width can't stretch the column past the screen
+    grid-template-columns: minmax(0, 1fr);
     gap: 40px;
   }
 
   .form-col {
     max-width: 480px;
+  }
+}
+
+@media (max-width: $bp-phone) {
+  // Date inputs have a wide built-in minimum, so stack the pair
+  .row-2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .field input,
+  .field select {
+    min-width: 0;
+    width: 100%;
+  }
+
+  // The header sticks within this box (it scrolls itself), so sideways
+  // scrolling here is safe and keeps Posted and the actions reachable
+  .scroll {
+    overflow-x: auto;
   }
 }

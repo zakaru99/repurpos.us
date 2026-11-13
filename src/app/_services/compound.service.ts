@@ -50,6 +50,11 @@ export class CompoundService {
   // --- Header data ---
   private main_label: string;
   private vendorName: string;
+  // True when the compound's record couldn't be fetched (server error), so
+  // the page says so instead of drawing an empty record that reads as fact
+  public loadFailedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  loadFailedState = this.loadFailedSubject.asObservable();
+
   public nameSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
   nameState = this.nameSubject.asObservable();
 
@@ -254,6 +259,7 @@ export class CompoundService {
       this.similarityResults = [];
 
       // announce changes
+      this.loadFailedSubject.next(false);
       this.assaysSubject.next([]);
       this.primaryDataSubject.next([]);
       this.calibrPKDataSubject.next([]);
@@ -587,6 +593,7 @@ export class CompoundService {
             (err: any) => {
               console.log("Error getting data from backend")
               console.log(err)
+              this.loadFailedSubject.next(true);
               resolve('Error fetching data from /data API')
             });
 
@@ -665,6 +672,7 @@ export class CompoundService {
               console.log('error in search')
               console.log(err)
               // console.log('3b retrieving data ended w/ ERROR')
+              this.loadFailedSubject.next(true);
               resolve("Error in basic data retrieval");
             }
           );

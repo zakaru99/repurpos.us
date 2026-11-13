@@ -148,6 +148,33 @@
   padding: 24px 0;
 }
 
+// Failed to load: same message as the search page's
+.message {
+  padding: 28px 0;
+  font-size: 0.9375rem;
+  color: $ink-soft;
+
+  p {
+    margin: 0 0 6px !important;
+  }
+
+  a {
+    color: $accent;
+  }
+}
+
+.message-title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: $ink;
+}
+
+.retry {
+  @include button-navy;
+  margin-top: 12px;
+  font-size: 0.9375rem;
+}
+
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));

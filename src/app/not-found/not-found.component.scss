@@ -1,0 +1,9 @@
+// Unknown address. Same one-task layout as the confirm and reset pages.
+
+@import '../account';
+
+@include account-page;
+
+.btn {
+  text-align: center;
+}

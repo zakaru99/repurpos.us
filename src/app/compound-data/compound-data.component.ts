@@ -49,6 +49,8 @@ export class CompoundDataComponent implements OnInit {
   meta_descrip: string = ' data from reframeDB, including assay hit data, chemical properties, and biological properties (if available)';
 
 
+  loadFailed = false;
+
   constructor(
     @Inject(forwardRef(() => WDQService)) public wd: WDQService,
     private route: ActivatedRoute,
@@ -112,6 +114,13 @@ export class CompoundDataComponent implements OnInit {
     loginStateService.isUserLoggedIn.subscribe((logState: LoginState) => {
       this.loggedIn = logState.loggedIn
     })
+
+    this.compoundService.loadFailedState.subscribe((failed: boolean) => this.loadFailed = failed);
+  }
+
+  // Fetch the record again after a failed load
+  reload() {
+    this.compoundService.idSubject.next(Object.assign({}, this.compoundService.idSubject.getValue()));
   }
 
 

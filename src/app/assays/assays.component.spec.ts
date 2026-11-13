@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { Title, Meta } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -48,6 +48,20 @@ describe('AssaysComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('says the assays failed to load instead of loading forever, and retries', () => {
+    const http = TestBed.get(HttpTestingController) as HttpTestingController;
+    http.expectOne('/api/assay_list').flush('down', { status: 500, statusText: 'Server Error' });
+    fixture.detectChanges();
+    const text = fixture.nativeElement.textContent;
+    expect(text).toContain("The assays didn't load.");
+    expect(text).not.toContain('Loading assays');
+
+    component.retry();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Loading assays');
+    http.expectOne('/api/assay_list');
   });
 
   it('groups statuses into stages and counts assays with data', () => {

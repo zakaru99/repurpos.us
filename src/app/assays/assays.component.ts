@@ -38,6 +38,7 @@ export class AssaysComponent implements OnInit, OnDestroy {
   rows: Row[] = [];
   shown: Row[] = [];
   loading = true;
+  failed = false;
 
   query = '';
   type = '';
@@ -84,6 +85,7 @@ export class AssaysComponent implements OnInit, OnDestroy {
         this.data = DATA_KINDS.includes(p.data) ? p.data : '';
         this.apply();
       }),
+      this.colorSvc.assaysFailedState.subscribe(f => this.failed = f),
       this.colorSvc.assaysState.subscribe((list: any) => {
         if (!list) { return; }
         this.rows = (list.assayList as AssayDetails[]).map(a => this.toRow(a));
@@ -92,6 +94,10 @@ export class AssaysComponent implements OnInit, OnDestroy {
         this.apply();
       })
     );
+  }
+
+  retry() {
+    this.colorSvc.retrieveAssayList();
   }
 
   ngOnDestroy() {
