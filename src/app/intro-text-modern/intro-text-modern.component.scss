@@ -891,6 +891,13 @@ p {
     gap: 10px;
   }
 
+  // Narrow label column: wrap long labels ("Clinical, phase not stated")
+  // onto two lines rather than cutting them off
+  .hbar-label {
+    white-space: normal;
+    line-height: 1.3;
+  }
+
   // Stack sources two-up without separators so none start a line
   .source-names {
     display: grid;
