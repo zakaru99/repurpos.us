@@ -13,6 +13,8 @@ const GRACE_HOURS = 12;
 })
 export class MaintenanceBannerComponent implements OnInit {
   visible = false;
+  // When, always shown; then the admin's message or the standard one
+  whenText = '';
   displayText = '';
   postedText = '';
 
@@ -52,9 +54,10 @@ export class MaintenanceBannerComponent implements OnInit {
     }
 
     this.scheduledStart = notice.scheduledStart;
+    this.whenText = formatPacificDisplay(notice.scheduledStart);
     this.displayText = notice.message && notice.message.trim()
       ? notice.message
-      : `Scheduled maintenance ${formatPacificDisplay(notice.scheduledStart)} — the site will be down for a few hours.`;
+      : 'The site will be down for a few hours.';
     this.postedText = notice.postedAt ? `Posted ${formatPacificDisplay(notice.postedAt)}` : '';
     this.visible = true;
   }

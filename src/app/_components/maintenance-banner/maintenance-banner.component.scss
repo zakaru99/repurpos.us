@@ -1,25 +1,73 @@
-.maintenance-banner {
+// Site-wide maintenance notice: a slim strip under the header in the
+// pending-status tint, left-aligned in the page column, with a dismiss button.
+
+@import '../../../design';
+
+:host {
+  display: block;
+  font-family: $sans;
+  font-weight: 400;
+}
+
+.banner {
+  background: $status-pending-bg;
+  border-bottom: 1px solid $rule;
+}
+
+.inner {
+  @include shell(var(--shell-wide));
   display: flex;
   align-items: center;
+  gap: 16px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.text {
+  flex: 1 1 auto;
+  margin: 0 !important;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: $ink;
+}
+
+.label {
+  font-weight: 600;
+  color: $status-pending;
+}
+
+.posted {
+  margin-left: 8px;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+}
+
+.dismiss {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
   justify-content: center;
-  gap: 1rem;
-  margin: 0;
-  border-radius: 0;
-  text-align: center;
-  font-size: 0.85rem;
-  color: #000;
+  width: 32px;
+  height: 32px;
+  margin-right: -8px;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: $radius-sharp;
+  cursor: pointer;
 
-  .close {
-    padding: 0;
-    margin: 0;
-    background: none;
-    border: none;
-    line-height: 1;
-    cursor: pointer;
+  svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: $ink-soft;
+    stroke-width: 1.6;
+    stroke-linecap: round;
   }
 
-  &-posted {
-    opacity: 0.75;
-    font-size: 0.8em;
+  &:hover svg {
+    stroke: $ink;
   }
+
+  @include focus-ring($accent, -2px);
 }

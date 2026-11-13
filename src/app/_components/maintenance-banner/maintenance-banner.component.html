@@ -1,6 +1,13 @@
-<div *ngIf="visible" class="alert alert-warning alert-dismissible maintenance-banner" role="status">
-  <span>{{ displayText }}<span *ngIf="postedText" class="maintenance-banner-posted"> ({{ postedText }})</span></span>
-  <button type="button" class="close" aria-label="Dismiss maintenance notice" (click)="dismiss()">
-    <span aria-hidden="true">&times;</span>
-  </button>
+<!-- Site-wide notice of an upcoming maintenance window (set in the admin portal) -->
+<div *ngIf="visible" class="banner" role="status">
+  <div class="inner">
+    <p class="text">
+      <span class="label">Scheduled maintenance, {{ whenText }}.</span>
+      {{ displayText }}
+      <span class="posted" *ngIf="postedText">{{ postedText }}</span>
+    </p>
+    <button type="button" class="dismiss" aria-label="Dismiss maintenance notice" (click)="dismiss()">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+    </button>
+  </div>
 </div>
