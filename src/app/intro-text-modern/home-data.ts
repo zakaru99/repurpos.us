@@ -1,7 +1,6 @@
 // Home page figures, chart data and release notes. Update on each data release.
 //
-// phases: placeholder until real counts are filled in - replace with the number of
-// compounds per highest_phase in the reframe ES index, then set placeholder to false.
+// The development-phase chart isn't here: /api/library_stats counts it live.
 // assayFormats / moaCategories / ontologies were computed from /api/assay_list and
 // ontology-tree/phase2b_moa_updated.json on 2026-10-13.
 export const HOME_DATA = {
@@ -12,36 +11,6 @@ export const HOME_DATA = {
     "pkCompounds": 3761,
     "publishedScreens": 222,
     "lastUpdated": "2026/07/31"
-  },
-  "phases": {
-    "placeholder": true,
-    "_note": "Replace with counts of compounds by highest_phase from the reframe ES index, then set placeholder to false.",
-    "items": [
-      {
-        "label": "Launched",
-        "value": 4800
-      },
-      {
-        "label": "Phase III",
-        "value": 1500
-      },
-      {
-        "label": "Phase II",
-        "value": 3100
-      },
-      {
-        "label": "Phase I",
-        "value": 2300
-      },
-      {
-        "label": "Preclinical",
-        "value": 1500
-      },
-      {
-        "label": "Other / unknown",
-        "value": 631
-      }
-    ]
   },
   "assayFormats": [
     {

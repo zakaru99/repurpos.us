@@ -20,7 +20,9 @@ export class IntroTextModernComponent implements OnInit {
   lastUpdated = new Date(DATA.stats.lastUpdated);
   moaCategories: Bar[] = DATA.moaCategories;
   ontologies: Bar[] = DATA.ontologies;
-  phases: { placeholder: boolean; items: Bar[] } = DATA.phases;
+  // Counted live by the backend; null while loading, and the chart is hidden if they fail
+  phases: Bar[] = null;
+  phasesFailed = false;
   assayFormats: Bar[] = DATA.assayFormats;
 
   whatsNewItems: Array<{ date: Date; text: string }> =
@@ -39,6 +41,10 @@ export class IntroTextModernComponent implements OnInit {
   constructor(private data: HomeDataService) { }
 
   ngOnInit() {
+    this.data.getLibraryStats().subscribe(stats => {
+      this.phases = stats ? stats.phases : null;
+      this.phasesFailed = !stats;
+    });
     for (const key of Object.keys(this.downloads)) {
       const d = this.downloads[key];
       this.data.getFileSize(d.url).subscribe(size => d.size = size);
@@ -51,7 +57,7 @@ export class IntroTextModernComponent implements OnInit {
   }
 
   get phaseTotal(): number {
-    return this.phases.items.reduce((sum, i) => sum + i.value, 0);
+    return (this.phases || []).reduce((sum, i) => sum + i.value, 0);
   }
 
   get groupedItems(): Array<{ label: string; items: Array<{ date: Date; text: string }> }> {

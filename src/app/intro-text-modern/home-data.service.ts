@@ -18,6 +18,12 @@ export interface HomeCompound {
   similar: Array<{ compound_id: string; main_label: string; qid: string; score: number }>;
 }
 
+// Library compounds counted by highest development phase, one bar each
+export interface LibraryStats {
+  total: number;
+  phases: Array<{ label: string; value: number }>;
+}
+
 export interface HomeAssay {
   id: string;
   title: string;
@@ -34,6 +40,7 @@ export class HomeDataService {
   private compounds = new Map<string, Observable<HomeCompound>>();
   private svgs = new Map<string, Observable<SafeUrl>>();
   private assays$: Observable<HomeAssay[]>;
+  private libraryStats$: Observable<LibraryStats>;
   // These load in the background; don't cover the page with the global loader
   private quiet = new HttpHeaders().set(SKIP_LOADER_HEADER, '1');
 
@@ -103,6 +110,19 @@ export class HomeDataService {
       );
     }
     return this.assays$;
+  }
+
+  // Counts for the "Compounds by highest development phase" chart, or null if
+  // they couldn't be loaded. The backend recounts after each index rebuild.
+  getLibraryStats(): Observable<LibraryStats> {
+    if (!this.libraryStats$) {
+      this.libraryStats$ = this.http.get<LibraryStats>('/api/library_stats', { headers: this.quiet }).pipe(
+        map(res => res && res.phases && res.phases.length ? res : null),
+        catchError(() => of(null)),
+        shareReplay(1)
+      );
+    }
+    return this.libraryStats$;
   }
 
   // Size in bytes of a static file, from a HEAD request; null if unknown.

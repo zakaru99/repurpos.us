@@ -115,17 +115,16 @@
     </header>
 
     <div class="charts">
-      <figure class="chart">
+      <figure class="chart" *ngIf="!phasesFailed">
         <figcaption>
           <h3>Compounds by highest development phase</h3>
-          <span class="chart-sub">Share of {{ phaseTotal | number }} compounds</span>
-          <span class="placeholder-tag" *ngIf="phases.placeholder">Placeholder figures, not real counts</span>
+          <span class="chart-sub">{{ phases ? 'Share of ' + (phaseTotal | number) + ' compounds' : 'Loading…' }}</span>
         </figcaption>
-        <ul class="hbars">
-          <li *ngFor="let p of phases.items" tabindex="0"
+        <ul class="hbars" *ngIf="phases">
+          <li *ngFor="let p of phases" tabindex="0"
               [attr.aria-label]="p.label + ': ' + (p.value | number) + ' compounds'">
             <span class="hbar-label">{{ p.label }}</span>
-            <span class="hbar-track"><span class="hbar" [style.width.%]="barWidth(p.value, phases.items)"></span></span>
+            <span class="hbar-track"><span class="hbar" [style.width.%]="barWidth(p.value, phases)"></span></span>
             <span class="hbar-value">{{ p.value / phaseTotal | percent:'1.0-0' }}</span>
             <span class="hbar-tip" role="tooltip">{{ p.value | number }} compounds</span>
           </li>
