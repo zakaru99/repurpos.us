@@ -27,6 +27,7 @@ export class MaintenanceWindowComponent implements OnInit {
   showPast = false;
   isLoading = false;
   listError = '';
+  listFailed = false;
 
   editingId: number | null = null;
   confirmDeleteId: number | null = null;
@@ -47,6 +48,7 @@ export class MaintenanceWindowComponent implements OnInit {
     if (!localStorage.getItem('auth_token')) { return; }
     this.isLoading = true;
     this.listError = '';
+    this.listFailed = false;
     this.api.getMaintenanceWindows().subscribe({
       next: list => {
         // Upcoming first (soonest at the top), then past ones, most recent first
@@ -58,7 +60,7 @@ export class MaintenanceWindowComponent implements OnInit {
         this.isLoading = false;
       },
       error: () => {
-        this.listError = 'Failed to load the maintenance queue.';
+        this.listFailed = true;
         this.isLoading = false;
       }
     });

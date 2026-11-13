@@ -33,7 +33,12 @@
     </ng-container>
     <ng-template #proposalsFailed>
       <h2 class="headline">Proposals</h2>
-      <p class="error">Could not load proposals.</p>
+<app-status-message [compact]="true" kicker="Temporary problem" title="We couldn't load the proposals">
+        <p>This is usually a short interruption on our side. Please try again in a moment.</p>
+        <ng-container actions>
+          <button type="button" class="status-primary" (click)="load()">Try again</button>
+        </ng-container>
+      </app-status-message>
     </ng-template>
   </section>
 
@@ -41,7 +46,12 @@
   <aside class="side">
     <section *ngIf="isAdmin">
       <p class="eyebrow">Maintenance</p>
-      <p class="error" *ngIf="!windows">Could not load the maintenance queue.</p>
+<app-status-message *ngIf="!windows" [compact]="true" kicker="Temporary problem" title="We couldn't load the schedule">
+        <p>This is usually a short interruption on our side. Please try again in a moment.</p>
+        <ng-container actions>
+          <button type="button" class="status-primary" (click)="load()">Try again</button>
+        </ng-container>
+      </app-status-message>
       <ng-container *ngIf="windows">
         <p class="note" *ngIf="nextWindow as w; else noWindow">
           Next window {{ formatPacific(w.scheduledStart) }}.

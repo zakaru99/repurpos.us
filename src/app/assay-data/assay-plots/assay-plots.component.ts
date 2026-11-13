@@ -48,4 +48,9 @@ export class AssayPlotsComponent implements OnDestroy {
     this.stateSubscription.unsubscribe();
   }
 
+
+  // The results are fetched when the page opens; reloading fetches them again
+  retry() {
+    window.location.reload();
+  }
 }

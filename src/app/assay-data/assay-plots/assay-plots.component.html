@@ -1,7 +1,12 @@
 <!-- Dose-response chart: activity switch, the dot plot, then pages.
      The assay page shows this only to signed-in users. -->
 <p class="muted" *ngIf="state === 'loading'">Loading results…</p>
-<p class="error" *ngIf="state === 'error'" role="alert">Could not load the results for this assay. Try reloading the page.</p>
+<app-status-message *ngIf="state === 'error'" kicker="Temporary problem" title="We couldn't load the results for this assay">
+  <p>This is usually a short interruption on our side. Please try again in a moment.</p>
+  <ng-container actions>
+    <button type="button" class="status-primary" (click)="retry()">Try again</button>
+  </ng-container>
+</app-status-message>
 
 <ng-container *ngIf="state === 'done'">
   <ng-container *ngIf="hasDoseResponseData; else noData">

@@ -14,9 +14,12 @@
   </nav>
 </div>
 
-<p class="error" *ngIf="failed" role="alert">
-  Could not load your proposals. <button type="button" class="retry" (click)="reload()">Try again</button>
-</p>
+<app-status-message *ngIf="failed" kicker="Temporary problem" title="We couldn't load your proposals">
+  <p>This is usually a short interruption on our side. Please try again in a moment.</p>
+  <ng-container actions>
+    <button type="button" class="status-primary" (click)="reload()">Try again</button>
+  </ng-container>
+</app-status-message>
 <p class="muted" *ngIf="loading">Loading…</p>
 
 <p class="muted empty" *ngIf="!loading && !failed && !assays.length">

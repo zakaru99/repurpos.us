@@ -1,3 +1,4 @@
+import { PageHeaderModule } from '../../_components/page-header/page-header.module';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +11,7 @@ describe('MaintenanceWindowComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ FormsModule, HttpClientTestingModule ],
+      imports: [ PageHeaderModule, FormsModule, HttpClientTestingModule ],
       declarations: [ MaintenanceWindowComponent ]
     })
     .compileComponents();

@@ -13,7 +13,7 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-status-message',
   template: `
-    <div class="status" role="alert">
+    <div class="status" [class.compact]="compact" role="alert">
       <p class="kicker" *ngIf="kicker">{{ kicker }}</p>
       <p class="headline">{{ title }}</p>
       <div class="body"><ng-content></ng-content></div>
@@ -26,4 +26,6 @@ export class StatusMessageComponent {
   // Short status in coloured text above the title, e.g. "Temporary problem"
   @Input() kicker: string;
   @Input() title: string;
+  // Smaller, for narrow panels (admin Overview)
+  @Input() compact = false;
 }

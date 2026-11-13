@@ -44,7 +44,14 @@
     <h2>Scheduled</h2>
     <p class="error" *ngIf="listError" role="alert">{{ listError }}</p>
 
-    <div class="scroll">
+    <app-status-message *ngIf="listFailed" kicker="Temporary problem" title="We couldn't load the schedule">
+      <p>This is usually a short interruption on our side. Please try again in a moment.</p>
+      <ng-container actions>
+        <button type="button" class="status-primary" (click)="fetchWindows()">Try again</button>
+      </ng-container>
+    </app-status-message>
+
+    <div class="scroll" *ngIf="!listFailed">
     <table class="table">
       <thead>
         <tr>
@@ -82,7 +89,7 @@
       </tbody>
     </table>
     </div>
-    <button type="button" class="show-older" *ngIf="pastCount > 0" (click)="showPast = !showPast">
+    <button type="button" class="show-older" *ngIf="!listFailed && pastCount > 0" (click)="showPast = !showPast">
       {{ showPast ? 'Hide past windows' : 'Show past windows (' + pastCount + ')' }}
     </button>
   </section>

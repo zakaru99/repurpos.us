@@ -5,7 +5,17 @@
   </div>
 </div>
 
-<p class="muted empty" *ngIf="!favorites.length">
+<p class="muted" *ngIf="loadState === 'loading'">Loading…</p>
+
+<app-status-message *ngIf="loadState === 'failed'" kicker="Temporary problem" title="We couldn't load your favorites">
+  <p>This is usually a short interruption on our side. Please try again in a moment.</p>
+  <ng-container actions>
+    <button type="button" class="status-primary" (click)="retry()">Try again</button>
+    <a class="status-link" href="mailto:reframescreens@scripps.edu">Report a problem</a>
+  </ng-container>
+</app-status-message>
+
+<p class="muted empty" *ngIf="loadState === 'ready' && !favorites.length">
   Nothing saved yet. Use Save on a compound's page to add it here.
   <a class="arrow-link" routerLink="/search">Search compounds</a>
 </p>

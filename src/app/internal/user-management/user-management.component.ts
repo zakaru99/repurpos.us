@@ -23,6 +23,7 @@ export class UserManagementComponent implements OnInit {
   // The user whose role menu is open
   menuFor: AdminUser = null;
   loadingStaff = false;
+  staffFailed = false;
   errorMsg = '';
 
   // The user whose access change is awaiting confirmation, and the role they'd get
@@ -79,13 +80,14 @@ export class UserManagementComponent implements OnInit {
 
   loadStaff(): void {
     this.loadingStaff = true;
+    this.staffFailed = false;
     this.api.getStaff().subscribe({
       next: list => {
         this.staff = list;
         this.loadingStaff = false;
       },
       error: () => {
-        this.errorMsg = 'Could not load who has access.';
+        this.staffFailed = true;
         this.loadingStaff = false;
       }
     });

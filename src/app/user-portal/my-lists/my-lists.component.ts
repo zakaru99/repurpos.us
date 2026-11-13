@@ -11,9 +11,12 @@ import { CompoundListsService, CompoundList, CompoundListItem } from '../../_ser
 })
 export class MyListsComponent implements OnInit, OnDestroy {
   lists: CompoundList[] = [];
+  loadState = 'idle';
+  private stateSub: Subscription;
   selectedId: number | null = null;
   items: CompoundListItem[] = [];
   loadingItems = false;
+  itemsFailed = false;
   confirmDelete = false;
   newListName = '';
   showNewInput = false;
@@ -25,6 +28,7 @@ export class MyListsComponent implements OnInit, OnDestroy {
   constructor(private listsService: CompoundListsService) {}
 
   ngOnInit(): void {
+    this.stateSub = this.listsService.loadState$.subscribe(s => this.loadState = s);
     this.sub = this.listsService.lists$.subscribe(lists => {
       this.lists = lists;
       const stillThere = lists.find(l => l.id === this.selectedId);
@@ -39,22 +43,28 @@ export class MyListsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.sub) { this.sub.unsubscribe(); }
     if (this.itemsSub) { this.itemsSub.unsubscribe(); }
+    if (this.stateSub) { this.stateSub.unsubscribe(); }
+  }
+
+  retry(): void {
+    this.listsService.loadLists();
   }
 
   get selected(): CompoundList | undefined {
     return this.lists.find(l => l.id === this.selectedId);
   }
 
-  select(listId: number): void {
-    if (listId === this.selectedId) { return; }
+  select(listId: number, force = false): void {
+    if (listId === this.selectedId && !force) { return; }
     this.selectedId = listId;
     this.confirmDelete = false;
     this.loadingItems = true;
+    this.itemsFailed = false;
     this.items = [];
     if (this.itemsSub) { this.itemsSub.unsubscribe(); }
     this.itemsSub = this.listsService.getItems(listId).subscribe({
       next: items => { this.items = items; this.loadingItems = false; },
-      error: () => { this.loadingItems = false; }
+      error: () => { this.loadingItems = false; this.itemsFailed = true; }
     });
   }
 

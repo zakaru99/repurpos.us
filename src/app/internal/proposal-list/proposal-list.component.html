@@ -8,9 +8,12 @@
          placeholder="Search proposals" aria-label="Search proposals">
 </div>
 
-<p class="error" *ngIf="errorMessage" role="alert">
-  {{ errorMessage }} <button type="button" class="retry" (click)="fetchProposals()">Try again</button>
-</p>
+<app-status-message *ngIf="errorMessage" kicker="Temporary problem" title="We couldn't load the proposals">
+  <p>This is usually a short interruption on our side. Please try again in a moment.</p>
+  <ng-container actions>
+    <button type="button" class="status-primary" (click)="fetchProposals()">Try again</button>
+  </ng-container>
+</app-status-message>
 <p class="muted" *ngIf="isLoading">Loading…</p>
 <p class="count" *ngIf="!isLoading && !errorMessage && filteredProposals.length">
   {{ filteredProposals.length }} {{ filteredProposals.length === 1 ? 'proposal' : 'proposals' }}

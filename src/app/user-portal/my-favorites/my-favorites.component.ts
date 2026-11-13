@@ -11,11 +11,14 @@ import { FavoritesService, FavoriteItem } from '../../_services/favorites.servic
 export class MyFavoritesComponent implements OnInit, OnDestroy {
   favorites: FavoriteItem[] = [];
   query = '';
+  loadState = 'idle';
   private sub: Subscription;
+  private stateSub: Subscription;
 
   constructor(private favoritesService: FavoritesService) {}
 
   ngOnInit(): void {
+    this.stateSub = this.favoritesService.loadState$.subscribe(s => this.loadState = s);
     this.sub = this.favoritesService.favorites$.subscribe(favs => {
       this.favorites = [...favs].sort((a, b) => +new Date(b.saved_on) - +new Date(a.saved_on));
     });
@@ -23,6 +26,11 @@ export class MyFavoritesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.sub) { this.sub.unsubscribe(); }
+    if (this.stateSub) { this.stateSub.unsubscribe(); }
+  }
+
+  retry(): void {
+    this.favoritesService.load();
   }
 
   get shown(): FavoriteItem[] {

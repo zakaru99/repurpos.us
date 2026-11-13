@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PageHeaderModule } from '../_components/page-header/page-header.module';
 import { FormsModule } from '@angular/forms';
 
 import { InternalRoutingModule } from './internal-routing.module';
@@ -14,6 +15,7 @@ import { MaintenanceWindowComponent } from './maintenance-window/maintenance-win
 @NgModule({
   imports: [
     CommonModule,
+    PageHeaderModule,
     FormsModule,
     InternalRoutingModule
   ],

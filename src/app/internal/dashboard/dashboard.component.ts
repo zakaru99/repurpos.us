@@ -35,6 +35,11 @@ export class DashboardComponent implements OnInit {
     const role = this.loginState.isUserLoggedIn.value.role;
     this.isAdmin = role === 'admin';
     this.canDecide = canReview(role);
+    this.load();
+  }
+
+  load() {
+    this.loading = true;
     forkJoin(
       this.api.getProposals().pipe(catchError(() => of(null))),
       this.isAdmin ? this.api.getMaintenanceWindows().pipe(catchError(() => of(null))) : of([])

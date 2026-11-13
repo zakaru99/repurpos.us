@@ -15,6 +15,10 @@ export class FavoritesService {
   private favoriteIds = new Set<string>();
   private favoritesSubject = new BehaviorSubject<FavoriteItem[]>([]);
   favorites$ = this.favoritesSubject.asObservable();
+  // Where the first load stands, so pages can tell "nothing saved" from
+  // "still loading" and "the server failed"
+  private loadStateSubject = new BehaviorSubject<'idle' | 'loading' | 'ready' | 'failed'>('idle');
+  loadState$ = this.loadStateSubject.asObservable();
 
   constructor(private http: HttpClient, private loginState: LoginStateService) {
     this.loginState.isUserLoggedIn.subscribe(state => {
@@ -23,6 +27,7 @@ export class FavoritesService {
       } else {
         this.favoriteIds.clear();
         this.favoritesSubject.next([]);
+        this.loadStateSubject.next('idle');
       }
     });
   }
@@ -33,13 +38,15 @@ export class FavoritesService {
   }
 
   load(): void {
+    this.loadStateSubject.next('loading');
     this.http.get<{ status: string; data: FavoriteItem[] }>(
       `/api/favorites`,
       { headers: this.getHeaders() }
     ).subscribe(res => {
       this.favoriteIds = new Set(res.data.map(f => f.compound_id));
       this.favoritesSubject.next(res.data);
-    });
+      this.loadStateSubject.next('ready');
+    }, () => this.loadStateSubject.next('failed'));
   }
 
   isFavorite(compoundId: string): boolean {
