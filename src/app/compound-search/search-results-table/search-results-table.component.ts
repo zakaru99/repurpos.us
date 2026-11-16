@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { Compound } from '../../_models/index';
-import { SearchResultService } from '../../_services/index';
+import { SearchResultService, LoginStateService } from '../../_services/index';
 
 type Match = 'all' | 'name' | 'target' | 'moa';
 type Availability = 'all' | 'sample' | 'none';
@@ -54,8 +54,14 @@ export class SearchResultsTableComponent implements OnDestroy {
   rows: ResultRow[] = [];
   queryString = '';
   queryType = '';
-  status: 'idle' | 'done' | 'error' = 'idle';
+  // signin: the search needs an account (substructure); busy: the server is
+  // running another substructure search; rejected: the backend refused the
+  // query and said why (errorMessage)
+  status: 'idle' | 'done' | 'error' | 'signin' | 'busy' | 'rejected' = 'idle';
+  errorMessage = '';
   probSMILES = false;
+  total = 0;          // matches found when the backend returned only the top ones
+  truncated = false;
 
   match: Match = 'all';
   availability: Availability = 'all';
@@ -73,7 +79,8 @@ export class SearchResultsTableComponent implements OnDestroy {
     private route: ActivatedRoute,
     private searchResultService: SearchResultService,
     private titleService: Title,
-    private meta: Meta
+    private meta: Meta,
+    private loginState: LoginStateService
   ) {
     this.subs.push(
       this.route.queryParams.subscribe(params => {
@@ -81,7 +88,11 @@ export class SearchResultsTableComponent implements OnDestroy {
         this.queryType = params.mode ? `${params.mode} ${params.type}` : params.type;
         if (!this.queryString) { this.status = 'idle'; this.rows = []; }
       }),
-      this.searchResultService.newSearchResult$.subscribe(result => this.load(result))
+      this.searchResultService.newSearchResult$.subscribe(result => this.load(result)),
+      // Signing in from the prompt runs the search again
+      this.loginState.isUserLoggedIn.subscribe(state => {
+        if (state.loggedIn && this.status === 'signin') { this.retry(); }
+      })
     );
   }
 
@@ -92,6 +103,10 @@ export class SearchResultsTableComponent implements OnDestroy {
   // The query lives in the URL, so reloading runs the same search again
   retry() {
     window.location.reload();
+  }
+
+  signIn() {
+    window.dispatchEvent(new CustomEvent('reframe-sign-in'));
   }
 
   // ------------------------------------------------------------ derived lists
@@ -221,10 +236,17 @@ export class SearchResultsTableComponent implements OnDestroy {
 
     if (!result || !result.data) {
       this.rows = [];
-      this.status = 'error';
+      this.errorMessage = (result && result.message) || '';
+      const code = result && result.status;
+      this.status = code === 401 ? 'signin'
+        : code === 503 ? 'busy'
+        : code === 400 && this.errorMessage ? 'rejected'
+        : 'error';
       return;
     }
 
+    this.total = result.total || 0;
+    this.truncated = !!result.truncated;
     const list: Compound[] = Array.isArray(result.data) ? result.data : [result.data];
     this.rows = list.map((c, i) => this.toRow(c, i));
     this.status = 'done';
