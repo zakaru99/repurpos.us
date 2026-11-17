@@ -20,11 +20,10 @@ class MatInputStubDirective {
 @Component({ selector: 'mat-error', template: '<ng-content></ng-content>' })
 class MatErrorStubComponent {}
 
-@Component({ selector: 'app-forgot-pass-button', template: '' })
-class ForgotPassButtonStubComponent {}
-
-@Component({ selector: 'app-reg-user-dialog', template: '' })
-class RegUserDialogStubComponent {}
+@Component({ selector: 're-captcha', template: '' })
+class ReCaptchaStubComponent {
+  @Input() siteKey: string;
+}
 
 describe('UserLoginComponent', () => {
   let component: UserLoginComponent;
@@ -38,8 +37,7 @@ describe('UserLoginComponent', () => {
         MatFormFieldStubComponent,
         MatInputStubDirective,
         MatErrorStubComponent,
-        ForgotPassButtonStubComponent,
-        RegUserDialogStubComponent
+        ReCaptchaStubComponent
       ],
       providers: [
         LoginStateService,

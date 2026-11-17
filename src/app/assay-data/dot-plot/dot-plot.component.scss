@@ -1,144 +1,100 @@
-$glow-color: #ffc01c;
-$glow-color: #f1ff1c;
-$glow-duration: 1.5s;
-$glow-blur: 20px;
-/* Container */
+// Dose-response dot plot. ViewEncapsulation.None (d3 draws the SVG), so
+// everything is scoped under #dotplot-container.
+
+@import '../../../design';
+
 #dotplot-container {
   position: relative;
   width: 100%;
-}
-/* links */
-.y-link {
-  font-size: 1em;
-  font-family: 'Lato', sans-serif;
-  font-weight: 300;
-  fill: #6a7783;
-  dominant-baseline: middle;
-  /* dominant-baseline: mathematical; */
-  text-anchor: end;
-  cursor: pointer;
-}
+  font-family: $sans;
 
-.y-link:hover {
-  text-decoration: none;
-}
-
-.cmpd-link {
-  fill: white;
-  stroke: none;
-  opacity: 0;
-}
-
-.cmpd-name {
-  text-decoration: underline;
-}
-
-.pointer {
-  cursor: pointer;
-}
-//
-// .pointer {
-//   text-decoration: underline;
-// }
-/* Dot styling */
-.assay-avg {
-  stroke: #212529;
-  stroke-width: 0.4;
-  stroke-opacity: 1;
-}
-
-.assay-val {
-  stroke: #212529;
-  stroke-width: 0.4;
-  fill: #c5c9ce;
-}
-
-.lollipop {
-  stroke: #b1b9c0;
-}
-/* Axes */
-.axis--x .tick text {
-  font-size: 1em;
-  fill: #212529;
-  font-family: "Lato", Arial, sans-serif;
-  font-weight: 300;
-}
-
-.axis path {
-  stroke: #212529;
-  fill: none;
-  stroke-width: 0.4px;
-}
-
-.axis--y line,
-.axis--y path {
-  display: none;
-}
-/* ticks & grid lines */
-.axis line {
-  stroke: #212529;
-  fill: none;
-  stroke-width: 0.8px;
-}
-
-.axis .minor line {
-  stroke-width: 1px;
-  stroke: #212529;
-  stroke-width: 0.4px;
-  stroke: red;
-  opacity: 0.4;
-}
-/* annotations */
-.annotation--x {
-  font-weight: 400;
-  font-family: "Lato", Arial, sans-serif;
-  font-size: 1.5em;
-  opacity: 0.2;
-  text-transform: uppercase;
-}
-
-.annotation-right {
-  text-anchor: end;
-}
-/* Rollover */
-.active {
-  opacity: 1;
-}
-
-.inactive {
-  opacity: 0.25;
-}
-
-.cmpd-link.active {
-  opacity: 0;
-}
-
-.cmpd-link.inactive {
-  opacity: 0.8;
-}
-// glow
-
-.cmpd-name {}
-
-.glow {
-  // color: yellow;
-  text-shadow: none;
-  -webkit-animation: add-glow $glow-duration;
-  -moz-animation: add-glow $glow-duration;
-  -ms-animation: add-glow $glow-duration;
-  animation: add-glow $glow-duration;
-}
-/* other prefixed animation blocks ommitted for brevity */
-@keyframes add-glow {
-  from {
-    text-shadow: -1px -1px $glow-blur $glow-color, -1px 1px $glow-blur $glow-color, 1px 1px $glow-blur $glow-color, 1px -1px $glow-blur $glow-color, -1px 0 $glow-blur $glow-color, 0 1px $glow-blur $glow-color, 1px 0 $glow-blur $glow-color, 0 -1px $glow-blur $glow-color;
+  // Compound names down the left, linking to each compound page
+  .y-link {
+    cursor: pointer;
   }
 
-  to {
-    text-shadow: none;
+  .cmpd-name {
+    font-size: 13px;
+    font-weight: 500;
+    fill: $ink;
+    text-anchor: end;
+    dominant-baseline: middle;
+  }
+
+  .y-link:hover .cmpd-name {
+    fill: $accent;
+    text-decoration: underline;
+  }
+
+  // The old highlight glow behind names
+  .cmpd-name-shadow {
+    display: none;
+  }
+
+  // Stem from the axis to the most potent replicate
+  .lollipop {
+    stroke: $rule;
+    stroke-width: 1;
+    stroke-dasharray: none;
+  }
+
+  // Replicates: small and hollow; mean: larger, coloured by potency, with a
+  // white ring so overlapping dots stay distinct
+  .assay-val {
+    fill: #fff;
+    stroke: $accent;
+    stroke-width: 1.25;
+  }
+
+  .assay-avg {
+    stroke: #fff;
+    stroke-width: 1.5;
+  }
+
+  .pointer {
+    cursor: pointer;
+  }
+
+  // Axis along the top: decade labels and light gridlines
+  .axis path {
+    display: none;
+  }
+
+  .axis line {
+    stroke: $rule-soft;
+    stroke-width: 1;
+  }
+
+  .axis--x .tick text {
+    font-family: $sans;
+    font-size: 11px;
+    fill: $ink-soft;
+  }
+
+  // "less potent / more potent" above the scale bar
+  .annotation--x {
+    font-family: $sans;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    fill: $ink-soft;
+  }
+
+  .annotation-right {
+    text-anchor: end;
+  }
+
+  .imprecise {
+    font-size: 12px;
+  }
+
+  // Hover: dim everything but the compound under the pointer
+  .inactive {
+    opacity: 0.25;
+  }
+
+  .active {
+    opacity: 1;
   }
 }
-
-// .glow {
-//   text-shadow: -1px -1px $glow-blur $glow-color, -1px 1px $glow-blur $glow-color, 1px 1px $glow-blur $glow-color, 1px -1px $glow-blur $glow-color, -1px 0 $glow-blur $glow-color, 0 1px $glow-blur $glow-color, 1px 0 $glow-blur $glow-color, 0 -1px $glow-blur $glow-color;
-// }

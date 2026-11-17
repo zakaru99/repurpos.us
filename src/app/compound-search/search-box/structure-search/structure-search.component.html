@@ -1,24 +1,10 @@
-<mat-accordion class="ketcher-accordion">
+<!-- Options and SMILES field, then the drawing editor. After a search on a
+     shorter screen the editor folds away so the results are in view. -->
+<app-structure-search-options></app-structure-search-options>
 
-  <mat-expansion-panel class="structure-expansion" (opened)="panelOpenState = true" (closed)="panelOpenState = false" [disabled]="!pressed" hideToggle="panelOpenState" [expanded]="panelOpenState">
-    <mat-expansion-panel-header [hidden]="!pressed">
-      <mat-panel-title class="accordion-title col justify-content-end">
-        <button mat-raised-button class="expand-accordion" aria-label="show or hide search options">
-          {{ !pressed ? '' : panelOpenState ? 'Hide search options' : 'Show search options' }}
-        </button>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
+<button type="button" class="toggle" *ngIf="pressed" (click)="panelOpenState = !panelOpenState"
+        [attr.aria-expanded]="panelOpenState">{{ panelOpenState ? 'Hide the editor' : 'Draw or edit the structure' }}</button>
 
-    <!-- EXPANSION PANEL CONTENT -->
-
-    <div class="row d-flex expansion-content" [ngClass]="pressed ? 'submitted' : ''">
-      <!-- Search options -->
-      <app-structure-search-options class="col"></app-structure-search-options>
-    </div>
-
-    <!-- Ketcher-based structure drawing input -->
-    <app-ketcher></app-ketcher>
-
-
-  </mat-expansion-panel>
-</mat-accordion>
+<div [hidden]="!panelOpenState">
+  <app-ketcher></app-ketcher>
+</div>

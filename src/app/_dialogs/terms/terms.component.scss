@@ -1,73 +1,89 @@
-/* Card wrapper matching Sources and Workflow */
-.about-card {
-  background: #f9fbff; /* matches workflow card */
-  border-left: 5px solid #3d6de0;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06); /* lighter shadow like workflow */
-  margin-bottom: 1.5rem;
-}
-  .workflow-card.about-card {
-    background: #f9fbff;
-    border-left: 5px solid #3d6de0;
-    border-radius: 12px;
-    padding: 1.5rem 1.5rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-    backdrop-filter: blur(4px);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+// Terms of use: the last section of the About page (About gives the host
+// .section). Same eyebrow, heading and intro as Data sources above it, then
+// each licensor's terms in full, separated by hairlines, using the full width
+// of the page (the user prefers that to a narrow column here).
 
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+@import '../../../design';
+
+:host {
+  display: block;
+  font-family: $sans;
+  font-weight: 400;
+  color: $ink;
+}
+
+.eyebrow {
+  @include eyebrow;
+  margin: 0 0 8px !important;
+}
+
+h2 {
+  @include content-heading;
+}
+
+.prose {
+  @include prose;
+}
+
+.intro {
+  margin-bottom: 8px;
+}
+
+.licensor {
+  padding: 24px 0 8px;
+  border-top: 1px solid $rule;
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+
+  h3 {
+    margin: 0 0 10px !important;
+    font-family: $sans;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: $ink;
+  }
+
+  p,
+  li {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: $ink-soft;
+  }
+
+  p {
+    margin: 0 0 14px !important;
+  }
+
+  // Numbered clauses (1. Ownership) with lettered sub-clauses (a.) indented
+  ol {
+    margin: 0 0 14px;
+    padding-left: 1.5em;
+  }
+
+  > ol > li {
+    margin-bottom: 12px;
+    padding-left: 4px;
+
+    &::marker {
+      font-weight: 600;
+      color: $ink;
     }
   }
-/* Main header for the card */
-.about-card h2 {
-  text-align: center;
-  font-weight: 600;
-  color: #222;
-  margin-bottom: 1.5rem;
-}
 
-/* Section headers inside the card */
-.about-section h4 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  color: #222;
-}
+  ol ol {
+    margin: 8px 0 0;
+    padding-left: 1.75em;
 
-/* Paragraph text */
-.about-section p {
-  margin: 0;
-  line-height: 1.6;
-  color: #333;
-}
+    li {
+      margin-bottom: 8px;
+      padding-left: 2px;
+    }
+  }
 
-/* Links */
-.about-section a {
-  color: #3d6de0;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.about-section a:hover {
-  text-decoration: underline;
-}
-
-/* Divider between sections */
-.divider {
-  height: 1px;
-  background: #e7ecf6;
-  margin: 1.5rem 0;
-}
-
-/* Bold / Thin text classes */
-.bold {
-  font-weight: 700;
-}
-
-.thin {
-  font-weight: 300;
+  a {
+    color: $accent;
+    overflow-wrap: anywhere;
+  }
 }

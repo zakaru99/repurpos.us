@@ -1,45 +1,20 @@
-<div id="wikidata" *ngIf="table_data.length > 0">
-  <h3 class="vendor-title"><a href="{{'http://www.wikidata.org/entity/' + qid}}" target="_blank" rel="noreferrer">Wikidata data</a></h3>
+<!-- Everything else Wikidata says about the compound; each value searches REFRAMEdb -->
+<div class="block" *ngIf="table_data.length > 0">
+  <button type="button" class="disclosure" (click)="open = !open" [attr.aria-expanded]="open">
+    <span class="chev"></span>
+    <span class="d-title">More from Wikidata</span>
+    <span class="d-summary">{{ summary }}</span>
+  </button>
 
-  <div class="updated" *ngIf="today">
-    last updated {{ today | date:'d MMMM yyyy'}}
-  </div>
-
-  <div class="cmpd-table table" *ngFor="let temp of [1]; let i=index">
-
-    <div class="vendor-header" [ngClass]="i === 0 ? 'first-entry' : 'notfirst-entry'">
-      <div class="col-sm-3">
-        <span class="title">Wikidata ID: </span>
-        <span><a href="{{'http://www.wikidata.org/entity/' + qid}}" target="_blank" rel="noreferrer">{{ qid }}</a></span>
-      </div>
-
-      <!-- Salt form -->
-      <!-- <app-salt-form></app-salt-form> -->
-
-    </div>
-
-    <table class="cmpd-table table" [ngClass]="i === [1].length - 1 ? 'last-entry' : ''">
+  <table class="facts" *ngIf="open">
+    <tbody>
       <tr *ngFor="let x of table_data">
-        <ng-container>
-          <td class="title" scope="row">{{ x['property'] }}</td>
-          <td class="content" scope="row">
-            <span *ngFor="let z of x['values']; let i = index;">
-          <a class="launch-search" [routerLink]="['/search/']" [queryParams]='{ query: "\"" + z + "\"", type: "string" }' [matTooltip]="'launch search for ' + z">
-            {{z}}
-          </a>
-        <!-- <td class="content" scope="row" [ngClass]="x['property'] === 'InChI' || x['property'] === 'canonical SMILES' || x['property'] === 'isomeric SMILES' ? 'smiles' : ''"><span id="{{x['qids'][i]}}" *ngFor="let z of x['values']; let i = index;">{{z}} -->
-      <!-- <span *ngIf="!x['showMore']"></span> -->
-            <span *ngIf="i + 1 < x['values'].length" class='data-separator'></span>
-            <!-- <span *ngIf="x['showMore']">
-            <app-show-more-button [qid]="x['qids'][i]" [pid]="x['pid']" [mainQID]="qid"></app-show-more-button>
-
-          </span> -->
-            </span>
-            <!--<app-edit-item></app-edit-item>-->
-          </td>
-        </ng-container>
+        <th scope="row">{{ x['property'] | slice:0:1 | uppercase }}{{ x['property'] | slice:1 }}</th>
+        <td><span class="values">
+          <a *ngFor="let z of x['values']" [routerLink]="['/search/']" [queryParams]="{ query: '&quot;' + z + '&quot;', type: 'string' }"
+             [matTooltip]="'Search for ' + z">{{ z }}</a>
+        </span></td>
       </tr>
-
-    </table>
-  </div>
+    </tbody>
+  </table>
 </div>

@@ -1,62 +1,24 @@
-<div *ngIf="similarityResults && similarityResults.length > 0" class="clearfix">
+<!-- Structurally similar compounds: structure cards, most similar first -->
+<section id="similar" class="section" *ngIf="similarityResults && similarityResults.length > 0">
+  <h2>Similar compounds <span class="count">{{ similarityResults.length }} {{ similarityResults.length === 1 ? 'compound' : 'compounds' }}, most similar first</span></h2>
 
-  <h3 class="similar-title" id="similar">Similar compounds</h3>
+  <ul class="grid">
+    <li *ngFor="let related of similarityResults | slice:0:num_results" class="card">
+      <a class="card-link" [routerLink]="['/compound_data', related.id.split('/').pop(), { qid: (related.qid || '').split('/').pop() }]">
+        <div class="struct" *ngIf="related.id.length === 14">
+          <app-struct2d [structure]="related.id" struct_type="inchikey" [launch_search]="false"></app-struct2d>
+        </div>
+        <div class="body">
+          <p class="name">{{ related.main_label || related.id }}</p>
+          <p class="sim"><span class="label">Similarity</span> <span class="mono">{{ related.tanimoto | number:'1.2-2' }}</span></p>
+          <p class="aliases" *ngIf="related.aliases?.length">{{ related.aliases.slice(0, 3).join(', ') }}<span *ngIf="related.aliases.length > 3"> and {{ related.aliases.length - 3 }} more</span></p>
+          <p class="data" *ngIf="dataFor(related).length">{{ dataFor(related).join(' · ') }}</p>
+        </div>
+      </a>
+    </li>
+  </ul>
 
-
-  <div class="similar-grp clearfix row">
-    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12" *ngFor="let related of similarityResults; let i=index">
-      <div class="similar-cmpds" *ngIf="i < num_results" id="{{related.id}}">
-        <a [routerLink]="['/compound_data', related.id.split('/').pop(), {qid: related.qid.split('/').pop()}]">
-          <!-- Compound name -->
-          <div class="similar-label">
-            <h4>{{ related.main_label }}</h4>
-          </div>
-
-
-          <div class="alias">
-            <ul>
-              <li *ngFor="let alias of related.aliases; let i=index">
-                {{ alias }}
-                <span *ngIf="i + 1 < related.aliases.length" class='data-separator'></span>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Tanimoto score -->
-          <div class="similar-tanimoto" [ngStyle]="{'background-color': tanimotoScale(related.tanimoto, 0.4), 'border-top-color': tanimotoScale(related.tanimoto), 'border-bottom-color': tanimotoScale(related.tanimoto)}">
-            Tanimoto Similarity Score: {{ related.tanimoto | number: '1.2-2' }}
-          </div>
-
-
-
-          <div class="similar-content row">
-            <!-- 2D Chemical structure -->
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12 similar-struct" *ngIf="related.id.length === 14">
-              <!-- PubChem API can search based on InChI keys- however only returns if there's a CID -->
-                <!-- <img src="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/{{related.id}}/PNG" class="img-responsive" alt="structure {{related.main_label}}"> -->
-                <!-- <img src="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{{related.pubchem.replace('CID', '')}}/PNG" class="img-responsive" alt="structure {{related.main_label}}"> -->
-                <!-- <app-ngl [input]="related.pubchem.replace('CID', '')"></app-ngl> -->
-                <app-struct2d [structure]="related.id" struct_type="inchikey"></app-struct2d>
-            </div>
-
-            <!-- List of available data -->
-            <div [ngClass]="related.id.length === 14 ? 'col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12 similar-avail' : 'col-xs-12 similar-avail'">
-              <app-available-data [availData] = related.properties></app-available-data>
-            </div>
-            <!-- end of available data -->
-
-          </div>
-          <!-- end of structure + available data -->
-        </a>
-      </div>
-      <!-- end of ngIf -->
-      <div class="clearfix" id="hidden" *ngIf="!((i+1) % 3)">.</div>
-    </div>
-    <!-- end of for loop over similar compounds -->
-    <!-- <div class="clearfix"></div> -->
-
-    <!-- Button to load more results -->
-
-  </div>
-  <button *ngIf="num_results < similarityResults.length" id="more" (click)="showMore()" class="center-block" aria-label="show more similar compounds">show more</button>
-</div>
+  <button type="button" class="more" *ngIf="num_results < similarityResults.length" (click)="showMore()">
+    Show {{ Math.min(results_per_page, similarityResults.length - num_results) }} more
+  </button>
+</section>

@@ -1,139 +1,223 @@
+// Header quick search: an icon that opens into a field, with the compound /
+// assay scope, suggestions and a "search all" row in a panel attached to its
+// bottom edge. Same field, focus ring and suggestion rows as the homepage
+// search (intro-text-modern/hero-search), sized for the header.
+
+@import '../../../design';
+
+:host {
+  display: block;
+  font-family: $sans;
+}
+
 form.search {
+  position: relative;
   display: flex;
-  flex-direction: column; /* stack input + dropdown vertically */
-  margin-top: 5px;
-  margin-right: 10px;
-  position: relative; /* crucial for dropdown positioning */
+  align-items: center;
+  margin: 0;
 }
 
-.search label,
-.search mat-icon {
+.search label {
   position: absolute;
-  margin: 1px 0px;
+  top: 50%;
+  left: 9px;
+  z-index: 1;
+  margin: 0;
+  line-height: 0;
+  transform: translateY(-50%);
+  cursor: pointer;
 }
 
-.search input[type="text"] {
-  font-family: "Lato", sans-serif;
-  font-weight: 300;
-  text-indent: 10px;
-  padding-left: 22px;
-  width: 0;
-  height: 30px;
-  background: none;
-  border: none;
+.search-icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: $ink-soft;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
 
+.search.expanded .search-icon {
+  stroke: $ink;
+}
+
+.input-toggle-wrapper {
+  position: relative;
+}
+
+// Closed: just the icon. Open: a squared white field.
+.search input[type="text"] {
+  box-sizing: border-box;
+  width: 36px;
+  height: 36px;
+  padding: 0 12px 0 36px;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: $ink;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: $radius-sharp;
   cursor: pointer;
-  flex-shrink: 1;
-   transition: width 0.3s ease, background 0.3s ease;
+  transition: width 0.25s ease, background 0.2s ease, border-color 0.2s ease;
+
+  &::placeholder {
+    color: transparent;
+  }
+
+  &:hover {
+    background: $hover;
+  }
 }
 
 .search.expanded input[type="text"] {
-  width: 300px;
-  background: white;
-  outline: none;
+  width: 320px;
+  background: #fff;
+  border-color: $field-border;
   cursor: text;
-}
 
-@media only screen and (max-width: 760px) {
-  .search.expanded input[type="text"] {
-    width: 75vw;
+  &::placeholder {
+    color: $ink-faint;
+  }
+
+  // Same inset ring as the homepage search
+  &:focus {
+    outline: none;
+    border-color: $accent;
+    box-shadow: inset 0 0 0 1px $accent;
   }
 }
 
-/* button fade in/out */
-#assay-search-btn {
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-size: 14px;
-  height: 30px;
-  cursor: pointer;
-  margin-left: 10px;
-
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-
-  transition: background-color 0.3s ease, opacity 0.5s ease;
+// The panel joins the field: no gap, square top corners, same width
+.search.open input[type="text"] {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
-.search.expanded #assay-search-btn {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-
-#assay-search-btn mat-icon {
-  font-size: 18px;
-}
-
-@media only screen and (max-width: 760px) {
-  .search.expanded input[type="text"] {
-    width: 75vw;
-  }
-}
-
-.search-toggle {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 8px;
-  border-bottom: 2px solid #ccc;
+.qs-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  box-sizing: border-box;
   width: 100%;
+  min-width: 320px;
+  background: #fff;
+  border: 1px solid $field-border;
+  border-top: 0;
+  border-radius: 0 0 $radius-sharp $radius-sharp;
+  box-shadow: 0 12px 28px rgba(8, 20, 45, 0.18);
+}
+
+// Scope: text tabs, as above the homepage search
+.search-toggle {
+  display: flex;
+  gap: 24px;
+  padding: 0 14px;
+  border-bottom: 1px solid $rule-soft;
 }
 
 .toggle-option {
-  flex: 1;
-  text-align: center;
-  padding: 8px 0;
-  color: #666;
+  margin-bottom: -1px;
+  padding: 10px 0 8px;
+  font: inherit;
+  font-size: 0.8125rem;
   font-weight: 500;
+  color: $ink-soft;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
   cursor: pointer;
-  transition: color 0.3s;
-}
+  transition: color 0.15s ease, border-color 0.15s ease;
 
-.toggle-option.active {
-  color: #1976d2; // Primary color
-}
+  &:hover {
+    color: $ink;
+  }
 
-.slider {
-  position: absolute;
-  bottom: -2px;
-  width: 50%;
-  height: 2px;
-  background-color: #1976d2;
-  transition: left 0.3s ease;
+  &.active {
+    color: $ink;
+    border-bottom-color: $accent;
+  }
+
+  @include focus-ring($accent, 2px);
 }
 
 .suggestions-dropdown {
-  position: absolute; /* dropdown floats under input */
-  top: 100%;          /* directly below input */
-  left: 0;
-  width: 100%;        /* match input width */
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-top: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  list-style: none;
-  padding: 0;
-  z-index: 1000;
-  max-height: 240px;  /* optional scroll if too many suggestions */
+  max-height: 280px;
+  margin: 0;
+  padding: 4px 0;
   overflow-y: auto;
+  list-style: none;
+
+  li {
+    padding: 9px 14px;
+    overflow: hidden;
+    font-size: 0.9375rem;
+    color: $ink;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  li.highlighted {
+    background: $selected;
+  }
 }
 
-.suggestions-dropdown li {
-  padding: 8px 12px;
+// "Search compounds for "…"" with the Enter key hint
+.search-all {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  overflow: hidden;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $accent;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-top: 1px solid $rule-soft;
   cursor: pointer;
-  font-size: 14px;
-  color: #333;
-  transition: background 0.2s;
+
+  &:hover {
+    background: $hover;
+  }
 }
 
-.suggestions-dropdown li:hover {
-  background-color: #f2f2f2;
+.key {
+  flex-shrink: 0;
+  padding: 1px 6px;
+  font-family: $mono;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  color: $ink-soft;
+  border: 1px solid $rule;
+  border-radius: $radius-sharp;
+}
+
+@media (max-width: 1080px) {
+  // Mobile nav: the field is always open and full width
+  .search input[type="text"],
+  .search.expanded input[type="text"] {
+    width: 100%;
+    background: #fff;
+    border-color: $field-border;
+    cursor: text;
+
+    &::placeholder {
+      color: $ink-faint;
+    }
+  }
+
+  .input-toggle-wrapper,
+  form.search {
+    width: 100%;
+  }
+
+  .qs-panel {
+    min-width: 0;
+  }
 }

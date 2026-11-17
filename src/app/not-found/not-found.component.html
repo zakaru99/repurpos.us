@@ -1,0 +1,31 @@
+<app-page-header eyebrow="Error 404" title="We can't find that page"
+                 lede="The link may be out of date, or the address may have a typo.">
+  <div header-meta class="meta">
+    <p class="requested">Address <code>{{ path }}</code></p>
+    <a routerLink="/" class="home">Go to the homepage</a>
+  </div>
+</app-page-header>
+
+<section class="next">
+  <div class="inner">
+    <h2>Where to go from here</h2>
+    <ul class="places">
+      <li>
+        <a routerLink="/search">Search the library</a>
+        <p>Find a compound by name, target, mechanism or structure.</p>
+      </li>
+      <li>
+        <a routerLink="/assays">Browse assays</a>
+        <p>Methods and results for every screen run on the REFRAME library.</p>
+      </li>
+      <li>
+        <a routerLink="/ontology-tree" [queryParams]="{ src: '0' }">Open the ontology tree</a>
+        <p>Compounds by pharmacological role, target and indication.</p>
+      </li>
+      <li>
+        <a routerLink="/about">About REFRAME</a>
+        <p>The library, its data sources and how to get access.</p>
+      </li>
+    </ul>
+  </div>
+</section>

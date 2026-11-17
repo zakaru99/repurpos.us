@@ -23,14 +23,18 @@ import { TermsModule } from './terms/terms.module';
 
 // --- Components ---
 import { AppComponent } from './app.component';
-import { ForgotPasswordComponent, LoginFailComponent, UserRegistrationComponent, AssayDetailsModalComponent } from './_dialogs/index';
+import { AssayDetailsModalComponent } from './_dialogs/index';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { TermsRedirectComponent } from './terms/terms-redirect.component';
 import { HeaderComponent } from './header/header.component';
 import { HeroSearchComponent } from './intro-text-modern/hero-search/hero-search.component';
+import { ExploreTabsComponent } from './intro-text-modern/explore-tabs/explore-tabs.component';
 import { FooterComponent } from './footer/footer.component';
 import { IntroTextComponent } from './intro-text/intro-text.component';
 import { IntroTextModernComponent } from './intro-text-modern/intro-text-modern.component';
+import { HexTraceComponent } from './_components/hex-trace/hex-trace.component';
 import { ContactUsComponent } from './contact-us/contact-us.component';
 import { AssayProposalComponent } from './assay-proposal/assay-proposal.component';
 
@@ -41,10 +45,8 @@ import {
   AssayIndicationComponent,
 } from './compound-search/index';
 import {
-  ForgotPassButtonComponent,
   LoaderComponent,
   QuickSearchComponent, UserLoginComponent,
-  UserRegButtonComponent,
   DialogOverviewExample,
   DialogOverviewExampleDialog,
   MenuBarComponent,
@@ -75,6 +77,8 @@ import {IndicationsGraphComponent} from "./compound-data/indications-graph/indic
 import {ShowMoreButtonComponent, ShowMorePane} from "./compound-data";
 import { WorkflowComponent } from './workflow/workflow.component';
 import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
+import { PageHeaderModule } from './_components/page-header/page-header.module';
+import { OntologyColumnsComponent } from './ontology-tree/ontology-columns/ontology-columns.component';
 
 // import { SearchResultHeaderComponent } from './compound-search/search-result-header/search-result-header.component';
 // import { ReframeFilterComponent } from './compound-search/search-result-header/reframe-filter/reframe-filter.component';
@@ -98,14 +102,11 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
     DialogOverviewExampleDialog,
     SearchResultsTableComponent,
     SearchResultSimilarComponent,
-    UserRegistrationComponent,
     UserLoginComponent,
-    UserRegButtonComponent,
-    ForgotPassButtonComponent,
-    LoginFailComponent,
     LoaderComponent,
-    ForgotPasswordComponent,
     ResetPasswordComponent,
+    NotFoundComponent,
+    TermsRedirectComponent,
     QuickSearchComponent,
     StructureSearchOptionsComponent,
     StructureSearchComponent,
@@ -113,7 +114,9 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
     KetcherComponent,
     IntroTextComponent,
     IntroTextModernComponent,
+    HexTraceComponent,
     HeroSearchComponent,
+    ExploreTabsComponent,
     AssayIndicationComponent,
     FooterComponent,
     EditItemComponent,
@@ -124,6 +127,7 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
     IndicationsGraphComponent,
     WorkflowComponent,
     OntologyTreeComponent,
+    OntologyColumnsComponent,
     ContactUsComponent,
     AssayProposalComponent,
     AssayDetailsModalComponent,
@@ -132,6 +136,7 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
     // SearchResultHeaderComponent, ReframeFilterComponent, AssaysFilterComponent
   ],
   imports: [
+    PageHeaderModule,
     MatInputModule,
     MatAutocompleteModule,
     MatFormFieldModule,
@@ -170,9 +175,6 @@ import { OntologyTreeComponent } from './ontology-tree/ontology-tree.component';
   entryComponents: [
     DialogOverviewExample,
     DialogOverviewExampleDialog,
-    UserRegistrationComponent,
-    LoginFailComponent,
-    ForgotPasswordComponent,
     AssayDetailsModalComponent
   ],
 

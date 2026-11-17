@@ -4,8 +4,6 @@ import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { CompoundService } from '../../_services/index';
 import { Compound } from '../../_models/index';
 
-import { TanimotoScaleService } from '../../_services/index';
-
 
 @Component({
   selector: 'app-similar-compounds',
@@ -17,18 +15,18 @@ export class SimilarCompoundsComponent implements OnInit {
   public similarityResults: Array<Compound>;
   @Input() results_per_page: number;
 
-  tanimotoScale: any; // color scale for tanimoto scores
-
   num_results: number; // current number of results displayed
 
 
-  constructor(private tanimotoSvc: TanimotoScaleService, private cmpdSvc: CompoundService) {
-    this.tanimotoScale = tanimotoSvc.getScale();
+  readonly Math = Math;
 
+  constructor(private cmpdSvc: CompoundService) {
     this.cmpdSvc.similarState.subscribe((sdata: Compound[]) => {
       this.similarityResults = sdata;
-      // console.log(sdata)
-    })
+      this.prepSimilarityData();
+      // Back to the first page when another compound loads
+      if (this.results_per_page) { this.num_results = this.results_per_page; }
+    });
   }
 
   ngOnInit() {
@@ -41,9 +39,13 @@ export class SimilarCompoundsComponent implements OnInit {
 
   prepSimilarityData() {
     if (this.similarityResults) {
-      this.similarityResults = this.similarityResults.sort((a: any, b: any) => b.tanimoto - a.tanimoto);
+      this.similarityResults = this.similarityResults.slice().sort((a: any, b: any) => b.tanimoto - a.tanimoto);
     }
-    // console.log(this.similarityResults)
+  }
+
+  // Names of the data a similar compound has (assays, clinical, ...)
+  dataFor(c: any): string[] {
+    return (c.properties || []).filter((p: any) => p.value).map((p: any) => p.name);
   }
 
   showMore() {

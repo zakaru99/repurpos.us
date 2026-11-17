@@ -1,139 +1,214 @@
-.title-plus-btn {
-  display: inline-block;
+// Activity > Dose response: one row per assay result, sortable, with the
+// curve thumbnail. Cytotoxic counter-screen hits are marked in the potency cell.
+
+@import '../compound';
+
+.block {
+  @include disclosure-block(false);
 }
 
-.vendor-btn {
-  margin: 10px 0;
-  color: #7e8b98;
+.disclosure {
+  @include disclosure;
 }
 
-.header-title {
-  text-transform: uppercase;
-  font-weight: 300;
-  opacity: 0.6;
-  font-size: 0.85em;
+// Sideways scroll only on phones; elsewhere the header row sticks to the page
+@media (max-width: $bp-phone) {
+  .scroll {
+    overflow-x: auto;
+
+    // Sticky can't work inside the scroll box; it would park the header
+    // row partway down the table, so let it scroll with the rows
+    .results thead th {
+      position: static;
+    }
+  }
 }
 
-.assay-title {
-  padding-left: 15px;
+.results {
+  @include data-table;
+  @include sticky-table-head;
+
+  td {
+    vertical-align: middle;
+  }
+
+  .num {
+    text-align: right;
+    white-space: nowrap;
+  }
 }
 
-.assay-name {
-  // width: 50%;
+.sort {
+  @include sort-button;
 }
 
-.assay-table,
-table#cmpd-names,
-table.assay-table {
-  width: 100%;
-  // table-layout: fixed;
-  border: none;
-  margin-bottom: 50px;
-}
+// Assay title as the link, the ID after it in mono
+.assay {
+  a {
+    color: $accent;
+    font-weight: 500;
 
-table.hidden {
-  display: none;
-  margin-bottom: 50px;
-}
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 
-h3.hidden {
-  margin-bottom: 50px;
-}
-
-
-td {
-  padding-top: 3px;
-  padding-bottom: 3px;
-  line-height: 1.2em;
-  height: 40px;
-}
-
-.td-fit {
-  width: 1px;
-}
-
-.assay-name,
-.content a {
-  // padding-left: 15px;
-}
-
-.warning {
-  color: #fd5457;
-}
-
-.assay-type {
-  padding: 5px;
-  text-transform: uppercase;
-  font-size: 0.8em;
-  color: #212529;
-  text-align: center;
+  .id {
+    margin-left: 8px;
+    font-family: $mono;
+    font-size: 0.75rem;
+    color: $ink-soft;
+  }
 }
 
 .toxic {
-  background-color: orange;
+  font-weight: 600;
+  color: $status-rejected;
 }
 
-.sortable {
-  cursor: pointer;
+.tox-note {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.more {
+  @include text-button;
+  margin-top: 10px;
+}
+
+// Curve thumbnail, click to enlarge
+.curve {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.curve-thumb-btn {
   position: relative;
-  user-select: none;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+  background: #fff;
+  border: 1px solid $rule;
+  cursor: zoom-in;
+
+  &:hover {
+    border-color: $accent;
+  }
+
+  @include focus-ring($accent, 2px);
 }
 
-.sort-arrow {
-  font-size: 0.7em;
-  margin-left: 5px;
-  vertical-align: middle;
-  color: #555;
-  transition: transform 0.2s ease;
+// Fixed box so a missing image doesn't change the row
+.curve-thumb {
+  display: block;
+  width: 56px;
+  height: 32px;
+  object-fit: contain;
+  font-size: 0;
 }
 
-@media (max-width: 640px) {
-  /* Remove the horizontal scroll wrapper — cards don't need it */
-  .table-responsive {
-    overflow: visible;
-  }
+.curve-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 4000; // above the sticky site header
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  cursor: zoom-out;
+}
 
-  .assay-table {
-    /* Hide column headers */
-    thead, tr:first-child { display: none; }
+// "+2": more curves for this row, in the viewer
+.curve-more {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  padding: 2px 4px;
+  font-family: $mono;
+  font-size: 0.6875rem;
+  line-height: 1;
+  color: #fff;
+  background: $navy;
+}
 
-    /* Each data row becomes a card */
-    tr {
-      display: block;
-      border: 1px solid #e5edf9;
-      border-radius: 8px;
-      padding: 0.6rem 0.75rem;
-      margin-bottom: 0.75rem;
-      background: #f9fbff;
+.curve-viewer {
+  margin: 0;
+  background: #fff;
+  cursor: default;
+}
+
+.curve-full {
+  display: block;
+  max-width: 90vw;
+  max-height: calc(90vh - 56px);
+}
+
+// Under the curve: which assay, "2 of 5" with arrows, close
+.curve-caption {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 12px 10px 16px;
+  font-family: $sans;
+  font-size: 0.875rem;
+  color: $ink;
+  border-top: 1px solid $rule;
+}
+
+.curve-what {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.curve-id {
+  margin-left: 6px;
+  font-family: $mono;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+}
+
+.curve-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  color: $ink-soft;
+
+  button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 1.25rem;
+    line-height: 1;
+    color: $ink;
+    background: none;
+    border: 1px solid $rule;
+    border-radius: $radius-sharp;
+    cursor: pointer;
+
+    &:hover {
+      border-color: $accent;
     }
 
-    /* Each cell is a label + value row */
-    td {
-      display: flex;
-      align-items: baseline;
-      gap: 0.5rem;
-      padding: 0.2rem 0;
-      height: auto;
-      border: none;
+    @include focus-ring($accent, 2px);
+  }
+}
 
-      &::before {
-        content: attr(data-label);
-        font-size: 0.68rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: #4a5568;
-        min-width: 82px;
-        flex-shrink: 0;
-      }
+.curve-close {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: $ink-soft;
+  background: none;
+  border: 0;
+  cursor: pointer;
 
-      &.toxic { background: none; }
-      &.toxic::after { content: ' ⚠'; color: orange; }
-    }
+  &:hover {
+    color: $ink;
   }
 
-  .assay-type {
-    font-size: 0.75em;
-    padding: 3px 6px;
-  }
+  @include focus-ring($accent, 2px);
 }

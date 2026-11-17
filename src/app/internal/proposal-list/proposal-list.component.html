@@ -1,60 +1,38 @@
-<div class="container-fluid proposals-page">
-  <div class="card-block">
-    <h5 class="section-title">Proposals</h5>
-
-<!-- Status Filter Pills -->
-<div class="status-filter">
-  <button 
-    class="pill" 
-    [ngClass]="{ active: selectedStatus === '' }" 
-    (click)="filterByStatus('')">All</button>
-  
-  <button 
-    class="pill" 
-    [ngClass]="{ active: selectedStatus === 'Pending' }" 
-    (click)="filterByStatus('Pending')">Pending</button>
-  
-  <button 
-    class="pill" 
-    [ngClass]="{ active: selectedStatus === 'Approved' }" 
-    (click)="filterByStatus('Approved')">Approved</button>
-  
-  <button 
-    class="pill" 
-    [ngClass]="{ active: selectedStatus === 'Rejected' }" 
-    (click)="filterByStatus('Rejected')">Rejected</button>
+<div class="tools">
+  <nav class="filters" aria-label="Filter by status">
+    <button *ngFor="let f of filters" type="button"
+            [class.active]="selectedStatus === f.value" [attr.aria-pressed]="selectedStatus === f.value"
+            (click)="filterByStatus(f.value)">{{ f.label }} <span class="n">{{ count(f.value) }}</span></button>
+  </nav>
+  <input type="search" class="search" [(ngModel)]="query" name="q" autocomplete="off"
+         placeholder="Search proposals" aria-label="Search proposals">
 </div>
 
+<app-status-message *ngIf="errorMessage" kicker="Temporary problem" title="We couldn't load the proposals">
+  <p>This is usually a short interruption on our side. Please try again in a moment.</p>
+  <ng-container actions>
+    <button type="button" class="status-primary" (click)="fetchProposals()">Try again</button>
+  </ng-container>
+</app-status-message>
+<p class="muted" *ngIf="isLoading">Loading…</p>
+<p class="count" *ngIf="!isLoading && !errorMessage && filteredProposals.length">
+  {{ filteredProposals.length }} {{ filteredProposals.length === 1 ? 'proposal' : 'proposals' }}
+</p>
 
-    <div class="table-responsive">
-      <table class="proposals-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Indication</th>
-            <th>Submitted By</th>
-            <th>Status</th>
-            <th>Submitted On</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let proposal of filteredProposals">
-            <td>{{ proposal.id }}</td>
-            <td>{{ proposal.indication }}</td>
-            <td>{{ proposal.submittedBy }}</td>
-            <td>
-              <span class="status-badge" [ngClass]="proposal.status | lowercase">
-                {{ proposal.status }}
-              </span>
-            </td>
-            <td>{{ proposal.submittedOn | date:'mediumDate' }}</td>
-            <td>
-              <button mat-button color="primary" (click)="viewProposal(proposal)">View</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+<div class="layout" [class.open]="selected" *ngIf="!isLoading && !errorMessage">
+  <div class="list">
+    <app-proposal-table [proposals]="filteredProposals" [selectedId]="selectedId" [compact]="!!selected"
+                        [scroll]="true"
+                        (pick)="select($event)"></app-proposal-table>
+
+    <p class="muted empty" *ngIf="!filteredProposals.length">
+      {{ proposals.length ? 'No proposals match.' : 'No proposals yet.' }}
+    </p>
   </div>
+
+  <!-- Only present once a proposal is picked; the table has the full width otherwise -->
+  <section class="detail" *ngIf="selected">
+    <app-proposal-detail [proposal]="selected"
+                         (statusChanged)="onStatusChanged($event)" (closed)="clearSelection()"></app-proposal-detail>
+  </section>
 </div>

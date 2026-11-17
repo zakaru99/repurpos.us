@@ -1,19 +1,12 @@
-<!-- Nav tabs -->
-<ul class="nav nav-pills align-self-end float-right" id="tabs" role="tablist">
-
-  <li class="nav-item hidden">
-    <a class="nav-link init" id="IC50" data-toggle="tab" role="tab" (click)="switchAssay($event)">
-        <span class="btn">IC<sub>50</sub></span></a>
-  </li>
-
-  <li class="nav-item hidden">
-    <a class="nav-link init" id="EC50" data-toggle="tab" role="tab" (click)="switchAssay($event)">
-        <span class="btn">EC<sub>50</sub></span></a>
-  </li>
-
-  <li class="nav-item hidden">
-    <a class="nav-link init" id="Inactive" data-toggle="tab" role="tab" (click)="switchAssay($event)">
-        <span class="btn">Inactive</span></a>
-  </li>
-
-</ul>
+<!-- Which activity type the chart shows, with a count of compounds each -->
+<nav class="tabs" aria-label="Activity type">
+  <button type="button" *ngFor="let t of types" [class.active]="t.key === current"
+          [attr.aria-pressed]="t.key === current" (click)="select(t.key)">
+    <ng-container [ngSwitch]="t.key">
+      <ng-container *ngSwitchCase="'IC50'">IC<sub>50</sub></ng-container>
+      <ng-container *ngSwitchCase="'EC50'">EC<sub>50</sub></ng-container>
+      <ng-container *ngSwitchDefault>{{ t.key }}</ng-container>
+    </ng-container>
+    <span class="n">{{ t.n | number }}</span>
+  </button>
+</nav>

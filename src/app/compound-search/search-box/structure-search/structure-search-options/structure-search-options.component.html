@@ -1,57 +1,33 @@
-<div class="search-opts row">
-  <div class="col-xs-12 col-sm-12 col-md-auto col-lg-auto col-xl-auto">
-    <!-- Label: search -->
-    <span class="search-label">search by</span>
-  </div>
-
-  <!-- Loop over search options to create radio buttons -->
-  <div class="col" [ngClass]="searchMode === 'similarity' ? 'with-tanimoto' : 'without-tanimoto'">
-
-    <mat-radio-group [(ngModel)]="searchMode">
-      <mat-radio-button class="search-opt" *ngFor="let opt of searchOptions" (change)="hideResults()" [value]="opt.id" matTooltip="{{opt.tooltip}}">
-        {{opt.label}}
-      </mat-radio-button>
-    </mat-radio-group>
-
-    <!-- Add Tanimoto slider if searching for similar compounds -->
-    <div id="tanimoto" *ngIf="searchMode === 'similarity'">
-      <div class="slider-label" matTooltip="Structural similarity threshold, ranging from 0 (no similarity) to 1 (identical atom connectivity)">
-        Tanimoto threshold:
-        <span class="tanimoto-val">
-              {{ tanimotoThresh | number: '1.2-2'}}
-            </span>
-      </div>
-
-      <div class="slider">
-        <span class="slider-limit">0</span>
-        <mat-slider id="tanimoto-slider" min="0" max="1" step="0.05" [(ngModel)]="tanimotoThresh" thumbLabel></mat-slider>
-        <span class="slider-limit">1</span>
-      </div>
-    </div>
-
-
-    <div class="row">
-      <!-- Search bar -->
-      <div class="col">
-        <input type="text" class="search form-control" placeholder="search by SMILES" autofocus
-        aria-label="SMILES search" [(ngModel)]="text_query" (keyup.enter)="onSubmit()" (input)="onChange()">
-      </div>
-
-      <div class="submit-btn">
-        <button mat-icon-button class='search-btn' (click)="onSubmit()" aria-label="submit search">
-        <mat-icon aria-label="search" color="accent">search</mat-icon>
-      </button>
-      </div>
-
+<!-- How to match the drawn (or pasted) structure -->
+<div class="opts">
+  <div class="mode">
+    <span class="label">Match</span>
+    <div class="segmented" role="radiogroup" aria-label="Match type">
+      <button type="button" *ngFor="let opt of searchOptions" role="radio"
+              [class.active]="searchMode === opt.id" [attr.aria-checked]="searchMode === opt.id"
+              [title]="opt.tooltip" (click)="searchMode = opt.id; hideResults()">{{ opt.label }}</button>
     </div>
   </div>
 
-  <!-- Example searches -->
-  <div class="search examples col-xs-12 col-sm-12 col-md-12 col-lg-auto col-xl-auto">
-    <h6>example queries</h6>
-    <div class="ex-query" *ngFor="let example of examples">
-      <a [routerLink]="['.']" [queryParams]="{ query: example.query, type: example.type, mode: example.mode, tanimoto: example.tanimoto }">
-        <span class="ex-type">{{example.label}}</span>: {{example.description}}</a>
-    </div>
-  </div>
+  <!-- Similarity threshold, only for similar-compound searches -->
+  <label class="threshold" *ngIf="searchMode === 'similarity'"
+         title="Structural similarity threshold, from 0 (no similarity) to 1 (identical atom connectivity)">
+    <span class="label">Tanimoto threshold</span>
+    <input type="range" min="0" max="1" step="0.05" [(ngModel)]="tanimotoThresh" aria-label="Tanimoto threshold">
+    <span class="value">{{ tanimotoThresh | number:'1.2-2' }}</span>
+  </label>
 </div>
+
+<div class="smiles">
+  <input type="text" placeholder="Paste a SMILES string, or draw the structure below" autocomplete="off"
+         aria-label="SMILES" [(ngModel)]="text_query" (keyup.enter)="onSubmit()" (input)="onChange()">
+  <button type="button" class="submit" (click)="onSubmit()">Search</button>
+</div>
+
+<p class="examples">
+  <span class="ex-label">Try</span>
+  <ng-container *ngFor="let example of examples; let last = last">
+    <a [routerLink]="['.']" [queryParams]="{ query: example.query, type: example.type, mode: example.mode, tanimoto: example.tanimoto }"
+       [title]="example.label">{{ example.description }}</a><span class="sep" *ngIf="!last" aria-hidden="true">·</span>
+  </ng-container>
+</p>

@@ -1,10 +1,47 @@
+@import '../../../design';
+
 :host {
-    position: relative;
-    z-index: 10;
+  display: block;
 }
 
-/deep/ .mat-tab-body-content {
-    // overflow: hidden !important;
-    overflow-y: hidden;
-    overflow-x: scroll;
+// Same tabs as the homepage hero search
+.tabs {
+  display: flex;
+  gap: 28px;
+  margin-bottom: 14px;
+
+  button {
+    padding: 0 0 6px;
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+      color: #fff;
+    }
+
+    &.active {
+      color: #fff;
+      border-bottom-color: #fff;
+    }
+
+    @include focus-ring($accent-on-dark, 4px);
+  }
+}
+
+.structure-panel[hidden] {
+  display: none;
+}
+
+.structure-panel {
+  padding: 12px;
+  color: $ink;
+  background: #fff;
+  border-radius: $radius-sharp;
 }

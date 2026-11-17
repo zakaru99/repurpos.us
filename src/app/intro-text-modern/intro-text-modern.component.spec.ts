@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { IntroTextModernComponent } from './intro-text-modern.component';
@@ -7,14 +8,28 @@ import { IntroTextModernComponent } from './intro-text-modern.component';
 @Component({ selector: 'app-hero-search', template: '' })
 class HeroSearchStubComponent {}
 
+@Component({ selector: 'app-hex-trace', template: '' })
+class HexTraceStubComponent {}
+
+@Component({ selector: 'app-explore-tabs', template: '' })
+class ExploreTabsStubComponent {
+  @Input() moaCategories: any;
+  @Input() ontologies: any;
+}
+
 describe('IntroTextModernComponent', () => {
   let component: IntroTextModernComponent;
   let fixture: ComponentFixture<IntroTextModernComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterTestingModule ],
-      declarations: [ IntroTextModernComponent, HeroSearchStubComponent ]
+      imports: [ RouterTestingModule, HttpClientTestingModule ],
+      declarations: [
+        IntroTextModernComponent,
+        HeroSearchStubComponent,
+        ExploreTabsStubComponent,
+        HexTraceStubComponent
+      ]
     })
     .compileComponents();
   }));
@@ -27,5 +42,10 @@ describe('IntroTextModernComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should load figures and release notes from home-data.ts', () => {
+    expect(component.stats.totalCompounds).toBeGreaterThan(0);
+    expect(component.whatsNewItems.length).toBeGreaterThan(0);
   });
 });

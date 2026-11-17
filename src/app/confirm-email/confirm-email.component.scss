@@ -1,7 +1,5 @@
-.confirm-wrapper {
-	padding-top: 3em;
-}
+// Confirm email (from the link in the registration email).
 
-.mat-form-field {
-	width: 300px;
-}
+@import '../account';
+
+@include account-page;

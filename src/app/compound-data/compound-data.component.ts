@@ -40,14 +40,21 @@ export class CompoundDataComponent implements OnInit {
   cmpdAvailData: Array<AvailableData> = [];
 
   // Parameters for similarity results
-  num_similar_per_page: number = 3;
+  num_similar_per_page: number = 8;
 
   // Meta tags
   meta_tags = [];
 
-  meta_title: string = ' data | reframeDB';
-  meta_descrip: string = ' data from reframeDB, including assay hit data, chemical properties, and biological properties (if available)';
+  meta_title: string = ' data | REFRAMEdb';
+  meta_descrip: string = ' data from REFRAMEdb, including assay hit data, chemical properties, and biological properties (if available)';
 
+
+  loadFailed = false;
+  // For the Development band's empty state
+  recordLoaded = false;
+  devVendor = false;
+  devOntology = false;
+  cmpdId = '';
 
   constructor(
     @Inject(forwardRef(() => WDQService)) public wd: WDQService,
@@ -76,6 +83,7 @@ export class CompoundDataComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       // console.log('routing... ')
+      this.cmpdId = params['id'];
       this.compoundService.idSubject.next({ id: params['id'], qid: params['qid'] });
     });
 
@@ -96,7 +104,7 @@ export class CompoundDataComponent implements OnInit {
         // If there's no name for the compound, set a generic title
         cmpdName = 'compound'
       }
-      this.titleService.setTitle(cmpdName + " | reframeDB");
+      this.titleService.setTitle(cmpdName + " | REFRAMEdb");
 
       // Set meta tags
       this.meta_tags.push({ name: 'description', content: cmpdName + this.meta_descrip });
@@ -112,12 +120,29 @@ export class CompoundDataComponent implements OnInit {
     loginStateService.isUserLoggedIn.subscribe((logState: LoginState) => {
       this.loggedIn = logState.loggedIn
     })
+
+    this.compoundService.loadFailedState.subscribe((failed: boolean) => this.loadFailed = failed);
+    this.compoundService.recordLoadedState.subscribe((loaded: boolean) => this.recordLoaded = loaded);
+  }
+
+  // Fetch the record again after a failed load
+  reload() {
+    this.compoundService.idSubject.next(Object.assign({}, this.compoundService.idSubject.getValue()));
   }
 
 
 
 
   ngOnInit() {
+  }
+
+  // Data sources this compound has, for the signed-out panels
+  get availableNames(): string[] {
+    return (this.cmpdAvailData || []).filter((d: any) => d.value).map((d: any) => d.name);
+  }
+
+  signInPrompt() {
+    window.dispatchEvent(new CustomEvent('reframe-sign-in'));
   }
 
   // showMore(clickEvent, qid: string): void {

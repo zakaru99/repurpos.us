@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { PageHeaderModule } from '../_components/page-header/page-header.module';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -23,8 +24,6 @@ import { AvailableDataComponent } from '../compound-data/available-data/availabl
 import { ClinicalPhaseComponent } from '../compound-data/clinical-phase/clinical-phase.component';
 import { SaltFormComponent } from '../compound-data/salt-form/salt-form.component';
 import { AssaySparklineComponent } from '../compound-data/assay-sparkline/assay-sparkline.component';
-import { SaltWarningDialogComponent } from '../_components/index';
-import { SaltWarningComponent } from '../_dialogs/index';
 import { CompoundPrimaryScreeningDataComponent } from './compound-primary-screening-data/compound-primary-screening-data.component';
 import { CompoundCalibrPkDataComponent } from './compound-calibr-pk-data/compound-calibr-pk-data.component';
 import { CompoundSyntheticRouteComponent } from './compound-synthetic-route/compound-synthetic-route.component';
@@ -40,7 +39,8 @@ import { CompoundSyntheticRouteComponent } from './compound-synthetic-route/comp
     CompoundDataRoutingModule,
     Struct2dModule,
     MaterialModule,
-    PipesModule
+    PipesModule,
+    PageHeaderModule
   ],
   declarations: [
     CompoundDataComponent,
@@ -55,16 +55,12 @@ import { CompoundSyntheticRouteComponent } from './compound-synthetic-route/comp
     ClinicalPhaseComponent,
     SaltFormComponent,
     AssaySparklineComponent,
-    SaltWarningComponent,
-    SaltWarningDialogComponent,
     CompoundPrimaryScreeningDataComponent,
     CompoundCalibrPkDataComponent,
     CompoundSyntheticRouteComponent,
     // IndicationsGraphComponent
   ],
-  entryComponents: [
-    SaltWarningComponent
-  ]
+  entryComponents: []
 })
 
 export class CompoundDataModule { }

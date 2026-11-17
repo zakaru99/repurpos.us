@@ -1,90 +1,41 @@
-<div id='assays'>
-  <div *ngIf="primaryData.length > 0">
-    <div class="d-flex justify-content-between assay-header">
-      <h3 class="header-title-plus-btn" [ngClass]="hide_psd ? 'hidden' : 'shown'">Primary Screening Data <button type="submit" (click)="toggle_psd()" mat-flat-button color="accent">{{psd_text}}</button></h3>
-    </div>
-    
+<!-- Single-concentration primary screens: whether the compound was picked as a hit -->
+<div class="block" *ngIf="primaryData.length > 0">
+  <button type="button" class="disclosure" (click)="open = !open" [attr.aria-expanded]="open">
+    <span class="chev"></span>
+    <span class="d-title">Primary screens</span>
+    <span class="d-summary">{{ hitCount }} {{ hitCount === 1 ? 'hit' : 'hits' }} in {{ primaryData.length }} single-concentration {{ primaryData.length === 1 ? 'screen' : 'screens' }}</span>
+  </button>
 
-
-
-
-
-    <!-- ASSAY TABLE -->
-    <div class="table-responsive" [ngClass]="hide_psd ? 'hidden' : 'shown'">    
-      <!-- Nav tabs -->
-    <ul class="nav nav-pills align-self-end float-right" id="tabs" role="tablist">
-      <li class="nav-item hidden">
-        <a class="nav-link init active" id="all_screened" data-toggle="tab" role="tab" (click)="view_all()">
-            <span class="btn">View All Screened</span></a>
-      </li>
-
-      <li class="nav-item hidden">
-        <a class="nav-link init" id="hits_only" data-toggle="tab" role="tab" (click)="view_hits()">
-            <span class="btn">View Hits Only</span></a>
-      </li>
-    </ul>
-      <table class="assay-table table">
-        <tr class="">
-          <th class="header-title align-middle sortable" (click)="sortData('assay_id')">
-            Assay ID <span class="sort-arrow" *ngIf="sortColumn === 'assay_id'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
-          </th>
-          <th class="header-title align-middle assay-name col sortable" (click)="sortData('title_short')">
-            Assay title <span class="sort-arrow" *ngIf="sortColumn === 'title_short'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
-          </th>
-          <th class="header-title align-middle assay-indic sortable" (click)="sortData('indication')">
-            indication <span class="sort-arrow" *ngIf="sortColumn === 'indication'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
-          </th>
-<!--          <th class="header-title align-middle">Activity<br/>type</th>-->
-          <th class="header-title align-middle sortable" (click)="sortData('hit')">
-            Screening hit <span class="sort-arrow" *ngIf="sortColumn === 'hit'">{{sortDirection === 'asc' ? '▲' : '▼'}}</span>
-          </th>
-<!--          <th class="header-title align-middle"><span class="invisible">Measure</span></th>-->
-          <th class="header-title align-middle">Assay Source</th>
-<!--          <th class="header-title align-middle" *ngIf="showVendor">Compound Vendor</th>-->
-<!--          <th class="header-title align-middle" *ngIf="showVendor">Compound Vendor ID</th>-->
-        </tr>
-
-
-
-        <tr class="" *ngFor="let x of primaryData" [ngClass]="[x['hit'] ? 'hit' : 'not_hit', hide_hits ? 'hidden' : 'shown']">
-          <td class="content align-middle">
-            <a [routerLink]="['/assays', x['assay_id']]">
-              <span [outerHTML]="x['assay_id'] | sciItalicize"></span>
-            </a>
-
-
-          <!-- Assay Name -->
-          <td class="content align-middle assay-title">
-            <a [routerLink]="['/assays', x['assay_id']]">
-              <span [outerHTML]="x['title_short'] | sciItalicize" *ngIf="x['title_short']; else notitle"></span>
-              <ng-template #notitle> <span [outerHTML]="x['assay_title'] | sciItalicize"></span> </ng-template>
-            </a>
-
-            <!-- <app-assay-indication [assay_name]="x['title_short']" [assay_link]="x['assay_id']"></app-assay-indication> -->
-          </td>
-
-          <td class="content align-middle">
-            <div class="assay-type" *ngIf="x['indication']" [ngStyle]="{'background-color': colorSvc.getIndicColor(x['indication'])['background'], 'color': colorSvc.getIndicColor(x['indication'])['font']}">
-              <!-- <span class="assay-type" [ngStyle]="{'background-color': colorSvc.getIndicColor(x['indication'])['bg-lt']}"> -->
-              <span [outerHTML]="x['indication'] | sciItalicize"></span>
-            </div>
-          </td>
-
-
-          <!-- Screening hit -->
-          <td class="align-middle">
-            <span *ngIf="x['hit']" >primary screening hit</span>
-            <span *ngIf="!x['hit']" >screened, not a selected hit</span>
-          </td>
-
-          <!-- Assay Source -->
-          <td class="align-middle">
-            <a href="https://www.calibr.org/" target="_blank" rel="noreferrer">Calibr</a>
-          </td>
-
-        </tr>
-      </table>
+  <div class="panel" *ngIf="open">
+  <div class="head" *ngIf="hitCount && hitCount < primaryData.length">
+    <div class="seg" role="group" aria-label="Show">
+      <button type="button" [class.active]="!hitsOnly" [attr.aria-pressed]="!hitsOnly" (click)="hitsOnly = false">All screens</button>
+      <button type="button" [class.active]="hitsOnly" [attr.aria-pressed]="hitsOnly" (click)="hitsOnly = true">Hits only</button>
     </div>
   </div>
 
+  <div class="scroll">
+    <table class="results">
+      <thead>
+        <tr>
+          <th *ngFor="let c of columns" [attr.aria-sort]="ariaSort(c.key)">
+            <button type="button" class="sort" (click)="sortData(c.key)">{{ c.label }}<span class="arrow" *ngIf="sortColumn === c.key">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span></button>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let x of shownRows">
+          <td class="assay">
+            <a [routerLink]="['/assays', x.assay_id]">
+              <span [outerHTML]="(x.title_short || x.assay_title) | sciItalicize"></span>
+            </a>
+            <span class="id">{{ x.assay_id }}</span>
+          </td>
+          <td><span *ngIf="x.indication" [outerHTML]="x.indication | sciItalicize"></span></td>
+          <td [class.hit]="x.hit">{{ x.hit ? 'Hit' : 'Not a hit' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  </div>
 </div>

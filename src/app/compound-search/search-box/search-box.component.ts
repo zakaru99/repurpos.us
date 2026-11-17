@@ -116,6 +116,13 @@ export class SearchBoxComponent implements OnInit {
     this.searchResultService.announceNewSearchResult(new SearchResult(err));
   }
 
+  // Tab buttons: switch only when it's a different tab
+  selectTab(index: number) {
+    if (index === this.selectedTab) { return; }
+    this.selectedTab = index;
+    this.resetInput({ index });
+  }
+
   // when changing between tabs, reset (delete) the search parameters
   resetInput(event) {
     this.structSvc.announceMode('exact');
@@ -135,7 +142,7 @@ export class SearchBoxComponent implements OnInit {
     }
 
     // reset page title
-    this.titleService.setTitle("reframeDB");
+    this.titleService.setTitle("REFRAMEdb");
 
     // reset the route to the search or structure page, sans any input
     this.router.navigate(['search/'], { queryParams: { type: search_type } });

@@ -1,0 +1,21 @@
+// Fills the positioned parent (the hero) so its coordinates line up with the
+// hex-lattice background tile.
+:host {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+:host ::ng-deep svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  path {
+    fill: none;
+    stroke: #fff;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}

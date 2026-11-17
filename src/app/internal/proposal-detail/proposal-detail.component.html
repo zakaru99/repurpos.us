@@ -1,0 +1,81 @@
+<article class="detail" *ngIf="proposal">
+  <!-- Header: pinned to the top of the pane. Downloads and Close on the meta
+       row; Approve / Reject on the title row, each confirming in place on a
+       second click. -->
+  <header class="head">
+    <div class="meta-row">
+      <p class="meta">
+        <span class="id">#{{ proposal.id }}</span>
+        <span *ngIf="proposal.submittedOn"> · Submitted {{ proposal.submittedOn | date:'d MMMM y' }}</span>
+        <span *ngIf="!isPending || !canDecide"> · <span class="status" [ngClass]="proposal.status | lowercase">{{ proposal.status }}</span></span>
+      </p>
+      <div class="tools">
+        <button type="button" class="dl" (click)="exportPdf()" title="Download this proposal as a PDF">
+          <svg class="dl-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M3 13h10"/></svg>PDF
+        </button>
+        <button type="button" class="dl" (click)="exportJson()" title="Download this proposal as JSON">
+          <svg class="dl-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M3 13h10"/></svg>JSON
+        </button>
+        <button type="button" class="close" (click)="closed.emit()" aria-label="Close proposal">Close</button>
+      </div>
+    </div>
+
+    <div class="title-row">
+      <h2>{{ proposal.indication || 'Untitled proposal' }}</h2>
+
+      <div class="decide" *ngIf="isPending && canDecide">
+        <button type="button" class="cancel" *ngIf="mode !== 'view' && !saving" (click)="cancel()">Cancel</button>
+        <button type="button" class="btn approve" [class.armed]="mode === 'confirm-approve'"
+                (click)="onApprove()" [disabled]="saving || mode === 'reject'">
+          {{ saving && mode === 'confirm-approve' ? 'Approving…' : mode === 'confirm-approve' ? 'Confirm approval' : 'Approve' }}
+        </button>
+        <button type="button" class="btn reject" [class.armed]="mode === 'reject'"
+                (click)="onReject()"
+                [disabled]="saving || mode === 'confirm-approve' || (mode === 'reject' && !denialReason.trim())">
+          {{ saving && mode === 'reject' ? 'Rejecting…' : mode === 'reject' ? 'Confirm rejection' : 'Reject' }}
+        </button>
+      </div>
+    </div>
+
+    <p class="error" *ngIf="error" role="alert">{{ error }}</p>
+
+    <label class="field" *ngIf="isPending && mode === 'reject'">
+      <span class="field-label">Reason for rejection <span class="hint">(saved with the proposal)</span></span>
+      <textarea #reasonInput rows="2" [(ngModel)]="denialReason" name="denialReason"
+                (keydown.escape)="cancel()"></textarea>
+    </label>
+  </header>
+
+  <dl class="facts">
+    <dt>Submitted by</dt>
+    <dd>{{ proposal.submittedBy || '—' }}</dd>
+
+    <dt>Email</dt>
+    <dd><a *ngIf="proposal.email; else none" [href]="'mailto:' + proposal.email">{{ proposal.email }}</a></dd>
+
+    <dt>Institution</dt>
+    <dd>{{ proposal.institution || '—' }}</dd>
+
+    <dt>Assay volume</dt>
+    <dd>{{ proposal.volume ? proposal.volume + ' µL' : '—' }}</dd>
+
+    <dt>Concentration</dt>
+    <dd>{{ proposal.concentration ? proposal.concentration + ' µM' : '—' }}</dd>
+  </dl>
+
+  <h3>Description</h3>
+  <p class="text">{{ proposal.description || 'No description provided.' }}</p>
+
+  <ng-container *ngIf="proposal.notes">
+    <h3>Notes</h3>
+    <p class="text">{{ proposal.notes }}</p>
+  </ng-container>
+
+  <ng-container *ngIf="proposal.status === 'Rejected'">
+    <h3>Reason for rejection</h3>
+    <p class="text">{{ proposal.denialReason || 'No reason recorded.' }}</p>
+  </ng-container>
+
+</article>
+
+<ng-template #none>—</ng-template>

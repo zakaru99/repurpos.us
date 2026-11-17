@@ -1,24 +1,14 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormControl, Validators, FormGroup, FormBuilder, AbstractControl } from '@angular/forms';
-import { HttpErrorResponse, HttpHeaders, HttpClient } from '@angular/common/http';
+import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { HttpErrorResponse, HttpClient } from '@angular/common/http';
 
-import { environment } from '../../environments/environment';
+import { PasswordValidation } from '../_models/password-validation';
 
-export class PasswordValidation {
-
-  static MatchPassword(AC: AbstractControl) {
-    let password = AC.get('password').value;
-    let confirmPassword = AC.get('confirmPassword').value;
-    if(password != confirmPassword) {
-      AC.get('confirmPassword').setErrors( {MatchPassword: true});
-    } else {
-      AC.get('confirmPassword').setErrors( null);
-      return null
-    }
-  }
-}
-
+// Landing page for the link in the reset-password email. Checks the token on
+// load (POST /api/auth/reset_pass/check), then saves the new password
+// (POST /api/auth/reset_pass). An expired link sends the user to the sign-in
+// box's reset view for a new one.
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
@@ -26,69 +16,62 @@ export class PasswordValidation {
 })
 export class ResetPasswordComponent implements OnInit {
   rid: string;
-  resetResponse: string;
-  resetReady: boolean = false;
-  resetSuccess: boolean = false;
+  state: 'checking' | 'ready' | 'done' | 'invalid' = 'checking';
+  saveError = '';
+  submitted = false;
+  sending = false;
   resetPasswordForm: FormGroup;
 
   constructor(private route: ActivatedRoute, private http: HttpClient, @Inject(FormBuilder) fb: FormBuilder) {
-    route.params.subscribe(params => {
-      this.rid = params['rid'];
-    });
-
+    route.params.subscribe(params => this.rid = params['rid']);
     this.resetPasswordForm = fb.group({
-      password: new FormControl('', Validators.minLength(8)),
-      confirmPassword: new FormControl('', Validators.minLength(8)),
-      }, {validator: PasswordValidation.MatchPassword});
+      password: new FormControl('', [Validators.required, Validators.minLength(8)]),
+      confirmPassword: new FormControl('', [Validators.required]),
+    }, { validator: PasswordValidation.MatchPassword });
   }
 
   ngOnInit() {
-    this.http.post('/api/auth/reset_pass/check',
-      {"token": this.rid},
-      {
-        observe: 'response',
-        headers: new HttpHeaders()
-          .set('content-type', 'application/json')
-      }
-    ).subscribe(res => {
-      this.resetResponse = res.body['message'];
-      if (res.body['status'] === 'success') {
-        this.resetReady = true;
-      }
-    },
-    (err: HttpErrorResponse) => {
-      console.log(err);
-      this.resetResponse = err.error.message;
-      this.resetReady = false;
-    });
+    this.http.post<any>('/api/auth/reset_pass/check', { token: this.rid }).subscribe(
+      res => this.state = res && res.status === 'success' ? 'ready' : 'invalid',
+      () => this.state = 'invalid'
+    );
   }
 
-  /*
-   * Submits the form and sends HTTP request to change password
-   */
-  onSubmit(event) {
-    this.http.post('/api/auth/reset_pass',
-      {
-        'token': this.rid,
-        'password': this.resetPasswordForm.controls.password.value
-      },
-      {
-        observe: 'response',
-        // withCredentials: true,
-        headers: new HttpHeaders()
-          .set('content-type', 'application/json')
-      }
+  showErr(name: string): boolean {
+    const c = this.resetPasswordForm.controls[name];
+    return c.invalid && (c.touched || this.submitted);
+  }
 
-    ).subscribe((re) => {
-        const credentials = re.body;
-        this.resetResponse = credentials['message'];
-        this.resetSuccess = (credentials['status'] === 'success');
+  onSubmit() {
+    this.submitted = true;
+    this.saveError = '';
+    if (this.resetPasswordForm.invalid) { return; }
+    this.sending = true;
+    this.http.post<any>('/api/auth/reset_pass', {
+      token: this.rid,
+      password: this.resetPasswordForm.controls.password.value
+    }).subscribe(
+      res => {
+        this.sending = false;
+        if (res && res.status === 'success') {
+          this.state = 'done';
+        } else {
+          this.saveError = (res && res.message) || 'Your password could not be changed. Please try again.';
+        }
       },
       (err: HttpErrorResponse) => {
-        this.resetResponse = err.error.message;
-        this.resetSuccess = false;
+        this.sending = false;
+        this.saveError = (err.error && err.error.message) || 'Your password could not be changed. Please try again.';
       }
-    )
+    );
   }
 
+  signIn() {
+    window.dispatchEvent(new CustomEvent('reframe-sign-in'));
+  }
+
+  // Opens the sign-in box on its "Reset your password" view
+  requestNewLink() {
+    window.dispatchEvent(new CustomEvent('reframe-sign-in', { detail: { mode: 'forgot' } }));
+  }
 }

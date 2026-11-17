@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
 import { of } from 'rxjs';
+import { PageHeaderModule } from '../_components/page-header/page-header.module';
 
 import { CompoundDataComponent } from './compound-data.component';
 import { WDQService, LoginStateService } from '../_services/index';
@@ -62,7 +63,7 @@ describe('CompoundDataComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
+      imports: [HttpClientTestingModule, RouterTestingModule, PageHeaderModule],
       declarations: [
         CompoundDataComponent,
         CompoundHeaderStubComponent,

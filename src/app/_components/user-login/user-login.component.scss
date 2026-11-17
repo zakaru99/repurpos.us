@@ -1,10 +1,12 @@
-body {
-  font-family: Roboto, Arial, sans-serif;
-  margin: 0;
-}
+// Sign-in form shown in the header popover (desktop) and full-screen sheet
+// (mobile). Plain labelled inputs, squared corners, same palette as the header.
 
-.basic-container {
-  padding: 5px;
+@import '../../../design';
+
+:host {
+  display: block;
+  font-family: $sans;
+  color: $ink;
 }
 
 .login-card {
@@ -13,154 +15,208 @@ body {
   width: 100%;
 }
 
+.login-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 20px;
+}
+
 .login-title {
-  display: block;
-  margin: 0 0 0.6rem;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #8792a3;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.login-sub {
+  font-size: 0.8125rem;
+  color: $ink-soft;
 }
 
 .login-form {
   display: flex;
   flex-direction: column;
-  // Wider than it looks like it "needs" to be at rest: the floating label
-  // animation moves upward into this gap when a field is focused, and the
-  // fields themselves are deliberately compact (no infix border-top spacer),
-  // so without this room the password label overlaps the email field above.
-  gap: 0.75rem;
+  gap: 14px;
   width: 100%;
 }
 
-/* Outlined field skin, shared by desktop + mobile */
-mat-form-field {
-  width: 100%;
-  display: block;
-}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
 
-mat-form-field /deep/ .mat-form-field-wrapper { padding-bottom: 0; }
+  input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    font: inherit;
+    font-size: 16px; // keeps iOS from zooming on focus
+    color: $ink;
+    background: #fff;
+    border: 1px solid $field-border;
+    border-radius: 2px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
-// Material positions .mat-form-field-subscript-wrapper (the mat-error/hint
-// row) with `position: absolute; top: calc(100% - Xem)`, calculated against
-// the *default* wrapper padding-bottom above. Zeroing that padding out
-// without this override leaves the error text positioned at its old
-// coordinates - overlapping the input/label instead of sitting below it.
-// Static positioning lets it flow naturally in normal document flow instead.
-mat-form-field /deep/ .mat-form-field-subscript-wrapper {
-  position: static;
-  margin-top: 2px;
-}
+    &:hover {
+      border-color: $icon;
+    }
 
-mat-form-field /deep/ .mat-form-field-flex {
-  background: #f5f8fd;
-  border: 1px solid #c5d4f5;
-  border-radius: 10px;
-  padding: 0 0.9rem;
-  transition: border-color 0.15s ease, background 0.15s ease;
-}
+    &:focus {
+      outline: none;
+      border-color: $accent;
+      box-shadow: 0 0 0 1px $accent;
+    }
+  }
 
-mat-form-field /deep/ .mat-form-field-flex:hover {
-  border-color: #9db4f0;
-}
-
-mat-form-field.mat-focused /deep/ .mat-form-field-flex {
-  border-color: #3D6DE0;
-  background: #fff;
-}
-
-// The error text was removed for a lighter/less cluttered box (only shows
-// after a failed submit, via errorMatcher in the component) - this red
-// border is now the only invalid-state signal, so it needs to be explicit
-// since this custom .mat-form-field-flex skin doesn't inherit Material's
-// own invalid-state color the way the (hidden) underline normally would.
-mat-form-field.mat-form-field-invalid /deep/ .mat-form-field-flex {
-  border-color: var(--color-danger);
-}
-
-mat-form-field /deep/ .mat-form-field-infix { border-top: 0; padding: 0.45em 0; }
-mat-form-field /deep/ .mat-form-field-label { color: #9ba4ae; }
-mat-form-field /deep/ .mat-form-field-underline { display: none; }
-mat-form-field /deep/ input { font-size: 16px !important; }
-
-.login-button {
-  color: #fff;
-  background-color: #3D6DE0;
-  width: 100%;
-  min-height: 42px;
-  border-radius: 10px !important;
-  margin-top: 0.25rem;
-  font-weight: 500;
-  letter-spacing: 0.2px;
-  box-shadow: 0 4px 10px rgba(61, 109, 224, 0.25) !important;
-  transition: background-color 0.15s ease, transform 0.15s ease;
-
-  &:hover {
-    background-color: #335cc0;
-    transform: translateY(-1px);
+  &.invalid input {
+    border-color: var(--color-danger);
   }
 }
 
-/deep/ .mat-fab.mat-warn, .mat-flat-button.mat-warn, .mat-mini-fab.mat-warn, .mat-raised-button.mat-warn {
-  background-color: #7e8b98;
+.field-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: $ink;
 }
 
-/deep/ .btn-xs {
-  color: #3D6DE0;
-  background: none;
+.field-error {
+  margin: -4px 0 0 !important;
+  font-size: 0.8125rem;
+  color: $error-text;
 }
 
-.logout-button {
-  border-radius: 15px !important;
+.login-button {
+  height: 42px;
+  margin-top: 6px;
+  font: inherit;
+  font-weight: 600;
+  color: #fff;
+  background: $navy;
+  border: 0;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: $accent;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $accent;
+    outline-offset: 2px;
+  }
 }
 
 .login-footer {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 0.6rem;
-  padding-top: 0.55rem;
-  border-top: 1px solid #e6ecf9;
-  font-size: 0.82rem;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid $rule;
+  font-size: 0.8125rem;
+}
 
-  .footer-divider {
-    color: #c2cbdb;
+// Text buttons: view switches, Terms of Use
+.link {
+  padding: 0;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: $accent;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
   }
 
-  /deep/ .btn-xs {
-    padding: 0;
-    font-weight: 500;
+  @include focus-ring($accent, 2px);
+}
+
+.field-hint {
+  margin: -2px 0 0 !important;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+
+  &.field-error {
+    color: $error-text;
   }
 }
 
-@media (max-width: 760px) {
-  .login-title {
-    align-self: flex-start;
+// Result of a request: error in red on a tint, success in green
+.msg {
+  margin: 0 !important;
+  padding: 9px 12px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  border-radius: 2px;
+
+  &.error {
+    color: $status-rejected;
+    background: $status-rejected-bg;
   }
 
-  .login-footer {
-    border-top: none;
-    margin-top: 0.5rem;
-    padding-top: 0;
+  &.success {
+    color: $ink;
+    background: $status-approved-bg;
   }
+}
 
-  .login-button {
-    min-height: 46px;
+.small {
+  margin: 0 !important;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: $ink-soft;
+}
+
+// reCAPTCHA is a fixed 304px widget; the header box is sized to fit it
+.captcha {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.login-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+// Logged-in state: an inline text action in the header
+.logout-button {
+  padding: 0;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  white-space: nowrap;
+  color: $ink-soft;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:hover {
+    color: $ink;
   }
+}
 
-  /* Logout state: plain nav-style item */
+// In the phone menu: the same full-width outline button as Sign in
+@media (max-width: 1080px) {
   .logout-button {
-    display: block !important;
-    width: 100% !important;
-    background: none !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    text-align: left !important;
-    padding: 0.7rem 1rem !important;
-    font-size: 0.95rem !important;
-    color: #c0392b !important;
-    border: none !important;
+    display: block;
+    width: 100%;
+    padding: 12px 22px;
+    font-weight: 600;
+    text-align: center;
+    color: $ink;
+    border: 1px solid $field-border;
+    border-radius: $radius-sharp;
+
+    &:hover {
+      border-color: $icon;
+    }
   }
 }

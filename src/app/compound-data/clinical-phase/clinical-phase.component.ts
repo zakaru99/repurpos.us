@@ -1,12 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnChanges, Input } from '@angular/core';
 
+// Development stage as a row of steps (preclinical to launched) for one data
+// source's phase vocabulary.
 @Component({
   selector: 'app-clinical-phase',
   templateUrl: './clinical-phase.component.html',
   styleUrls: ['./clinical-phase.component.scss']
 })
-export class ClinicalPhaseComponent implements OnInit {
-  @Input() phase: string;
+export class ClinicalPhaseComponent implements OnChanges {
+  @Input() phase: string[] | string;
   @Input() vendorName: string;
   phases: Object = {
     'gvk': [
@@ -358,52 +360,50 @@ export class ClinicalPhaseComponent implements OnInit {
       // ],
   }
 
-  // phase_order: number[];
-  sel_phases: Object[];
-
-  current_phase: number;
-
-  circle_radius: number = 10;
+  // Steps drawn on the track: whole stages only, no synonyms or stopped states
+  sel_phases: any[] = [];
+  // Furthest stage reached (null when the record only says "Clinical")
+  current_phase: number = null;
+  // Development stopped (discontinued, suspended, withdrawn...)
+  stopped = false;
 
   constructor() { }
 
-  ngOnInit() {
-    // console.log(this.vendorName)
-    // console.log(this.phase)
-    // console.log(this.phases)
-    if (this.phases.hasOwnProperty(this.vendorName)) {
-      // filter out any half-steps in process
-      this.sel_phases = this.phases[this.vendorName].filter(d => (d.order || d.order === 0) && !((d.order * 2) % 2) && d.order > -1 && d.synonym != true);
-
-      this.findPhase();
+  ngOnChanges() {
+    if (!this.phases.hasOwnProperty(this.vendorName)) {
+      this.sel_phases = [];
+      return;
     }
-
+    this.sel_phases = this.phases[this.vendorName]
+      .filter((d: any) => (d.order || d.order === 0) && d.order % 1 === 0 && d.order > -1 && d.synonym !== true);
+    this.findPhase();
   }
 
   findPhase() {
-    let tmp = this.phases[this.vendorName].filter((d: any) => this.phase.includes(d.name))
-    // console.log(tmp)
-    if (tmp.length > 0) {
-      this.current_phase = Math.max(<number>tmp.map((d: any) => d.order));
-      // console.log(this.current_phase)
-    } else {
-      this.current_phase = null;
-    }
+    const given: string[] = Array.isArray(this.phase) ? this.phase : (this.phase ? [this.phase] : []);
+    const matched = this.phases[this.vendorName].filter((d: any) => given.includes(d.name));
+    const orders = matched.map((d: any) => d.order).filter((o: number) => o !== null && o > -1);
+    // Math.max over the whole array gave NaN whenever a record had more than one phase
+    this.current_phase = orders.length ? Math.max(...orders) : null;
+    this.stopped = matched.some((d: any) => d.failed);
   }
 
-  findClass(i: number) {
-    if (this.current_phase < 0) {
-      return ('failed')
-    }
-    else if (i === this.current_phase) {
-      return ('current')
-    } else if ((Math.round(this.current_phase) === i) || (Math.floor(this.current_phase) === i)) {
-      return ('in-between current')
-    } else if (i > this.current_phase) {
-      return ('todo')
-    } else {
-      return ('completed')
-    }
+  // Short label under each step; the tooltip carries the full name
+  shortLabel(p: any): string {
+    const short: { [name: string]: string } = {
+      'Preclinical': 'Pre', 'IND Filed': 'IND', 'Pre-Registered': 'Pre-reg', 'Pre-registered': 'Pre-reg',
+      'Pre-registration': 'Pre-reg', 'Recommended Approval': 'Rec.', 'Registered': 'Reg.',
+      'Launched': 'Launch', 'PRESCRIPTION DRUG': 'Rx'
+    };
+    return p.label || short[p.name] || p.name;
+  }
+
+  stepClass(p: any): string {
+    const c = this.current_phase;
+    if (c === null) { return 'todo'; }
+    if (p.order === c || p.order === Math.floor(c)) { return 'current'; }
+    if (p.order === Math.ceil(c)) { return 'half'; } // e.g. Phase I/II: II under way
+    return p.order < c ? 'done' : 'todo';
   }
 
 }

@@ -1,0 +1,167 @@
+@import '../admin';
+
+:host {
+  @include admin-page;
+}
+
+// Two halves: proposals needing a decision | maintenance, latest, admins
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+
+.eyebrow {
+  @include admin-eyebrow;
+}
+
+.headline {
+  @include admin-title;
+}
+
+.byline {
+  margin: 4px 0 0 !important;
+  font-size: 0.875rem;
+  color: $ink-soft;
+}
+
+// Outcome bar: one segment per status, 2px gaps, rounded ends
+.mix {
+  display: flex;
+  gap: 2px;
+  height: 8px;
+  margin-top: 12px;
+
+  .seg {
+    flex: 1 1 0;
+    min-width: 4px;
+
+    &:first-child { border-radius: 4px 0 0 4px; }
+    &:last-child { border-radius: 0 4px 4px 0; }
+    &:only-child { border-radius: 4px; }
+
+    &.pending { background: $status-pending; }
+    &.approved { background: $status-approved; }
+    &.rejected { background: $status-rejected; }
+  }
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin: 8px 0 0 !important;
+  font-size: 0.8125rem;
+  color: $ink;
+
+  // Coloured text matching the bar above, rather than dot markers
+  .key {
+    font-weight: 500;
+
+    &.pending { color: $status-pending; }
+    &.approved { color: $status-approved; }
+    &.rejected { color: $status-rejected; }
+  }
+
+  .of {
+    color: $ink-soft;
+  }
+}
+
+.table-label {
+  margin: 18px 0 0 !important;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: $ink-soft;
+}
+
+// Fills the rest of the screen height so as many rows show as fit
+.table {
+  display: block;
+  margin-top: 6px;
+  --table-max: calc(100vh - var(--site-header-height, 65px) - 300px);
+}
+
+.arrow-link {
+  @include arrow-link;
+  font-size: 0.875rem;
+}
+
+.more {
+  margin-top: 12px;
+}
+
+// Right column on the homepage's tint band, for a touch of colour
+.side {
+  padding: 20px 24px;
+  background: $tint-bg;
+  border-radius: $radius-sharp;
+
+  section + section {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid $rule-on-tint;
+  }
+}
+
+.note {
+  margin: 0 0 6px !important;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: $ink;
+  overflow-wrap: anywhere;
+}
+
+.latest {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 4px 0;
+    font-size: 0.875rem;
+  }
+
+  a {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: $ink;
+
+    &:hover {
+      color: $accent;
+    }
+  }
+}
+
+.latest-meta {
+  flex-shrink: 0;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+}
+
+.status {
+  @include status-text;
+}
+
+.error {
+  @include error-text;
+  margin: 8px 0 !important;
+}
+
+.loading {
+  margin: 0 !important;
+  color: $ink-soft;
+}
+
+@media (max-width: $bp-nav) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+}
