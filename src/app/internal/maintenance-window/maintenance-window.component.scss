@@ -11,9 +11,10 @@
   align-items: start;
 }
 
+// Column labels in the same uppercase style as the other admin tabs
 h2 {
-  @include admin-heading;
-  margin-bottom: 16px;
+  @include admin-eyebrow;
+  margin-bottom: 14px !important;
 }
 
 .show-older {

@@ -19,6 +19,9 @@ $navy-quiet: var(--color-navy-quiet);
 $navy-quiet-hover: var(--color-navy-quiet-hover);
 $accent-on-dark: var(--color-accent-on-dark);
 $rule-dark: var(--color-rule-on-dark);
+$ok-on-dark: var(--color-ok-on-dark);
+$warn-on-dark: var(--color-warn-on-dark);
+$caution-on-dark: var(--color-caution-on-dark);
 
 $accent: var(--color-brand-500);
 $accent-hover: var(--color-brand-600);
@@ -42,6 +45,7 @@ $error-text: var(--color-error-text);
 $moa: var(--color-moa);
 $found: var(--color-found);
 $category: var(--color-category);
+$substructure: var(--color-substructure);
 
 $status-pending: var(--color-status-pending);
 $status-pending-bg: var(--color-status-pending-bg);

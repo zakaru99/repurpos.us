@@ -1,7 +1,7 @@
 <div class="bar" [class.dropdown-open]="dropdownVisible">
   <div class="input-container">
     <input #searchInput type="text" [(ngModel)]="searchQuery" autofocus autocomplete="off"
-           placeholder="Drug name, synonym, InChIKey, class, target or disease"
+           placeholder="Drug, target, disease or identifier"
            aria-label="Search compounds"
            (keydown)="onKeyDown($event)"
            (ngModelChange)="onQueryChange($event)">

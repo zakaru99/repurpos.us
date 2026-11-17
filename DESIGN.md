@@ -102,6 +102,8 @@ Further reading: [Impeccable: the visible tells of AI design](https://impeccable
 | `$rule` | Hairlines on pages; `$rule-soft` inside tools |
 | `$muted-bg`, `$tint-bg` | Alternating page bands |
 | `$moa`, `$found`, `$category` | Ontology states: holds compounds / search path / category node |
+| `$ok-on-dark`, `$warn-on-dark`, `$caution-on-dark` | Status text on navy (compound and assay headers): done or safe / warning / waiting |
+| `$substructure` | Matched atoms in a structure drawing |
 
 Band rhythm on long pages: navy hero → tinted band → white → dark band →
 muted strip → navy footer. Don't put two dark bands next to each other.
@@ -114,6 +116,12 @@ muted strip → navy footer. Don't put two dark bands next to each other.
 - Headings use weight 500 with slightly tight letter-spacing. The hero heading
   is 2.25–2.75rem; section headings are 2rem (`@include section-title`).
 - Write in sentence case: "Open compound profile", not "Open Compound Profile".
+- Names: the site is **REFRAMEdb**, the library is **REFRAME** ("ReFRAME" only
+  inside the paper citation), the GVK source is **GVK Excelra GOSTAR**. Browser
+  tab titles read "Page | REFRAMEdb".
+- Dates: "15 Nov 2026" (`date:'d MMM y'`) in tables and lists, "15 November
+  2026" (`date:'d MMMM y'`) in sentences. Maintenance times use
+  `formatPacificShort` in tables and `formatPacificDisplay` in sentences.
 
 ## Shape and space
 

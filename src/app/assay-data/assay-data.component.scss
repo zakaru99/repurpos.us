@@ -351,9 +351,9 @@
     font-family: $sans;
     font-size: 0.9375rem;
 
-    &.completed { color: #7fd6a7; }
+    &.completed { color: $ok-on-dark; }
     &.screening { color: $accent-on-dark; }
-    &.prescreen { color: #f2c27b; }
+    &.prescreen { color: $caution-on-dark; }
     &.closed,
     &.other { color: rgba(255, 255, 255, 0.72); }
   }

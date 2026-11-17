@@ -1,13 +1,7 @@
-$substructure-highlight: #f4e0f1; //purple
+@import '../../design';
+
+$substructure-highlight: $substructure; // matched atoms
 $substructure-strokewidth: 2.25; // 1.67 by default
-//#ffe5eb; // pink-ish
-//#f4e0f1; // purple 50% of 9e378e
-//#f1d9c5; // brown 55% of 804a1e
-//#ffeab5; // soft yellow too subtle?
-//#cdebf7; // blue 45% of 1f93c0 NO.
-//#b8fff6 // aquamarine 50% of 00b8a0 50%
-//#fff2ce;
-//#
 
 .svg-wrapper {
   width: 100%;
@@ -52,25 +46,14 @@ line.outerglow {
 
 /deep/ .bond {
   stroke-width: 0.35;
-  stroke: #212529;
+  stroke: $ink;
 }
 // --- Launch substructure search ---
 .struct-search {
-  font-size: 0.75em;
+  @include button-navy;
   float: right;
-  background: #3D6DE0; /* unified with your other buttons */
-  color: white;
-  border: none;
-  border-radius: 4px;
   margin-bottom: 5px;
   padding: 8px 14px;
-  font-family: 'Lato', sans-serif;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-  transition: background-color 0.2s ease;
-}
-
-.struct-search:hover {
-  background-color: #2f5ccf;
+  font-size: 0.8125rem;
 }
 

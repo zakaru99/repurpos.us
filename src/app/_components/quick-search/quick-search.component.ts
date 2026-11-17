@@ -43,7 +43,7 @@ export class QuickSearchComponent implements OnInit {
   }
 
   getPlaceholder(): string {
-    return this.selected === 'compound' ? 'Drug name, synonym or identifier' : 'Assay name, organism or keyword';
+    return this.selected === 'compound' ? 'Drug, target, disease or identifier' : 'Assay name, organism or keyword';
   }
 
   onFocusIn() {

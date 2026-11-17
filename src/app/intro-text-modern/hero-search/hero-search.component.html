@@ -15,7 +15,7 @@
            (keydown)="onKeyDown($event)"
            (ngModelChange)="onQueryChange($event)"
            [attr.aria-label]="searchCategory === 'compound' ? 'Search compounds' : 'Search assays'"
-           [placeholder]="searchCategory === 'compound' ? 'Drug name, synonym or identifier' : 'Assay name, organism or keyword'" />
+           [placeholder]="searchCategory === 'compound' ? 'Drug, target, disease or identifier' : 'Assay name, organism or keyword'" />
     <ul class="predictive-dropdown" *ngIf="dropdownVisible">
       <li *ngFor="let item of suggestions; let i = index"
           [class.highlighted]="i === highlightedIndex"

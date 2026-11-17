@@ -79,6 +79,11 @@
   --color-navy-quiet-hover: #223d72;
   --color-accent-on-dark: #9fb9f4; // eyebrows, icons, links on navy
   --color-rule-on-dark: rgba(255, 255, 255, 0.14);
+  // Status text on navy (compound and assay headers): lighter forms of the
+  // approved / rejected / pending colours that keep contrast on --color-navy
+  --color-ok-on-dark: #7fd6a7;
+  --color-warn-on-dark: #ff9e94;
+  --color-caution-on-dark: #f2c27b;
 
   // Accent text (brand blue darkened for small text on tinted bands, AA)
   --color-accent-text: #2f5bc7;
@@ -102,6 +107,7 @@
   --color-moa: #1f8a5b; // category that holds compounds
   --color-found: #e5484d; // search / hover path
   --color-category: #dbe4f7; // category node fill
+  --color-substructure: #f4e0f1; // matched atoms in a structure drawing
 
   // Workflow status (admin portal). Text colours pass AA on their tints.
   --color-status-pending: #a15c07;

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MaintenanceWindow } from '../../_models';
 import {
-  formatPacificDisplay,
+  formatPacificShort,
   todayInPacificDateString,
   utcIsoToPacificDateAndHour,
   pacificDateAndHourToUtcIso
@@ -79,11 +79,11 @@ export class MaintenanceWindowComponent implements OnInit {
   }
 
   formatScheduled(w: MaintenanceWindow): string {
-    return w.scheduledStart ? formatPacificDisplay(w.scheduledStart) : '—';
+    return w.scheduledStart ? formatPacificShort(w.scheduledStart) : '—';
   }
 
   formatPosted(w: MaintenanceWindow): string {
-    return w.postedAt ? formatPacificDisplay(w.postedAt) : '—';
+    return w.postedAt ? formatPacificShort(w.postedAt) : '—';
   }
 
   startEdit(w: MaintenanceWindow): void {

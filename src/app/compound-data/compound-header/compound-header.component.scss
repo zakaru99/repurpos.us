@@ -84,7 +84,7 @@
 
   // Sample at Calibr, in the light green that reads on navy
   .avail.sample {
-    color: #7fd6a7;
+    color: $ok-on-dark;
   }
 }
 
@@ -238,7 +238,7 @@
 
   // Sample at Calibr, in the light green that reads on navy
   .avail.sample {
-    color: #7fd6a7;
+    color: $ok-on-dark;
   }
 }
 
@@ -287,11 +287,11 @@
 
   // Light red / green that read on navy
   &.warn {
-    color: #ff9e94;
+    color: $warn-on-dark;
   }
 
   &.ok {
-    color: #7fd6a7;
+    color: $ok-on-dark;
   }
 }
 

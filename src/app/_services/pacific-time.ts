@@ -57,16 +57,29 @@ export function todayInPacificDateString(): string {
   return utcIsoToPacificDateTimeLocal(new Date().toISOString()).split('T')[0];
 }
 
-/** Formats a UTC ISO string as e.g. "Saturday, July 19 at 9:00 AM PDT". Falls back to a plain string on unsupported browsers. */
+/** Formats a UTC ISO string for a sentence, e.g. "Saturday 19 July at 9:00 AM PDT" (the site's day-month order). Falls back to a plain string on unsupported browsers. */
 export function formatPacificDisplay(iso: string): string {
   try {
-    const date = new Date(iso);
     const parts = partsToMap(new Intl.DateTimeFormat('en-US', {
       timeZone: TIME_ZONE,
       weekday: 'long', month: 'long', day: 'numeric',
       hour: 'numeric', minute: '2-digit', timeZoneName: 'short'
-    }), date);
-    return `${parts.weekday}, ${parts.month} ${parts.day} at ${parts.hour}:${parts.minute} ${parts.dayPeriod} ${parts.timeZoneName}`;
+    }), new Date(iso));
+    return `${parts.weekday} ${parts.day} ${parts.month} at ${parts.hour}:${parts.minute} ${parts.dayPeriod} ${parts.timeZoneName}`;
+  } catch (e) {
+    return new Date(iso).toString();
+  }
+}
+
+/** Formats a UTC ISO string for a table cell, e.g. "19 Jul 2026, 9:00 AM PDT" (matches the tables' "d MMM y" dates). */
+export function formatPacificShort(iso: string): string {
+  try {
+    const parts = partsToMap(new Intl.DateTimeFormat('en-US', {
+      timeZone: TIME_ZONE,
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: 'numeric', minute: '2-digit', timeZoneName: 'short'
+    }), new Date(iso));
+    return `${parts.day} ${parts.month} ${parts.year}, ${parts.hour}:${parts.minute} ${parts.dayPeriod} ${parts.timeZoneName}`;
   } catch (e) {
     return new Date(iso).toString();
   }
