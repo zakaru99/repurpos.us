@@ -1,8 +1,8 @@
 // Homepage. Full-bleed bands with a centred content column; type set in
 // IBM Plex Sans (loaded in index.html), figures in Plex Mono.
 //
-// Band rhythm: navy hero -> tinted partnership timeline -> white explore tabs,
-// with the sources line closing that same white band -> navy footer.
+// Band rhythm: navy hero -> tinted partnership timeline -> white explore band
+// (heading, centred sources line, tabs) -> navy footer.
 
 @import '../../design';
 
@@ -281,8 +281,9 @@ p {
   }
 }
 
+// One line beside the heading on wide screens; wraps once the head stacks
 .section-intro {
-  max-width: 30em;
+  margin: 0 !important;
   color: $ink-soft;
   line-height: 1.6;
 }
@@ -366,25 +367,16 @@ p {
   background: $accent;
 }
 
-// ---------------------------------------------------------------- sources strip
+// ---------------------------------------------------------------- sources line
 
-// Continues the white explore band above it: no rule, and the band before it
-// drops most of its bottom padding so the two read as one section
-.band-explore {
-  padding-bottom: 40px;
-}
-
-.sources {
-  background: #fff;
-  padding: 0 0 64px;
-}
-
-// Label and sources on one line
+// Centred between the explore heading and the tabs
 .sources-row {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   align-items: baseline;
   gap: 10px 24px;
+  margin: -16px 0 40px;
 }
 
 .sources-label {
@@ -751,14 +743,6 @@ p {
     padding: 64px 0;
   }
 
-  .band-explore {
-    padding-bottom: 32px;
-  }
-
-  .sources {
-    padding-bottom: 48px;
-  }
-
   .band-tint {
     padding: 56px 0;
   }
@@ -775,11 +759,18 @@ p {
     font-size: 1.625rem;
   }
 
-  // Stack sources two-up without separators so none start a line
+  // Label on its own line; names wrap centred, without separators so none
+  // start a line
+  .sources-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin: -8px 0 32px;
+  }
+
   .source-names {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 16px;
+    justify-content: center;
+    gap: 4px 18px;
 
     li + li::before {
       display: none;

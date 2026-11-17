@@ -90,7 +90,7 @@
 </section>
 
 <!-- Explore -->
-<section class="band band-explore">
+<section class="band">
   <div class="shell">
     <header class="section-head split">
       <div>
@@ -102,20 +102,18 @@
       </p>
     </header>
 
-    <app-explore-tabs [moaCategories]="moaCategories" [ontologies]="ontologies"></app-explore-tabs>
-  </div>
-</section>
+    <!-- Data sources (the institutional logos are in the footer, on every page) -->
+    <div class="sources-row">
+      <p class="sources-label">Assembled from</p>
+      <ul class="source-names">
+        <li>Clarivate Integrity</li>
+        <li>GVK Excelra GOSTAR</li>
+        <li>Citeline Pharmaprojects</li>
+        <li>Wikidata</li>
+      </ul>
+    </div>
 
-<!-- Sources (the institutional logos are in the footer, on every page) -->
-<section class="sources">
-  <div class="shell sources-row">
-    <p class="sources-label">Assembled from</p>
-    <ul class="source-names">
-      <li>Clarivate Integrity</li>
-      <li>GVK Excelra GOSTAR</li>
-      <li>Citeline Pharmaprojects</li>
-      <li>Wikidata</li>
-    </ul>
+    <app-explore-tabs [moaCategories]="moaCategories" [ontologies]="ontologies"></app-explore-tabs>
   </div>
 </section>
 
