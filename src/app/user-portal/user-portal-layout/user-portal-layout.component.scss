@@ -5,7 +5,6 @@
 
 :host {
   @include full-bleed-host;
-  min-height: calc(100vh - var(--site-header-height, 65px));
   background: #fff;
 }
 
