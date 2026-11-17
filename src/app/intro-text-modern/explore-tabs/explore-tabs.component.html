@@ -7,7 +7,6 @@
             [attr.aria-controls]="'explore-panel'"
             [attr.tabindex]="active === t.id ? 0 : -1"
             (click)="select(t.id)" (keydown)="onTabKey($event, i)">
-      <span class="tab-no">0{{ i + 1 }}</span>
       <span class="tab-text">
         <span class="tab-title">{{ t.title }}</span>
         <span class="tab-blurb">{{ t.blurb }}</span>

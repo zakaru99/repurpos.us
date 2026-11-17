@@ -25,10 +25,9 @@
   border-top: 1px solid $rule;
 }
 
+// Plain list rows; the open one is shaded, with no accent bar or numbering
 .tab {
-  display: grid;
-  grid-template-columns: 40px 1fr;
-  gap: 8px;
+  display: block;
   padding: 20px 0 20px 16px;
   font: inherit;
   text-align: left;
@@ -36,30 +35,21 @@
   background: none;
   border: 0;
   border-bottom: 1px solid $rule;
-  border-left: 3px solid transparent;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: background 0.15s ease;
 
   &:hover {
     background: $hover;
   }
 
   &.active {
-    border-left-color: $accent;
-    background: $hover;
+    background: $selected;
   }
 
   &:focus-visible {
     outline: 2px solid $accent;
     outline-offset: -2px;
   }
-}
-
-.tab-no {
-  font-family: $mono;
-  font-size: 0.8125rem;
-  color: $ink-soft;
-  padding-top: 3px;
 }
 
 .tab-text {
@@ -93,7 +83,6 @@
   min-height: 460px;
   background: #fff;
   border: 1px solid $rule;
-  box-shadow: 0 18px 40px rgba(15, 27, 45, 0.08);
 }
 
 .frame-bar {
@@ -122,14 +111,13 @@
   border-top: 1px solid $rule;
 }
 
+// Small sentence-case labels, not tracked capitals
 .sub {
   margin: 24px 0 10px;
   font-family: inherit;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: $ink-soft;
+  color: $ink;
 
   &.first {
     margin-top: 0;
@@ -139,11 +127,9 @@
 .sub-inline {
   display: block;
   margin-bottom: 10px;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: $ink-soft;
+  color: $ink;
 }
 
 .note,
@@ -393,7 +379,6 @@ a.bar-label {
     }
   }
 
-  .tab-no,
   .tab-blurb {
     display: none !important;
   }

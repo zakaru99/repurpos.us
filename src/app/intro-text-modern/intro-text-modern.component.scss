@@ -24,11 +24,6 @@ p {
   margin: 0;
 }
 
-.eyebrow {
-  @include eyebrow;
-  margin-bottom: 12px !important;
-}
-
 // ---------------------------------------------------------------- links/buttons
 
 .arrow-link {
@@ -48,10 +43,6 @@ p {
   padding: 40px 0 56px;
 
   @include hex-lattice;
-
-  .eyebrow {
-    color: $accent-on-dark;
-  }
 }
 
 .hero-grid {
@@ -108,8 +99,8 @@ p {
 }
 
 .hero-figures {
-  // Line the top rule up with the headline rather than the eyebrow
-  margin-top: 28px;
+  // Top rule level with the headline's cap height
+  margin-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.5);
 
   dl {
@@ -363,11 +354,6 @@ p {
   border-radius: 50%;
 }
 
-// Last step (data goes public) gets the brand colour
-.timeline li:last-child .step-marker {
-  background: $accent;
-}
-
 // ---------------------------------------------------------------- what's new trigger
 // Fixed just under the sticky header; --site-header-height is published by header.component
 
@@ -406,13 +392,6 @@ p {
     transform: translateX(12px);
     pointer-events: none;
   }
-}
-
-.whats-new-dot {
-  width: 6px;
-  height: 6px;
-  background: $accent;
-  border-radius: 50%;
 }
 
 .whats-new-date {
@@ -476,10 +455,6 @@ p {
     font-size: 1.5rem;
     font-weight: 500;
   }
-
-  .eyebrow {
-    margin-bottom: 6px !important;
-  }
 }
 
 .drawer-close {
@@ -511,11 +486,9 @@ p {
   }
 
   h3 {
-    font-size: 0.75rem;
+    font-size: 0.9375rem;
     font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: $ink-soft;
+    color: $ink;
     padding-bottom: 8px;
     border-bottom: 1px solid $ink;
   }
