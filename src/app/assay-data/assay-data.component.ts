@@ -200,12 +200,12 @@ export class AssayDataComponent implements OnInit, OnDestroy {
 
   private setMeta(d: AssayDetails) {
     const title = d.title_short || d.assay_title || this.aid;
-    this.titleService.setTitle(`${title} | reframeDB`);
+    this.titleService.setTitle(`${title} | REFRAMEdb`);
     [
-      { name: 'description', content: `reframeDB assay data and protocol for ${title}` },
-      { property: 'og:description', content: `reframeDB assay data and protocol for ${title}` },
+      { name: 'description', content: `REFRAMEdb assay data and protocol for ${title}` },
+      { property: 'og:description', content: `REFRAMEdb assay data and protocol for ${title}` },
       { property: 'og:url', content: `https://reframedb.org/assays/${this.aid}` },
-      { property: 'og:title', content: `${title} assay data and protocol | reframeDB` }
+      { property: 'og:title', content: `${title} assay data and protocol | REFRAMEdb` }
     ].forEach(t => this.meta.updateTag(t));
   }
 

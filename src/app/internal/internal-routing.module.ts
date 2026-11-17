@@ -13,11 +13,11 @@ const routes: Routes = [
     component: InternalLayoutComponent,
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'proposals', component: ProposalListComponent, data: { title: 'proposals | admin' } },
-      { path: 'dashboard', component: DashboardComponent, data: { title: 'overview | admin' } },
+      { path: 'proposals', component: ProposalListComponent, data: { title: 'Proposals | Admin' } },
+      { path: 'dashboard', component: DashboardComponent, data: { title: 'Overview | Admin' } },
       // Admin-only; reviewers get Overview and Proposals
-      { path: 'user_management', component: UserManagementComponent, canActivate: [AdminGuard], data: { title: 'access | admin' } },
-      { path: 'maintenance_window', component: MaintenanceWindowComponent, canActivate: [AdminGuard], data: { title: 'maintenance | admin' } }
+      { path: 'user_management', component: UserManagementComponent, canActivate: [AdminGuard], data: { title: 'Access | Admin' } },
+      { path: 'maintenance_window', component: MaintenanceWindowComponent, canActivate: [AdminGuard], data: { title: 'Maintenance | Admin' } }
     ]
   }
 ];

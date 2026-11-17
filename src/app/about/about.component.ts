@@ -37,7 +37,7 @@ export class AboutComponent implements OnInit {
     for (let i = 0; i < this.meta_tags.length; i++) {
       meta.updateTag(this.meta_tags[i]);
     }
-    titleService.setTitle("about | reframeDB");
+    titleService.setTitle("About | REFRAMEdb");
   }
 
 

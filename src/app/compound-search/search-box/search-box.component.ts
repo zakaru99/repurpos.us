@@ -142,7 +142,7 @@ export class SearchBoxComponent implements OnInit {
     }
 
     // reset page title
-    this.titleService.setTitle("reframeDB");
+    this.titleService.setTitle("REFRAMEdb");
 
     // reset the route to the search or structure page, sans any input
     this.router.navigate(['search/'], { queryParams: { type: search_type } });

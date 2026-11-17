@@ -45,8 +45,8 @@ export class CompoundDataComponent implements OnInit {
   // Meta tags
   meta_tags = [];
 
-  meta_title: string = ' data | reframeDB';
-  meta_descrip: string = ' data from reframeDB, including assay hit data, chemical properties, and biological properties (if available)';
+  meta_title: string = ' data | REFRAMEdb';
+  meta_descrip: string = ' data from REFRAMEdb, including assay hit data, chemical properties, and biological properties (if available)';
 
 
   loadFailed = false;
@@ -104,7 +104,7 @@ export class CompoundDataComponent implements OnInit {
         // If there's no name for the compound, set a generic title
         cmpdName = 'compound'
       }
-      this.titleService.setTitle(cmpdName + " | reframeDB");
+      this.titleService.setTitle(cmpdName + " | REFRAMEdb");
 
       // Set meta tags
       this.meta_tags.push({ name: 'description', content: cmpdName + this.meta_descrip });

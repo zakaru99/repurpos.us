@@ -56,9 +56,9 @@ export class AssaysComponent implements OnInit, OnDestroy {
   private queryTimer: any;
 
   private readonly metaTags = [
-    { property: 'og:title', content: 'reframeDB assay descriptions' },
-    { name: 'description', content: 'List of assays performed on the reframeDB compound library' },
-    { property: 'og:description', content: 'List of assays performed on the reframeDB compound library' },
+    { property: 'og:title', content: 'REFRAMEdb assays' },
+    { name: 'description', content: 'List of assays performed on the REFRAMEdb compound library' },
+    { property: 'og:description', content: 'List of assays performed on the REFRAMEdb compound library' },
     { property: 'og:url', content: 'https://reframedb.org/assays' }
   ];
 
@@ -72,7 +72,7 @@ export class AssaysComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.titleService.setTitle('assays | reframeDB');
+    this.titleService.setTitle('Assays | REFRAMEdb');
     this.metaTags.forEach(t => this.meta.updateTag(t));
 
     this.subs.push(

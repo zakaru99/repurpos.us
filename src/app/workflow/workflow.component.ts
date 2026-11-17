@@ -24,7 +24,7 @@ export class WorkflowComponent {
   forms = [
     { label: 'Assay proposal', note: 'Online form', link: '/assay_proposal' },
     { label: 'Assay description', note: 'Word', href: 'assets/workflow/1_AssayRegistration.Description new 1.docx' },
-    { label: 'Standard usage: can I use ReFRAME?', note: 'Word', href: 'assets/workflow/0_Can_I_use_Reframe.docx' },
+    { label: 'Standard usage: can I use REFRAME?', note: 'Word', href: 'assets/workflow/0_Can_I_use_Reframe.docx' },
     { label: 'Quantity exception', note: 'Word', href: 'assets/workflow/supplemental_QuantityException.docx' },
     { label: 'Regarding pre-spotted plates', note: 'Word', href: 'assets/workflow/1_Regarding Pre-spotted Plates.docx' },
     { label: 'Primary data template', note: 'Excel', href: 'assets/workflow/2_PrimaryDataTemplate 3.xlsx' },

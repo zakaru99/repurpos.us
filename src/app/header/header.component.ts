@@ -36,6 +36,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     document.body.classList.toggle('menu-open', open);
   }
   isMobile: boolean;
+  inAdmin = false;
   current_year: number;
   private loginSubscription: Subscription;
   private routerSubscription: Subscription;
@@ -55,6 +56,10 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     // Close the phone menu after any navigation, not just its own links:
     // a search from the menu's field navigates from inside quick-search
     this.routerSubscription = this.router.events.subscribe(event => {
+      // "Calibr admins" links to the proposals tab but stands for every admin tab
+      if (event instanceof NavigationEnd) {
+        this.inAdmin = event.urlAfterRedirects.startsWith('/internal');
+      }
       if (event instanceof NavigationEnd && this.expanded) {
         this.expanded = false;
         // Drop focus from the search field so the phone keyboard closes too

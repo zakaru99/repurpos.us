@@ -26,11 +26,11 @@
       <app-compound-vendor-data (hasData)="devVendor = $event"></app-compound-vendor-data>
       <app-compound-ontology-data (hasData)="devOntology = $event"></app-compound-ontology-data>
       <p class="empty-note" *ngIf="recordLoaded && !devVendor && !devOntology">
-        Clarivate Integrity, GVK GoStar and Citeline Pharmaprojects have no development records for this compound.
+        Clarivate Integrity, GVK Excelra GOSTAR and Citeline Pharmaprojects have no development records for this compound.
       </p>
     </ng-container>
     <ng-container *ngIf="!loggedIn" [ngTemplateOutlet]="signIn"
-                  [ngTemplateOutletContext]="{ what: 'Highest phase, mechanism, targets and PK from Clarivate Integrity, GVK GoStar and Citeline Pharmaprojects.', showAvail: true }"></ng-container>
+                  [ngTemplateOutletContext]="{ what: 'Highest phase, mechanism, targets and PK from Clarivate Integrity, GVK Excelra GOSTAR and Citeline Pharmaprojects.', showAvail: true }"></ng-container>
   </div>
 </section>
 

@@ -230,10 +230,10 @@ export class SearchResultsTableComponent implements OnDestroy {
     this.status = 'done';
     this.sort = this.hasSimilarity ? 'similarity' : 'availability';
 
-    this.titleService.setTitle(`${this.queryString} | search | reframeDB`);
+    this.titleService.setTitle(`${this.queryString} | Search | REFRAMEdb`);
     this.meta.updateTag({ property: 'og:url', content: window.location.href });
-    this.meta.updateTag({ property: 'og:title', content: `search results for ${this.queryString} | reframeDB` });
-    this.meta.updateTag({ property: 'og:description', content: `search results for ${this.queryType} search of ${this.queryString} | reframeDB` });
+    this.meta.updateTag({ property: 'og:title', content: `Search results for ${this.queryString} | REFRAMEdb` });
+    this.meta.updateTag({ property: 'og:description', content: `Search results for ${this.queryType} search of ${this.queryString} | REFRAMEdb` });
   }
 
   private toRow(c: any, rank: number): ResultRow {

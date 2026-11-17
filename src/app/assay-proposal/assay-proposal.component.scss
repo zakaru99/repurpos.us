@@ -35,10 +35,8 @@ legend {
   width: 100%;
   margin-bottom: 12px;
   padding-bottom: 6px;
-  font-family: $sans;
-  font-size: 1rem;
-  font-weight: 600;
-  color: $ink;
+  // Same uppercase label as the section labels on Contact and Workflow
+  @include eyebrow;
   border-bottom: 1px solid $rule;
 }
 
@@ -264,10 +262,9 @@ legend {
   border-radius: $radius-sharp;
 
   h2 {
+    @include eyebrow;
     margin: 0 0 10px !important;
     font-family: $sans;
-    font-size: 1rem;
-    font-weight: 600;
   }
 
   p {
@@ -291,10 +288,9 @@ legend {
   }
 
   h3 {
-    margin: 14px 0 4px !important;
+    @include eyebrow;
+    margin: 18px 0 6px !important;
     font-family: $sans;
-    font-size: 0.875rem;
-    font-weight: 600;
   }
 }
 
