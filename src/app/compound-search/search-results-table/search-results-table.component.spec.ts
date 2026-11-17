@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { PageHeaderModule } from '../../_components/page-header/page-header.module';
 
 import { SearchResultsTableComponent } from './search-results-table.component';
-import { SearchResultService } from '../../_services/index';
+import { SearchResultService, LoginStateService } from '../../_services/index';
 import { SciItalicizePipe } from '../../_pipes/sci-italicize.pipe';
 
 @Component({ selector: 'app-struct2d', template: '' })
@@ -30,6 +30,7 @@ describe('SearchResultsTableComponent', () => {
       declarations: [SearchResultsTableComponent, Struct2dStubComponent, SciItalicizePipe],
       providers: [
         SearchResultService,
+        LoginStateService,
         Title,
         Meta,
         { provide: ActivatedRoute, useValue: { queryParams: of({ query: 'kinase', type: 'string' }) } }
@@ -94,5 +95,27 @@ describe('SearchResultsTableComponent', () => {
   it('shows an error state when the search fails', () => {
     svc.announceNewSearchResult({ data: null, status: 500 } as any);
     expect(component.status).toBe('error');
+  });
+
+  it('asks the user to sign in when the search needs an account', () => {
+    svc.announceNewSearchResult({ data: null, status: 401, message: 'Log in to use substructure search.' } as any);
+    expect(component.status).toBe('signin');
+  });
+
+  it('says the server is busy on a 503', () => {
+    svc.announceNewSearchResult({ data: null, status: 503 } as any);
+    expect(component.status).toBe('busy');
+  });
+
+  it("shows the backend's reason when it refuses a query", () => {
+    svc.announceNewSearchResult({ data: null, status: 400, message: 'Substructure queries need at least 4 atoms.' } as any);
+    expect(component.status).toBe('rejected');
+    expect(component.errorMessage).toBe('Substructure queries need at least 4 atoms.');
+  });
+
+  it('notes when only the top matches came back', () => {
+    svc.announceNewSearchResult({ data: [compound('alpha', 'plated', 'Launched', [])], total: 950, truncated: true } as any);
+    expect(component.truncated).toBe(true);
+    expect(component.total).toBe(950);
   });
 });

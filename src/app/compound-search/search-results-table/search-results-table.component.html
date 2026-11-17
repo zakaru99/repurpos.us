@@ -9,6 +9,29 @@
     </ng-container>
   </app-status-message>
 
+  <!-- Substructure search needs an account -->
+  <div class="notice" *ngIf="status === 'signin'">
+    <div>
+      <p class="notice-title">Sign in to run substructure searches</p>
+      <p>Substructure search checks every compound in the library, so it's limited to signed-in users. Accounts are free.</p>
+    </div>
+    <button type="button" class="btn" (click)="signIn()">Sign in</button>
+  </div>
+
+  <!-- Another substructure search is running -->
+  <app-status-message *ngIf="status === 'busy'" kicker="Busy" title="Substructure search is busy">
+    <p>Another substructure search is running. Please try again in a moment.</p>
+    <ng-container actions>
+      <button type="button" class="status-primary" (click)="retry()">Try again</button>
+    </ng-container>
+  </app-status-message>
+
+  <!-- The query was refused, with the reason -->
+  <div class="message" *ngIf="status === 'rejected'">
+    <p class="message-title">This search can't run.</p>
+    <p>{{ errorMessage }}</p>
+  </div>
+
   <!-- No matches -->
   <div class="message" *ngIf="status === 'done' && !rows.length">
     <p class="message-title">No compounds match “{{ queryString }}”.</p>
@@ -33,6 +56,10 @@
           <button type="button" (click)="downloadSDF()">SDF</button>
         </span>
       </div>
+      <p class="truncated" *ngIf="truncated">
+        Showing the {{ hasSimilarity ? 'most similar' : 'first' }} {{ rows.length | number }} of {{ total | number }} matches.
+        Narrow the query to see the rest.
+      </p>
 
       <div class="bar-filters">
         <nav class="filters" aria-label="Matched in">

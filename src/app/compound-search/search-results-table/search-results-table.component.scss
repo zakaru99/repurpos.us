@@ -36,6 +36,37 @@
   color: $ink;
 }
 
+// Signed-out prompt: a tint panel with one action (as on the assay page)
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 28px 0;
+  padding: 18px 20px;
+  background: $tint-bg;
+  border-radius: $radius-sharp;
+
+  p {
+    max-width: 60ch;
+    margin: 0 !important;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: $ink;
+  }
+}
+
+.notice-title {
+  margin-bottom: 4px !important;
+  font-weight: 600;
+}
+
+.btn {
+  @include button-navy;
+  flex-shrink: 0;
+  font-size: 0.9375rem;
+}
+
 // ---------------------------------------------------------------- bar
 
 .bar {
@@ -65,6 +96,13 @@
     margin-left: 4px;
     color: $ink-soft;
   }
+}
+
+// Only the top matches came back
+.truncated {
+  margin: 4px 0 0 !important;
+  font-size: 0.8125rem;
+  color: $ink-soft;
 }
 
 .downloads {
@@ -557,6 +595,11 @@
   .bar-top {
     flex-direction: column;
     gap: 6px;
+  }
+
+  .notice {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .sort {
