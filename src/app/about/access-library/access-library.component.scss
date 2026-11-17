@@ -36,31 +36,20 @@ h2 {
   @include arrow-link;
 }
 
-// Numbered criteria, the same treatment as the homepage partnership section
+// Requirements, as plain rows between hairlines
 .criteria {
   list-style: none;
-  counter-reset: crit;
   margin: 0;
   padding: 0;
   border-top: 1px solid $rule;
 
+  // Requirements, not steps: plain rows with no numbering
   > li {
-    counter-increment: crit;
-    display: grid;
-    grid-template-columns: 40px 1fr;
     padding: 14px 0;
     font-size: 0.9375rem;
     line-height: 1.6;
     color: $ink;
     border-bottom: 1px solid $rule;
-
-    &::before {
-      content: counter(crit, decimal-leading-zero);
-      font-family: $mono;
-      font-size: 0.8125rem;
-      color: $accent-text;
-      padding-top: 2px;
-    }
   }
 
   ul {

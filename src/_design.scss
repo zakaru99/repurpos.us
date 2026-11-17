@@ -158,7 +158,9 @@ $hex-lattice: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' widt
 
 // ---------------------------------------------------------------- type
 
-// Small uppercase label above a heading
+// Small uppercase label: an ID or stage above a title ("Assay A00414",
+// "Stage 2"), or a heading for a short group of links. Never a restatement of
+// the heading below it.
 @mixin eyebrow($on-dark: false) {
   font-size: 0.75rem;
   font-weight: 600;

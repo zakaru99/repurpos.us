@@ -55,20 +55,13 @@
   font-size: 0.8125rem;
   color: $ink;
 
+  // Coloured text matching the bar above, rather than dot markers
   .key {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
+    font-weight: 500;
 
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 2px;
-
-    &.pending { background: $status-pending; }
-    &.approved { background: $status-approved; }
-    &.rejected { background: $status-rejected; }
+    &.pending { color: $status-pending; }
+    &.approved { color: $status-approved; }
+    &.rejected { color: $status-rejected; }
   }
 
   .of {

@@ -1,4 +1,4 @@
-<app-page-header eyebrow="Screening partnerships" title="Propose an assay" [compact]="true"
+<app-page-header title="Propose an assay" [compact]="true"
                  lede="Screen the REFRAME collection in your assay. Calibr reviews every proposal and replies by email.">
 </app-page-header>
 
@@ -17,7 +17,7 @@
       <!-- Submitted -->
       <div class="done" *ngIf="loggedIn && submitted" role="status">
         <h2>Proposal submitted</h2>
-        <p>Thanks — the Calibr team will review “{{ submitted }}” and reply by email. You can follow its status under Proposals in your user portal.</p>
+        <p>Thanks. The Calibr team will review “{{ submitted }}” and reply by email. You can follow its status under Proposals in your user portal.</p>
         <div class="done-actions">
           <a class="btn" routerLink="/user_portal/my_assays">View my assays</a>
           <button type="button" class="link" (click)="startAnother()">Submit another proposal</button>

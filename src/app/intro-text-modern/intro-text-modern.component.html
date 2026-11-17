@@ -3,11 +3,10 @@
   <app-hex-trace></app-hex-trace>
   <div class="shell hero-grid">
     <div class="hero-main">
-      <p class="eyebrow">REFRAMEdb &middot; Calibr-Skaggs at Scripps Research</p>
       <h1>The world's largest open-access drug repurposing library</h1>
       <p class="lede">
-        {{ stats.totalCompounds | number }} clinical-stage compounds, each linked to its structure,
-        development history and results from partner screens.
+        {{ stats.totalCompounds | number }} clinical-stage compounds held at Calibr-Skaggs at Scripps
+        Research, each linked to its structure, development history and results from partner screens.
       </p>
 
       <app-hero-search></app-hero-search>
@@ -73,10 +72,7 @@
 <section class="band band-tint">
   <div class="shell">
     <div class="partner-head">
-      <div>
-        <p class="eyebrow">Screening partnerships</p>
-        <h2>Screen the REFRAME collection in your assay</h2>
-      </div>
+      <h2>Screen the REFRAME collection in your assay</h2>
       <div class="partner-actions">
         <a class="btn-solid" routerLink="/assay_proposal">Submit an assay proposal</a>
         <a class="arrow-link" [routerLink]="['/about']" fragment="access">Requirements</a>
@@ -97,10 +93,7 @@
 <section class="band">
   <div class="shell">
     <header class="section-head split">
-      <div>
-        <p class="eyebrow">Using REFRAMEdb</p>
-        <h2>Explore the data</h2>
-      </div>
+      <h2>Explore the data</h2>
       <p class="section-intro">
         Previews below use live data from the database. Activity data and curves are available after signing in.
       </p>
@@ -113,7 +106,6 @@
 <!-- What's new trigger + panel -->
 <button #wnTrigger type="button" class="whats-new" [class.hidden]="isWhatsNewOpen" (click)="openWhatsNew($event)"
         aria-haspopup="dialog">
-  <span class="whats-new-dot" aria-hidden="true"></span>
   <span class="whats-new-label">What's new</span>
   <span class="whats-new-date">{{ whatsNewItems[0].date | date:'d MMM' }}</span>
 </button>
@@ -122,10 +114,7 @@
 <aside class="drawer" [class.open]="isWhatsNewOpen" role="dialog" aria-modal="true" aria-labelledby="whats-new-title"
        [attr.aria-hidden]="!isWhatsNewOpen">
   <header class="drawer-head">
-    <div>
-      <p class="eyebrow">Release notes</p>
-      <h2 id="whats-new-title">What's new</h2>
-    </div>
+    <h2 id="whats-new-title">What's new</h2>
     <button #drawerClose type="button" class="drawer-close" (click)="closeWhatsNew()" aria-label="Close">
       <span aria-hidden="true">&#x2715;</span>
     </button>
