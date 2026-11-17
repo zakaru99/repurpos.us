@@ -90,7 +90,7 @@
 </section>
 
 <!-- Explore -->
-<section class="band">
+<section class="band band-explore">
   <div class="shell">
     <header class="section-head split">
       <div>
@@ -103,50 +103,6 @@
     </header>
 
     <app-explore-tabs [moaCategories]="moaCategories" [ontologies]="ontologies"></app-explore-tabs>
-  </div>
-</section>
-
-<!-- At a glance -->
-<section class="band band-dark">
-  <div class="shell">
-    <header class="section-head">
-      <p class="eyebrow">The collection</p>
-      <h2>What's in the library</h2>
-    </header>
-
-    <div class="charts">
-      <figure class="chart" *ngIf="!phasesFailed">
-        <figcaption>
-          <h3>Compounds by highest development phase</h3>
-          <span class="chart-sub">{{ phases ? 'Share of the ' + (phaseTotal | number) + ' compounds in the screening library' : 'Loading…' }}</span>
-        </figcaption>
-        <ul class="hbars" *ngIf="phases">
-          <li *ngFor="let p of phases" tabindex="0"
-              [attr.aria-label]="p.label + ': ' + (p.value | number) + ' compounds'">
-            <span class="hbar-label">{{ p.label }}</span>
-            <span class="hbar-track"><span class="hbar" [style.width.%]="barWidth(p.value, phases)"></span></span>
-            <span class="hbar-value">{{ p.value / phaseTotal | percent:'1.0-0' }}</span>
-            <span class="hbar-tip" role="tooltip">{{ p.value | number }} compounds</span>
-          </li>
-        </ul>
-      </figure>
-
-      <figure class="chart">
-        <figcaption>
-          <h3>Published screens by assay format</h3>
-          <span class="chart-sub">{{ stats.publishedScreens | number }} published screens</span>
-        </figcaption>
-        <ul class="hbars">
-          <li *ngFor="let f of assayFormats" tabindex="0"
-              [attr.aria-label]="f.label + ': ' + f.value + ' screens'">
-            <span class="hbar-label">{{ f.label }}</span>
-            <span class="hbar-track"><span class="hbar" [style.width.%]="barWidth(f.value, assayFormats)"></span></span>
-            <span class="hbar-value">{{ f.value }}</span>
-            <span class="hbar-tip" role="tooltip">{{ f.value / stats.publishedScreens | percent:'1.0-0' }} of screens</span>
-          </li>
-        </ul>
-      </figure>
-    </div>
   </div>
 </section>
 

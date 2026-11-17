@@ -1,7 +1,6 @@
-// Home page figures, chart data and release notes. Update on each data release.
+// Home page figures, explore-tab data and release notes. Update on each data release.
 //
-// The development-phase chart isn't here: /api/library_stats counts it live.
-// assayFormats / moaCategories / ontologies were computed from /api/assay_list and
+// moaCategories / ontologies were computed from /api/assay_list and
 // ontology-tree/phase2b_moa_updated.json on 2026-10-13.
 export const HOME_DATA = {
   "stats": {
@@ -12,28 +11,6 @@ export const HOME_DATA = {
     "publishedScreens": 222,
     "lastUpdated": "2026/07/31"
   },
-  "assayFormats": [
-    {
-      "label": "Cell-based",
-      "value": 109
-    },
-    {
-      "label": "Biochemical / enzymatic",
-      "value": 63
-    },
-    {
-      "label": "Cell-based, high-content imaging",
-      "value": 25
-    },
-    {
-      "label": "Cell-based, viability",
-      "value": 12
-    },
-    {
-      "label": "Not recorded",
-      "value": 13
-    }
-  ],
   "ontologies": [
     {
       "label": "Pharmacological role",

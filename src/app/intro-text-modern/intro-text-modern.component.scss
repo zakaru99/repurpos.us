@@ -1,8 +1,8 @@
 // Homepage. Full-bleed bands with a centred content column; type set in
 // IBM Plex Sans (loaded in index.html), figures in Plex Mono.
 //
-// Band rhythm: navy hero -> tinted partnership timeline -> white explore tabs
-// -> dark charts -> muted sources strip (data sources only) -> navy footer.
+// Band rhythm: navy hero -> tinted partnership timeline -> white explore tabs,
+// with the sources line closing that same white band -> navy footer.
 
 @import '../../design';
 
@@ -261,15 +261,6 @@ p {
   padding: 80px 0;
 }
 
-.band-dark {
-  background: $navy-2;
-  color: #fff;
-
-  .eyebrow {
-    color: $accent-on-dark;
-  }
-}
-
 .section-head {
   margin-bottom: 48px;
   // <header> picks up the global `body, header { color }` rule; follow the band instead
@@ -375,122 +366,17 @@ p {
   background: $accent;
 }
 
-// ---------------------------------------------------------------- charts
-
-.charts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 72px;
-}
-
-.chart {
-  margin: 0;
-
-  figcaption {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 4px 12px;
-    padding-bottom: 16px;
-    margin-bottom: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.24);
-  }
-
-  h3 {
-    flex: 1 0 100%;
-    font-size: 1.125rem;
-    font-weight: 500;
-  }
-
-  .chart-sub {
-    font-size: 0.8125rem;
-    color: rgba(255, 255, 255, 0.6);
-  }
-}
-
-
-.hbars {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-
-  li {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 13em) 1fr 3.5em;
-    gap: 16px;
-    align-items: center;
-    padding: 9px 0;
-    border-bottom: 1px solid $rule-dark;
-    font-size: 0.875rem;
-    outline: none;
-
-    &:hover,
-    &:focus-visible {
-      background: rgba(255, 255, 255, 0.04);
-
-      .hbar-tip {
-        opacity: 1;
-        transform: translate(-50%, 0);
-      }
-    }
-
-    &:focus-visible {
-      box-shadow: inset 0 0 0 1px $accent-on-dark;
-    }
-  }
-}
-
-.hbar-label {
-  color: rgba(255, 255, 255, 0.85);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.hbar-track {
-  display: block;
-  height: 12px;
-}
-
-.hbar {
-  display: block;
-  height: 100%;
-  min-width: 2px;
-  background: $accent-on-dark;
-  border-radius: 0 4px 4px 0;
-}
-
-.hbar-value {
-  font-family: $mono;
-  font-size: 0.8125rem;
-  text-align: right;
-  color: #fff;
-}
-
-.hbar-tip {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% - 2px);
-  z-index: 2;
-  padding: 5px 9px;
-  font-size: 0.75rem;
-  white-space: nowrap;
-  color: $ink;
-  background: #fff;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-  opacity: 0;
-  transform: translate(-50%, 4px);
-  transition: opacity 0.12s ease, transform 0.12s ease;
-  pointer-events: none;
-}
-
 // ---------------------------------------------------------------- sources strip
 
+// Continues the white explore band above it: no rule, and the band before it
+// drops most of its bottom padding so the two read as one section
+.band-explore {
+  padding-bottom: 40px;
+}
+
 .sources {
-  background: $muted-bg;
-  border-top: 1px solid $rule;
-  padding: 28px 0;
+  background: #fff;
+  padding: 0 0 64px;
 }
 
 // Label and sources on one line
@@ -821,11 +707,6 @@ p {
     align-items: flex-start;
     margin-bottom: 40px;
   }
-
-  .charts {
-    grid-template-columns: 1fr;
-    gap: 56px;
-  }
 }
 
 @media (max-width: 860px) {
@@ -870,6 +751,14 @@ p {
     padding: 64px 0;
   }
 
+  .band-explore {
+    padding-bottom: 32px;
+  }
+
+  .sources {
+    padding-bottom: 48px;
+  }
+
   .band-tint {
     padding: 56px 0;
   }
@@ -884,18 +773,6 @@ p {
 
   .partner-head h2 {
     font-size: 1.625rem;
-  }
-
-  .hbars li {
-    grid-template-columns: minmax(0, 9em) 1fr 3em;
-    gap: 10px;
-  }
-
-  // Narrow label column: wrap long labels ("Clinical, phase not stated")
-  // onto two lines rather than cutting them off
-  .hbar-label {
-    white-space: normal;
-    line-height: 1.3;
   }
 
   // Stack sources two-up without separators so none start a line

@@ -6,7 +6,7 @@ import { PARTNERSHIP_STEPS } from '../_models/partnership-steps';
 
 interface Bar { label: string; value: number; }
 
-// Figures, chart data and release notes live in home-data.ts so a data
+// Figures, explore-tab data and release notes live in home-data.ts so a data
 // release only means editing that file.
 const DATA: any = HOME_DATA;
 
@@ -20,10 +20,6 @@ export class IntroTextModernComponent implements OnInit {
   lastUpdated = new Date(DATA.stats.lastUpdated);
   moaCategories: Bar[] = DATA.moaCategories;
   ontologies: Bar[] = DATA.ontologies;
-  // Counted live by the backend; null while loading, and the chart is hidden if they fail
-  phases: Bar[] = null;
-  phasesFailed = false;
-  assayFormats: Bar[] = DATA.assayFormats;
 
   whatsNewItems: Array<{ date: Date; text: string }> =
     DATA.whatsNew.map((n: [string, string]) => ({ date: new Date(n[0]), text: n[1] }));
@@ -41,23 +37,10 @@ export class IntroTextModernComponent implements OnInit {
   constructor(private data: HomeDataService) { }
 
   ngOnInit() {
-    this.data.getLibraryStats().subscribe(stats => {
-      this.phases = stats ? stats.phases : null;
-      this.phasesFailed = !stats;
-    });
     for (const key of Object.keys(this.downloads)) {
       const d = this.downloads[key];
       this.data.getFileSize(d.url).subscribe(size => d.size = size);
     }
-  }
-
-  barWidth(value: number, items: Bar[]): number {
-    const max = Math.max(1, ...items.map(i => i.value));
-    return value / max * 100;
-  }
-
-  get phaseTotal(): number {
-    return (this.phases || []).reduce((sum, i) => sum + i.value, 0);
   }
 
   get groupedItems(): Array<{ label: string; items: Array<{ date: Date; text: string }> }> {
