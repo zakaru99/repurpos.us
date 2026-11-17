@@ -73,8 +73,10 @@ h2 {
 
 // Who does the step
 .who {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   padding-top: 3px;
 
   &.calibr { color: $navy; }
