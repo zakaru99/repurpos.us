@@ -59,7 +59,11 @@
           <dd>{{ stats.pkCompounds | number }}</dd>
         </div>
       </dl>
-      <p class="fig-note">Data as of {{ lastUpdated | date:'d MMMM y' }}</p>
+      <!-- Where the figures come from (the institutional logos are in the footer) -->
+      <p class="fig-note">
+        Data as of {{ lastUpdated | date:'d MMMM y' }}. Assembled from Clarivate Integrity,
+        GVK Excelra GOSTAR, Citeline Pharmaprojects and Wikidata.
+      </p>
 
     </aside>
   </div>
@@ -101,17 +105,6 @@
         Previews below use live data from the database. Activity data and curves are available after signing in.
       </p>
     </header>
-
-    <!-- Data sources (the institutional logos are in the footer, on every page) -->
-    <div class="sources-row">
-      <p class="sources-label">Assembled from</p>
-      <ul class="source-names">
-        <li>Clarivate Integrity</li>
-        <li>GVK Excelra GOSTAR</li>
-        <li>Citeline Pharmaprojects</li>
-        <li>Wikidata</li>
-      </ul>
-    </div>
 
     <app-explore-tabs [moaCategories]="moaCategories" [ontologies]="ontologies"></app-explore-tabs>
   </div>

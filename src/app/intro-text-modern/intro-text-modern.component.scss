@@ -1,8 +1,8 @@
 // Homepage. Full-bleed bands with a centred content column; type set in
 // IBM Plex Sans (loaded in index.html), figures in Plex Mono.
 //
-// Band rhythm: navy hero -> tinted partnership timeline -> white explore band
-// (heading, centred sources line, tabs) -> navy footer.
+// Band rhythm: navy hero (figures, with the data sources in their note) ->
+// tinted partnership timeline -> white explore tabs -> navy footer.
 
 @import '../../design';
 
@@ -143,6 +143,7 @@ p {
   .fig-note {
     margin-top: 12px !important;
     font-size: 0.8125rem;
+    line-height: 1.55;
     color: rgba(255, 255, 255, 0.55);
   }
 }
@@ -365,52 +366,6 @@ p {
 // Last step (data goes public) gets the brand colour
 .timeline li:last-child .step-marker {
   background: $accent;
-}
-
-// ---------------------------------------------------------------- sources line
-
-// Centred between the explore heading and the tabs
-.sources-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: baseline;
-  gap: 10px 24px;
-  margin: -16px 0 40px;
-}
-
-.sources-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: $ink-soft;
-  margin: 0 !important;
-}
-
-.source-names {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 0;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-
-  li {
-    font-size: 1rem;
-    font-weight: 500;
-    color: $ink;
-
-    & + li::before {
-      content: '';
-      display: inline-block;
-      width: 1px;
-      height: 14px;
-      margin: 0 16px;
-      vertical-align: -1px;
-      background: $icon;
-    }
-  }
 }
 
 // ---------------------------------------------------------------- what's new trigger
@@ -757,24 +712,6 @@ p {
 
   .partner-head h2 {
     font-size: 1.625rem;
-  }
-
-  // Label on its own line; names wrap centred, without separators so none
-  // start a line
-  .sources-row {
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    margin: -8px 0 32px;
-  }
-
-  .source-names {
-    justify-content: center;
-    gap: 4px 18px;
-
-    li + li::before {
-      display: none;
-    }
   }
 
   // Thumb-reachable on phones, clear of the hero content
