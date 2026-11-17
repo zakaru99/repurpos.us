@@ -19,7 +19,7 @@
               [title]="m.n + ' ' + (m.status | lowercase)"></span>
       </div>
       <p class="legend" *ngIf="proposals.length">
-        <span *ngFor="let m of mix" class="key"><span class="dot" [ngClass]="m.status | lowercase"></span>{{ m.n }} {{ m.status | lowercase }}</span>
+        <span *ngFor="let m of mix" class="key" [ngClass]="m.status | lowercase">{{ m.n }} {{ m.status | lowercase }}</span>
         <span class="of">of {{ proposals.length }} proposals</span>
       </p>
 

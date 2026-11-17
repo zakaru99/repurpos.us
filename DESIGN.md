@@ -27,7 +27,9 @@ AI generator. When in doubt, choose the plainer option.
 - Left-aligned layouts in a centred column (`@include shell`: 1200px max, 32px
   gutters, 20px on phones).
 - 1px hairline rules to separate things, instead of boxes and shadows.
-- A small uppercase label above section headings (`@include eyebrow`).
+- A small sentence-case label (`@include eyebrow`) only where it adds
+  information: an ID or stage above a title ("Assay A00414", "Stage 2"), or a
+  heading for a short group of links. Never one that restates the heading.
 - Real data on the page wherever possible: live previews, actual counts,
   actual structures.
 - Clearly label anything that isn't real yet. The homepage phase chart carries
@@ -153,7 +155,7 @@ large screens.
 |---|---|
 | `full-bleed-host` | Component host that runs edge to edge inside `.container-fluid` |
 | `shell` | Centred content column |
-| `eyebrow($on-dark)` | Small uppercase label above a heading |
+| `eyebrow($on-dark)` | Small sentence-case label: an ID or stage above a title |
 | `section-title` | Section heading |
 | `arrow-link` | Text link with a chevron that nudges right on hover |
 | `button-navy` | Primary action on light backgrounds |

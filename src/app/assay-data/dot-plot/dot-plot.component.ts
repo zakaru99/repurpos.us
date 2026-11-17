@@ -284,12 +284,12 @@ export class DotPlotComponent implements OnInit {
     scalebar.append("text")
       .attr("class", "annotation-right annotation--x")
       .attr("transform", `translate(${this.width}, -${this.margin.colorbar + this.margin.xaxis})`)
-      .text("more potent")
+      .text("More potent")
 
     scalebar.append("text")
       .attr("class", "annotation-left annotation--x")
       .attr("transform", `translate(0, -${this.margin.colorbar + this.margin.xaxis})`)
-      .text("less potent")
+      .text("Less potent")
   }
 
   // Data-dependent calls; will change w/ pagination

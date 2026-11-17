@@ -58,7 +58,7 @@ h2 {
     border-bottom: 1px solid $rule-soft;
 
     &::before {
-      content: counter(step, decimal-leading-zero);
+      content: counter(step);
       font-family: $mono;
       font-size: 0.8125rem;
       color: $ink-faint;
@@ -73,10 +73,8 @@ h2 {
 
 // Who does the step
 .who {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
   padding-top: 3px;
 
   &.calibr { color: $navy; }
