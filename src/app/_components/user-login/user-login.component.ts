@@ -78,6 +78,14 @@ export class UserLoginComponent implements OnInit, OnChanges {
     if (mode === 'register' || mode === 'forgot' || mode === 'signin') { this.show(mode); }
   }
 
+  // Other pages sign this browser out with
+  // window.dispatchEvent(new CustomEvent('reframe-sign-out'))
+  // (e.g. after a password reset, so the user signs in with the new password)
+  @HostListener('window:reframe-sign-out')
+  onSignOutRequest() {
+    if (localStorage.getItem('auth_token')) { this.logout(); }
+  }
+
   // Switch views, carrying a typed email across and clearing old messages
   show(mode: 'signin' | 'register' | 'forgot') {
     const typed = this.email.value || this.regForm.get('email').value || this.resetEmail.value || '';
