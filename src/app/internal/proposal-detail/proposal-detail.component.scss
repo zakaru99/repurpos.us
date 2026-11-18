@@ -28,9 +28,13 @@
   color: $ink-soft;
 }
 
+// "Proposal #41" on the right of the meta line, before the downloads: the same
+// small type as "Submitted ..." on the left
 .id {
-  font-family: $mono;
-  font-size: 0.75rem;
+  margin-right: 8px;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+  white-space: nowrap;
 }
 
 // Downloads (small outlined buttons with a download arrow) and Close, at the
@@ -82,15 +86,16 @@
   @include status-text;
 }
 
+// Name on the left; Approve / Reject (when pending) on the right
 .title-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
   margin-top: 4px;
 
   h2 {
     min-width: 0;
+    margin-right: auto !important;
     margin: 0;
     font-family: $sans;
     font-size: 1.25rem;
@@ -219,5 +224,22 @@ h3 {
 @media (max-width: $bp-tablet) {
   .title-row {
     flex-wrap: wrap;
+  }
+}
+
+// Phones: the date on its own line, then the ID with the downloads and Close
+@media (max-width: $bp-phone) {
+  .meta-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .meta,
+  .tools {
+    width: 100%;
+  }
+
+  .id {
+    margin-right: auto;
   }
 }

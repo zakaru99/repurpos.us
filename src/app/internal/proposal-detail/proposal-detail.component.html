@@ -5,11 +5,12 @@
   <header class="head">
     <div class="meta-row">
       <p class="meta">
-        <span class="id">#{{ proposal.id }}</span>
-        <span *ngIf="proposal.submittedOn"> · Submitted {{ proposal.submittedOn | date:'d MMMM y' }}</span>
-        <span *ngIf="!isPending || !canDecide"> · <span class="status" [ngClass]="proposal.status | lowercase">{{ proposal.status }}</span></span>
+        <span *ngIf="proposal.submittedOn">Submitted {{ proposal.submittedOn | date:'d MMMM y' }}</span>
+        <span *ngIf="!isPending || !canDecide"><ng-container *ngIf="proposal.submittedOn"> · </ng-container><span class="status" [ngClass]="proposal.status | lowercase">{{ proposal.status }}</span></span>
       </p>
       <div class="tools">
+        <!-- The proposal's number, for referring to it, in the meta line's type -->
+        <span class="id">Proposal #{{ proposal.id }}</span>
         <button type="button" class="dl" (click)="exportPdf()" title="Download this proposal as a PDF">
           <svg class="dl-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M3 13h10"/></svg>PDF
         </button>

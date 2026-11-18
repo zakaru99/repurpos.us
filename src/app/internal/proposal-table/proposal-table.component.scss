@@ -71,13 +71,6 @@
   @include focus-ring($accent, 2px);
 }
 
-.id {
-  margin-left: 8px;
-  font-family: $mono;
-  font-size: 0.75rem;
-  color: $ink-faint;
-}
-
 .status {
   @include status-text;
 }

@@ -16,7 +16,6 @@
         <button type="button" class="open" (click)="$event.stopPropagation(); pick.emit(p)">
           {{ p.indication || 'Untitled proposal' }}
         </button>
-        <span class="id">#{{ p.id }}</span>
       </td>
       <td class="extra">{{ p.submittedBy || '—' }}</td>
       <td class="inst muted">{{ p.institution || '—' }}</td>
