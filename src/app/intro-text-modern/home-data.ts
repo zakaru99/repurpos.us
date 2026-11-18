@@ -69,6 +69,10 @@ export const HOME_DATA = {
   ],
   "whatsNew": [
     [
+      "2026/11/18",
+      "Complete site redesign"
+    ],
+    [
       "2026/06/17",
       "Mobile optimizations across the site"
     ],
