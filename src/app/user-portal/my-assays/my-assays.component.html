@@ -40,7 +40,6 @@
         <td>
           <button type="button" class="open" [attr.aria-expanded]="a.id === openId"
                   (click)="$event.stopPropagation(); toggle(a)">{{ a.indication || 'Untitled proposal' }}</button>
-          <span class="id">#{{ a.id }}</span>
         </td>
         <td class="col-end"><span class="status" [ngClass]="a.status | lowercase">{{ a.status }}</span></td>
       </tr>
