@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy } from '@a
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { Subscription } from 'rxjs';
-import { StructureService, SearchResultService } from '../../../../_services/index';
+import { StructureService, SearchResultService, LoginStateService } from '../../../../_services/index';
 
 @Component({
   selector: 'app-structure-search-options',
@@ -40,7 +40,8 @@ export class StructureSearchOptionsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private structSvc: StructureService,
-    private searchResultService: SearchResultService) {
+    private searchResultService: SearchResultService,
+    private loginState: LoginStateService) {
     // look for pass back of the structure SMILES string
     this.structureSubscription = structSvc.smilesAnnounced$.subscribe(
       struct => {
@@ -142,6 +143,12 @@ export class StructureSearchOptionsComponent implements OnInit {
     this.searchMode = mode;
     this.structSvc.announceMode(mode);
     this.hideResults();
+  }
+
+  // Signed out on substructure: no search field (the message below the band
+  // says why)
+  get walled(): boolean {
+    return this.searchMode === 'substructure' && !this.loginState.hasSession();
   }
 
   hideResults() {

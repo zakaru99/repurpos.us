@@ -18,16 +18,19 @@
 </label>
 </div>
 
-<div class="smiles">
-  <input type="text" placeholder="Paste a SMILES string, or draw the structure below" autocomplete="off"
-         aria-label="SMILES" [(ngModel)]="text_query" (keyup.enter)="onSubmit()" (input)="onChange()">
-  <button type="button" class="submit" (click)="onSubmit()">Search</button>
-</div>
+<!-- Hidden when signed out on substructure: nothing could run -->
+<ng-container *ngIf="!walled">
+  <div class="smiles">
+    <input type="text" placeholder="Paste a SMILES string, or draw the structure below" autocomplete="off"
+           aria-label="SMILES" [(ngModel)]="text_query" (keyup.enter)="onSubmit()" (input)="onChange()">
+    <button type="button" class="submit" (click)="onSubmit()">Search</button>
+  </div>
 
-<p class="examples">
-  <span class="ex-label">Try</span>
-  <ng-container *ngFor="let example of examples; let last = last">
-    <a [routerLink]="['.']" [queryParams]="{ query: example.query, type: example.type, mode: example.mode, tanimoto: example.tanimoto }"
-       [title]="example.label">{{ example.description }}</a><span class="sep" *ngIf="!last" aria-hidden="true">·</span>
-  </ng-container>
-</p>
+  <p class="examples">
+    <span class="ex-label">Try</span>
+    <ng-container *ngFor="let example of examples; let last = last">
+      <a [routerLink]="['.']" [queryParams]="{ query: example.query, type: example.type, mode: example.mode, tanimoto: example.tanimoto }"
+         [title]="example.label">{{ example.description }}</a><span class="sep" *ngIf="!last" aria-hidden="true">·</span>
+    </ng-container>
+  </p>
+</ng-container>
