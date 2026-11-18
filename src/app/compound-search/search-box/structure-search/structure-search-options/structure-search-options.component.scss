@@ -1,14 +1,15 @@
-// Structure search controls on the white panel: match type, threshold,
-// SMILES field and examples, above the drawing editor.
+// Structure search controls on the navy band: match type, threshold, SMILES
+// field and examples, above the drawing editor. The field and examples match
+// the name search; the match type keeps the segmented control, recoloured for navy.
 
 @import '../../../../../design';
 
 :host {
   display: block;
-  padding: 8px 8px 14px;
+  padding-bottom: 14px;
   font-family: $sans;
   font-weight: 400;
-  color: $ink;
+  color: #fff;
 }
 
 .opts {
@@ -28,17 +29,32 @@
 
 .label {
   font-size: 0.8125rem;
-  color: $ink-soft;
+  color: rgba(255, 255, 255, 0.7);
 }
 
+// The segmented control on navy: a faint track, the chosen option white
 .segmented {
   @include segmented;
+  background: rgba(255, 255, 255, 0.1);
+
+  button {
+    color: rgba(255, 255, 255, 0.75);
+
+    &:hover {
+      color: #fff;
+    }
+
+    &.active {
+      color: $navy;
+      background: #fff;
+    }
+  }
 }
 
 .threshold {
   input[type="range"] {
     width: 180px;
-    accent-color: $accent;
+    accent-color: $accent-on-dark;
   }
 
   .value {
@@ -56,13 +72,13 @@
   input {
     flex: 1;
     min-width: 0;
-    height: 44px;
-    padding: 0 14px;
+    height: 52px;
+    padding: 0 18px;
     font: inherit;
-    font-size: 0.9375rem;
+    font-size: 1rem;
     color: $ink;
-    border: 1px solid $field-border;
-    border-right: 0;
+    background: #fff;
+    border: 0;
     border-radius: 2px 0 0 2px;
 
     &::placeholder {
@@ -71,15 +87,14 @@
 
     &:focus {
       outline: none;
-      border-color: $accent;
-      box-shadow: inset 0 0 0 1px $accent;
+      box-shadow: inset 0 0 0 2px $accent;
     }
   }
 }
 
 .submit {
-  height: 44px;
-  padding: 0 24px;
+  height: 52px;
+  padding: 0 28px;
   font: inherit;
   font-weight: 600;
   color: #fff;
@@ -87,21 +102,30 @@
   border: 0;
   border-radius: 0 2px 2px 0;
   cursor: pointer;
+  transition: background 0.15s ease;
 
   &:hover {
     background: $accent-hover;
   }
 
-  @include focus-ring($accent, 2px);
+  @include focus-ring($accent-on-dark, 2px);
 }
 
 .examples {
-  margin: 10px 0 0 !important;
-  font-size: 0.8125rem;
-  color: $ink-soft;
+  margin: 12px 0 0 !important;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
 
   a {
-    color: $accent;
+    color: rgba(255, 255, 255, 0.88);
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.35);
+    text-underline-offset: 3px;
+
+    &:hover {
+      color: #fff;
+      text-decoration-color: #fff;
+    }
   }
 }
 
@@ -111,11 +135,32 @@
 
 .sep {
   margin: 0 10px;
-  color: $ink-faint;
+  color: rgba(255, 255, 255, 0.35);
 }
 
 @media (max-width: $bp-phone) {
+  .mode {
+    flex-wrap: wrap;
+  }
+
   .segmented {
     flex-wrap: wrap;
+    max-width: 100%;
+  }
+
+  // Field and button stacked, as in the name search
+  .smiles {
+    flex-direction: column;
+    gap: 8px;
+
+    input {
+      flex: none;
+      border-radius: 2px;
+    }
+  }
+
+  .submit {
+    width: 100%;
+    border-radius: 2px;
   }
 }

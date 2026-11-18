@@ -9,7 +9,7 @@ import { Title } from '@angular/platform-browser';
 import { of } from 'rxjs';
 
 import { SearchBoxComponent } from './search-box.component';
-import { BackendSearchService, SearchResultService, StructureService } from '../../_services/index';
+import { BackendSearchService, SearchResultService, StructureService, LoginStateService } from '../../_services/index';
 
 @Component({ selector: 'app-text-search', template: '' })
 class TextSearchStubComponent {
@@ -31,6 +31,7 @@ describe('SearchBoxComponent', () => {
         BackendSearchService,
         SearchResultService,
         StructureService,
+        LoginStateService,
         Title,
         { provide: ActivatedRoute, useValue: { queryParams: of({}) } }
       ]

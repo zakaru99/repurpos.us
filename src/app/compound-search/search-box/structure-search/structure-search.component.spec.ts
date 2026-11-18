@@ -1,11 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatExpansionModule, MatButtonModule } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { StructureSearchComponent } from './structure-search.component';
-import { SearchResultService } from '../../../_services/index';
+import { SearchResultService, StructureService, LoginStateService } from '../../../_services/index';
 
 @Component({ selector: 'app-structure-search-options', template: '' })
 class StructureSearchOptionsStubComponent {}
@@ -19,10 +20,12 @@ describe('StructureSearchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ MatExpansionModule, MatButtonModule, NoopAnimationsModule ],
+      imports: [ HttpClientTestingModule, MatExpansionModule, MatButtonModule, NoopAnimationsModule ],
       declarations: [ StructureSearchComponent, StructureSearchOptionsStubComponent, KetcherStubComponent ],
       providers: [
         SearchResultService,
+        StructureService,
+        LoginStateService,
         { provide: ActivatedRoute, useValue: {} }
       ]
     })

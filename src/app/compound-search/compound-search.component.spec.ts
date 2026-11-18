@@ -1,5 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { LoginStateService, StructureService, SearchResultService } from '../_services/index';
 
 import { CompoundSearchComponent } from './compound-search.component';
 
@@ -15,6 +18,8 @@ describe('CompoundSearchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ RouterTestingModule, HttpClientTestingModule ],
+      providers: [ LoginStateService, StructureService, SearchResultService ],
       declarations: [ CompoundSearchComponent, SearchBoxStubComponent, SearchResultStubComponent ]
     })
     .compileComponents();

@@ -23,19 +23,52 @@
   padding-bottom: 26px;
 }
 
-.eyebrow {
-  @include eyebrow(true);
-  margin: 0 0 12px !important;
-}
-
 .ie {
   margin: 0 0 12px !important;
   font-size: 0.875rem;
   color: $caution-on-dark;
 }
 
+// Empty results area for the name search, before anything has been searched
+.placeholder .inner {
+  padding-top: 32px;
+  padding-bottom: 32px;
+
+  p {
+    max-width: 68ch;
+    margin: 0 !important;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: $ink-soft;
+  }
+
+  .ph-title {
+    margin-bottom: 4px !important;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $ink;
+  }
+}
+
+// Substructure sign-in message: the placeholder's text with a button beside it
+.placeholder .signin {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 32px;
+  // The width of the SMILES field above
+  max-width: 820px;
+
+  .btn {
+    @include button-navy;
+    flex-shrink: 0;
+  }
+}
+
 @media (max-width: $bp-phone) {
-  .inner {
+  .band .inner,
+  .placeholder .inner {
     padding-top: 20px;
     padding-bottom: 20px;
   }

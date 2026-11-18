@@ -1,9 +1,29 @@
 <!-- Search band: compact, in the homepage hero's style -->
 <section class="band">
   <div class="inner">
-    <p class="eyebrow">Search REFRAMEdb</p>
     <p class="ie" *ngIf="isIE">Compound search may not work correctly in Internet Explorer. Please use a current browser.</p>
     <search-box></search-box>
+  </div>
+</section>
+
+<!-- Name search before a search has been made: where the results will appear -->
+<section class="placeholder" *ngIf="!structureTab && !hasQuery">
+  <div class="inner">
+    <p class="ph-title">Results show here</p>
+    <p>Enter a drug name, InChIKey, drug class, target or disease above.</p>
+  </div>
+</section>
+
+<!-- Structure tab, signed out, substructure chosen: say why nothing will run -->
+<section class="placeholder" *ngIf="substructureWalled">
+  <div class="inner">
+    <div class="signin">
+      <div>
+        <p class="ph-title">Substructure search is for signed-in users</p>
+        <p>Accounts are free. Exact match and similar compounds work without one.</p>
+      </div>
+      <button type="button" class="btn" (click)="signIn()">Sign in</button>
+    </div>
   </div>
 </section>
 

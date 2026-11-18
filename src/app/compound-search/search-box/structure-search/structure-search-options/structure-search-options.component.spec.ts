@@ -8,7 +8,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BehaviorSubject } from 'rxjs';
 
 import { StructureSearchOptionsComponent } from './structure-search-options.component';
-import { StructureService, SearchResultService } from '../../../../_services/index';
+import { StructureService, SearchResultService, LoginStateService } from '../../../../_services/index';
 
 describe('StructureSearchOptionsComponent', () => {
   let component: StructureSearchOptionsComponent;
@@ -30,7 +30,8 @@ describe('StructureSearchOptionsComponent', () => {
       declarations: [ StructureSearchOptionsComponent ],
       providers: [
         SearchResultService,
-        StructureService
+        StructureService,
+        LoginStateService
       ]
     })
     .compileComponents();

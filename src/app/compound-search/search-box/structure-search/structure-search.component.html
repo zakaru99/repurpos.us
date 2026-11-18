@@ -2,9 +2,9 @@
      shorter screen the editor folds away so the results are in view. -->
 <app-structure-search-options></app-structure-search-options>
 
-<button type="button" class="toggle" *ngIf="pressed" (click)="panelOpenState = !panelOpenState"
+<button type="button" class="toggle" *ngIf="pressed && !walled" (click)="panelOpenState = !panelOpenState"
         [attr.aria-expanded]="panelOpenState">{{ panelOpenState ? 'Hide the editor' : 'Draw or edit the structure' }}</button>
 
-<div [hidden]="!panelOpenState">
+<div [hidden]="!panelOpenState || walled">
   <app-ketcher></app-ketcher>
 </div>

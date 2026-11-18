@@ -78,6 +78,7 @@ export class StructureSearchOptionsComponent implements OnInit {
     if (params['type'] === 'structure' || params['type'] === 'substructure') {
       if(params['type'] === 'substructure') this.searchMode = 'substructure';
       if (params.hasOwnProperty('mode')) this.searchMode = params['mode'];
+      this.structSvc.announceMode(this.searchMode);
       if (params.hasOwnProperty('tanimoto')) this.tanimotoThresh = params['tanimoto'];
       if (params.hasOwnProperty('query')) {
         this.structSvc.announceSmiles(params['query']);
@@ -134,6 +135,14 @@ export class StructureSearchOptionsComponent implements OnInit {
     // }
   }
 
+
+  // Pick a match type. Substructure needs an account: signed out, the page
+  // shows a sign-in message below the band as soon as it's chosen.
+  selectMode(mode: string) {
+    this.searchMode = mode;
+    this.structSvc.announceMode(mode);
+    this.hideResults();
+  }
 
   hideResults() {
     this.searchResultService.announceSubmit(false);

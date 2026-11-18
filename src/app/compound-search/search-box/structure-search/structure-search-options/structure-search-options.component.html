@@ -1,21 +1,21 @@
 <!-- How to match the drawn (or pasted) structure -->
 <div class="opts">
-  <div class="mode">
-    <span class="label">Match</span>
-    <div class="segmented" role="radiogroup" aria-label="Match type">
-      <button type="button" *ngFor="let opt of searchOptions" role="radio"
-              [class.active]="searchMode === opt.id" [attr.aria-checked]="searchMode === opt.id"
-              [title]="opt.tooltip" (click)="searchMode = opt.id; hideResults()">{{ opt.label }}</button>
-    </div>
+<div class="mode">
+  <span class="label">Match</span>
+  <div class="segmented" role="radiogroup" aria-label="Match type">
+    <button type="button" *ngFor="let opt of searchOptions" role="radio"
+            [class.active]="searchMode === opt.id" [attr.aria-checked]="searchMode === opt.id"
+            [title]="opt.tooltip" (click)="selectMode(opt.id)">{{ opt.label }}</button>
   </div>
+</div>
 
   <!-- Similarity threshold, only for similar-compound searches -->
   <label class="threshold" *ngIf="searchMode === 'similarity'"
-         title="Structural similarity threshold, from 0 (no similarity) to 1 (identical atom connectivity)">
-    <span class="label">Tanimoto threshold</span>
-    <input type="range" min="0" max="1" step="0.05" [(ngModel)]="tanimotoThresh" aria-label="Tanimoto threshold">
-    <span class="value">{{ tanimotoThresh | number:'1.2-2' }}</span>
-  </label>
+       title="Structural similarity threshold, from 0 (no similarity) to 1 (identical atom connectivity)">
+  <span class="label">Tanimoto threshold</span>
+  <input type="range" min="0" max="1" step="0.05" [(ngModel)]="tanimotoThresh" aria-label="Tanimoto threshold">
+  <span class="value">{{ tanimotoThresh | number:'1.2-2' }}</span>
+</label>
 </div>
 
 <div class="smiles">
