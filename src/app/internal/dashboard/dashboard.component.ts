@@ -1,15 +1,94 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
+import { MaintenanceWindow, canReview } from '../../_models';
+import { formatPacificDisplay, LoginStateService } from '../../_services';
+import { AdminApiService, AdminProposal } from '../admin-api.service';
+
+const submittedTime = (p: { submittedOn?: string }): number =>
+  p.submittedOn ? new Date(p.submittedOn).getTime() : 0;
+
+// Admin overview: leads with what needs a decision. Each source loads
+// independently so one failing endpoint doesn't blank the page.
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+  loading = true;
 
-  constructor() { }
+  proposals: AdminProposal[] = null;
+  windows: MaintenanceWindow[] = null;
+  // Maintenance is admin-only; other staff don't see it or load it
+  isAdmin = false;
+  // Read-only staff see what's pending rather than what needs their decision
+  canDecide = false;
+
+  constructor(private api: AdminApiService, private router: Router, private route: ActivatedRoute,
+              private loginState: LoginStateService) { }
 
   ngOnInit() {
+    // The portal guard has already set the role by the time this page opens
+    const role = this.loginState.isUserLoggedIn.value.role;
+    this.isAdmin = role === 'admin';
+    this.canDecide = canReview(role);
+    this.load();
   }
 
+  load() {
+    this.loading = true;
+    forkJoin(
+      this.api.getProposals().pipe(catchError(() => of(null))),
+      this.isAdmin ? this.api.getMaintenanceWindows().pipe(catchError(() => of(null))) : of([])
+    ).subscribe(([proposals, windows]) => {
+      this.proposals = proposals;
+      this.windows = windows;
+      this.loading = false;
+    });
+  }
+
+  // Share of all proposals per status, for the outcome bar
+  get mix(): Array<{ status: string; n: number; pct: number }> {
+    const total = (this.proposals || []).length || 1;
+    return ['Pending', 'Approved', 'Rejected']
+      .map(status => ({ status, n: this.count(status), pct: this.count(status) / total * 100 }))
+      .filter(m => m.n > 0);
+  }
+
+  count(status: string): number {
+    return (this.proposals || []).filter(p => p.status === status).length;
+  }
+
+  // Oldest first: the ones that have waited longest come first
+  get waiting(): AdminProposal[] {
+    return (this.proposals || [])
+      .filter(p => p.status === 'Pending')
+      .sort((a, b) => submittedTime(a) - submittedTime(b));
+  }
+
+  open(p: AdminProposal) {
+    this.router.navigate(['../proposals'], { relativeTo: this.route, queryParams: { id: p.id } });
+  }
+
+  // Newest submissions, any status, for the right-hand column
+  get latest(): AdminProposal[] {
+    return (this.proposals || []).slice()
+      .sort((a, b) => submittedTime(b) - submittedTime(a))
+      .slice(0, 5);
+  }
+
+
+  get nextWindow(): MaintenanceWindow {
+    const now = Date.now();
+    return (this.windows || [])
+      .filter(w => w.scheduledStart && new Date(w.scheduledStart).getTime() >= now)
+      .sort((a, b) => new Date(a.scheduledStart).getTime() - new Date(b.scheduledStart).getTime())[0] || null;
+  }
+
+  formatPacific(iso: string): string {
+    return iso ? formatPacificDisplay(iso) : '—';
+  }
 }

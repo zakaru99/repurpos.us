@@ -1,59 +1,132 @@
-<div class="user-management-page">
-  <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+<p class="error" *ngIf="errorMsg" role="alert">{{ errorMsg }}</p>
 
-  <div class="card-block">
-    <h5 class="section-title">User Lookup</h5>
-    <div class="user-search">
-      <input type="text" placeholder="Enter user email or name" [(ngModel)]="searchQuery" (keydown.enter)="searchUser()"/>
-      <button (click)="searchUser()">Search</button>
-    </div>
+<div class="layout">
+  <!-- Left: give someone access -->
+  <section class="add">
+    <p class="eyebrow">Give access</p>
+    <form class="lookup" (submit)="$event.preventDefault(); searchUser()">
+      <input type="search" [(ngModel)]="searchQuery" name="q" autocomplete="off"
+             placeholder="Search by email" aria-label="Find a user by email">
+      <button type="submit" class="btn secondary" [disabled]="searching || !searchQuery.trim()">
+        {{ searching ? 'Searching…' : 'Find' }}
+      </button>
+    </form>
 
-    <div *ngIf="searchResults?.length > 0" class="user-details">
-      <div *ngFor="let user of searchResults" class="user-card">
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Registered On:</strong> {{ user.registered_on | date }}</p>
-        <p>
-          <strong>Role:</strong>
-          <span class="status-badge" [ngClass]="user.role">{{ roleName(user.role) }}</span>
-        </p>
-        <ng-container *ngIf="user.role === 'user'">
-          <button (click)="setRole(user, 'readonly')">Make Read-only</button>
-          <button (click)="setRole(user, 'reviewer')">Make Reviewer</button>
-          <button (click)="setRole(user, 'admin')">Make Admin</button>
+    <ul class="results" *ngIf="searchResults?.length">
+      <li *ngFor="let user of searchResults">
+        <div class="result-who">
+          <span class="result-email">{{ user.email }}</span>
+          <span class="result-meta">Joined {{ (user.registered_on | date:'d MMM y') || '—' }}</span>
+        </div>
+        <span class="muted" *ngIf="isMe(user)">You</span>
+        <ng-container *ngIf="!isMe(user)">
+          <ng-container *ngTemplateOutlet="roleMenu; context: { $implicit: user }"></ng-container>
         </ng-container>
-      </div>
-    </div>
-    <p *ngIf="searchResults?.length === 0 && searchQuery">No users found.</p>
-  </div>
+        <ng-container *ngIf="isConfirming(user)">
+          <ng-container *ngTemplateOutlet="confirmRow; context: { $implicit: user }"></ng-container>
+        </ng-container>
+      </li>
+    </ul>
+    <p class="muted" *ngIf="searchResults && !searchResults.length">No users match "{{ searchQuery }}".</p>
+    <button type="button" class="text" *ngIf="searchResults" (click)="clearSearch()">Clear search</button>
+  </section>
 
-  <div class="card-block">
-    <h5 class="section-title">Portal Access</h5>
-    <p class="role-help">Read-only users can read proposals. Reviewers can also approve and decline them. Admins can also manage access and maintenance.</p>
-    <div class="table-responsive">
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let user of staff">
-            <td>{{ user.email }}</td>
-            <td><span class="status-badge" [ngClass]="user.role">{{ roleName(user.role) }}</span></td>
-            <td>
-              <span *ngIf="isMe(user)">You</span>
-              <ng-container *ngIf="!isMe(user)">
-                <button class="change" *ngIf="user.role !== 'admin'" (click)="setRole(user, 'admin')">Make Admin</button>
-                <button class="change" *ngIf="user.role !== 'reviewer'" (click)="setRole(user, 'reviewer')">Make Reviewer</button>
-                <button class="change" *ngIf="user.role !== 'readonly'" (click)="setRole(user, 'readonly')">Make Read-only</button>
-                <button (click)="setRole(user, 'user')">Revoke</button>
-              </ng-container>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <!-- Right: who has access -->
+  <section class="current">
+    <p class="eyebrow">Who has access</p>
+    <h2 class="headline">{{ loadingStaff || staffFailed ? 'Access' : headline }}</h2>
+
+    <p class="muted" *ngIf="loadingStaff">Loading…</p>
+
+    <app-status-message *ngIf="staffFailed" kicker="Temporary problem" title="We couldn't load who has access">
+      <p>This is usually a short interruption on our side. Please try again in a moment.</p>
+      <ng-container actions>
+        <button type="button" class="status-primary" (click)="loadStaff()">Try again</button>
+      </ng-container>
+    </app-status-message>
+
+    <ng-container *ngIf="!loadingStaff && !staffFailed">
+      <h3 class="group">Admins <span>manage access and maintenance, and decide proposals</span></h3>
+      <ul class="cards" *ngIf="admins.length">
+        <ng-container *ngFor="let u of admins">
+          <ng-container *ngTemplateOutlet="card; context: { $implicit: u }"></ng-container>
+        </ng-container>
+      </ul>
+
+      <h3 class="group">Reviewers <span>decide proposals</span></h3>
+      <p class="muted" *ngIf="!reviewers.length">No reviewers yet. Find someone on the left to add one.</p>
+      <ul class="cards" *ngIf="reviewers.length">
+        <ng-container *ngFor="let u of reviewers">
+          <ng-container *ngTemplateOutlet="card; context: { $implicit: u }"></ng-container>
+        </ng-container>
+      </ul>
+
+      <h3 class="group">Read-only <span>read proposals</span></h3>
+      <p class="muted" *ngIf="!readonly.length">No read-only users yet.</p>
+      <ul class="cards" *ngIf="readonly.length">
+        <ng-container *ngFor="let u of readonly">
+          <ng-container *ngTemplateOutlet="card; context: { $implicit: u }"></ng-container>
+        </ng-container>
+      </ul>
+    </ng-container>
+  </section>
+</div>
+
+<ng-template #card let-u>
+  <li class="card" [class.reviewer]="u.role === 'reviewer'" [class.readonly]="u.role === 'readonly'" [class.confirming]="isConfirming(u, 'user')">
+    <span class="avatar" aria-hidden="true">{{ initials(u) }}</span>
+    <div class="who">
+      <span class="name" *ngIf="displayName(u)">{{ displayName(u) }}</span>
+      <span class="email" [class.solo]="!displayName(u)">{{ u.email }}</span>
+      <span class="meta" *ngIf="u.registered_on">Joined {{ u.registered_on | date:'MMM y' }}</span>
+    </div>
+    <span class="muted you" *ngIf="isMe(u)">You</span>
+    <ng-container *ngIf="!isMe(u)">
+      <ng-container *ngTemplateOutlet="roleMenu; context: { $implicit: u }"></ng-container>
+    </ng-container>
+
+    <div class="card-action" *ngIf="isConfirming(u)">
+      <ng-container *ngTemplateOutlet="confirmRow; context: { $implicit: u }"></ng-container>
+    </div>
+  </li>
+</ng-template>
+
+<!-- Pop-up menu: the person's role on a small button; the menu lists every
+     role with a checkmark on theirs, then Remove access for staff. -->
+<ng-template #roleMenu let-u>
+  <div class="role-picker">
+    <button type="button" class="role-button" [attr.data-role-button]="u.id"
+            aria-haspopup="menu" [attr.aria-expanded]="isMenuOpen(u)"
+            [attr.aria-label]="'Access for ' + u.email + ': ' + roleName(u.role)"
+            [disabled]="saving" (click)="toggleMenu(u, $event)">
+      {{ u.role === 'user' ? 'Give access' : roleName(u.role) }}
+      <svg class="chevron" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg>
+    </button>
+    <div class="role-menu" role="menu" *ngIf="isMenuOpen(u)"
+         (click)="$event.stopPropagation()" (keydown)="onMenuKey($event)">
+      <button type="button" role="menuitemradio" *ngFor="let r of roleOptions"
+              [attr.aria-checked]="u.role === r" (click)="pick(u, r)">
+        <svg class="check" *ngIf="u.role === r" viewBox="0 0 12 10" aria-hidden="true"><path d="M1 5.5l3.5 3L11 1.5"/></svg>
+        <span class="item-title">{{ roleName(r) }}</span>
+        <span class="item-note">{{ roleNote(r) }}</span>
+      </button>
+      <ng-container *ngIf="u.role !== 'user'">
+        <hr>
+        <button type="button" role="menuitem" class="remove" (click)="pick(u, 'user')">
+          <span class="item-title">Remove access</span>
+        </button>
+      </ng-container>
     </div>
   </div>
-</div>
+</ng-template>
+
+<ng-template #confirmRow let-u>
+  <div class="confirm-row">
+    <span class="confirm">{{ confirmText(u) }}</span>
+    <span>
+      <button type="button" class="btn" [ngClass]="confirmRole === 'user' ? 'danger' : 'primary'"
+              (click)="confirmChange()" [disabled]="saving">{{ saving ? 'Saving…' : confirmLabel(u) }}</button>
+      <button type="button" class="btn secondary" (click)="cancelConfirm()" [disabled]="saving">Cancel</button>
+    </span>
+  </div>
+</ng-template>

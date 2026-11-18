@@ -50,6 +50,16 @@ export class CompoundService {
   // --- Header data ---
   private main_label: string;
   private vendorName: string;
+  // True when the compound's record couldn't be fetched (server error), so
+  // the page says so instead of drawing an empty record that reads as fact
+  public loadFailedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  loadFailedState = this.loadFailedSubject.asObservable();
+
+  // True once the record's data has arrived (or come back empty), so pages
+  // can show "no data" without flashing it while still loading
+  public recordLoadedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  recordLoadedState = this.recordLoadedSubject.asObservable();
+
   public nameSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
   nameState = this.nameSubject.asObservable();
 
@@ -63,6 +73,9 @@ export class CompoundService {
   integrityPediatricsState = this.integrityPediatricsSubject.asObservable();
 
   public disclosureDateSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  // Highest development phase across the data sources, for the page header
+  public highestPhaseSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  highestPhaseState = this.highestPhaseSubject.asObservable();
   disclosureDateState = this.disclosureDateSubject.asObservable();
 
   private aliases: string[] = [];
@@ -221,6 +234,7 @@ export class CompoundService {
 
             // console.log('4 promises all resolved: id=' + id + '; qid=' + qid + '; login=' + loginState)
             this.getAliases(id);
+            this.recordLoadedSubject.next(true);
 
             // Set SMILES
             // let smiles = this.wiki_smiles || this.vendor_smiles;
@@ -231,6 +245,15 @@ export class CompoundService {
           })
       })
 
+  }
+
+  // /api/data answers a compound missing from the index with a 500 whose
+  // body carries Elasticsearch's NotFoundError (404); treat a real 404 the same
+  static isNotFound(err: any): boolean {
+    if (!err) { return false; }
+    if (err.status === 404) { return true; }
+    const body = err.error && typeof err.error === 'object' ? err.error.error : err.error;
+    return typeof body === 'string' && /NotFoundError|404/.test(body);
   }
 
   resetVars(): Promise<void> {
@@ -251,6 +274,8 @@ export class CompoundService {
       this.similarityResults = [];
 
       // announce changes
+      this.loadFailedSubject.next(false);
+      this.recordLoadedSubject.next(false);
       this.assaysSubject.next([]);
       this.primaryDataSubject.next([]);
       this.calibrPKDataSubject.next([]);
@@ -260,6 +285,7 @@ export class CompoundService {
       this.rfmSubject.next('');
       this.integrityPediatricsSubject.next(false);
       this.disclosureDateSubject.next('');
+      this.highestPhaseSubject.next('');
       this.aliasSubject.next([]);
       this.chemSourceSubject.next([]);
       this.similarSubject.next([]);
@@ -517,7 +543,9 @@ export class CompoundService {
             console.log(b);
 
             // make sure certain keys exist as Arrays
-            let doc_keys = Array('reframe_id', 'gvk', 'informa', 'integrity');
+            // ontology too: a compound with no ontology entry used to throw in
+            // getVendorHeaderInfo and leave the page loading forever
+            let doc_keys = Array('reframe_id', 'gvk', 'informa', 'integrity', 'ontology');
 
             for (let x of doc_keys) {
               if (!b.hasOwnProperty(x)) {
@@ -532,6 +560,8 @@ export class CompoundService {
             this.integrityPediatricsSubject.next(b.integrity_pediatrics || false);
 
             this.disclosureDateSubject.next(b.disclosure_date || '');
+
+            this.highestPhaseSubject.next(b.highest_phase || '');
             
             // Pull out assay data --> compound-assay-data
             this.assaysSubject.next(<AssayData[]>b.assay);
@@ -579,6 +609,12 @@ export class CompoundService {
             (err: any) => {
               console.log("Error getting data from backend")
               console.log(err)
+              // A compound with no REFRAME record (e.g. Wikidata only) isn't a
+              // failure: the page shows what Wikidata has. Only real errors
+              // get the "didn't load, try again" message.
+              if (!CompoundService.isNotFound(err)) {
+                this.loadFailedSubject.next(true);
+              }
               resolve('Error fetching data from /data API')
             });
 
@@ -599,13 +635,13 @@ export class CompoundService {
   }
 
   getVendorHeaderInfo(vendor_data: Object[]): void {
-    if (vendor_data.length > 0 && Object.keys(vendor_data[0]).length > 0) {
+    if (vendor_data && vendor_data.length > 0 && vendor_data[0] && Object.keys(vendor_data[0]).length > 0) {
       for (let compound of vendor_data) {
-        this.aliases = this.aliases.concat(compound['drug_name']);
+        this.aliases = this.aliases.concat(compound['drug_name'] || []);
       }
 
       // Arbitrarily: choose the first name, first SMILES string
-      this.vendorName = vendor_data[0]['drug_name'][0];
+      this.vendorName = (vendor_data[0]['drug_name'] || [])[0] || this.vendorName;
       // this.vendor_smiles = vendor_data[0]['smiles'];
     }
   }
@@ -637,6 +673,8 @@ export class CompoundService {
                 // TODO: make sure this works when flip RFM id
                 this.rfmSubject.next(search_results.reframeid);
 
+                this.highestPhaseSubject.next(search_results.highest_phase || '');
+
                 this.integrityPediatricsSubject.next(search_results.integrity_pediatrics || false);
 
                 // send off SMILES structure
@@ -655,6 +693,7 @@ export class CompoundService {
               console.log('error in search')
               console.log(err)
               // console.log('3b retrieving data ended w/ ERROR')
+              this.loadFailedSubject.next(true);
               resolve("Error in basic data retrieval");
             }
           );

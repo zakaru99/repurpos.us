@@ -48,6 +48,10 @@ export class ColorPaletteService {
   public assaysSubject: BehaviorSubject<Object> = new BehaviorSubject<Object>(null);
   public assaysState = this.assaysSubject.asObservable();
 
+  // True when /api/assay_list failed, so pages can say so instead of loading forever
+  public assaysFailedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public assaysFailedState = this.assaysFailedSubject.asObservable();
+
   public selectedIndicationSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   public selectedIndicationState = this.selectedIndicationSubject.asObservable();
 
@@ -63,6 +67,7 @@ export class ColorPaletteService {
 
   // Get the full list of assay indications, to map to a consistent set of values
   retrieveAssayList(): void {
+    this.assaysFailedSubject.next(false);
     this.http2.get('/api/assay_list', {
       observe: 'response',
       headers: new HttpHeaders()
@@ -80,7 +85,7 @@ export class ColorPaletteService {
       this.indicColorScale = d3.scaleOrdinal().domain(["parent"].concat(value_counts.map(d => d.key))).range(this.colorList);
       this.assaysSubject.next({ assayList: b, colorScale: this.indicColorScale });
 
-    });
+    }, () => this.assaysFailedSubject.next(true));
   }
 
   getColorPalette = function(color: string, num_vals: number) {

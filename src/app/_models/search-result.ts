@@ -3,16 +3,23 @@ export class SearchResult {
   // tabulatedData: Object;
   status?: number;
   url?: string;
+  message?: string;      // the backend's reason when a search fails
+  total?: number;        // matches found, when more than were returned
+  truncated?: boolean;   // true when the backend returned only the top matches
 
   constructor(obj?: any) {
     if (obj.data) {
-      this.data = obj.data['body']['results'];
+      const body = obj.data['body'];
+      this.data = body['results'];
       this.status = obj.data.status || null;
       this.url = obj.data.url || null;
+      this.total = body['total'] || null;
+      this.truncated = !!body['truncated'];
     } else {
       this.data = null;
       this.status = obj.status || null;
       this.url = obj.url || null;
+      this.message = (obj.error && obj.error.message) || null;
     }
   }
 

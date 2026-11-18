@@ -1,22 +1,22 @@
+// Full width of the search column, so the editor lines up with the SMILES field
 .ketcher {
-  width: 80%;
-  padding: 0px;
-  margin: auto;
-}
-
-@media only screen and (max-width: 900px) {
-  .ketcher{
-    margin: 15px;
-    width: 100%;
-  }
-
+  width: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 .ketcher-iframe {
-  width:100%;
+  display: block;
+  width: 100%;
+  min-height: 500px;
   margin-bottom: 25px;
   border-style: none;
-  min-width: 500px;
-  min-height: 500px;
-  /* style="min-width:910px;min-height:510px;width:100%;border-style:none"  from ketcher*/
+}
+
+// Phones: the editor fits the screen width (Ketcher scrolls its own toolbars)
+@media only screen and (max-width: 640px) {
+  .ketcher-iframe {
+    min-height: 460px;
+    margin-bottom: 16px;
+  }
 }

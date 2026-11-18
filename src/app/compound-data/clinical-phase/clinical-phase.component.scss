@@ -1,81 +1,90 @@
-// Margins
+// Development stage: one bar per stage, filled up to the furthest reached.
+// Grey when development stopped; the phase text beside it says why.
 
-.phase-diagram {
-  margin-left: 48px;
-}
+@import '../../../design';
 
-.phase-diagram.informa {
-  margin-left: 108px;
-}
-// Strokes
-.chevron {
-  stroke-width: 1;
-  fill: #eff1f2; // todo: light grey
-  stroke: #c5cbd0; // medium grey
-  stroke-miterlimit: 10;
+:host {
+  display: block;
+  max-width: 100%;
 }
 
-.chevron.completed,
-.chevron.current {
-  stroke: #15584c;
-}
-// Background fills
-.chevron.failed {
-  // fill: #ff7345; // orange
-  fill: url("#ltorange-on-grey-1"); // orange stripes on grey
-  stroke: #ab2a00; // dark orange
-  stroke: #ff602c; // medium orange
+.track {
+  display: flex;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.completed {
-  fill: #98d4ca; // light green
-}
-// Current phase fill
-.current {
-  fill: #29aa94; // medium green
-}
-// Phase I/II
-.in-between.current {
-  fill: url("#green-diagonal-1");
-}
-// end
-.approved {
-  stroke: #a9b1ba;
-  fill: #e7e9ec;
+.step {
+  display: flex;
+  flex: 0 0 44px;
+  flex-direction: column;
+  gap: 3px;
 }
 
-.approved.current {
-  stroke: #a9b1ba;
-  fill: #249582;
+.bar {
+  height: 6px;
+  background: $track;
 }
 
-.approved.failed {
-  stroke: #f83d00; // darker orange
-  // fill: #c53100;
-  fill: url("#ltorange-on-dkgrey-1"); // orange stripes on darker grey
+.lbl {
+  font-size: 0.6875rem;
+  line-height: 1;
+  color: $ink-faint;
+  text-align: center;
+  white-space: nowrap;
 }
 
-// Text
-.phase {
-  alignment-baseline: middle;
-  text-anchor: middle;
-  font-size: 0.8em;
-  font-weight: 400;
-  letter-spacing: 0.1em;
+.done .bar {
+  background: $status-approved;
+  opacity: 0.45;
 }
 
-.completed.phase {
-  fill: #1a6c5e;
+.current .bar {
+  background: $status-approved;
 }
 
-.current.phase {
-  fill: white;
+.half .bar {
+  background: linear-gradient(90deg, $status-approved 50%, $track 50%);
 }
 
-.todo.phase {
-  fill: #847b7b;
+.done .lbl,
+.current .lbl,
+.half .lbl {
+  color: $ink-soft;
 }
 
-.failed.phase {
-  fill: #212529;
+.current .lbl {
+  font-weight: 600;
+  color: $ink;
+}
+
+// Narrow screens: only the current stage keeps its label
+@media (max-width: $bp-phone) {
+  .step {
+    flex: 0 1 44px;
+    min-width: 0;
+  }
+
+  .lbl {
+    visibility: hidden;
+  }
+
+  .current .lbl {
+    visibility: visible;
+    overflow: visible;
+  }
+}
+
+.stopped {
+  .done .bar,
+  .current .bar {
+    background: $ink-faint;
+    opacity: 1;
+  }
+
+  .half .bar {
+    background: linear-gradient(90deg, $ink-faint 50%, $track 50%);
+  }
 }

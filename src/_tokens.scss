@@ -60,4 +60,99 @@
   --shadow-resting: 0 2px 6px rgba(0, 0, 0, 0.06);
   --shadow-raised: 0 6px 18px rgba(0, 0, 0, 0.08);
   --shadow-overlay: 0 10px 30px rgba(0, 0, 0, 0.12);
+
+  // ------------------------------------------------------------------------
+  // 2026 redesign (homepage, header, footer, sign-in, ontology). See DESIGN.md.
+  // Redesigned components read these through src/_design.scss; older pages
+  // keep using the tokens above until they're redesigned.
+  // ------------------------------------------------------------------------
+
+  // Ink (text on light surfaces)
+  --color-ink: #0f1b2d; // headings, primary text
+  --color-ink-soft: #4a5568; // secondary text, meta
+  --color-ink-faint: #8a93a3; // placeholders, hints
+
+  // Navy (dark surfaces)
+  --color-navy: #0b1d3a; // hero, footer, primary dark button
+  --color-navy-2: #12294f; // secondary dark band
+  --color-navy-quiet: #1a3260; // low-emphasis button on navy
+  --color-navy-quiet-hover: #223d72;
+  --color-accent-on-dark: #9fb9f4; // eyebrows, icons, links on navy
+  --color-rule-on-dark: rgba(255, 255, 255, 0.14);
+  // Status text on navy (compound and assay headers): lighter forms of the
+  // approved / rejected / pending colours that keep contrast on --color-navy
+  --color-ok-on-dark: #7fd6a7;
+  --color-warn-on-dark: #ff9e94;
+  --color-caution-on-dark: #f2c27b;
+
+  // Accent text (brand blue darkened for small text on tinted bands, AA)
+  --color-accent-text: #2f5bc7;
+
+  // Light surfaces and lines
+  --color-band-muted: #f3f5f8; // muted band / canvas behind panels
+  --color-band-tint: #e9eef8; // blue-tinted band
+  --color-rule: #d9dee6; // hairlines on pages
+  --color-rule-soft: #e3e6eb; // hairlines inside tools (ontology browser)
+  --color-field-border: #c5cdd9; // input borders
+  --color-hover: #f2f4f7; // row hover
+  --color-selected: #e8ecf3; // selected-but-not-current row, tags
+  --color-table-head: #dbe3ef; // table header row, a step darker than selected rows
+  --color-track: #eef0f4; // segmented control track, search field fill
+  --color-panel: #f9fafb; // raised panel inside a white tool (detail pane, fold strip)
+  --color-icon: #a0a8b5; // chevrons, list markers
+  --color-rule-on-tint: #d5ddec; // hairlines on the tinted band
+  --color-error-text: #c0392b; // inline form errors
+
+  // Data states (ontology)
+  --color-moa: #1f8a5b; // category that holds compounds
+  --color-found: #e5484d; // search / hover path
+  --color-category: #dbe4f7; // category node fill
+  --color-substructure: #f4e0f1; // matched atoms in a structure drawing
+
+  // Workflow status (admin portal). Text colours pass AA on their tints.
+  --color-status-pending: #a15c07;
+  --color-status-pending-bg: #fdf3e2;
+  --color-status-approved: #1a7a50;
+  --color-status-approved-bg: #e7f4ee;
+  --color-status-rejected: #b42d23;
+  --color-status-rejected-bg: #fbeaea;
+  --color-stage-screening-bg: #e8effc; // assay cards: screen under way
+
+  // Decision buttons (approve / reject). Saturated so the two actions stand
+  // out; white text passes AA on both base colours.
+  --color-approve: #15803d;
+  --color-approve-strong: #0f6630; // hover and armed ("Confirm") state
+  --color-reject: #d42a20;
+  --color-reject-strong: #a8201a;
+
+  // Type
+  --font-ui: "IBM Plex Sans", "Lato", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", SFMono-Regular, Consolas, monospace;
+  --font-wordmark: "Lato", Arial, sans-serif; // "reframedb" only
+
+  // Shape: pages are square-ish; app-like tools (ontology) are softer
+  --radius-sharp: 2px;
+  --radius-soft: 8px;
+
+  // Layout (the column widens on large screens; see the media queries below)
+  --shell-max: 1200px;
+  --shell-wide: 1600px; // data pages (Assays, an assay); see "Page width" in DESIGN.md
+  --shell-gutter: 32px;
+  --shell-gutter-sm: 20px;
+
+  // Motion
+  --ease-out: cubic-bezier(0.22, 0.9, 0.27, 1);
+}
+
+// Use more of large screens instead of growing the empty margins
+@media (min-width: 1600px) {
+  :root {
+    --shell-max: 1440px;
+  }
+}
+
+@media (min-width: 2000px) {
+  :root {
+    --shell-max: 1600px;
+  }
 }

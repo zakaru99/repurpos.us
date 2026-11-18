@@ -1,83 +1,68 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
-import { HttpErrorResponse, HttpHeaders, HttpClient } from '@angular/common/http';
+import { HttpErrorResponse, HttpClient } from '@angular/common/http';
 
-import { environment } from '../../environments/environment';
-
+// Landing page for the link in the registration email. Confirms the token on
+// load (POST /api/auth/confirm): 200 confirmed, 501 already confirmed, other
+// errors invalid or expired, in which case a new link can be requested
+// (POST /api/auth/confirm/link).
 @Component({
   selector: 'app-confirm-email',
   templateUrl: './confirm-email.component.html',
   styleUrls: ['./confirm-email.component.scss']
 })
 export class ConfirmEmailComponent implements OnInit {
-	cid: string;
-	confirmResponse: string;
-	confirmFail: boolean = false;
-	confirmForm: FormGroup;
+  cid: string;
+  state: 'checking' | 'confirmed' | 'already' | 'failed' | 'resent' = 'checking';
+  confirmForm: FormGroup;
+
+  submitted = false;
+  sending = false;
+  resendError = '';
 
   constructor(private route: ActivatedRoute, private http: HttpClient, @Inject(FormBuilder) fb: FormBuilder) {
-  	route.params.subscribe(params => {
-  		this.cid = params['cid'];
-  	});
-
-  	this.confirmForm = fb.group({
+    route.params.subscribe(params => this.cid = params['cid']);
+    this.confirmForm = fb.group({
       email: new FormControl('', [Validators.required, Validators.email]),
     });
   }
 
   ngOnInit() {
-  	this.http.post('/api/auth/confirm',
-  		{"token": this.cid},
-  		{
-  			observe: 'response',
-  			headers: new HttpHeaders()
-  				.set('content-type', 'application/json')
-  		}
-  	).subscribe(res => {
-  		this.confirmResponse = res.body['message'];
-  		if (res.body['status'] == 'fail') this.confirmFail = true;
-  		else this.confirmFail = false;
-  	},
-  	(err: HttpErrorResponse) => {
-  		console.log(err);
-  		this.confirmResponse = err.error.message;
-  		if (err.status != 501) this.confirmFail = true;
-  	})
+    this.http.post<any>('/api/auth/confirm', { token: this.cid }).subscribe(
+      res => this.state = res && res.status === 'success' ? 'confirmed' : 'failed',
+      (err: HttpErrorResponse) => this.state = err.status === 501 ? 'already' : 'failed'
+    );
   }
 
-  onSubmit(event) {
-  	this.http.post('/api/auth/confirm/link',
-      {"email": this.confirmForm.controls.email.value }, {
-        observe: 'response',
-        // withCredentials: true,
-        headers: new HttpHeaders()
-          .set('content-type', 'application/json')
-      }
+  showErr(): boolean {
+    const c = this.confirmForm.controls['email'];
+    return c.invalid && (c.touched || this.submitted);
+  }
 
-    ).subscribe((re) => {
-        let credentials = re.body;
-        if (credentials['status'] === 'success') {
-          //console.log(credentials['auth_token']);
-          //localStorage.setItem('auth_token', credentials['auth_token']);
-
-          this.confirmResponse = credentials['message'];
-          //location.reload();
-          // console.log(re.status);
-
-        } else if (credentials['status'] === 'fail') {
-          this.confirmResponse = credentials['message'];
+  resend() {
+    this.submitted = true;
+    this.resendError = '';
+    if (this.confirmForm.invalid) { return; }
+    this.sending = true;
+    this.http.post<any>('/api/auth/confirm/link', { email: this.confirmForm.controls.email.value }).subscribe(
+      res => {
+        this.sending = false;
+        if (res && res.status === 'success') {
+          this.state = 'resent';
+          this.submitted = false;
+        } else {
+          this.resendError = (res && res.message) || 'The link could not be sent. Please try again.';
         }
       },
       (err: HttpErrorResponse) => {
-        this.confirmResponse = err.error.message;
+        this.sending = false;
+        this.resendError = (err.error && err.error.message) || 'The link could not be sent. Please try again.';
       }
-    )
+    );
   }
 
-  getErrorMessage() {
-    return this.confirmForm.controls['email'].hasError('required') ? 'You must enter a value' :
-      this.confirmForm.controls['email'].hasError('email') ? 'Not a valid email' : '';
+  signIn() {
+    window.dispatchEvent(new CustomEvent('reframe-sign-in'));
   }
-
 }

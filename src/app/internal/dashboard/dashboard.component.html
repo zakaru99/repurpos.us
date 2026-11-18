@@ -1,5 +1,79 @@
-<div class="container-fluid dashboard-page">
-<p>
-  dashboard works!
-</p>
+<div class="grid" *ngIf="!loading; else loadingTpl">
+
+  <!-- Left half: what needs a decision -->
+  <section class="main">
+    <p class="eyebrow">Proposals</p>
+    <ng-container *ngIf="proposals; else proposalsFailed">
+      <h2 class="headline" *ngIf="canDecide">
+        {{ waiting.length === 0 ? 'Nothing needs a decision'
+           : waiting.length === 1 ? '1 needs a decision'
+           : waiting.length + ' need a decision' }}
+      </h2>
+      <h2 class="headline" *ngIf="!canDecide">
+        {{ waiting.length === 0 ? 'Nothing pending' : waiting.length + ' pending' }}
+      </h2>
+      <!-- All proposals by outcome -->
+      <div class="mix" *ngIf="proposals.length" role="img"
+           [attr.aria-label]="count('Pending') + ' pending, ' + count('Approved') + ' approved, ' + count('Rejected') + ' rejected'">
+        <span *ngFor="let m of mix" class="seg" [ngClass]="m.status | lowercase" [style.flex-grow]="m.pct"
+              [title]="m.n + ' ' + (m.status | lowercase)"></span>
+      </div>
+      <p class="legend" *ngIf="proposals.length">
+        <span *ngFor="let m of mix" class="key" [ngClass]="m.status | lowercase">{{ m.n }} {{ m.status | lowercase }}</span>
+        <span class="of">of {{ proposals.length }} proposals</span>
+      </p>
+
+      <p class="table-label" *ngIf="waiting.length">Waiting longest first</p>
+      <app-proposal-table *ngIf="waiting.length" class="table" [proposals]="waiting" [compact]="true"
+                          [showWaiting]="true" [scroll]="true" (pick)="open($event)"></app-proposal-table>
+
+      <a class="arrow-link more" routerLink="../proposals" [queryParams]="waiting.length ? { status: 'Pending' } : {}">
+        {{ !waiting.length ? 'All proposals' : canDecide ? 'Review in Proposals' : 'View in Proposals' }}
+      </a>
+    </ng-container>
+    <ng-template #proposalsFailed>
+      <h2 class="headline">Proposals</h2>
+<app-status-message [compact]="true" kicker="Temporary problem" title="We couldn't load the proposals">
+        <p>This is usually a short interruption on our side. Please try again in a moment.</p>
+        <ng-container actions>
+          <button type="button" class="status-primary" (click)="load()">Try again</button>
+        </ng-container>
+      </app-status-message>
+    </ng-template>
+  </section>
+
+  <!-- Right half: maintenance (admins only) and recent activity -->
+  <aside class="side">
+    <section *ngIf="isAdmin">
+      <p class="eyebrow">Maintenance</p>
+<app-status-message *ngIf="!windows" [compact]="true" kicker="Temporary problem" title="We couldn't load the schedule">
+        <p>This is usually a short interruption on our side. Please try again in a moment.</p>
+        <ng-container actions>
+          <button type="button" class="status-primary" (click)="load()">Try again</button>
+        </ng-container>
+      </app-status-message>
+      <ng-container *ngIf="windows">
+        <p class="note" *ngIf="nextWindow as w; else noWindow">
+          Next window {{ formatPacific(w.scheduledStart) }}.
+          {{ w.enabled ? 'The banner is showing to visitors.' : 'The banner is hidden.' }}
+        </p>
+        <ng-template #noWindow><p class="note">Nothing scheduled.</p></ng-template>
+      </ng-container>
+      <a class="arrow-link" routerLink="../maintenance_window">Schedule maintenance</a>
+    </section>
+
+    <section *ngIf="proposals?.length">
+      <p class="eyebrow">Latest submissions</p>
+      <ul class="latest">
+        <li *ngFor="let p of latest">
+          <a routerLink="../proposals" [queryParams]="{ id: p.id }">{{ p.indication || 'Untitled proposal' }}</a>
+          <span class="latest-meta">{{ p.submittedOn | date:'d MMM' }} · <span class="status" [ngClass]="p.status | lowercase">{{ p.status }}</span></span>
+        </li>
+      </ul>
+    </section>
+  </aside>
 </div>
+
+<ng-template #loadingTpl>
+  <p class="loading">Loading…</p>
+</ng-template>

@@ -1,0 +1,415 @@
+// Design system for redesigned pages - read DESIGN.md first.
+//
+// Values live as CSS custom properties in _tokens.scss (one source of truth);
+// this file gives them short Sass names and holds the shared building blocks
+// as mixins. Angular's emulated encapsulation means shared styles have to be
+// mixed into each component, so import this with a relative path, e.g.
+//   @import '../../design';
+// and use the names below instead of writing colours, fonts or radii inline.
+
+// ---------------------------------------------------------------- tokens
+
+$ink: var(--color-ink);
+$ink-soft: var(--color-ink-soft);
+$ink-faint: var(--color-ink-faint);
+
+$navy: var(--color-navy);
+$navy-2: var(--color-navy-2);
+$navy-quiet: var(--color-navy-quiet);
+$navy-quiet-hover: var(--color-navy-quiet-hover);
+$accent-on-dark: var(--color-accent-on-dark);
+$rule-dark: var(--color-rule-on-dark);
+$ok-on-dark: var(--color-ok-on-dark);
+$warn-on-dark: var(--color-warn-on-dark);
+$caution-on-dark: var(--color-caution-on-dark);
+
+$accent: var(--color-brand-500);
+$accent-hover: var(--color-brand-600);
+$accent-deep: var(--color-brand-700);
+$accent-text: var(--color-accent-text);
+
+$muted-bg: var(--color-band-muted);
+$tint-bg: var(--color-band-tint);
+$rule: var(--color-rule);
+$rule-soft: var(--color-rule-soft);
+$field-border: var(--color-field-border);
+$hover: var(--color-hover);
+$selected: var(--color-selected);
+$table-head: var(--color-table-head);
+$track: var(--color-track);
+$panel: var(--color-panel);
+$icon: var(--color-icon);
+$rule-on-tint: var(--color-rule-on-tint);
+$error-text: var(--color-error-text);
+
+$moa: var(--color-moa);
+$found: var(--color-found);
+$category: var(--color-category);
+$substructure: var(--color-substructure);
+
+$status-pending: var(--color-status-pending);
+$status-pending-bg: var(--color-status-pending-bg);
+$status-approved: var(--color-status-approved);
+$status-approved-bg: var(--color-status-approved-bg);
+$status-rejected: var(--color-status-rejected);
+$status-rejected-bg: var(--color-status-rejected-bg);
+$stage-screening-bg: var(--color-stage-screening-bg);
+
+$approve: var(--color-approve);
+$approve-strong: var(--color-approve-strong);
+$reject: var(--color-reject);
+$reject-strong: var(--color-reject-strong);
+
+$sans: var(--font-ui);
+$mono: var(--font-mono);
+$wordmark: var(--font-wordmark);
+
+$radius-sharp: var(--radius-sharp);
+$radius-soft: var(--radius-soft);
+
+$ease: var(--ease-out);
+
+// Breakpoints (Sass numbers, so they work in media queries)
+$bp-phone: 640px;
+$bp-tablet: 860px;
+$bp-nav: 1080px;
+
+// ---------------------------------------------------------------- layout
+
+// Component host that runs edge to edge inside the app's .container-fluid
+@mixin full-bleed-host {
+  display: block;
+  margin: 0 -15px;
+  font-family: $sans;
+  // body defaults to Lato 300; Plex reads best at its regular weight
+  font-weight: 400;
+  color: $ink;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Centred content column
+@mixin shell($max: null) {
+  max-width: if($max, $max, var(--shell-max));
+  margin: 0 auto;
+  // Sides only, so a page's own top/bottom padding survives on phones
+  padding-right: var(--shell-gutter);
+  padding-left: var(--shell-gutter);
+
+  @media (max-width: $bp-phone) {
+    padding-right: var(--shell-gutter-sm);
+    padding-left: var(--shell-gutter-sm);
+  }
+}
+
+// Faint hexagonal lattice over navy bands (homepage hero, admin header).
+// Pointy-top tile = one ring plus the bond to the next row; fades in from the right.
+$hex-lattice: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='31.18' height='54' viewBox='0 0 31.18 54'%3E%3Cpath d='M15.59 0L31.18 9V27L15.59 36L0 27V9Z M15.59 36V54' fill='none' stroke='%23ffffff' stroke-width='1'/%3E%3C/svg%3E";
+
+@mixin hex-lattice($opacity: 0.07) {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url($hex-lattice);
+    background-size: 31.18px 54px;
+    opacity: $opacity;
+    -webkit-mask-image: linear-gradient(100deg, transparent 35%, #000 85%);
+    mask-image: linear-gradient(100deg, transparent 35%, #000 85%);
+    pointer-events: none;
+  }
+}
+
+// Page sub-header (section tabs, tool toolbars): sticks directly under the
+// sticky site header. --site-header-height is published by header.component.
+// z-index sits below the site header (2500, app.component.scss) and above
+// page content.
+@mixin sticky-subheader {
+  position: sticky;
+  top: var(--site-header-height, 65px);
+  z-index: 2400;
+}
+
+// Table header row that sticks under the site header plus any sticky
+// sub-header (the page header's section nav is 46px + a 1px rule). Use on any
+// table that can run longer than the screen. Sticky stops working inside an
+// overflow container, so don't wrap the table in overflow-x: auto except on
+// phones. Collapsed borders don't travel with sticky cells, so the rule under
+// the header is an inset shadow.
+@mixin sticky-table-head($subheader: 47px) {
+  thead th {
+    position: sticky;
+    top: calc(var(--site-header-height, 65px) + #{$subheader});
+    z-index: 2;
+    box-shadow: inset 0 -1px 0 $rule;
+  }
+}
+
+// A row that scrolls sideways (section and portal tabs on phones): fade the
+// right edge so a cut-off tab reads as "more this way", and end the row with
+// a spacer so the last tab can scroll clear of the fade.
+@mixin scroll-fade($fade: 40px) {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - #{$fade}), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - #{$fade}), transparent);
+
+  &::after {
+    content: '';
+    flex: 0 0 1px;
+    padding-right: $fade;
+  }
+}
+
+// ---------------------------------------------------------------- type
+
+// Small uppercase label: an ID or stage above a title ("Assay A00414",
+// "Stage 2"), or a heading for a short group of links. Never a restatement of
+// the heading below it.
+@mixin eyebrow($on-dark: false) {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: if($on-dark, $accent-on-dark, $accent-text);
+}
+
+// Section heading (h2) on pages
+@mixin section-title {
+  font-family: $sans;
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+
+  @media (max-width: $bp-phone) {
+    font-size: 1.625rem;
+  }
+}
+
+// ---------------------------------------------------------------- interaction
+
+// Outline for keyboard focus only. Bootstrap's reboot outlines every focused
+// button, including after a mouse click; drop that unless the browser says
+// focus came from the keyboard.
+@mixin focus-ring($color: $accent, $offset: 2px) {
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color;
+    outline-offset: $offset;
+  }
+}
+
+// Text link with a small chevron that nudges right on hover
+@mixin arrow-link($color: $accent, $hover-color: $accent-deep) {
+  display: inline-block;
+  font-weight: 500;
+  color: $color;
+  text-decoration: none;
+  cursor: pointer;
+
+  &::after {
+    content: '';
+    display: inline-block;
+    vertical-align: 0.12em;
+    margin-left: 8px;
+    width: 7px;
+    height: 7px;
+    border-top: 1.5px solid currentColor;
+    border-right: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.15s ease;
+  }
+
+  &:hover {
+    color: $hover-color;
+    text-decoration: none;
+
+    &::after {
+      transform: translateX(3px) rotate(45deg);
+    }
+  }
+}
+
+// ---------------------------------------------------------------- buttons
+
+@mixin button-base {
+  display: inline-block;
+  padding: 12px 22px;
+  font: inherit;
+  font-weight: 600;
+  border: 0;
+  border-radius: $radius-sharp;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  @include focus-ring;
+}
+
+// Primary action on light backgrounds
+@mixin button-navy {
+  @include button-base;
+  color: #fff;
+  background: $navy;
+
+  &:hover {
+    color: #fff;
+    background: $accent;
+  }
+}
+
+// Low-emphasis action on navy (white buttons on navy read as too loud)
+@mixin button-quiet-on-dark {
+  @include button-base;
+  color: #fff;
+  background: $navy-quiet;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  &:hover {
+    color: #fff;
+    background: $navy-quiet-hover;
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  @include focus-ring($accent-on-dark);
+}
+
+// Secondary action on navy
+@mixin button-outline-on-dark {
+  @include button-base;
+  color: #fff;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+
+  &:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #fff;
+  }
+
+  @include focus-ring($accent-on-dark);
+}
+
+// ---------------------------------------------------------------- controls
+
+// Segmented control: grey track, raised white segment for the active option.
+// Apply to the container; options are <button>s with .active on the current one.
+@mixin segmented {
+  display: inline-flex;
+  flex-shrink: 0;
+  padding: 3px;
+  background: $track;
+  border-radius: 9px;
+
+  button {
+    padding: 6px 12px;
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    white-space: nowrap;
+    color: $ink-soft;
+    background: transparent;
+    border: 0;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+      color: $ink;
+    }
+
+    &.active {
+      color: $ink;
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(15, 27, 45, 0.12), 0 0 0 0.5px rgba(15, 27, 45, 0.06);
+    }
+
+    @include focus-ring($accent, 1px);
+  }
+}
+
+// Text tabs with an underline for the active one (light backgrounds)
+@mixin underline-tabs {
+  display: flex;
+  gap: 28px;
+
+  button {
+    padding: 0 0 6px;
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: $ink-soft;
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+
+    &:hover,
+    &.active {
+      color: $ink;
+    }
+
+    &.active {
+      border-bottom-color: $accent;
+    }
+
+    @include focus-ring($accent, 4px);
+  }
+}
+
+// ---------------------------------------------------------------- content pages
+// About, Workflow, Contact: page header (app-page-header) then sections in the
+// centred column, separated by hairlines.
+
+// A section that the page header's nav can scroll to; the scroll offset
+// clears the sticky site header and the sticky section nav (46px)
+@mixin content-section {
+  display: block;
+  scroll-margin-top: calc(var(--site-header-height, 65px) + 62px);
+  padding: 48px 0;
+  border-top: 1px solid $rule;
+}
+
+@mixin content-heading {
+  margin: 0 0 16px;
+  font-family: $sans;
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: $ink;
+
+  @media (max-width: $bp-phone) {
+    font-size: 1.5rem;
+  }
+}
+
+// Readable running text
+@mixin prose {
+  // Not the eyebrow label above a heading, which keeps its own small size
+  p:not(.eyebrow),
+  li {
+    max-width: 68ch;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: $ink;
+  }
+
+  p:not(.eyebrow) {
+    margin: 0 0 14px !important;
+  }
+
+  // Text links only: a button inside prose keeps its own colours
+  a:not(.btn) {
+    color: $accent;
+  }
+}
+

@@ -131,6 +131,7 @@ export class KetcherComponent implements OnInit {
     // NOTE: to get molfile load function to correctly ping, requires fanciness.  DOM element doesn't exist till open "open" button
     var iframeDiv = this.elRef.nativeElement.querySelector("#ketcherFrame");
     var iframeDocument = iframeDiv.contentDocument || iframeDiv.contentWindow.document;
+    this.styleForNavy(iframeDocument);
     var iframeContent = iframeDocument.querySelectorAll('#canvas');
     this.svg = iframeContent[0];
     var ketcherContent = iframeDocument.querySelectorAll('main > menu');
@@ -161,6 +162,42 @@ export class KetcherComponent implements OnInit {
       this.setMol(this.molfile);
     }
 
+  }
+
+  // The search page shows the editor on the navy search band: let the navy show
+  // through around the drawing canvas and draw the toolbar icons light. The
+  // canvas stays white. Ketcher is served from our own assets, so its document
+  // can be styled from here. The canvas is a very light grey, softer than white on navy.
+  private styleForNavy(doc: Document) {
+    if (!doc || doc.getElementById('reframe-navy')) { return; }
+    // The canvas takes the site's muted grey; the iframe can't see the page's
+    // CSS variables, so read the value here
+    const canvasBg = getComputedStyle(document.documentElement).getPropertyValue('--color-band-muted').trim() || '#f3f5f8';
+    const style = doc.createElement('style');
+    style.id = 'reframe-navy';
+    style.textContent = `
+      html, body, main[role=application] { background: transparent !important; color: rgba(255,255,255,0.85); }
+      [role=toolbar] button { background-color: transparent !important; color: rgba(255,255,255,0.85); }
+      [role=toolbar] button > svg, [role=toolbar] li > svg { fill: rgba(255,255,255,0.85) !important; }
+      [role=toolbar] button:hover { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3); }
+      [role=toolbar] .selected button { background: rgba(255,255,255,0.18) !important; }
+      [role=toolbar] .selected button > svg { fill: #fff !important; stroke: #fff; }
+      #canvas { background: ${canvasBg}; border-color: transparent; border-radius: 2px; }
+      /* Element letters: lighter forms of their usual colours (black reads as white) */
+      #atom button, #freq-atoms button { filter: invert(1) hue-rotate(180deg) brightness(1.15); }
+      /* Phones: Ketcher is built for desktop (640px minimum). Let it shrink to
+         the screen, and scroll the long top menu and the ring row sideways. */
+      @media (max-width: 640px) {
+        body, main[role=application] { min-width: 0 !important; }
+        #mainmenu, #template { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        #mainmenu::-webkit-scrollbar, #template::-webkit-scrollbar { display: none; }
+        #mainmenu > menu, #template > menu { white-space: nowrap; width: max-content; }
+        #mainmenu { right: 2px; }
+        /* The chiral flag joins the end of the ring row instead of sitting on it */
+        #chiral-flag { position: static; display: inline-block; vertical-align: top; }
+      }
+    `;
+    doc.head.appendChild(style);
   }
 
   // Event listener if the drawing has changed

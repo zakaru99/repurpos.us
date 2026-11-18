@@ -31,6 +31,13 @@ export class LoginStateService {
     this.setLoginState(false, 'user', null);
   }
 
+  // Signed in, or holding a token the header hasn't verified yet (the state
+  // starts signed out until it does). For showing or hiding sign-in prompts
+  // without a flash; the backend still checks the token.
+  hasSession(): boolean {
+    return this.isUserLoggedIn.value.loggedIn || !!localStorage.getItem('auth_token');
+  }
+
   getUserEmail(): string | null {
     const state = this.isUserLoggedIn.value;
     return state.loggedIn ? state.email || null : null;

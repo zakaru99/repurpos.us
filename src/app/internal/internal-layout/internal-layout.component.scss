@@ -1,35 +1,12 @@
-.internal-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: rgba(61, 109, 224, 0.08);
-  padding: 0.5rem 1.5rem;
-  color: #3d6de0;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  font-weight: 500;
-  font-size: 1rem;
+// Admin portal shell. The header is a compact version of the homepage hero
+// (navy band, hex lattice, eyebrow, white underline tabs like the hero search)
+// so moving from the site into the portal feels continuous.
+
+@import '../admin';
+
+:host {
+  @include full-bleed-host;
+  background: #fff;
 }
 
-.internal-toolbar .logo {
-  font-weight: 600;
-  font-size: 1.2rem;
-}
-
-.internal-toolbar .nav-links a {
-  text-decoration: none;
-  margin-left: 1.25rem;
-  padding: 0.3rem 0.6rem;
-  border-radius: 12px;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.internal-toolbar .nav-links a:hover {
-  background-color: rgba(61, 109, 224, 0.15);
-}
-
-.internal-toolbar .nav-links a.active-link {
-  color: white;
-  background-color:  #3D6DE0;
-}
+@include portal-shell;

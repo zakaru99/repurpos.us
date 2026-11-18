@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
 import { AboutComponent } from './about.component';
+import { PageHeaderModule } from '../_components/page-header/page-header.module';
 
 @Component({ selector: 'app-access-library', template: '' })
 class AccessLibraryStubComponent {}
@@ -22,7 +23,7 @@ describe('AboutComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, PageHeaderModule],
       declarations: [
         AboutComponent,
         AccessLibraryStubComponent,

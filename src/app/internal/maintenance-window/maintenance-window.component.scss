@@ -1,0 +1,165 @@
+@import '../admin';
+
+:host {
+  @include admin-page;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+}
+
+// Column labels in the same uppercase style as the other admin tabs
+h2 {
+  @include admin-eyebrow;
+  margin-bottom: 14px !important;
+}
+
+.show-older {
+  @include admin-button(text);
+  margin-top: 12px;
+}
+
+// ---------------------------------------------------------------- form
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field {
+  @include field;
+}
+
+.toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.875rem;
+  color: $ink;
+  cursor: pointer;
+
+  input {
+    margin-top: 4px;
+    accent-color: var(--color-navy);
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+// ---------------------------------------------------------------- queue
+
+.table {
+  @include data-table;
+
+  .when {
+    min-width: 170px;
+  }
+
+  .msg {
+    color: $ink-soft;
+  }
+
+  .nowrap {
+    white-space: nowrap;
+  }
+
+  .col-end {
+    width: 1%;
+    white-space: nowrap;
+    text-align: right;
+
+    .text + .text-danger {
+      margin-left: 16px;
+    }
+  }
+
+  tr.past td {
+    color: $ink-faint;
+  }
+
+  tr.editing td {
+    background: $selected;
+  }
+}
+
+.scroll {
+  @include table-scroll(calc(100vh - var(--site-header-height, 65px) - 200px));
+}
+
+.past-note {
+  color: $ink-faint;
+}
+
+.confirm {
+  margin-right: 10px;
+  font-size: 0.875rem;
+}
+
+.muted {
+  color: $ink-soft;
+}
+
+.error {
+  @include error-text;
+  margin: 0 0 12px !important;
+}
+
+.btn.primary { @include admin-button(primary); }
+.btn.secondary { @include admin-button(secondary); }
+.btn.danger { @include admin-button(danger); }
+.btn + .btn { margin-left: 8px; }
+.text { @include admin-button(text); }
+.text-danger { @include admin-button(text-danger); }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+@media (max-width: $bp-nav) {
+  .layout {
+    // minmax(0, …) so the table's width can't stretch the column past the screen
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+
+  .form-col {
+    max-width: 480px;
+  }
+}
+
+@media (max-width: $bp-phone) {
+  // Date inputs have a wide built-in minimum, so stack the pair
+  .row-2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .field input,
+  .field select {
+    min-width: 0;
+    width: 100%;
+  }
+
+  // The header sticks within this box (it scrolls itself), so sideways
+  // scrolling here is safe and keeps Posted and the actions reachable
+  .scroll {
+    overflow-x: auto;
+  }
+}

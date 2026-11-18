@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LoginStateService } from '../../_services';
-import { roleOf } from '../../_models/index';
+import { hasPortal, roleOf } from '../../_models/index';
 
 interface UserStatus {
   user_id: number;
@@ -30,15 +30,16 @@ export class MyAccountComponent implements OnInit {
   deleteState: 'idle' | 'confirming' | 'loading' | 'unavailable' = 'idle';
   deleteConfirmEmail = '';
 
-  get role(): string {
-    return this.userStatus ? roleOf(this.userStatus) : 'user';
-  }
+  constructor(private http: HttpClient, private loginState: LoginStateService) {}
 
   get roleLabel(): string {
-    return { admin: 'Administrator', reviewer: 'Proposal reviewer', readonly: 'Proposal viewer (read-only)', user: 'Researcher' }[this.role];
+    if (!this.userStatus) { return '—'; }
+    return { admin: 'Administrator', reviewer: 'Proposal reviewer', readonly: 'Proposal viewer (read-only)', user: 'Researcher' }[roleOf(this.userStatus)];
   }
 
-  constructor(private http: HttpClient, private loginState: LoginStateService) {}
+  get hasPortal(): boolean {
+    return !!this.userStatus && hasPortal(roleOf(this.userStatus));
+  }
 
   ngOnInit(): void {
     this.loginState.isUserLoggedIn.subscribe(state => {

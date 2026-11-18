@@ -1,5 +1,6 @@
 import { Component, Inject, Injectable, OnInit, AfterViewInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { Router, NavigationEnd } from '@angular/router';
 
 import { Subscription } from 'rxjs/Subscription';
 
@@ -26,10 +27,19 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   loggedIn: boolean = false;
   // Admins and reviewers get the admin portal link
   hasPortal: boolean = false;
-  expanded: boolean = false;
+  // Phone/tablet menu. Open, it covers the page, so the page behind it
+  // mustn't scroll (body.menu-open, styles.scss)
+  private _expanded = false;
+  get expanded(): boolean { return this._expanded; }
+  set expanded(open: boolean) {
+    this._expanded = open;
+    document.body.classList.toggle('menu-open', open);
+  }
   isMobile: boolean;
+  inAdmin = false;
   current_year: number;
   private loginSubscription: Subscription;
+  private routerSubscription: Subscription;
   // Typed any: this TS/lib version predates ResizeObserver's ambient type
   // declarations (unlike the older IntersectionObserver, used elsewhere).
   private resizeObserver: any;
@@ -38,9 +48,25 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     @Inject(DOCUMENT) private document: any,
     private http: HttpClient,
     private loginStateService: LoginStateService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private router: Router
   ) {
     this.checkMobile();
+
+    // Close the phone menu after any navigation, not just its own links:
+    // a search from the menu's field navigates from inside quick-search
+    this.routerSubscription = this.router.events.subscribe(event => {
+      // "Calibr admins" links to the proposals tab but stands for every admin tab
+      if (event instanceof NavigationEnd) {
+        this.inAdmin = event.urlAfterRedirects.startsWith('/internal');
+      }
+      if (event instanceof NavigationEnd && this.expanded) {
+        this.expanded = false;
+        // Drop focus from the search field so the phone keyboard closes too
+        const active = document.activeElement as HTMLElement;
+        if (active && active.blur) { active.blur(); }
+      }
+    });
   }
 
   // Publishes this (sticky) header's real rendered height as a CSS custom
@@ -69,6 +95,9 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.loginSubscription) {
       this.loginSubscription.unsubscribe();
     }
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 
   ngOnInit(): void {
@@ -85,6 +114,27 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loginBox = !this.loginBox;
   }
 
+  // Other pages ask for the sign-in box with
+  // window.dispatchEvent(new CustomEvent('reframe-sign-in'))
+  @HostListener('window:reframe-sign-in')
+  openLogin() {
+    if (this.loggedIn) { return; }
+    // Wait for the click that asked to finish bubbling, or the document
+    // click handler below closes the box straight away
+    setTimeout(() => {
+      this.loginBox = true;
+      if (this.isMobile) { this.expanded = true; }
+      window.scrollTo(0, 0);
+    });
+  }
+
+  // Account dialogs close the box so it doesn't sit behind them
+  // (window.dispatchEvent(new CustomEvent('reframe-close-sign-in')))
+  @HostListener('window:reframe-close-sign-in')
+  closeLogin() {
+    this.loginBox = false;
+  }
+
   clickedInside($event: Event) {
     $event.preventDefault();
     $event.stopPropagation();
@@ -99,6 +149,19 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   collapseNav() {
     this.expanded = false;
+  }
+
+  // Search button in the phone bar: open the menu with the field focused
+  openSearch() {
+    this.expanded = true;
+    setTimeout(() => {
+      const input = document.getElementById('search-box-add') as HTMLInputElement;
+      if (input) { input.focus(); }
+    });
+  }
+
+  @HostListener('document:keydown.escape') onEscape() {
+    if (this.expanded && !this.loginBox) { this.expanded = false; }
   }
 
   checkMobile() {

@@ -1,14 +1,15 @@
-<mat-tab-group [(selectedIndex)]="selectedTab" (selectedTabChange)="resetInput($event)">
+<!-- Compounds by name / identifier, or by drawn structure -->
+<div class="tabs" role="tablist" aria-label="Search by">
+  <button type="button" role="tab" [class.active]="selectedTab === textSearch_tabIdx"
+          [attr.aria-selected]="selectedTab === textSearch_tabIdx" (click)="selectTab(textSearch_tabIdx)">Name or identifier</button>
+  <button type="button" role="tab" [class.active]="selectedTab === structSearch_tabIdx"
+          [attr.aria-selected]="selectedTab === structSearch_tabIdx" (click)="selectTab(structSearch_tabIdx)">Structure</button>
+</div>
 
-  <!-- Text-based search -->
-  <mat-tab label="text search">
-    <app-text-search [searchQuery]="searchQuery"></app-text-search>
-  </mat-tab>
+<app-text-search *ngIf="selectedTab === textSearch_tabIdx" [searchQuery]="searchQuery"></app-text-search>
 
-
-  <!-- Structure-based search -->
-  <mat-tab label="structure search">
-    <app-structure-search></app-structure-search>
-  </mat-tab>
-
-</mat-tab-group>
+<!-- The structure editor needs a light surface. Kept mounted (hidden) so it
+     hears the structure the page announces from the URL on load. -->
+<div class="structure-panel" [hidden]="selectedTab !== structSearch_tabIdx">
+  <app-structure-search></app-structure-search>
+</div>

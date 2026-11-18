@@ -1,3 +1,4 @@
+import { PageHeaderModule } from '../../_components/page-header/page-header.module';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, Input } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -28,7 +29,7 @@ describe('AssayPlotsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [ PageHeaderModule,HttpClientTestingModule],
       declarations: [
         AssayPlotsComponent,
         AssayDwnldStubComponent,

@@ -1,21 +1,43 @@
-<div class="confirm-wrapper">
-	<p [ngClass]="{'text-danger': confirmFail}">
-	  {{ confirmResponse }}
-	</p>
-	<div class="generate-confirm-email" [hidden]="!confirmFail">
-		<h3>Send new confirmation link</h3>
-		<form (ngSubmit)="onSubmit($event)" [formGroup]="confirmForm" [hidden]="!confirmFail">
-			<mat-form-field>
-		    <input matInput placeholder="Email Address (Your User Name)"
-		           formControlName="email"
-		           required
-		           id="confirm-email"
-							 aria-label="confirm email"
-		           name="confirm-email">
+<div class="page">
+  <div class="column" [ngSwitch]="state" aria-live="polite">
 
-		    <mat-error *ngIf="confirmForm.controls['email'].errors && !confirmForm.controls['email'].pristine">{{getErrorMessage()}}</mat-error>
-		  </mat-form-field>
-		  <button mat-raised-button color="primary" aria-label="submit" [disabled]="confirmForm.invalid" type="submit" [formGroup]="confirmForm">Submit</button>
-		</form>
-	</div>
+    <ng-container *ngSwitchCase="'checking'">
+      <h1>Confirming your email…</h1>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'confirmed'">
+      <h1>Your email is confirmed</h1>
+      <p class="text">Sign in to see screening data, save compounds and submit assay proposals.</p>
+      <button type="button" class="btn" (click)="signIn()">Sign in</button>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'already'">
+      <h1>This email is already confirmed</h1>
+      <p class="text">There's nothing more to do. Sign in to continue.</p>
+      <button type="button" class="btn" (click)="signIn()">Sign in</button>
+    </ng-container>
+
+    <!-- Invalid or expired: send a fresh link -->
+    <ng-container *ngSwitchCase="'failed'">
+      <h1>This confirmation link no longer works</h1>
+      <p class="text">Enter the email you registered with and we'll send a new one.</p>
+
+      <form [formGroup]="confirmForm" (ngSubmit)="resend()" novalidate>
+        <label class="field" [class.invalid]="showErr()">
+          <span class="field-label">Email address</span>
+          <input type="email" formControlName="email" id="confirm-email" name="confirm-email" autocomplete="email">
+          <span class="field-error" *ngIf="showErr()">Enter a valid email address.</span>
+        </label>
+        <button type="submit" class="btn" [disabled]="sending">{{ sending ? 'Sending…' : 'Send a new link' }}</button>
+        <p class="field-error" *ngIf="resendError" role="alert">{{ resendError }}</p>
+      </form>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'resent'">
+      <h1>Check your email</h1>
+      <p class="text">We've sent a new confirmation link to {{ confirmForm.controls.email.value }}. It may take a few minutes to arrive.</p>
+      <p class="aside">Not there? Check your spam folder, or <button type="button" class="link" (click)="state = 'failed'">send it again</button>.</p>
+    </ng-container>
+
+  </div>
 </div>

@@ -1,0 +1,92 @@
+@import '../admin';
+
+:host {
+  display: block;
+}
+
+// Scrolls inside its own area when the parent sets a max height
+.scroll.limited {
+  @include table-scroll(var(--table-max, 420px));
+}
+
+.table {
+  @include data-table;
+
+  tbody tr {
+    cursor: pointer;
+
+    &:hover td {
+      background: $hover;
+    }
+
+    &.selected td {
+      background: $selected;
+    }
+
+    // Accent edge so the open row doesn't read as a second header
+    &.selected td:first-child {
+      box-shadow: inset 2px 0 0 $accent;
+    }
+  }
+
+  .col-date {
+    width: 1%;
+    white-space: nowrap;
+  }
+
+  .col-end {
+    width: 1%;
+    white-space: nowrap;
+    text-align: right;
+  }
+}
+
+// Compact tables hide the submitter columns; on wide screens the submitter
+// comes back (institution stays hidden so nothing wraps)
+.table.compact .extra,
+.table.compact .inst {
+  display: none;
+}
+
+@media (min-width: 1680px) {
+  .table.compact .extra {
+    display: table-cell;
+  }
+}
+
+.open {
+  padding: 0;
+  font: inherit;
+  font-weight: 500;
+  text-align: left;
+  color: $ink;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:hover {
+    color: $accent;
+  }
+
+  @include focus-ring($accent, 2px);
+}
+
+.id {
+  margin-left: 8px;
+  font-family: $mono;
+  font-size: 0.75rem;
+  color: $ink-faint;
+}
+
+.status {
+  @include status-text;
+}
+
+.waiting {
+  color: $ink-soft;
+
+  &.long {
+    font-weight: 500;
+    color: $status-pending;
+  }
+}

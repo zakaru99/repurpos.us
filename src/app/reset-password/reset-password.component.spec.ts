@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule, MatInputModule } from '@angular/material';
 import { of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { ResetPasswordComponent } from './reset-password.component';
 
@@ -16,6 +17,7 @@ describe('ResetPasswordComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
+        RouterTestingModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         MatFormFieldModule,

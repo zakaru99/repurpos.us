@@ -17,14 +17,15 @@ export class AboutComponent implements OnInit {
     { property: 'og:url', content: 'https://reframedb.org/about' }
   ];
 
-  sections: Object[] = [
-    { label: "overview", link: "overview" },
-    { label: "tutorial", link: "tutorial" },
-    { label: "library access", link: "access" },
-    { label: "chemical diversity comparison", link: "diversity" },
-    // { label: "citing", link: "citation" },
-    { label: "sources", link: "sources" },
-    { label: "terms", link: "terms" }
+  // In-page sections, shown in the sticky nav of the page header
+  sections = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'tutorial', label: 'Tutorial' },
+    { id: 'access', label: 'Library access' },
+    { id: 'diversity', label: 'Chemical diversity' },
+    { id: 'sources', label: 'Data sources' },
+    { id: 'cite', label: 'How to cite' },
+    { id: 'terms', label: 'Terms of use' }
   ];
   private fragment: string;
 
@@ -36,7 +37,7 @@ export class AboutComponent implements OnInit {
     for (let i = 0; i < this.meta_tags.length; i++) {
       meta.updateTag(this.meta_tags[i]);
     }
-    titleService.setTitle("about | reframeDB");
+    titleService.setTitle("About | REFRAMEdb");
   }
 
 
@@ -45,7 +46,23 @@ export class AboutComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.scrollTo(this.fragment)
+    this.scrollTo(this.fragment);
+    this.keepAnchorInView();
+  }
+
+  // Images above a section (the diversity diagram, video posters) load after
+  // the first jump and push the section down, so /about#terms stopped short.
+  // Jump again as each loads, until the visitor scrolls for themselves.
+  private keepAnchorInView() {
+    if (!this.fragment) { return; }
+    let userScrolled = false;
+    const stop = () => { userScrolled = true; };
+    ['wheel', 'touchstart', 'keydown'].forEach(e => window.addEventListener(e, stop, { once: true, passive: true } as any));
+    const again = () => { if (!userScrolled) { this.scrollTo(this.fragment); } };
+    Array.from(document.querySelectorAll('app-about img'))
+      .filter((img: HTMLImageElement) => !img.complete)
+      .forEach(img => img.addEventListener('load', again, { once: true } as any));
+    setTimeout(again, 1500);
   }
 
   scrollTo(anchor) {

@@ -5,7 +5,7 @@ import { switchMap } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
 
 import { SearchResult } from '../../_models/index';
-import { WDQService, BackendSearchService, SearchResultService, StructureService } from '../../_services/index';
+import { WDQService, BackendSearchService, SearchResultService, StructureService, LoginStateService } from '../../_services/index';
 
 @Component({
   outputs: ['results'],
@@ -28,26 +28,32 @@ export class SearchBoxComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private titleService: Title,
-    private structSvc: StructureService
+    private structSvc: StructureService,
+    private loginState: LoginStateService
   ) {
+    // A substructure search held back for sign-in runs once the user signs in
+    this.loginState.isUserLoggedIn.subscribe(state => {
+      if (state.loggedIn && this.heldSubstructure) {
+        const query = this.heldSubstructure;
+        this.heldSubstructure = null;
+        this.runTextSearch(query, 'substructure');
+      }
+    });
+
     // Pull out any route parameters that already exist
     this.route.queryParams
       .subscribe(params => {
 
-        // Launch text-based query
+        // Launch text-based query. Substructure needs an account: signed out,
+        // the search waits for sign-in (the options show the sign-in prompt).
         if (params['query'] && 'type' in params && (params['type'] === 'string' || params['type'] === 'substructure')) {
           this.searchQuery = params['query'];
 
-          this.searchSvc.search(this.searchQuery, params['type'])
-            .subscribe(
-              (results: SearchResult) => {
-                // console.log(results)
-                this.searchResultService.announceNewSearchResult(results);
-              },
-              (err: any) => {
-                this.catchError(err);
-              }
-            );
+          if (params['type'] === 'substructure' && !this.loginState.hasSession()) {
+            this.heldSubstructure = this.searchQuery;
+          } else {
+            this.runTextSearch(this.searchQuery, params['type']);
+          }
         }
 
         // Update the structure and get the molfile returned
@@ -112,8 +118,26 @@ export class SearchBoxComponent implements OnInit {
 
   }
 
+  // Substructure query waiting for the user to sign in
+  private heldSubstructure: string = null;
+
+  private runTextSearch(query: string, type: string) {
+    this.searchSvc.search(query, type)
+      .subscribe(
+        (results: SearchResult) => this.searchResultService.announceNewSearchResult(results),
+        (err: any) => this.catchError(err)
+      );
+  }
+
   catchError(err: any) {
     this.searchResultService.announceNewSearchResult(new SearchResult(err));
+  }
+
+  // Tab buttons: switch only when it's a different tab
+  selectTab(index: number) {
+    if (index === this.selectedTab) { return; }
+    this.selectedTab = index;
+    this.resetInput({ index });
   }
 
   // when changing between tabs, reset (delete) the search parameters
@@ -135,7 +159,7 @@ export class SearchBoxComponent implements OnInit {
     }
 
     // reset page title
-    this.titleService.setTitle("reframeDB");
+    this.titleService.setTitle("REFRAMEdb");
 
     // reset the route to the search or structure page, sans any input
     this.router.navigate(['search/'], { queryParams: { type: search_type } });

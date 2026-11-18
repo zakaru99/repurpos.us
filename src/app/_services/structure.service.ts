@@ -141,7 +141,12 @@ export class StructureService {
     this.ngZone.run(() => this.smilesAnnouncedSource.next(smiles));
   }
 
+  // The structure search's current match type, so the editor can hide behind
+  // the substructure sign-in prompt
+  currentMode = 'exact';
+
   announceMode(mode: string) {
+    this.currentMode = mode || 'exact';
     this.modeAnnouncedSource.next(mode);
   }
 

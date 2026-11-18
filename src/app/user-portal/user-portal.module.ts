@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PageHeaderModule } from '../_components/page-header/page-header.module';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserPortalRoutingModule } from './user-portal-routing.module';
@@ -16,6 +17,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
+    PageHeaderModule,
     UserPortalRoutingModule,
     RouterModule.forChild(routes),
     FormsModule,

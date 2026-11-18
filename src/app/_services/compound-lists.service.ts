@@ -23,6 +23,10 @@ export interface CompoundListItem {
 export class CompoundListsService {
   private listsSubject = new BehaviorSubject<CompoundList[]>([]);
   lists$ = this.listsSubject.asObservable();
+  // Where the first load stands, so pages can tell "nothing saved" from
+  // "still loading" and "the server failed"
+  private loadStateSubject = new BehaviorSubject<'idle' | 'loading' | 'ready' | 'failed'>('idle');
+  loadState$ = this.loadStateSubject.asObservable();
 
   constructor(private http: HttpClient, private loginState: LoginStateService) {
     this.loginState.isUserLoggedIn.subscribe(state => {
@@ -30,6 +34,7 @@ export class CompoundListsService {
         this.loadLists();
       } else {
         this.listsSubject.next([]);
+        this.loadStateSubject.next('idle');
       }
     });
   }
@@ -40,10 +45,14 @@ export class CompoundListsService {
   }
 
   loadLists(): void {
+    this.loadStateSubject.next('loading');
     this.http.get<{ status: string; data: CompoundList[] }>(
       '/api/compound_lists',
       { headers: this.getHeaders() }
-    ).subscribe(res => this.listsSubject.next(res.data));
+    ).subscribe(res => {
+      this.listsSubject.next(res.data);
+      this.loadStateSubject.next('ready');
+    }, () => this.loadStateSubject.next('failed'));
   }
 
   createList(name: string): Observable<any> {

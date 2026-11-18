@@ -1,39 +1,52 @@
-/* Pagination */
+@import '../../../design';
 
-ul.nav-tabs {
-  margin-top: -20px;
-  border: none;
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-bottom: 6px;
+  font-size: 0.8125rem;
 }
 
+.range {
+  margin-right: 10px;
+  color: $ink-soft;
+  font-variant-numeric: tabular-nums;
+}
 
-.page-link, .nav-tabs>li>a {
-  color: #8d98a3;
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  margin-top: 0px;
-  margin-bottom: 8px;
-  border-left-width: 0px;
-  border-top-width: 0px;
-  border-right-width: 0px;
-  border-bottom-width: 4px;
-  border-color: white;
+.num,
+.step {
+  min-width: 26px;
+  height: 26px;
+  padding: 0 6px;
+  font: inherit;
+  color: $ink-soft;
+  background: none;
+  border: 0;
+  border-radius: $radius-sharp;
   cursor: pointer;
+
+  &:hover:not(:disabled) {
+    color: $ink;
+    background: $hover;
+  }
+
+  &:disabled {
+    color: $ink-faint;
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  @include focus-ring($accent, 1px);
 }
 
-.page-link:focus, .page-link:hover {
-    color: #FD5457;
+.step {
+  font-size: 1.125rem;
+  line-height: 1;
 }
 
-.page-link {
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-}
-
-
-.page-selected, .page-link:focus {
-  color: #FD5457 !important;
-  border-color: #FD5457 !important;
-  background-color: transparent !important;
+.num.on {
+  font-weight: 600;
+  color: #fff;
+  background: $navy;
 }

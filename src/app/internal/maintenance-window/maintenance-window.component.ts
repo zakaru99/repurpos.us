@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MaintenanceWindow } from '../../_models';
 import {
-  formatPacificDisplay,
+  formatPacificShort,
   todayInPacificDateString,
   utcIsoToPacificDateAndHour,
   pacificDateAndHourToUtcIso
 } from '../../_services';
+import { AdminApiService } from '../admin-api.service';
 
 const HOURS = Array.from({ length: 24 }, (_, hour) => ({
   value: hour,
@@ -16,47 +16,62 @@ const HOURS = Array.from({ length: 24 }, (_, hour) => ({
 @Component({
   selector: 'app-maintenance-window',
   templateUrl: './maintenance-window.component.html',
-  styleUrls: ['./maintenance-window.component.css']
+  styleUrls: ['./maintenance-window.component.scss']
 })
 export class MaintenanceWindowComponent implements OnInit {
   readonly hours = HOURS;
   readonly minDate = todayInPacificDateString();
 
   windows: MaintenanceWindow[] = [];
+  // Past windows are hidden until asked for
+  showPast = false;
   isLoading = false;
   listError = '';
+  listFailed = false;
 
   editingId: number | null = null;
+  confirmDeleteId: number | null = null;
   enabled = true;
   date = this.minDate;
   hour = 9;
   message = '';
-
   formState: 'idle' | 'saving' | 'error' = 'idle';
   formError = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private api: AdminApiService) {}
 
   ngOnInit(): void {
     this.fetchWindows();
   }
 
   fetchWindows(): void {
-    const token = localStorage.getItem('auth_token');
-    if (!token) { return; }
+    if (!localStorage.getItem('auth_token')) { return; }
     this.isLoading = true;
-    this.http.get<{ status: string; data: MaintenanceWindow[] }>('/api/maintenance_window/list', {
-      headers: new HttpHeaders().set('Authorization', token)
-    }).subscribe({
-      next: (res) => {
-        this.windows = res.data;
+    this.listError = '';
+    this.listFailed = false;
+    this.api.getMaintenanceWindows().subscribe({
+      next: list => {
+        // Upcoming first (soonest at the top), then past ones, most recent first
+        const now = Date.now();
+        const t = (w: MaintenanceWindow) => w.scheduledStart ? new Date(w.scheduledStart).getTime() : 0;
+        const upcoming = list.filter(w => t(w) >= now).sort((a, b) => t(a) - t(b));
+        const past = list.filter(w => t(w) < now).sort((a, b) => t(b) - t(a));
+        this.windows = upcoming.concat(past);
         this.isLoading = false;
       },
       error: () => {
-        this.listError = 'Failed to load the maintenance queue.';
+        this.listFailed = true;
         this.isLoading = false;
       }
     });
+  }
+
+  get visibleWindows(): MaintenanceWindow[] {
+    return this.showPast ? this.windows : this.windows.filter(w => !this.isPast(w));
+  }
+
+  get pastCount(): number {
+    return this.windows.filter(w => this.isPast(w)).length;
   }
 
   isPast(w: MaintenanceWindow): boolean {
@@ -64,15 +79,16 @@ export class MaintenanceWindowComponent implements OnInit {
   }
 
   formatScheduled(w: MaintenanceWindow): string {
-    return w.scheduledStart ? formatPacificDisplay(w.scheduledStart) : '—';
+    return w.scheduledStart ? formatPacificShort(w.scheduledStart) : '—';
   }
 
   formatPosted(w: MaintenanceWindow): string {
-    return w.postedAt ? formatPacificDisplay(w.postedAt) : '—';
+    return w.postedAt ? formatPacificShort(w.postedAt) : '—';
   }
 
   startEdit(w: MaintenanceWindow): void {
     this.editingId = w.id;
+    this.confirmDeleteId = null;
     this.enabled = w.enabled;
     this.message = w.message || '';
     if (w.scheduledStart) {
@@ -93,20 +109,14 @@ export class MaintenanceWindowComponent implements OnInit {
       this.formState = 'error';
       return;
     }
-    const token = localStorage.getItem('auth_token');
-    if (!token) { return; }
+    if (!localStorage.getItem('auth_token')) { return; }
     this.formState = 'saving';
     const payload = {
       enabled: this.enabled,
       scheduledStart: pacificDateAndHourToUtcIso(this.date, this.hour),
       message: this.message || null
     };
-    const headers = new HttpHeaders().set('Authorization', token);
-    const request$ = this.editingId
-      ? this.http.put(`/api/maintenance_window/${this.editingId}`, payload, { headers })
-      : this.http.post('/api/maintenance_window', payload, { headers });
-
-    request$.subscribe({
+    this.api.saveMaintenanceWindow(this.editingId, payload).subscribe({
       next: () => {
         this.resetForm();
         this.fetchWindows();
@@ -118,18 +128,26 @@ export class MaintenanceWindowComponent implements OnInit {
     });
   }
 
+  askDelete(w: MaintenanceWindow): void {
+    this.confirmDeleteId = w.id;
+  }
+
+  cancelDelete(): void {
+    this.confirmDeleteId = null;
+  }
+
   deleteWindow(w: MaintenanceWindow): void {
-    if (!confirm('Delete this scheduled maintenance window?')) { return; }
-    const token = localStorage.getItem('auth_token');
-    if (!token) { return; }
-    this.http.delete(`/api/maintenance_window/${w.id}`, {
-      headers: new HttpHeaders().set('Authorization', token)
-    }).subscribe({
+    if (!localStorage.getItem('auth_token')) { return; }
+    this.api.deleteMaintenanceWindow(w.id).subscribe({
       next: () => {
+        this.confirmDeleteId = null;
         if (this.editingId === w.id) { this.resetForm(); }
         this.fetchWindows();
       },
-      error: () => { this.listError = 'Failed to delete.'; }
+      error: () => {
+        this.confirmDeleteId = null;
+        this.listError = 'Failed to delete.';
+      }
     });
   }
 

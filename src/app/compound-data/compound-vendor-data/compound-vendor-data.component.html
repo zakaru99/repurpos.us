@@ -1,282 +1,150 @@
-<div id="vendor-data" *ngIf="vendor_data && vendor_data.length > 0">
-  <ng-container *ngFor="let vendor of vendor_data; let k = index;">
-    <div [id]="vendors[k].name" *ngIf="vendor && vendor.length > 0 && vendors[k].name != 'Ontology' && (vendor[0].ikey || vendor[0].drug_name || vendor[0].phase || vendor[0].gvk_id || vendor[0].id || vendor[0].informa_id )">
-      <h3 class="vendor-title">
-        <a href="{{vendors[k].link}}" target="_blank" rel="noreferrer">
-          {{vendors[k].name}} data 
-        </a>
-      </h3>
+<!-- One tab per licensed data source, its phase in the tab; the chosen source's facts below -->
+<div class="sources" *ngIf="sources.length">
+  <div class="tabs" role="tablist" aria-label="Data source">
+    <button type="button" role="tab" class="tab" *ngFor="let src of sources; let i = index"
+            [class.active]="i === active" [attr.aria-selected]="i === active" (click)="active = i">
+      <span class="tab-name">{{ src.meta.name }}</span>
+      <span class="tab-phase" *ngIf="src.entries[0]?.phase">{{ src.entries[0].phase.text | titlecase }}</span>
+    </button>
+  </div>
 
-      <div class="updated" *ngIf="vendors[k].updated">
-        last updated {{ vendors[k].updated | date:'d MMMM yyyy'}}
+  <ng-container *ngFor="let src of sources; let i = index">
+  <section class="source" *ngIf="i === active" role="tabpanel" [attr.id]="'source-' + src.meta.id">
+    <div class="entry" *ngFor="let e of src.entries">
+      <!-- Record ID and phase -->
+      <div class="entry-head">
+        <p class="record" *ngIf="e.x.gvk_id || (e.x.id && src.meta.id !== 'ontology')">
+          <span class="label">Record</span>
+          <a *ngIf="src.meta.id === 'integrity'; else plainId" class="mono"
+             [href]="'https://www.cortellis.com/drugdiscovery/entity/drug/' + e.x.id + '/product'"
+             target="_blank" rel="noreferrer">{{ e.x.id }}</a>
+          <ng-template #plainId><span class="mono">{{ e.x.gvk_id || e.x.id }}</span></ng-template>
+        </p>
+        <div class="phase" *ngIf="e.phase">
+          <p><span class="label">{{ e.phase.title }}</span> <strong>{{ e.phase.text | titlecase }}</strong></p>
+          <app-clinical-phase [phase]="e.phase.values" [vendorName]="src.meta.id"></app-clinical-phase>
+        </div>
       </div>
 
-      <!-- <div class="cmpd-table"> -->
-      <div class="cmpd-table" *ngFor="let x of vendor; let i=index">
+      <div class="entry-body">
+      <table class="facts">
+        <tbody>
+          <tr *ngIf="e.x.category?.length">
+            <th scope="row">Category</th>
+            <td><span class="terms"><ng-container *ngFor="let t of e.x.category">
+              <ng-container *ngTemplateOutlet="term; context: { value: t }"></ng-container></ng-container></span></td>
+          </tr>
+          <tr *ngIf="e.x.mechanism?.length">
+            <th scope="row">Mechanism of action</th>
+            <td><span class="terms"><ng-container *ngFor="let t of e.x.mechanism">
+              <ng-container *ngTemplateOutlet="term; context: { value: t }"></ng-container></ng-container></span></td>
+          </tr>
+          <tr *ngIf="e.x.target_name?.length">
+            <th scope="row">Target</th>
+            <td><span class="terms"><ng-container *ngFor="let t of e.x.target_name">
+              <ng-container *ngTemplateOutlet="term; context: { value: t }"></ng-container></ng-container></span></td>
+          </tr>
+          <tr *ngIf="e.x.target_families?.length">
+            <th scope="row">Target family</th>
+            <td><span class="terms"><ng-container *ngFor="let t of e.x.target_families">
+              <ng-container *ngTemplateOutlet="term; context: { value: t }"></ng-container></ng-container></span></td>
+          </tr>
+          <tr *ngIf="e.x.roa?.length">
+            <th scope="row">Route of administration</th>
+            <td><span class="terms"><span *ngFor="let r of e.x.roa">{{ r }}</span></span></td>
+          </tr>
+          <tr *ngIf="e.x.drug_name?.length">
+            <th scope="row">Name</th>
+            <td><span class="terms"><span *ngFor="let n of e.x.drug_name">{{ n }}</span></span></td>
+          </tr>
+          <tr *ngIf="e.x.synonyms?.length">
+            <th scope="row">Aliases</th>
+            <td><span class="terms"><span *ngFor="let n of e.x.synonyms">{{ n }}</span></span></td>
+          </tr>
+          <tr *ngIf="e.x.cas_name?.length">
+            <th scope="row">Chemical name</th>
+            <td>{{ e.x.cas_name }}</td>
+          </tr>
+          <tr *ngIf="e.x.chemical_name?.length">
+            <th scope="row">Chemical name</th>
+            <td>{{ e.x.chemical_name }}</td>
+          </tr>
+          <tr *ngIf="e.x.origin?.length">
+            <th scope="row">Compound origin</th>
+            <td><span class="terms"><span *ngFor="let o of e.x.origin">{{ o.label }}</span></span></td>
+          </tr>
+          <tr *ngIf="e.x.pk?.length">
+            <th scope="row">Pharmacokinetics</th>
+            <td>{{ e.x.pk }}</td>
+          </tr>
 
-        <div class="vendor-header row" [ngClass]="i === 0 ? 'first-entry' : 'notfirst-entry'">
-          <!-- Vendor ID: GVK -->
-          <div *ngIf="x && x.hasOwnProperty('gvk_id')" class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
-            <span class="title">{{vendors[k].name}} ID: </span>
-            <span>{{ x['gvk_id'] }}</span>
-          </div>
-          <!-- Vendor ID: Integrity -->
-          <div *ngIf="x && x.hasOwnProperty('id') && vendors[k].name != 'Ontology'" class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
-            <span class="title">{{vendors[k].name}} ID: </span>
-            <span *ngIf="vendors[k].id === 'integrity'; else plainId">
-              <a href="https://www.cortellis.com/drugdiscovery/entity/drug/{{x['id']}}/product" target="_blank" rel="noreferrer">{{ x['id'] }}</a>
-            </span>
-            <ng-template #plainId>{{ x['id'] }}</ng-template>
-          </div>
-          <!-- uncomment to enable adis Vendor ID: adis 
-          <div *ngIf="x && x.hasOwnProperty('adis_id')" class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
-            <span class="title">{{vendors[k].name}} ID: </span>
-            <span>{{ x['adis_id'] }}</span>
-          </div>-->
-          <!-- Vendor ID: Informa -->
-          <div *ngIf="x && x.hasOwnProperty('informa_id')" class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
-            <!-- <span class="title">{{vendors[k].name}} ID: </span>
-            <span>{{ x['informa_id'] }}</span> -->
-          </div>
+          <tr *ngIf="e.x.smiles?.length">
+            <th scope="row">SMILES</th>
+            <td class="mono">{{ e.x.smiles }}</td>
+          </tr>
+        </tbody>
+      </table>
 
-          <!-- Highest phase (elevated to a combo product's phase if more advanced) -->
-          <div *ngIf="x && hasDisplayPhase(x, vendors[k].id)" class="col-xl-5 col-lg-5 col-md-5">
-            <span class="title">Highest Phase: </span>
-            <span>{{ displayHighestPhase(x, vendors[k].id) }}</span>
-            <app-clinical-phase [phase]="[displayHighestPhase(x, vendors[k].id)]" [vendorName]="vendors[k].id"></app-clinical-phase>
+      <div class="side" *ngIf="e.x.model?.length || e.x.unit?.length || e.x.cmax?.length || e.x.combo_name?.length">
+        <!-- PK measurements -->
+        <div class="side-block" *ngIf="e.x.model?.length || e.x.unit?.length || e.x.cmax?.length">
+          <h4 class="side-title">PK data</h4>
+          <div class="sub-scroll">
+            <table class="sub-table">
+              <thead>
+                <tr><th>Parameter</th><th class="num">Value</th><th>Unit</th><th>Model</th><th>Publication</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let m of e.x.model; let i = index">
+                  <td>{{ e.x.parameter[i] }}</td>
+                  <td class="num">{{ e.x.score[i] }}</td>
+                  <td>{{ e.x.unit[i] }}</td>
+                  <td>{{ m }}</td>
+                  <td><a *ngIf="e.x.publications && e.x.publications[i]" [href]="e.x.publications[i]"
+                         target="_blank" rel="noreferrer">PubMed</a></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-
-          <!-- Phase -->
-          <div *ngIf="x && !hasDisplayPhase(x, vendors[k].id) && ((x.hasOwnProperty('phase') && x['phase'].length > 0) || x.hasOwnProperty('highest_phase'))" class="col-xl-5 col-lg-5 col-md-5">
-            <span class="title">{{ getDisplayPhaseTitle(x, vendors[k].id) }}</span>
-            <span>{{ displayHighestPhase(x, vendors[k].id) }}</span>
-            <app-clinical-phase [phase]="getDisplayPhaseValues(x, vendors[k].id)" [vendorName]="vendors[k].id"></app-clinical-phase>
-          </div>
-
-          <!-- Salt form -->
-          <!-- <app-salt-form class="col-xl-3 col-lg-3 col-md-3 col-sm-6 float-right"></app-salt-form> -->
-
-          <!-- END OF VENDOR HEADER -->
         </div>
 
-        <!-- Pharmacokinectic Data -->
-        <!-- <div class="row"> -->
-          <div class="col-12 vendor-smiles smiles" *ngIf="x && x.hasOwnProperty('pk') && x['pk'].length> 0">
-            <span class="title">Pharmacokinectic Data: </span>
-            <span class="smiles">{{ x['pk'] }}</span>
+        <!-- Combination products -->
+        <div class="side-block" *ngIf="e.x.combo_name?.length">
+          <h4 class="side-title">Combination products</h4>
+          <div class="sub-scroll">
+            <table class="sub-table">
+              <thead>
+                <tr><th>Product</th><th>Therapeutic group</th><th>Highest phase</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let combo of e.x.combo_name; let i = index">
+                  <td><a [routerLink]="['/search/']" [queryParams]="{ query: '&quot;' + combo + '&quot;', type: 'string' }"
+                         [matTooltip]="'Search for ' + combo">{{ combo }}</a></td>
+                  <td><ng-container *ngIf="e.x.combo_category && e.x.combo_category[i]">
+                    <ng-container *ngTemplateOutlet="term; context: { value: e.x.combo_category[i] }"></ng-container>
+                  </ng-container></td>
+                  <td>{{ e.x.combo_phase ? e.x.combo_phase[i] : '' }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <!-- </div> -->
-
-        <!-- Vendor SMILES -->
-        <!-- <div class="row"> -->
-        <div class="col-12 vendor-smiles smiles" *ngIf="x && x.hasOwnProperty('smiles') && x['smiles'].length > 0 && vendors[k].name != 'Ontology'">
-          <span class="title">SMILES: </span>
-          <span class="smiles">{{ x.smiles }}</span>
         </div>
-        <!-- </div> -->
 
-   
-  
-
-
-
-        <table class="table cmpd-table" [ngClass]="i === vendor.length - 1 ? 'last-entry' : ''">
-
-          <!-- Category -->
-          <tr *ngIf="x && x.hasOwnProperty('category') && x['category'].length > 0">
-            <td class="title">Category</td>
-            <td class="content">
-              <div class="categories">
-                <span id={{y}} *ngFor="let category of x['category']; let i = index ;">
-                  <ng-template [ngTemplateOutlet]="category['wikidata'] ? wikidata_term : unmatched_term" [ngTemplateOutletContext]="{ value: category }" ]></ng-template>
-
-                  <span *ngIf="i + 1 < x['category'].length" class='data-separator'></span>
-                </span>
-              </div>
-            </td>
-          </tr>
-
-
-
-          <!-- Mechanism -->
-          <tr *ngIf="x && x.hasOwnProperty('mechanism') && x['mechanism'].length > 0">
-            <td class="title">Mechanism of Action</td>
-            <td class="content">
-              <div class="mechanisms">
-                <span *ngFor="let y of x['mechanism']; let i = index">
-                  <ng-template [ngTemplateOutlet]="y['wikidata'] ? wikidata_term : unmatched_term" [ngTemplateOutletContext]="{ value: y }" ]></ng-template>
-
-                  <span *ngIf="i + 1 < x['mechanism'].length" class='data-separator'></span>
-                </span>
-              </div>
-
-            </td>
-          </tr>
-
-
-
-
-
-
-
-
-
-
-          <!-- Templates for Wikidata-linked terms -->
-          <ng-template #unmatched_term let-value="value">
-            <a class="launch-search" [routerLink]="['/search/']" [queryParams]='{ query: "\"" + value.label + "\"", type: "string" }' [matTooltip]="'launch search for ' + value.label">
-              {{value.label}}
-            </a>
-          </ng-template>
-
-          <ng-template #wikidata_term let-value="value">
-            <a class="launch-search-button" [routerLink]="['/search/']" [queryParams]='{ query: "\"" + value.wikidata + "\"", type: "string" }' [matTooltip]="'launch search for ' + value.label + ' (normalized to Wikidata ID ' + value.wikidata + ')'">
-              {{ value.label }}
-            </a>
-          </ng-template>
-
-
-          <!-- Route of Administration -->
-          <tr *ngIf="x && x.hasOwnProperty('roa') && x.hasOwnProperty('roa') && x['roa'].length > 0">
-            <td class="title">Route of Administration</td>
-            <td class="content"><span *ngFor="let y of x['roa']; let i = index">
-                {{y}}
-                <span *ngIf="i + 1 < x['roa'].length" class='data-separator'></span></span>
-            </td>
-          </tr>
-
-          <!-- Target Name -->
-          <tr *ngIf="x && x.hasOwnProperty('target_name') && x['target_name'].length > 0">
-            <td class="title">Target Name</td>
-            <td class="content"><span *ngFor="let y of x['target_name']; let i = index">
-                <a class="launch-search" [routerLink]="['/search/']" [queryParams]='{ query: "\"" + y.label + "\"", type: "string" }' [matTooltip]="'launch search for ' + y.label">{{y.label}}</a>
-                <span *ngIf="i + 1 < x['target_name'].length" class='data-separator'></span></span>
-            </td>
-          </tr>
-
-
-          <!-- Target Family -->
-          <tr *ngIf="x && x.hasOwnProperty('target_families') && x['target_families'].length > 0">
-            <td class="title">Target Family</td>
-            <td class="content"><span *ngFor="let y of x['target_families']; let i = index">
-                <a class="launch-search" [routerLink]="['/search/']" [queryParams]='{ query: "\"" + y + "\"", type: "string" }' [matTooltip]="'launch search for ' + y.label">{{y.label}}</a>
-                <span *ngIf="i + 1 < x['target_families'].length" class='data-separator'></span></span>
-            </td>
-          </tr>
-
-
-          <!-- Vendor name -->
-          <tr *ngIf="x && x.hasOwnProperty('drug_name') && x['drug_name'].length > 0 && vendors[k].name != 'Ontology'">
-            <td class="title">name</td>
-            <td class="content"><span *ngFor="let y of x['drug_name']; let i = index">{{y}}<span *ngIf="i + 1 < x['drug_name'].length" class='data-separator'></span></span>
-            </td>
-          </tr>
-
-
-          <!-- Aliases -->
-          <tr *ngIf="x && x.hasOwnProperty('synonyms') && x['synonyms'].length > 0">
-            <td class="title">aliases</td>
-            <td class="content"><span *ngFor="let y of x['synonyms']; let i = index">{{y}}<span *ngIf="i + 1 < x['synonyms'].length" class='data-separator'></span></span>
-            </td>
-          </tr>
-
-          <!-- Chemical name -->
-          <tr *ngIf="x && x.hasOwnProperty('cas_name') && x['cas_name'].length > 0">
-            <td class="title">Chemical name</td>
-            <td class="content">{{ x['cas_name'] }}
-            </td>
-          </tr>
-
-          <tr *ngIf="x && x.hasOwnProperty('chemical_name') && x['chemical_name'].length > 0">
-            <td class="title">Chemical name</td>
-            <td class="content">{{ x['chemical_name'] }}
-            </td>
-          </tr>
-
-
-
-          <!-- Vendor Origin -->
-          <tr *ngIf="x && x.hasOwnProperty('origin') && x['origin'].length > 0">
-            <td class="title">Compound Origin</td>
-            <td class="content"><span *ngFor="let y of x['origin']; let i = index">{{y.label}}<span *ngIf="i + 1 < x['origin'].length" class='data-separator'></span></span>
-            </td>
-          </tr>
-
-
-           <!-- Vendor name
-           <tr *ngIf="x && x.hasOwnProperty('drug_name') && x['drug_name'].length > 0">
-            <td class="title">name</td>
-            <td class="content"><span *ngFor="let y of x['drug_name']; let i = index">{{y}}<span *ngIf="i + 1 < x['drug_name'].length" class='data-separator'></span></span>
-            </td>
-          </tr> -->
-
-          <tr *ngIf="x && ((x.hasOwnProperty('model') && x['model'].length > 0) || (x.hasOwnProperty('unit') && x['unit'].length > 0) || (x.hasOwnProperty('cmax') && x['cmax'].length > 0))">
-            <td class="title">PK Data</td>
-            <table class="pk_table">
-              <tr class="header-title align-middle assay-name col">
-                <th class="header-title align-middle assay-name col">Parameter</th>
-                <th class="header-title align-middle assay-name col">Value</th>
-                <th class="header-title align-middle assay-name col">Unit</th>
-                <th class="header-title align-middle assay-name col">Model</th>
-                <th class="header-title align-middle assay-name col">Publications</th>
-              </tr>
-              <tr *ngFor="let a of x['model']; let i = index">
-                <td class="content">{{x['parameter'][i]}}</td>
-                <td class="content">{{x['score'][i]}}</td>
-                <td class="content">{{x['unit'][i]}}</td>
-                <td class="content">{{x['model'][i]}}</td>
-                <td class="content">
-                  <a *ngIf="x['publications'] && x['publications'][i]" [href]="x['publications'][i]" target="_blank" rel="noreferrer">PubMed</a>
-                </td>
-              </tr>
-            </table>
-          </tr>
-
-          <!-- Combination Products -->
-          <tr *ngIf="x && x.hasOwnProperty('combo_name') && x['combo_name'].length > 0">
-            <td class="title">Combination Products</td>
-            <table class="pk_table">
-              <tr class="header-title align-middle assay-name col">
-                <th class="header-title align-middle assay-name col">Combination Name</th>
-                <th class="header-title align-middle assay-name col">Therapeutic Group</th>
-                <th class="header-title align-middle assay-name col">Highest Phase</th>
-              </tr>
-              <tr *ngFor="let combo of x['combo_name']; let i = index">
-                <td class="content">
-                  <a class="launch-search" [routerLink]="['/search/']" [queryParams]='{ query: "\"" + combo + "\"", type: "string" }' [matTooltip]="'launch search for ' + combo">{{combo}}</a>
-                </td>
-                <td class="content">
-                  <ng-container *ngIf="x['combo_category'] && x['combo_category'][i]">
-                    <ng-template [ngTemplateOutlet]="x['combo_category'][i]['wikidata'] ? wikidata_term : unmatched_term" [ngTemplateOutletContext]="{ value: x['combo_category'][i] }"></ng-template>
-                  </ng-container>
-                </td>
-                <td class="content">{{ x['combo_phase'] ? x['combo_phase'][i] : '' }}</td>
-              </tr>
-            </table>
-          </tr>
-
-          <tr *ngIf="x && (x.hasOwnProperty('node_id'))">
-            <td class="title">Ontology Data</td>
-            <table class="pk_table">
-              <tr class="header-title align-middle assay-name col">
-                <th class="header-title align-middle assay-name col">data source</th>
-                <!-- <th class="header-title align-middle assay-name col">drug name</th> -->
-                <th class="header-title align-middle assay-name col">parent moa</th>
-                <th class="header-title align-middle assay-name col">xref</th>
-              </tr>
-              <tr *ngFor="let a of x['entity_name']; let i = index">
-                <td class="content">{{x['entity_name'][i]}}</td>
-                <td class="content"><a href="/ontology-tree?src={{x['entity_id'][i]}}&search_id={{x['node_id'][i]}}">{{x['parent_moa'][i]}}</a></td>
-                <td class="content">{{x['xref'][i]}}</td>
-              </tr>
-            </table>
-          </tr>
-
-
-        </table>
-        <!-- END OF NGFOR OVER VENDOR LOOP -->
+      </div>
       </div>
     </div>
+    <p class="source-site"><a [href]="src.meta.link" target="_blank" rel="noreferrer">{{ src.meta.name }} website</a></p>
+  </section>
   </ng-container>
-
 </div>
+
+<!-- A term links to a search for it; Wikidata-matched terms search by their Wikidata ID -->
+<ng-template #term let-value="value">
+  <a *ngIf="value.wikidata; else plain" [routerLink]="['/search/']"
+     [queryParams]="{ query: '&quot;' + value.wikidata + '&quot;', type: 'string' }"
+     [matTooltip]="'Search for ' + value.label + ' (Wikidata ' + value.wikidata + ')'">{{ value.label }}</a>
+  <ng-template #plain>
+    <a [routerLink]="['/search/']" [queryParams]="{ query: '&quot;' + (value.label || value) + '&quot;', type: 'string' }"
+       [matTooltip]="'Search for ' + (value.label || value)">{{ value.label || value }}</a>
+  </ng-template>
+</ng-template>

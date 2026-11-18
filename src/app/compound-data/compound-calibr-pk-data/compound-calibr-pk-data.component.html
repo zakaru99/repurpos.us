@@ -1,22 +1,28 @@
-<div *ngIf="pkData && pkData.length > 0" class="pk-container">
-  <h5>CALIBR t<sub>1/2</sub> Data</h5>
-
-  <table class="pk-table">
-    <thead>
-      <tr>
-        <th>Species</th>
-        <th>Route</th>
-        <th>Agg HL (hr)</th>
-        <th>Log HL</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let x of pkData">
-        <td>{{ x['Species'] }}</td>
-        <td>{{ x['Route'] }}</td>
-        <td>{{ x['Agg_HL'] }}</td>
-        <td>{{ x['Log_HL'] }}</td>
-      </tr>
-    </tbody>
-  </table>
+<!-- Calibr in-house half-life measurements -->
+<div class="block" *ngIf="pkData && pkData.length > 0">
+  <button type="button" class="disclosure" (click)="open = !open" [attr.aria-expanded]="open">
+    <span class="chev"></span>
+    <span class="d-title">Calibr pharmacokinetics</span>
+    <span class="d-summary">half-life in {{ speciesSummary }}</span>
+  </button>
+  <div class="scroll" *ngIf="open">
+    <table class="results">
+      <thead>
+        <tr>
+          <th>Species</th>
+          <th>Route</th>
+          <th class="num">t<sub>1/2</sub> (h)</th>
+          <th class="num">log t<sub>1/2</sub></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let x of pkData">
+          <td>{{ x['Species'] }}</td>
+          <td>{{ x['Route'] }}</td>
+          <td class="num">{{ x['Agg_HL'] }}</td>
+          <td class="num">{{ x['Log_HL'] }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

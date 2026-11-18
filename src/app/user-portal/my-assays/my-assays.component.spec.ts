@@ -1,5 +1,7 @@
+import { PageHeaderModule } from '../../_components/page-header/page-header.module';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { MyAssaysComponent } from './my-assays.component';
 import { LoginStateService } from '../../_services';
@@ -10,7 +12,7 @@ describe('MyAssaysComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule ],
+      imports: [ PageHeaderModule, HttpClientTestingModule, RouterTestingModule ],
       declarations: [ MyAssaysComponent ],
       providers: [ LoginStateService ]
     })

@@ -1,0 +1,155 @@
+@import '../admin';
+
+:host {
+  @include admin-page;
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 14px;
+}
+
+// Status filters as plain text; the active one is set in ink and underlined
+.filters {
+  display: flex;
+  gap: 24px;
+
+  button {
+    padding: 0 0 4px;
+    font: inherit;
+    font-size: 0.875rem;
+    color: $ink-soft;
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+
+    &:hover {
+      color: $ink;
+    }
+
+    &.active {
+      color: $ink;
+      font-weight: 500;
+      border-bottom-color: $accent;
+    }
+
+    @include focus-ring($accent, 2px);
+  }
+
+  .n {
+    color: $ink-faint;
+    font-weight: 400;
+  }
+}
+
+.search {
+  box-sizing: border-box;
+  width: 260px;
+  height: 30px;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 0.875rem;
+  color: $ink;
+  background: #fff;
+  border: 1px solid $field-border;
+  border-radius: $radius-sharp;
+  -webkit-appearance: none;
+
+  &::placeholder {
+    color: $ink-faint;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $accent;
+    box-shadow: 0 0 0 1px $accent;
+  }
+}
+
+// The table scrolls inside the space left under the headers, so the page
+// itself never grows taller than the screen
+.list {
+  --table-max: calc(100vh - var(--site-header-height, 65px) - 190px);
+  min-width: 0;
+}
+
+// Table alone at full width; with a proposal open, table left and detail right
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+
+  &.open {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+
+    // Wide screens: the list gets the larger share
+    @media (min-width: 1680px) {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 6fr);
+    }
+  }
+}
+
+// Same height as the table beside it; scrolls on its own
+.detail {
+  max-height: calc(100vh - var(--site-header-height, 65px) - 170px);
+  overflow-y: auto;
+  padding-left: 40px;
+  border-left: 1px solid $rule;
+}
+
+.muted {
+  margin: 0 !important;
+  color: $ink-soft;
+}
+
+.empty {
+  padding: 20px 0;
+}
+
+.error {
+  @include error-text;
+  margin: 0 0 16px !important;
+}
+
+.count {
+  margin: 0 0 6px !important;
+  font-size: 0.8125rem;
+  color: $ink-soft;
+}
+
+.retry {
+  @include admin-button(text);
+  margin-left: 8px;
+}
+
+@media (max-width: $bp-tablet) {
+  .tools {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search {
+    width: 100%;
+  }
+
+  // One thing at a time: the open proposal replaces the table
+  .layout.open {
+    grid-template-columns: 1fr;
+
+    .list {
+      display: none;
+    }
+  }
+
+  .detail {
+    position: static;
+    max-height: none;
+    padding-left: 0;
+    border-left: 0;
+  }
+}
