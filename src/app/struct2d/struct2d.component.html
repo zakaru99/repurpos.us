@@ -1,15 +1,10 @@
-
+<!-- Shared by REFRAMEdb and CRESTdb; keep the two copies identical -->
 <div (deferLoad)="showMyElement=true">
-  <img class="svg-wrapper group" [src]="svg" *ngIf="showMyElement;">
+  <div class="svg-wrapper group" *ngIf="showMyElement" [innerHTML]="svg" role="img" [attr.aria-label]="label"></div>
 </div>
 
-<button
-  *ngIf="launch_search"
-  [routerLink]="['/search/']"
-  [queryParams]="{ query: smiles, type: 'structure' }"
-  class="struct-search"
-  aria-label="launch structure search"
->Search this structure</button>
-
-
-<!-- <img src="http://stitch.embl.de/images/chemicals/normal/{{smiles}}.png" class="img-responsive" alt="structure"> -->
+<div class="struct-actions" *ngIf="launch_search || (downloadable && raw)">
+  <button *ngIf="downloadable && raw" type="button" class="struct-download" (click)="download()">Download structure (SVG)</button>
+  <button *ngIf="launch_search" type="button" class="struct-search"
+          [routerLink]="['/search/']" [queryParams]="{ query: smiles, type: 'structure' }">Search this structure</button>
+</div>

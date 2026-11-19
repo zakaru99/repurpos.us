@@ -1,59 +1,91 @@
+// Shared by REFRAMEdb and CRESTdb; keep the two copies identical (colours
+// come from each site's tokens).
 @import '../../design';
 
-$substructure-highlight: $substructure; // matched atoms
 $substructure-strokewidth: 2.25; // 1.67 by default
 
+// A block, so the drawing's box takes the width it's placed in (inline SVG
+// has no width of its own, unlike the <img> this used to be)
+:host {
+  display: block;
+}
+
+// The drawing scales to fit this box, centred. Callers set its height for
+// their layout (default 400px).
 .svg-wrapper {
   width: 100%;
-  height: 400px;          /* fixed visual height */
+  height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
-/deep/ .svg-wrapper svg {
-  max-height: 100%;
+// The SVG carries a viewBox, so filling the box keeps its proportions
+.svg-wrapper ::ng-deep svg {
+  display: block;
+  width: 100%;
+  height: 100%;
   max-width: 100%;
-  height: auto;
-  width: auto;
+  max-height: 100%;
 }
 
-/deep/ rect {
-  // fill: none;
+// --- Substructure matches: highlighted atoms and bonds (inline SVG only)
+
+.svg-wrapper ::ng-deep {
+  .outerglow,
+  line.outerglow,
+  .outerglow > line,
+  g.outerglow line {
+    stroke: $substructure !important;
+    stroke-width: $substructure-strokewidth;
+  }
+
+  .outerglow path {
+    stroke: $substructure;
+  }
+
+  .outerglow ellipse {
+    fill: $substructure;
+    stroke: $substructure;
+    stroke-width: 0.5;
+  }
+
+  .bond {
+    stroke-width: 0.35;
+    stroke: $ink;
+  }
 }
 
-.outerglow > line,
-/deep/ .outerglow,
-line.outerglow {
-  stroke: $substructure-highlight;
-  stroke-width: $substructure-strokewidth;
+// --- Actions under the drawing
+
+.struct-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
 }
 
-/deep/ g.outerglow line {
-  stroke: $substructure-highlight !important;
-  stroke-width: $substructure-strokewidth;
-}
-
-/deep/ .outerglow path {
-  stroke: $substructure-highlight;
-}
-
-/deep/ .outerglow ellipse {
-  fill: $substructure-highlight;
-  stroke: $substructure-highlight;
-  stroke-width: 0.5;
-}
-
-/deep/ .bond {
-  stroke-width: 0.35;
-  stroke: $ink;
-}
-// --- Launch substructure search ---
 .struct-search {
   @include button-navy;
-  float: right;
-  margin-bottom: 5px;
   padding: 8px 14px;
   font-size: 0.8125rem;
 }
 
+.struct-download {
+  padding: 0;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: $accent;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  @include focus-ring;
+}

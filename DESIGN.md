@@ -246,8 +246,12 @@ large screens.
 - d3 and other drawing code can't use Sass. Read tokens at runtime with
   `getComputedStyle(document.documentElement).getPropertyValue('--color-…')`,
   as `ontology-tree.component.ts` does.
-- `data:` image URLs (such as structure SVGs) need `DomSanitizer` before
-  Angular will render them.
+- `data:` image URLs need `DomSanitizer` before Angular will render them.
+- Structures: use `app-struct2d`, shared with CRESTdb (keep `src/app/struct2d`
+  identical on both sites). It puts the SVG inline (so substructure highlight
+  styles apply) and scales it to fit `.svg-wrapper`; set that box's height
+  from the page (`::ng-deep .svg-wrapper { height: … }`), not the SVG's.
+  `[downloadable]="true"` adds a "Download structure (SVG)" button.
 
 ## Checking your work
 

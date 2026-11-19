@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs/Rx';
-import { Subject } from 'rxjs/Subject';
+import { Observable, throwError } from 'rxjs';
+import { map, shareReplay, catchError } from 'rxjs/operators';
 
+import { SKIP_LOADER_HEADER } from '../_interceptors/loader-interceptor.service';
 
-import { SafeHtml } from '@angular/platform-browser';
-
-import { environment } from "../../environments/environment";
-import { map, shareReplay, catchError } from "rxjs/operators";
-import { throwError } from "rxjs";
-
+// Structure drawings for app-struct2d. Shared by REFRAMEdb and CRESTdb (keep
+// the two copies identical). Each drawing is fetched once and cached, and in
+// the background: structures load lazily as they scroll into view, so they
+// mustn't bring up the full-page loader.
 @Injectable()
 export class StructureSvgService {
 
@@ -17,9 +16,8 @@ export class StructureSvgService {
 
   constructor(public http: HttpClient) {
     if (!localStorage.getItem('auth_token')) {
-      localStorage.setItem('auth_token', '')
+      localStorage.setItem('auth_token', '');
     }
-
   }
 
   getSVG(query: string, format: string): Observable<string> {
@@ -29,20 +27,17 @@ export class StructureSvgService {
       return cached;
     }
 
-    // return this.http.get(environment.api_url + '/search', {
     const request$ = this.http.get('/api/compound_svg', {
       observe: 'response',
-      // withCredentials: true,
       headers: new HttpHeaders()
         .set('Accept', 'application/json')
-        .set('Authorization', localStorage.getItem('auth_token')),
+        .set('Authorization', localStorage.getItem('auth_token'))
+        .set(SKIP_LOADER_HEADER, '1'),
       params: new HttpParams()
         .set('structure', encodeURIComponent(query))
         .set('format', format)
     }).pipe(
-      map(item => {
-        return item['body']['compound_svg'];
-      }),
+      map(item => item['body']['compound_svg']),
       catchError(err => {
         this.svgCache.delete(cacheKey);
         return throwError(err);
