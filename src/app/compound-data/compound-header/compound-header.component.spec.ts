@@ -36,6 +36,8 @@ class Struct2dStubComponent {
   @Input() smiles: any;
   @Input() struct_type: any;
   @Input() launch_search: boolean;
+  @Input() downloadable: boolean;
+  @Input() name: string;
 }
 
 class CompoundServiceStub {
