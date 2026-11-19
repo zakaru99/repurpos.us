@@ -359,7 +359,8 @@ p {
 
 .whats-new {
   position: fixed;
-  top: calc(var(--site-header-height, 65px) + 14px);
+  // and below the maintenance banner while it shows (maintenance-banner.component)
+  top: calc(var(--site-header-height, 65px) + var(--maintenance-banner-offset, 0px) + 14px);
   right: 20px;
   z-index: 2000;
   display: flex;

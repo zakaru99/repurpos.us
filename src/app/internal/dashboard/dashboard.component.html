@@ -33,7 +33,7 @@
     </ng-container>
     <ng-template #proposalsFailed>
       <h2 class="headline">Proposals</h2>
-<app-status-message [compact]="true" kicker="Temporary problem" title="We couldn't load the proposals">
+      <app-status-message [compact]="true" kicker="Temporary problem" title="We couldn't load the proposals">
         <p>This is usually a short interruption on our side. Please try again in a moment.</p>
         <ng-container actions>
           <button type="button" class="status-primary" (click)="load()">Try again</button>
@@ -46,7 +46,7 @@
   <aside class="side">
     <section *ngIf="isAdmin">
       <p class="eyebrow">Maintenance</p>
-<app-status-message *ngIf="!windows" [compact]="true" kicker="Temporary problem" title="We couldn't load the schedule">
+      <app-status-message *ngIf="!windows" [compact]="true" kicker="Temporary problem" title="We couldn't load the schedule">
         <p>This is usually a short interruption on our side. Please try again in a moment.</p>
         <ng-container actions>
           <button type="button" class="status-primary" (click)="load()">Try again</button>
