@@ -104,6 +104,13 @@ Further reading: [Impeccable: the visible tells of AI design](https://impeccable
 | `$moa`, `$found`, `$category` | Ontology states: holds compounds / search path / category node |
 | `$ok-on-dark`, `$warn-on-dark`, `$caution-on-dark` | Status text on navy (compound and assay headers): done or safe / warning / waiting |
 | `$substructure` | Matched atoms in a structure drawing |
+| `$scrim`, `$drawer-scrim` | Dim the page behind the phone sign-in sheet / the What's new drawer |
+| `$shadow-sheet`, `$shadow-modal`, `$shadow-dropdown`, `$shadow-dropdown-on-dark`, `$shadow-drawer` | The only shadows: things that float over the page (sign-in box, phone sign-in sheet, suggestion lists, hover cards and pop-up menus, the same on the navy band, the What's new drawer) |
+| `$chip-border` | Border of the floating What's new chip |
+
+The dot plot's potency scale is `--color-potency-light` / `--color-potency-dark`,
+read at runtime. `$type-screening`/`$type-building` exist only so `_design.scss`
+stays identical to CRESTdb's (library-type cards); REFRAMEdb doesn't use them.
 
 Band rhythm on long pages: navy hero → tinted band → white → dark band →
 muted strip → navy footer. Don't put two dark bands next to each other.

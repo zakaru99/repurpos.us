@@ -121,6 +121,11 @@
   --color-category: #dbe4f7; // category node fill
   --color-substructure: #f4e0f1; // matched atoms in a structure drawing
 
+  // Dot plot potency scale, light (less potent) to dark (more potent); read by
+  // dot-plot.component.ts at runtime since d3 can't use Sass
+  --color-potency-light: #c4d4f6;
+  --color-potency-dark: #13295e;
+
   // Workflow status (admin portal). Text colours pass AA on their tints.
   --color-status-pending: #a15c07;
   --color-status-pending-bg: #fdf3e2;

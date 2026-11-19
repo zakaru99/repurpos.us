@@ -2,14 +2,19 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, Output, Eve
 import * as d3 from 'd3';
 import { CmpdTooltipComponent } from './cmpd-tooltip/cmpd-tooltip.component';
 
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { AssayDataService } from '../../_services/index';
 
 
-// Potency colours for the dots and the scale bar (see DESIGN.md: one hue for magnitude)
-const POTENCY_LIGHT = '#c4d4f6';
-const POTENCY_DARK = '#13295e';
+// Colours from the design tokens (_tokens.scss), read at draw time because d3
+// can't use Sass. Potency: one hue for magnitude (see DESIGN.md).
+function token(name: string, fallback: string): string {
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return v || fallback;
+}
+const potencyLight = () => token('--color-potency-light', '#d6d1ec');
+const potencyDark = () => token('--color-potency-dark', '#2a2153');
 
 // Decades (as molar values) inside the plotted domain [max, min]
 function decadesIn(domain: number[]): number[] {
@@ -228,9 +233,9 @@ export class DotPlotComponent implements OnInit {
       .paddingInner(0.05)
       .paddingOuter(0.25);
 
-    // One hue, light (less potent) to navy (more potent)
+    // One hue, light (less potent) to dark (more potent)
     this.colorScale = d3
-      .scaleSequential(d3.interpolateRgb(POTENCY_LIGHT, POTENCY_DARK));
+      .scaleSequential(d3.interpolateRgb(potencyLight(), potencyDark()));
 
 
     this.xAxis = d3.axisTop(this.x)
@@ -260,7 +265,7 @@ export class DotPlotComponent implements OnInit {
 
 
     // Same colours as the dots: light to navy
-    const colorRange = d3.range(0, 1.0001, 0.125).map(t => d3.interpolateRgb(POTENCY_LIGHT, POTENCY_DARK)(t));
+    const colorRange = d3.range(0, 1.0001, 0.125).map(t => d3.interpolateRgb(potencyLight(), potencyDark())(t));
 
     linearGradient.selectAll("stop")
       .data(colorRange)
@@ -506,7 +511,7 @@ export class DotPlotComponent implements OnInit {
         .append("text")
         .attr("class", "imprecise")
         .attr("dx", 10)
-        .style("fill", "#5b6574")
+        .style("fill", token('--color-ink-soft', '#524e5e'))
         .style("font-weight","400")
         .style("dominant-baseline", "central");
 
