@@ -109,7 +109,8 @@
 <section id="overview" class="overview">
   <div class="structure">
     <div class="struct-box">
-      <app-struct2d *ngIf="smiles" [structure]="smiles" [smiles]="smiles" struct_type="smiles" [launch_search]="false"></app-struct2d>
+      <app-struct2d *ngIf="smiles" [structure]="smiles" [smiles]="smiles" struct_type="smiles" [launch_search]="false"
+                    [downloadable]="true" [name]="label"></app-struct2d>
     </div>
     <a class="arrow-link" *ngIf="smiles" [routerLink]="['/search']" [queryParams]="{ query: smiles, type: 'structure', mode: 'similarity', tanimoto: 0.85 }">
       Find similar structures

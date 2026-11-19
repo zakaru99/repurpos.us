@@ -495,10 +495,20 @@
   border: 1px solid $rule;
   border-radius: $radius-sharp;
 
+  // The structure is inline SVG (struct2d), with no width of its own
+  app-struct2d {
+    display: block;
+    width: 100%;
+  }
+
+  // Room under the drawing for "Download structure (SVG)"
   ::ng-deep .svg-wrapper {
     width: 100%;
-    height: 276px;
-    object-fit: contain;
+    height: 248px;
+  }
+
+  ::ng-deep .struct-actions {
+    margin-top: 4px;
   }
 }
 
@@ -794,7 +804,7 @@
     height: 240px;
 
     ::ng-deep .svg-wrapper {
-      height: 216px;
+      height: 188px;
     }
   }
 
