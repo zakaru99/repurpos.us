@@ -114,12 +114,16 @@ export class QuickSearchComponent implements OnInit {
       return;
     }
     const type = this.selected;
-    this.http2.get<Array<{ value: string; type?: string }>>(
+    // /api/suggest returns { value, type } here; CRESTdb's returns plain
+    // strings. Accept either, so the shared component works on both sites.
+    this.http2.get<Array<string | { value: string; type?: string }>>(
       `/api/suggest?q=${encodeURIComponent(q.trim())}&type=${type}`
     ).subscribe({
       next: results => {
         // Ignore a late answer for a scope the user has since switched away from
-        if (type === this.selected) { this.suggestions = results || []; }
+        if (type === this.selected) {
+          this.suggestions = (results || []).map(r => typeof r === 'string' ? { value: r } : r);
+        }
       },
       error: () => this.suggestions = []
     });
