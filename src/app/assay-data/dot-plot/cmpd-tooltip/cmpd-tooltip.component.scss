@@ -14,7 +14,7 @@
   background: #fff;
   border: 1px solid $rule;
   border-radius: $radius-sharp;
-  box-shadow: 0 6px 20px rgba(15, 27, 45, 0.12);
+  box-shadow: $shadow-dropdown;
   pointer-events: none;
 
   ::ng-deep .svg-wrapper {

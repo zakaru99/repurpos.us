@@ -200,7 +200,7 @@ $bar-height: 64px;
       border: 1px solid $rule;
       border-top: 3px solid $navy;
       padding: 24px 24px 20px;
-      box-shadow: 0 12px 32px rgba(15, 27, 45, 0.16);
+      box-shadow: $shadow-sheet;
       animation: fadeSlideIn 0.18s ease-out forwards;
     }
   }
@@ -409,7 +409,7 @@ $bar-height: 64px;
     justify-content: center;
     padding: 1rem;
     box-sizing: border-box;
-    background: rgba(10, 15, 30, 0.55);
+    background: $scrim;
     overflow: visible;
     z-index: 3100;
 
@@ -419,7 +419,7 @@ $bar-height: 64px;
       background: #fff;
       border-top: 3px solid $navy;
       padding: 20px 24px 24px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      box-shadow: $shadow-modal;
       animation: fadeSlideIn 0.22s ease-out forwards;
     }
 

@@ -145,7 +145,7 @@
   background: #fff;
   border: 1px solid $rule;
   border-radius: $radius-sharp;
-  box-shadow: 0 8px 24px rgba(15, 27, 45, 0.14);
+  box-shadow: $shadow-dropdown;
 
   button {
     position: relative;
