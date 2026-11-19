@@ -205,6 +205,9 @@ $hex-lattice: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' widt
 // Text link with a small chevron that nudges right on hover
 @mixin arrow-link($color: $accent, $hover-color: $accent-deep) {
   display: inline-block;
+  // Pages that make the link a flex row (e.g. the compound page) keep the
+  // chevron centred on the text instead of pinned to the top
+  align-items: center;
   font-weight: 500;
   color: $color;
   text-decoration: none;
