@@ -32,6 +32,14 @@ function decadeLabel(v: number): string {
   return Math.pow(10, e - u[0]) + ' ' + u[1];
 }
 
+// On narrow plots, label every k-th decade so labels don't run together
+// (about 56px per label); the gridlines stay on every decade
+function decadeFormat(domain: number[], width: number): (v: number) => string {
+  const n = decadesIn(domain).length;
+  const k = Math.max(1, Math.ceil(n * 56 / Math.max(width, 1)));
+  return v => Math.round(Math.log10(v)) % k === 0 ? decadeLabel(v) : '';
+}
+
 @Component({
   selector: 'app-dot-plot',
   templateUrl: './dot-plot.component.html',
@@ -152,7 +160,7 @@ export class DotPlotComponent implements OnInit {
 
     this.xAxis = d3.axisTop(this.x)
       .tickValues(decadesIn(this.assay_domain))
-      .tickFormat(decadeLabel)
+      .tickFormat(decadeFormat(this.assay_domain, this.width))
       .tickSizeOuter(0)
       .tickSizeInner(-(this.height + this.margin.xaxis));
 
@@ -317,6 +325,7 @@ export class DotPlotComponent implements OnInit {
       // Whole decades, with gridlines running down the plot
       this.xAxis
         .tickValues(decadesIn(this.assay_domain))
+        .tickFormat(decadeFormat(this.assay_domain, this.width))
         .tickSizeInner(-(this.height + this.margin.xaxis));
 
       // update color domain
