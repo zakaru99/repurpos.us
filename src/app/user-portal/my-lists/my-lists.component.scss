@@ -152,3 +152,12 @@
     max-height: 280px;
   }
 }
+
+// The delete confirmation needs the full width on a phone; put it under the
+// list's name instead of squeezing the name into a narrow column
+@media (max-width: $bp-phone) {
+  .detail-head {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

@@ -1,19 +1,11 @@
-import { Component, Inject, Injectable, OnInit, AfterViewInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
+import { Component, Inject, OnInit, AfterViewInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
-import { CompoundSearchComponent } from '../compound-search/compound-search.component'
-import { CompoundDataComponent } from "../compound-data/compound-data.component";
-import { AboutComponent } from "../about/about.component";
-import { AssaysComponent } from "../assays/assays.component";
-import { AssayDataComponent } from "../assay-data/assay-data.component";
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from "@angular/common/http";
-import { isDefined } from "@angular/compiler/src/util";
-import { environment } from "../../environments/environment";
 import { LoginStateService } from '../_services/index';
-import { LoginState, RouteDef, hasPortal } from '../_models/index';
+import { LoginState, hasPortal } from '../_models/index';
 
 @Component({
   selector: 'app-header',
@@ -22,10 +14,9 @@ import { LoginState, RouteDef, hasPortal } from '../_models/index';
 })
 export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  routeDef: RouteDef[];
   loginBox: boolean = false;
   loggedIn: boolean = false;
-  // Admins and reviewers get the admin portal link
+  // Admins, reviewers and read-only staff get the admin portal link
   hasPortal: boolean = false;
   // Phone/tablet menu. Open, it covers the page, so the page behind it
   // mustn't scroll (body.menu-open, styles.scss)
@@ -37,16 +28,13 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   isMobile: boolean;
   inAdmin = false;
-  current_year: number;
   private loginSubscription: Subscription;
   private routerSubscription: Subscription;
-  // Typed any: this TS/lib version predates ResizeObserver's ambient type
-  // declarations (unlike the older IntersectionObserver, used elsewhere).
+  // Typed any: this TS/lib version predates ResizeObserver's type declarations
   private resizeObserver: any;
 
   constructor(
     @Inject(DOCUMENT) private document: any,
-    private http: HttpClient,
     private loginStateService: LoginStateService,
     private elementRef: ElementRef,
     private router: Router
@@ -69,35 +57,26 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  // Publishes this (sticky) header's real rendered height as a CSS custom
-  // property, so other sticky elements further down the page (e.g. the
-  // compound-detail page's own sticky header/sidebar) can position
-  // themselves against the actual value instead of a hardcoded guess.
-  // Driven by a ResizeObserver (see ngAfterViewInit) rather than a pile of
-  // manually-guessed re-measurement triggers (font load, login-state
-  // change, window resize) - those fired independently and could race each
-  // other, publishing stale/inconsistent values. ResizeObserver fires once,
-  // correctly, for any actual size change regardless of cause.
-  private publishHeaderHeight(): void {
-    const height = this.elementRef.nativeElement.offsetHeight;
-    this.document.documentElement.style.setProperty('--site-header-height', height + 'px');
-  }
-
+  // Publishes the sticky header's rendered height as --site-header-height, so
+  // sticky sub-headers and table headers further down can sit right under it
+  // (see the sticky-subheader and sticky-table-head mixins in _design.scss).
+  // A ResizeObserver catches every size change, whatever the cause.
   ngAfterViewInit(): void {
-    this.resizeObserver = new (window as any).ResizeObserver(() => this.publishHeaderHeight());
-    this.resizeObserver.observe(this.elementRef.nativeElement);
+    const publish = () => this.document.documentElement.style.setProperty(
+      '--site-header-height', this.elementRef.nativeElement.offsetHeight + 'px');
+    const RO = (window as any).ResizeObserver;
+    if (RO) {
+      this.resizeObserver = new RO(publish);
+      this.resizeObserver.observe(this.elementRef.nativeElement);
+    } else {
+      publish();
+    }
   }
 
   ngOnDestroy(): void {
-    if (this.resizeObserver) {
-      this.resizeObserver.disconnect();
-    }
-    if (this.loginSubscription) {
-      this.loginSubscription.unsubscribe();
-    }
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
-    }
+    if (this.resizeObserver) { this.resizeObserver.disconnect(); }
+    if (this.loginSubscription) { this.loginSubscription.unsubscribe(); }
+    if (this.routerSubscription) { this.routerSubscription.unsubscribe(); }
   }
 
   ngOnInit(): void {
@@ -107,6 +86,11 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
         this.hasPortal = hasPortal(state.role);
         this.loginBox = false;
         this.expanded = false;
+
+        // Signed out on an admin page: there's nothing left to show there
+        if (!state.loggedIn && this.router.url.startsWith('/internal')) {
+          this.router.navigate(['/']);
+        }
       });
   }
 
@@ -116,6 +100,8 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Other pages ask for the sign-in box with
   // window.dispatchEvent(new CustomEvent('reframe-sign-in'))
+  // (optionally with { detail: { mode: 'register' | 'forgot' } }; user-login
+  // picks the view)
   @HostListener('window:reframe-sign-in')
   openLogin() {
     if (this.loggedIn) { return; }
@@ -165,11 +151,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   checkMobile() {
-    if (window.matchMedia('(max-width: 760px)').matches) {
-      this.isMobile = true;
-    } else {
-      this.isMobile = false;
-    }
+    this.isMobile = window.matchMedia('(max-width: 760px)').matches;
   }
 
   @HostListener('window:resize') onResize() {

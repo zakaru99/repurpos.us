@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LoginStateService } from '../../_services';
 import { hasPortal, roleOf } from '../../_models/index';
@@ -23,12 +24,13 @@ interface AssaySummary {
   templateUrl: './my-account.component.html',
   styleUrls: ['./my-account.component.scss']
 })
-export class MyAccountComponent implements OnInit {
+export class MyAccountComponent implements OnInit, OnDestroy {
   userStatus: UserStatus | null = null;
   assaySummary: AssaySummary | null = null;
   resetState: 'idle' | 'loading' | 'sent' = 'idle';
   deleteState: 'idle' | 'confirming' | 'loading' | 'unavailable' = 'idle';
   deleteConfirmEmail = '';
+  private sub: Subscription;
 
   constructor(private http: HttpClient, private loginState: LoginStateService) {}
 
@@ -42,12 +44,16 @@ export class MyAccountComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loginState.isUserLoggedIn.subscribe(state => {
+    this.sub = this.loginState.isUserLoggedIn.subscribe(state => {
       if (state.loggedIn && state.email) {
         this.loadProfile();
         this.loadAssaySummary(state.email);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.sub) { this.sub.unsubscribe(); }
   }
 
   get canConfirmDelete(): boolean {
@@ -95,7 +101,7 @@ export class MyAccountComponent implements OnInit {
 
   private loadAssaySummary(email: string): void {
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('auth_token') || '');
-    this.http.get<{ success: boolean; data: any[] }>(`/api/assay_proposal?email=${email}`, { headers })
+    this.http.get<{ success: boolean; data: any[] }>(`/api/assay_proposal?email=${encodeURIComponent(email)}`, { headers })
       .subscribe({
         next: (res) => {
           if (res.success) {

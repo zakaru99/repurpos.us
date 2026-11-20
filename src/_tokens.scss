@@ -61,6 +61,18 @@
   --shadow-raised: 0 6px 18px rgba(0, 0, 0, 0.08);
   --shadow-overlay: 0 10px 30px rgba(0, 0, 0, 0.12);
 
+  // Overlays that float over the page. All but the modal shadow are tinted
+  // toward the navy family so they don't read as grey smudges. Same names as
+  // CRESTdb's; the values are the ones these components already used.
+  --color-scrim: rgba(10, 15, 30, 0.55); // dims the page behind the phone sign-in sheet
+  --shadow-sheet: 0 12px 32px rgba(15, 27, 45, 0.16); // sign-in box dropping from the header
+  --shadow-modal: 0 20px 60px rgba(0, 0, 0, 0.25); // sign-in sheet centred over the scrim (phones)
+  --shadow-dropdown: 0 12px 28px rgba(8, 20, 45, 0.18); // suggestion list under a search field, hover cards, pop-up menus
+  --shadow-dropdown-on-dark: 0 12px 28px rgba(8, 20, 45, 0.28); // the same, under a search field on the navy band
+  --color-drawer-scrim: rgba(11, 29, 58, 0.45); // dims the page behind the What's new drawer
+  --shadow-drawer: -12px 0 40px rgba(11, 29, 58, 0.18); // What's new drawer's left edge
+  --color-chip-border: rgba(15, 27, 45, 0.12); // floating What's new chip
+
   // ------------------------------------------------------------------------
   // 2026 redesign (homepage, header, footer, sign-in, ontology). See DESIGN.md.
   // Redesigned components read these through src/_design.scss; older pages
@@ -109,6 +121,11 @@
   --color-category: #dbe4f7; // category node fill
   --color-substructure: #f4e0f1; // matched atoms in a structure drawing
 
+  // Dot plot potency scale, light (less potent) to dark (more potent); read by
+  // dot-plot.component.ts at runtime since d3 can't use Sass
+  --color-potency-light: #c4d4f6;
+  --color-potency-dark: #13295e;
+
   // Workflow status (admin portal). Text colours pass AA on their tints.
   --color-status-pending: #a15c07;
   --color-status-pending-bg: #fdf3e2;
@@ -117,6 +134,14 @@
   --color-status-rejected: #b42d23;
   --color-status-rejected-bg: #fbeaea;
   --color-stage-screening-bg: #e8effc; // assay cards: screen under way
+
+  // Compound cards by library type. CRESTdb-only (its library has screening
+  // compounds and building blocks); defined here, unused, so the shared
+  // _design.scss compiles unchanged on both sites.
+  --color-type-screening: #1d3b76;
+  --color-type-screening-bg: #e9eef8;
+  --color-type-building: #2f5bc7;
+  --color-type-building-bg: #e8effc;
 
   // Decision buttons (approve / reject). Saturated so the two actions stand
   // out; white text passes AA on both base colours.
