@@ -255,7 +255,8 @@ p {
 
 .section-head {
   margin-bottom: 48px;
-  // <header> picks up the global `body, header { color }` rule; follow the band instead
+  // <header> picks up the global `body, header { … }` rule (Lato 300, body colour); follow the band instead
+  font: inherit;
   color: inherit;
 
   h2 {

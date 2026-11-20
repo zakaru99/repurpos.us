@@ -18,6 +18,9 @@ $admin-max: var(--shell-wide); // the data-page column; see "Page width" in DESI
   .band {
     @include hex-lattice;
     @include sticky-subheader;
+    // A <header>: undo the global `body, header` rule (Lato 300)
+    font-family: $sans;
+    font-weight: 400;
     background: $navy;
     color: #fff;
   }
