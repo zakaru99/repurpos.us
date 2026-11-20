@@ -54,11 +54,26 @@ $status-approved-bg: var(--color-status-approved-bg);
 $status-rejected: var(--color-status-rejected);
 $status-rejected-bg: var(--color-status-rejected-bg);
 $stage-screening-bg: var(--color-stage-screening-bg);
+// Compound cards by library type (used on CRESTdb only; REFRAMEdb defines them unused)
+$type-screening: var(--color-type-screening);
+$type-screening-bg: var(--color-type-screening-bg);
+$type-building: var(--color-type-building);
+$type-building-bg: var(--color-type-building-bg);
 
 $approve: var(--color-approve);
 $approve-strong: var(--color-approve-strong);
 $reject: var(--color-reject);
 $reject-strong: var(--color-reject-strong);
+
+// Overlays: scrims and the shadows of things that float over the page
+$scrim: var(--color-scrim);
+$shadow-sheet: var(--shadow-sheet);
+$shadow-modal: var(--shadow-modal);
+$shadow-dropdown: var(--shadow-dropdown);
+$shadow-dropdown-on-dark: var(--shadow-dropdown-on-dark);
+$drawer-scrim: var(--color-drawer-scrim);
+$shadow-drawer: var(--shadow-drawer);
+$chip-border: var(--color-chip-border);
 
 $sans: var(--font-ui);
 $mono: var(--font-mono);

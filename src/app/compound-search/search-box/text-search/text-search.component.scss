@@ -73,7 +73,7 @@ input {
   list-style: none;
   background: #fff;
   border-top: 1px solid $rule-soft;
-  box-shadow: 0 12px 28px rgba(8, 20, 45, 0.28);
+  box-shadow: $shadow-dropdown-on-dark;
 
   li {
     display: flex;

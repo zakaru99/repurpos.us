@@ -161,7 +161,7 @@
 
 @media (max-width: $bp-nav) {
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 48px;
   }
 }

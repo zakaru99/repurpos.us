@@ -139,7 +139,7 @@
 
   // One thing at a time: the open proposal replaces the table
   .layout.open {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
 
     .list {
       display: none;

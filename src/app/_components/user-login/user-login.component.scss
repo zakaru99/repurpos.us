@@ -201,6 +201,8 @@
   &:hover {
     color: $ink;
   }
+
+  @include focus-ring;
 }
 
 // In the phone menu: the same full-width outline button as Sign in

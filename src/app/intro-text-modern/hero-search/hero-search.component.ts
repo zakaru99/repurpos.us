@@ -13,7 +13,8 @@ export class HeroSearchComponent implements OnInit {
 
   searchCategory: string = 'compound';
   query: string;
-  suggestions: string[] = [];
+  // From /api/suggest: [{ value, type }]
+  suggestions: Array<{ value: string; type?: string }> = [];
   dropdownVisible: boolean = false;
   highlightedIndex: number = -1;
   private queryChanged = new Subject<string>();
@@ -94,9 +95,10 @@ onKeyDown(event: KeyboardEvent) {
     const type =  this.searchCategory;
     const url = `/api/suggest?q=${encodeURIComponent(curr_query)}&type=${type}`;
 
-    this.http2.get<string[]>(url).subscribe({
-      next: (results: string[]) => {
-        this.suggestions = results;
+    // Plain-string suggestions (CRESTdb's /api/suggest) are accepted too
+    this.http2.get<Array<string | { value: string; type?: string }>>(url).subscribe({
+      next: results => {
+        this.suggestions = (results || []).map(r => typeof r === 'string' ? { value: r } : r);
         console.log(`${type} suggestions for`, curr_query, ':', this.suggestions);
         this.dropdownVisible = this.suggestions.length > 0;
       },

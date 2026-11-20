@@ -24,7 +24,11 @@ describe('HeaderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule, RouterTestingModule.withRoutes([{ path: 'search', component: QuickSearchStubComponent }]) ],
+      imports: [ HttpClientTestingModule, RouterTestingModule.withRoutes([
+        { path: '', component: QuickSearchStubComponent },
+        { path: 'search', component: QuickSearchStubComponent },
+        { path: 'internal', component: QuickSearchStubComponent }
+      ]) ],
       declarations: [
         HeaderComponent,
         MatIconStubComponent,
@@ -56,5 +60,30 @@ describe('HeaderComponent', () => {
 
     expect(component.expanded).toBe(false);
     expect(document.body.classList.contains('menu-open')).toBe(false);
+  }));
+
+  it('goes home when the user signs out on an admin page', fakeAsync(() => {
+    const router: Router = TestBed.get(Router);
+    const loginState: LoginStateService = TestBed.get(LoginStateService);
+    loginState.loggedIn('admin', 'a@example.org');
+    router.navigate(['internal']);
+    tick();
+    expect(router.url).toBe('/internal');
+
+    loginState.loggedOut();
+    tick();
+    expect(router.url).toBe('/');
+  }));
+
+  it('stays put when the user signs out anywhere else', fakeAsync(() => {
+    const router: Router = TestBed.get(Router);
+    const loginState: LoginStateService = TestBed.get(LoginStateService);
+    loginState.loggedIn('user', 'u@example.org');
+    router.navigate(['search']);
+    tick();
+
+    loginState.loggedOut();
+    tick();
+    expect(router.url).toBe('/search');
   }));
 });
