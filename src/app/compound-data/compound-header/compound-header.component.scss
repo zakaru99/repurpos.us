@@ -47,16 +47,18 @@
   @include focus-ring($accent-on-dark, 2px);
 }
 
-// The compound's facts on one row, then QC on its own row below them
+// The compound's facts, then the QC group on the same row when it fits
 .meta {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 18px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px 40px;
   margin-top: 20px;
 }
 
-// QC verdict beside the button that downloads those files
+// QC verdict beside the button that downloads those files. It wraps below the
+// facts as one unit, so the verdict never ends up apart from its button
+// (they only split on a phone, where the pair is wider than the screen).
 .qc-group {
   display: flex;
   flex-wrap: wrap;
