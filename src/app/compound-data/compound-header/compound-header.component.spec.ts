@@ -139,6 +139,11 @@ describe('CompoundHeaderComponent', () => {
     expect(req.request.headers.has('Authorization')).toBe(false);   // public, no token
     req.flush({ status: 'success', data: [{ type: 'LCMS', status: 'pass' }, { type: 'NMR', status: 'review' }] });
     expect(component.qcSummaryText).toBe('LCMS Pass · NMR Needs review');
+    // shown with the download button, in its own group after the compound's facts
+    fixture.detectChanges();
+    const group: HTMLElement = fixture.nativeElement.querySelector('.qc-group');
+    expect(group.querySelector('dd').textContent.trim()).toBe('LCMS Pass · NMR Needs review');
+    expect(group.querySelector('button.qc')).toBeTruthy();
 
     // a different compound clears the old verdict and asks again
     svc.chemSourceState.next([{ chem_vendor: 'Calibr', chem_vendor_ikey: 'AAAQFGUYHFJNHI' }]);

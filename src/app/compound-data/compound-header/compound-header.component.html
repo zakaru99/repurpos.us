@@ -42,10 +42,6 @@
           </ng-container>
         </dd>
       </div>
-      <div *ngIf="chemVendors.length && qcSummaryText">
-        <dt>QC</dt>
-        <dd>{{ qcSummaryText }}</dd>
-      </div>
       <div *ngIf="disclosureDate">
         <dt>Structure disclosed</dt>
         <dd>{{ disclosureDate | date:'d MMMM y' }}</dd>
@@ -55,7 +51,16 @@
         <dd>{{ whoName }}</dd>
       </div>
     </dl>
-    <button type="button" class="qc" *ngIf="chemVendors.length" [disabled]="qcLoading" (click)="clickedQC(chemVendors[0]['chem_vendor_ikey'])">{{ loggedIn ? 'Download QC data' : 'Log in to download QC data' }}</button>
+    <!-- QC: the verdict on the files, then the button that downloads them -->
+    <div class="qc-group" *ngIf="chemVendors.length">
+      <dl class="meta-list" *ngIf="qcSummaryText">
+        <div>
+          <dt>QC</dt>
+          <dd>{{ qcSummaryText }}</dd>
+        </div>
+      </dl>
+      <button type="button" class="qc" [disabled]="qcLoading" (click)="clickedQC(chemVendors[0]['chem_vendor_ikey'])">{{ loggedIn ? 'Download QC data' : 'Log in to download QC data' }}</button>
+    </div>
     </div>
   </div>
 
