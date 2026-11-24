@@ -69,6 +69,7 @@ export class CompoundHeaderComponent {
   compoundId = '';
   compoundName = '';
   loggedIn = false;
+  qcLoading = false;
   lists: CompoundList[] = [];
   showListDropdown = false;
   showNotes = false;
@@ -307,40 +308,50 @@ export class CompoundHeaderComponent {
     });
   }
 
-  clickedQC(vendor_ikey) {
-    function saveAs(uri, filename) {
-      const link = document.createElement('a');
-      if (typeof link.download === 'string') {
-        document.body.appendChild(link);
-        link.download = filename;
-        link.href = uri;
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        location.replace(uri);
-      }
+  // QC files (newest LCMS and NMR) are login-only. The backend checks the token and
+  // returns short-lived S3 links; each link names the file itself (Content-Disposition),
+  // since browsers ignore <a download> names on another origin.
+  clickedQC(vendor_ikey: string) {
+    if (!this.loggedIn) {
+      window.dispatchEvent(new CustomEvent('reframe-sign-in'));
+      return;
     }
+    if (this.qcLoading) { return; }
+    this.qcLoading = true;
 
-    const body = new HttpParams().set('ikey', vendor_ikey);
-    this.http.post<{ data?: Array<{ upload_id: string; extension: string; file_name: string }> }>(
-      'https://reframedb.org/php/getQCdownloadID.php',
-      body.toString(),
-      { headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded') }
+    const token = localStorage.getItem('auth_token') || '';
+    this.http.get<{ data?: Array<{ type: string; file_name: string; url: string }> }>(
+      '/api/qc_files',
+      { headers: new HttpHeaders().set('Authorization', token), params: new HttpParams().set('ikey', vendor_ikey) }
     ).subscribe({
       next: (response) => {
-        const fileData = response.data;
-        if (fileData !== undefined) {
-          for (const f of fileData) {
-            const filepath = '../../assets/QC_files/' + f.upload_id + f.extension;
-            const file_name = f.extension === '.pdf' ? f.file_name.split('.')[0] : f.file_name;
-            saveAs(filepath, file_name);
-          }
-        } else {
+        this.qcLoading = false;
+        const files = response.data || [];
+        if (!files.length) {
           this.showToast('QC data for this compound isn\'t available yet', 'error');
+          return;
         }
+        // A short gap between files so browsers treat them as separate downloads
+        files.forEach((f, i) => setTimeout(() => this.startDownload(f.url), i * 400));
       },
-      error: () => this.showToast('QC data for this compound isn\'t available yet', 'error')
+      error: (err) => {
+        this.qcLoading = false;
+        if (err && err.status === 401) {
+          window.dispatchEvent(new CustomEvent('reframe-sign-in'));
+        } else {
+          this.showToast('QC data couldn\'t be downloaded. Please try again', 'error');
+        }
+      }
     });
+  }
+
+  private startDownload(url: string): void {
+    const link = document.createElement('a');
+    link.href = url;
+    link.rel = 'noopener';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   private showToast(msg: string, type: 'success' | 'error' = 'success'): void {

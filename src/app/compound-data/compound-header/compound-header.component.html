@@ -51,7 +51,7 @@
         <dd>{{ whoName }}</dd>
       </div>
     </dl>
-    <button type="button" class="qc" *ngIf="chemVendors.length" (click)="clickedQC(chemVendors[0]['chem_vendor_ikey'])">Download QC data</button>
+    <button type="button" class="qc" *ngIf="chemVendors.length" [disabled]="qcLoading" (click)="clickedQC(chemVendors[0]['chem_vendor_ikey'])">{{ loggedIn ? 'Download QC data' : 'Log in to download QC data' }}</button>
     </div>
   </div>
 
