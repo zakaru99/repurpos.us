@@ -42,6 +42,10 @@
           </ng-container>
         </dd>
       </div>
+      <div *ngIf="chemVendors.length && qcSummaryText">
+        <dt>QC</dt>
+        <dd>{{ qcSummaryText }}</dd>
+      </div>
       <div *ngIf="disclosureDate">
         <dt>Structure disclosed</dt>
         <dd>{{ disclosureDate | date:'d MMMM y' }}</dd>

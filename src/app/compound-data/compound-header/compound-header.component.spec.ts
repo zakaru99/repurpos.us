@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, Input } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTooltipModule } from '@angular/material';
@@ -46,7 +46,7 @@ class CompoundServiceStub {
   rfmState = of('');
   whoState = of('');
   aliasState = of([]);
-  chemSourceState = of([]);
+  chemSourceState = new BehaviorSubject<any[]>([]);
   similarState = of([]);
   assaysState = of([]);
   integrityPediatricsState = of(false);
@@ -128,5 +128,23 @@ describe('CompoundHeaderComponent', () => {
     expect(component.noScreeningData).toBe(true);
     component.loggedIn = false;
     expect(component.noScreeningData).toBe(false);   // signed out gets the sign-in prompt instead
+  });
+
+  it('shows the QC verdict for the vendor compound the download uses', () => {
+    const svc = TestBed.get(CompoundService);
+    const http: HttpTestingController = TestBed.get(HttpTestingController);
+    svc.chemSourceState.next([{ chem_vendor: 'Calibr', chem_vendor_ikey: 'KTDZCOWXCWUPEO' }]);
+    const req = http.expectOne(r => r.url === '/api/qc_summary');
+    expect(req.request.params.get('ikey')).toBe('KTDZCOWXCWUPEO');
+    expect(req.request.headers.has('Authorization')).toBe(false);   // public, no token
+    req.flush({ status: 'success', data: [{ type: 'LCMS', status: 'pass' }, { type: 'NMR', status: 'review' }] });
+    expect(component.qcSummaryText).toBe('LCMS Pass · NMR Needs review');
+
+    // a different compound clears the old verdict and asks again
+    svc.chemSourceState.next([{ chem_vendor: 'Calibr', chem_vendor_ikey: 'AAAQFGUYHFJNHI' }]);
+    expect(component.qcSummaryText).toBe('');
+    http.expectOne(r => r.url === '/api/qc_summary').flush({ status: 'success', data: [{ type: 'LCMS', status: 'fail' }] });
+    expect(component.qcSummaryText).toBe('LCMS Fail');
+    http.verify();
   });
 });

@@ -70,6 +70,9 @@ export class CompoundHeaderComponent {
   compoundName = '';
   loggedIn = false;
   qcLoading = false;
+  // QC verdict per file type for the band, e.g. [{ type: 'LCMS', status: 'pass' }]
+  qcSummary: Array<{ type: string; status: string }> = [];
+  private qcSummaryKey = '';
   lists: CompoundList[] = [];
   showListDropdown = false;
   showNotes = false;
@@ -97,7 +100,11 @@ export class CompoundHeaderComponent {
     this.cmpdSvc.aliasState.subscribe((aliasList: string[]) => {
       this.aliases = (aliasList || []).filter(a => a && a !== this.label);
     });
-    this.cmpdSvc.chemSourceState.subscribe((sources: Object[]) => this.chemVendors = sources);
+    this.cmpdSvc.chemSourceState.subscribe((sources: Object[]) => {
+      this.chemVendors = sources;
+      // Same compound key the QC download uses, so the verdict matches the file
+      this.loadQcSummary(sources && sources.length ? sources[0]['chem_vendor_ikey'] : '');
+    });
     this.cmpdSvc.similarState.subscribe((sdata: Compound[]) => this.similarityResults = sdata || []);
     this.cmpdSvc.assaysState.subscribe((assays: AssayData[]) => this.assayData = assays || []);
     this.cmpdSvc.integrityPediatricsState.subscribe((p: boolean) => this.integrityPediatrics = p);
@@ -343,6 +350,26 @@ export class CompoundHeaderComponent {
         }
       }
     });
+  }
+
+  // "LCMS Pass · NMR Needs review": the verdict on the files the button downloads.
+  // Public, unlike the files; nothing shows if the lookup fails or finds nothing.
+  get qcSummaryText(): string {
+    const labels: Record<string, string> = { pass: 'Pass', fail: 'Fail', review: 'Needs review' };
+    return this.qcSummary.filter(q => labels[q.status]).map(q => q.type + ' ' + labels[q.status]).join(' · ');
+  }
+
+  private loadQcSummary(ikey: string): void {
+    if (ikey === this.qcSummaryKey) { return; }
+    this.qcSummaryKey = ikey;
+    this.qcSummary = [];
+    if (!ikey) { return; }
+    this.http.get<{ data?: Array<{ type: string; status: string }> }>(
+      '/api/qc_summary', { params: new HttpParams().set('ikey', ikey) }
+    ).subscribe(
+      res => { if (this.qcSummaryKey === ikey) { this.qcSummary = (res && res.data) || []; } },
+      () => {}
+    );
   }
 
   private startDownload(url: string): void {
