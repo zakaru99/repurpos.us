@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 
 import {  HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
 
-import { Observable } from 'rxjs';
-import { map, tap, mergeMap, pluck } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { map, mergeMap, pluck, catchError } from 'rxjs/operators';
 
 import { CitationService } from './citation.service';
 
@@ -31,16 +31,21 @@ export class AssayMetadataService {
         .set('aid', aid)
     }).pipe(
       pluck("body"),
-      mergeMap(assayDetails => this.citationSvc.getCitation([assayDetails[0].bibliography]).pipe(
-      map(citations => {
-        let assayMetadata = assayDetails[0];
-        assayMetadata['citations'] = citations;
-
-        return(assayMetadata);
+      // Only a failed or empty /api/assay_details response is an error (-> "Details
+      // unavailable"). The citation is optional: if it fails, show the page without it.
+      mergeMap((assayDetails: any) => {
+        const assayMetadata = assayDetails && assayDetails[0];
+        if (!assayMetadata) {
+          return throwError(new Error('Assay ' + aid + ' not found'));
+        }
+        return this.citationSvc.getCitation([assayMetadata.bibliography]).pipe(
+          catchError(() => of([])),
+          map(citations => {
+            assayMetadata['citations'] = citations;
+            return assayMetadata;
+          })
+        );
       })
-    )
-  )
-
     )
 
     //   this.citationSvc.getCitation([this.assayDetails.bibliography]).subscribe(x => {

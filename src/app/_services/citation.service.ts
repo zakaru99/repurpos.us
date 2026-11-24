@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 
 import { Observable, forkJoin, of } from 'rxjs';
-import { tap, map, pluck } from 'rxjs/operators';
+import { map, pluck, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +15,9 @@ export class CitationService {
 
   entrez_stub = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi';
   // ex: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=18579783&retmode=xml&rettype=abstract
-  ncbi_stub = 'https://api.ncbi.nlm.nih.gov/lit/ctxp/v1/pubmed/';
-  // ex: https://api.ncbi.nlm.nih.gov/lit/ctxp/v1/pubmed/?format=csl&id=30282735
+  // NCBI's citation API (https://api.ncbi.nlm.nih.gov/lit/ctxp/v1/pubmed/?format=csl&id=...)
+  // stopped sending CORS headers, so the backend fetches it for us.
+  citation_url = '/api/citation';
 
   // DEAD as of November 2018: 'https://www.ncbi.nlm.nih.gov/pmc/utils/ctxp';
 
@@ -29,12 +30,18 @@ export class CitationService {
 
   constructor(private http: HttpClient) { }
 
+  // Only all-digit values are looked up; anything else (e.g. "In progress" or a
+  // pasted reference) is skipped. A failed lookup is dropped, never an error.
   getCitation(pmids: string[]): Observable<Object[]> {
-    if (pmids && pmids.length > 0 && pmids[0]) {
-      return forkJoin(pmids.map(d => this.getNCBI(d)));
-    } else {
+    const valid = (pmids || [])
+      .map(d => d == null ? '' : String(d).trim())
+      .filter(d => /^\d+$/.test(d));
+    if (!valid.length) {
       return of([]);
     }
+    return forkJoin(valid.map(d => this.getNCBI(d).pipe(catchError(() => of(null))))).pipe(
+      map(results => results.filter(c => c && !Array.isArray(c)))
+    );
   }
 
   // getEntrez(pmid: string): void {
@@ -66,15 +73,12 @@ export class CitationService {
   //
 
 
-  // Ex: https://api.ncbi.nlm.nih.gov/lit/ctxp/v1/pubmed/?format=csl&id=30282735
-  getNCBI(pmid: string): Observable<Object[]> {
-    return this.http.get(this.ncbi_stub, {
+  // CSL-JSON for one PMID, via the backend's NCBI proxy.
+  getNCBI(pmid: string): Observable<Object> {
+    return this.http.get(this.citation_url, {
       observe: 'response',
       responseType: 'json',
-      headers: new HttpHeaders(),
-      params: new HttpParams()
-        .set('id', pmid)
-        .set('format', 'csl')
+      params: new HttpParams().set('pmid', pmid)
     }).pipe(
       pluck("body"))
   }
